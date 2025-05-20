@@ -361,6 +361,9 @@ import FoodGroupPlanTable from "../components/common/pollingManagement/foodPolli
 import FoodPlanModal from "../components/common/pollingManagement/foodPolling/pages/groupPlan/crud";
 import FoodPollingCountsTable from "../components/common/pollingManagement/foodPolling/pages/pollingCount/table";
 import FoodAttendanceTable from "../components/common/pollingManagement/foodPolling/pages/foodPolling/table";
+import FoodOfficerListTable from "../components/common/pollingManagement/foodPolling/pages/officerList/table";
+import FoodOfficerModal from "../components/common/pollingManagement/foodPolling/pages/officerList/crud";
+import FoodPollingIndex from "../components/common/pollingManagement/foodPolling/index";
 
 
 
@@ -1334,18 +1337,44 @@ export const Routedata = [
       />
     ),
   },
-  //2:yoklama sayıları
+  //görevli listesi
+  // Görevli listesi
   {
-    id: 6338,
-    path: `${import.meta.env.BASE_URL}pollingManagement/foodPollingCount`,
-    element: <FoodPollingCountsTable />,
+    id: 600,
+    path: `${import.meta.env.BASE_URL}pollingManagement/foodOfficerList`,
+    element: <FoodOfficerListTable />,
   },
-  //yemek yoklama
+  {
+    id: 601,                       // benzersiz id
+    path: `${import.meta.env.BASE_URL}pollingManagement/foodOfficerList/:id?`,
+    element: (
+      <FoodOfficerModal
+        show={true}
+        onClose={() => window.history.back()}
+        onRefresh={() => { /* tablo refresh’ini üst bileşende tetikleyin */ }}
+      />
+    ),
+  },
+  //3:yemek yoklama
   {
     id: 6339,
     path: `${import.meta.env.BASE_URL}pollingManagement/foodPollings`,
     element: <FoodAttendanceTable />,
   },
+  //4:yoklama sayıları
+  {
+    id: 6338,
+    path: `${import.meta.env.BASE_URL}pollingManagement/foodPollingCount`,
+    element: <FoodPollingCountsTable />,
+  },
+  {
+    id: 67,
+    path: `${import.meta.env.BASE_URL}pollingManagement/foodindex`,
+    element: <FoodPollingIndex />,
+  },
+
+
+
 
 
 

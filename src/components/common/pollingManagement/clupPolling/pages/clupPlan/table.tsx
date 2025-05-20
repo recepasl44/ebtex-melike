@@ -116,17 +116,17 @@ export default function ClubGroupPlanTable() {
             key: 'index',
             label: 'Sıra No',
             style: { width: 70, textAlign: 'center' },
-            render: (_r, _o, idx) => idx! + 1,
+            render: (_row: Row, _openDeleteModal?: ((row: Row) => void), idx?: number) => (idx !== undefined ? idx + 1 : ''),
         },
-        { key: 'club_name', label: 'Kulüp / Grup', render: r => r.club_name },
-        { key: 'area_name', label: 'Etüt Alanı', render: r => r.area_name },
-        { key: 'class_name', label: 'Sınıf / Şube', render: r => r.class_name },
-        { key: 'student_name', label: 'Adı Soyadı', render: r => r.student_name },
+        { key: 'club_name', label: 'Kulüp / Grup', render: (r: Row) => r.club_name },
+        { key: 'area_name', label: 'Etüt Alanı', render: (r: Row) => r.area_name },
+        { key: 'class_name', label: 'Sınıf / Şube', render: (r: Row) => r.class_name },
+        { key: 'student_name', label: 'Adı Soyadı', render: (r: Row) => r.student_name },
         {
             key: 'actions',
             label: 'İşlemler',
             style: { width: 110, textAlign: 'center' },
-            render: row => (
+            render: (row: Row) => (
                 <div className="d-flex justify-content-center gap-2">
                     {/* düzenle */}
                     <button

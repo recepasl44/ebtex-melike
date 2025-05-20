@@ -113,8 +113,14 @@ export default function ClubCountTable() {
     /* ------------ kolon tanımları --------------- */
     const columns: ColumnDefinition<Row>[] = useMemo(() => [
         {
-            key: 'index', label: 'Sıra No', style: { width: 70, textAlign: 'center' },
-            render: (_r, _o, idx) => idx! + 1
+            key: 'index',
+            label: 'Sıra No',
+            style: { width: 70, textAlign: 'center' },
+            render: (row: Row) => {
+                // Find the index of the row in the current rows array
+                // This assumes rows is in scope (which it is in this component)
+                return rows.findIndex(r => r === row) + 1;
+            }
         },
 
         { key: 'club_name', label: 'Kulüp / Grup', render: r => r.club_name },
@@ -138,7 +144,7 @@ export default function ClubCountTable() {
             style: { textAlign: 'center', color: '#ffb300' },
             render: r => r.late_count
         },
-    ], []);
+    ], [rows]);
 
     /* ------------ filter tanımları -------------- */
     const filters: FilterDefinition[] = useMemo(() => [

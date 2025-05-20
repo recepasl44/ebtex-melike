@@ -81,6 +81,14 @@ export default function PollingListTable() {
     const tableData: Row[] = useMemo(() => {
         if (!attendancesData) return [];
 
+
+        type AttendanceStudent = {
+            first_name?: string;
+            last_name?: string;
+            name_surname?: string;
+            name?: string;
+        };
+
         return attendancesData.flatMap(att => {
             const dateStr = att.start_date ? dayjs(att.start_date).format('DD.MM.YYYY') : '';
             const className = att.group?.name ?? '';
@@ -92,7 +100,7 @@ export default function PollingListTable() {
                 }];
             }
 
-            return att.students.map(stu => ({
+            return att.students.map((stu: AttendanceStudent) => ({
                 id: att.id,
                 date: dateStr,
                 class_name: className,

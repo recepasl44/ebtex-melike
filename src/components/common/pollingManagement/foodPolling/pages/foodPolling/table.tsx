@@ -16,7 +16,7 @@ import { useGroupsTable } from '../../../../../hooks/group/useList';
 import { useUsedAreasList } from '../../../../../hooks/usedareas/useList';
 import { useLevelsTable } from '../../../../../hooks/levels/useList';
 import { useClassroomList } from '../../../../../hooks/classrooms/useList';
-import { useAttendanceStudentsTable } from '../../../../../hooks/attendanceStudent/useList';
+
 import { useAttendanceTeachersTable } from '../../../../../hooks/attendanceTeacher/useList';
 import { useUsersTable } from '../../../../../hooks/user/useList';
 
@@ -127,7 +127,7 @@ export default function FoodAttendanceTable() {
             key: 'index',
             label: 'Sıra No',
             style: { width: 70, textAlign: 'center' },
-            render: (_r, _o, idx) => idx! + 1,
+            render: (_r: Row, _openDeleteModal?: ((row: Row) => void), _idx?: number) => (_idx !== undefined ? _idx + 1 : ''),
         },
         { key: 'meal_name', label: 'Öğün / Grup', render: r => r.meal_name },
         { key: 'class_name', label: 'Sınıf / Şube', render: r => r.class_name },

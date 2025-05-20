@@ -132,14 +132,16 @@ export default function ClubProgramTable() {
         },
 
         {
-            key: 'week_days', label: 'Haftanın Günleri', type: 'multiselect',
-            value: weekDays, onChange: setWeekDays,
+            key: 'week_days', label: 'Haftanın Günleri', type: 'select',
+            value: weekDays,
+            onChange: (v: string | string[]) => setWeekDays(Array.isArray(v) ? v : v ? [v] : []),
             options: [
                 { value: '1', label: 'Pzt' }, { value: '2', label: 'Sal' },
                 { value: '3', label: 'Çar' }, { value: '4', label: 'Per' },
                 { value: '5', label: 'Cum' }, { value: '6', label: 'Cmt' },
                 { value: '7', label: 'Paz' },
-            ]
+            ],
+            isMulti: true
         },
 
         {

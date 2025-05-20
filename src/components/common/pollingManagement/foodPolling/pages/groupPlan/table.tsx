@@ -19,22 +19,22 @@ import { useAttendanceTeachersTable } from '../../../../../hooks/attendanceTeach
 import { useGroupsTable } from '../../../../../hooks/group/useList';
 import { useUsedAreasList } from '../../../../../hooks/usedareas/useList';
 
-/* ───── satır tipi ───── */
+/* ───── Row tipi ───── */
 interface Row {
     id: number;
-    meal_name: string; // Öğün / Grup
-    area_name: string; // Yemek Alanı
-    class_name: string; // Sınıf / Şube
-    student_name: string; // Ad Soyad
+    meal_name: string;   // Öğün / Grup
+    area_name: string;   // Yemek Alanı
+    class_name: string;   // Sınıf / Şube
+    student_name: string;   // Ad Soyad
 }
 
-/* Router’da tanımlı kök */
-const ROOT = '/pollingManagement/foodGroupPlan';          // => …/crud /crud/:id
+/* Modal yolu (id opsiyonel) */
+const MODAL_BASE = `${import.meta.env.BASE_URL}pollingManagement/FoodPlanModal`;
 
 export default function FoodGroupPlanTable() {
     const navigate = useNavigate();
 
-    /* ------------- filtre state’leri ------------- */
+    /* --- filtre state’leri --- */
     const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' });
     const [mealName, setMealName] = useState('');
     const [groupId, setGroupId] = useState('');
@@ -53,36 +53,39 @@ export default function FoodGroupPlanTable() {
         classes: false, students: false, teachers: false,
     });
 
-    /* ---------- yardımcı listeler ---------- */
-    const { groupsData } = useGroupsTable({ enabled: enabled.groups });
-    const { usedAreasData } = useUsedAreasList({ enabled: enabled.areas });
-    const { levelsData } = useLevelsTable({ enabled: enabled.levels });
-    const { classroomData } = useClassroomList({
+    /* yardımcı listeler */
+    const { groupsData = [] } = useGroupsTable({ enabled: enabled.groups });
+    const { usedAreasData = [] } = useUsedAreasList({ enabled: enabled.areas });
+    const { levelsData = [] } = useLevelsTable({ enabled: enabled.levels });
+    const { classroomData = [] } = useClassroomList({
         enabled: enabled.classes && !!classLevel,
-        class_level: +classLevel || undefined, branchId: 0,
+        class_level: +classLevel || undefined,
+        branchId: 0,
     });
-    const { attendanceStudentsData: studentsData } =
+    const { attendanceStudentsData: studentsData = [] } =
         useAttendanceStudentsTable({ enabled: enabled.students });
-    const { attendanceTeachersData: teachersData } =
+    const { attendanceTeachersData: teachersData = [] } =
         useAttendanceTeachersTable({ enabled: enabled.teachers });
 
-    /* ---------------- ana liste ---------------- */
-    const { attendancesData, loading, error,
-        totalPages, totalItems } = useAttendancesTable({
-            page, pageSize,
-            start_date: dateRange.startDate || undefined,
-            end_date: dateRange.endDate || undefined,
-            name: mealName || undefined,
-            group_id: +groupId || undefined,
-            used_area_id: +areaId || undefined,
-            class_level: +classLevel || undefined,
-            classroom_id: +classroom || undefined,
-            student_id: +student || undefined,
-            teacher_id: +teacher || undefined,
-            enabled: true,
-        });
+    /* ana liste */
+    const {
+        attendancesData, loading, error,
+        totalPages, totalItems,
+    } = useAttendancesTable({
+        enabled: true,
+        page, pageSize,
+        start_date: dateRange.startDate || undefined,
+        end_date: dateRange.endDate || undefined,
+        name: mealName || undefined,
+        group_id: +groupId || undefined,
+        used_area_id: +areaId || undefined,
+        class_level: +classLevel || undefined,
+        classroom_id: +classroom || undefined,
+        student_id: +student || undefined,
+        teacher_id: +teacher || undefined,
+    });
 
-    /* --------------- attendances → rows --------------- */
+    /* attendances → rows */
     const rows: Row[] = useMemo(() => (
         (attendancesData ?? []).flatMap((a: any) => {
             const cls = a.classroom?.name || a.level?.name || '-';
@@ -92,7 +95,7 @@ export default function FoodGroupPlanTable() {
             if (!a.students?.length) {
                 return [{
                     id: a.id, meal_name: meal, area_name: area,
-                    class_name: cls, student_name: '-'
+                    class_name: cls, student_name: '-',
                 }];
             }
             return a.students.map((s: any) => ({
@@ -100,20 +103,19 @@ export default function FoodGroupPlanTable() {
                 meal_name: meal,
                 area_name: area,
                 class_name: cls,
-                student_name: (
+                student_name:
                     `${s.first_name ?? ''} ${s.last_name ?? ''}`.trim() ||
-                    s.name_surname || s.name || '-'
-                ),
+                    s.name_surname || s.name || '-',
             }));
         })
     ), [attendancesData]);
 
-    /* ---------------- kolonlar ---------------- */
+    /* kolonlar */
     const columns: ColumnDefinition<Row>[] = useMemo(() => [
         {
             key: 'index', label: 'Sıra No',
             style: { width: 70, textAlign: 'center' },
-            render: (row, openDeleteModal, idx) => idx! + 1,
+            render: (_r, _o, idx) => idx! + 1,
         },
         { key: 'meal_name', label: 'Öğün / Grup', render: r => r.meal_name },
         { key: 'area_name', label: 'Yemek Alanı', render: r => r.area_name },
@@ -124,15 +126,15 @@ export default function FoodGroupPlanTable() {
             style: { width: 110, textAlign: 'center' },
             render: row => (
                 <div className="d-flex justify-content-center gap-2">
-                    {/* DÜZENLE */}
+                    {/* Düzenle */}
                     <button
                         type="button"
                         className="btn btn-icon btn-sm btn-info-light rounded-pill"
-                        onClick={() => navigate(`pollingManagement/FoodPlanModal/${row.id}`)}
+                        onClick={() => navigate(`${MODAL_BASE}/${row.id}`)}
                     >
                         <i className="ti ti-pencil" />
                     </button>
-                    {/* SİL */}
+                    {/* Sil */}
                     <button
                         type="button"
                         className="btn btn-icon btn-sm btn-danger-light rounded-pill"
@@ -145,57 +147,62 @@ export default function FoodGroupPlanTable() {
         },
     ], [navigate]);
 
-    /* ---------------- filtreler ---------------- */
+    /* filtreler */
     const filters: FilterDefinition[] = useMemo(() => [
         {
             key: 'dateRange', label: 'Tarih Aralığı', type: 'doubledate',
-            value: dateRange,
-            onChange: v => setDateRange(v ?? { startDate: '', endDate: '' }),
+            value: dateRange, onChange: v => setDateRange(v ?? { startDate: '', endDate: '' })
         },
         {
             key: 'meal_name', label: 'Öğün Adı', type: 'text',
             value: mealName, onChange: setMealName
         },
+
         {
             key: 'group_id', label: 'Grup Adı', type: 'select',
             value: groupId, onChange: setGroupId,
             onClick: () => setEnabled(e => ({ ...e, groups: true })),
-            options: (groupsData ?? []).map(g => ({ value: String(g.id), label: g.name }))
+            options: groupsData.map(g => ({ value: String(g.id), label: g.name }))
         },
+
         {
             key: 'area_id', label: 'Yemek Alanı', type: 'select',
             value: areaId, onChange: setAreaId,
             onClick: () => setEnabled(e => ({ ...e, areas: true })),
-            options: (usedAreasData ?? []).map(a => ({ value: String(a.id), label: a.name }))
+            options: usedAreasData.map(a => ({ value: String(a.id), label: a.name }))
         },
+
         {
             key: 'class_level', label: 'Sınıf Seviyesi', type: 'select',
             value: classLevel,
             onClick: () => setEnabled(e => ({ ...e, levels: true })),
             onChange: v => { setClassLevel(v); setClassroom(''); },
-            options: (levelsData ?? []).map(l => ({ value: String(l.id), label: l.name }))
+            options: levelsData.map(l => ({ value: String(l.id), label: l.name }))
         },
+
         {
             key: 'classroom', label: 'Sınıf / Şube', type: 'select',
             value: classroom, onChange: setClassroom,
             onClick: () => setEnabled(e => ({ ...e, classes: true })),
-            options: (classroomData ?? []).map(c => ({ value: String(c.id), label: c.name }))
+            options: classroomData.map(c => ({ value: String(c.id), label: c.name }))
         },
+
         {
             key: 'student', label: 'Öğrenciler', type: 'select',
             value: student, onChange: setStudent,
             onClick: () => setEnabled(e => ({ ...e, students: true })),
-            options: (studentsData ?? []).map(s => ({
+            options: studentsData.map(s => ({
                 value: String(s.id),
                 label: s.name_surname || s.name ||
                     `${s.first_name ?? ''} ${s.last_name ?? ''}`.trim(),
             }))
         },
+
         {
             key: 'teacher', label: 'Öğretmen / Personel', type: 'select',
             value: teacher, onChange: setTeacher,
             onClick: () => setEnabled(e => ({ ...e, teachers: true })),
-            options: (teachersData ?? []).map(t => ({
+            options: teachersData.map(t => ({
                 value: String(t.teacher_id),
                 label: t.teacher?.name_surname || '-',
             }))
@@ -205,7 +212,7 @@ export default function FoodGroupPlanTable() {
         groupsData, usedAreasData, levelsData, classroomData, studentsData, teachersData,
     ]);
 
-    /* ---------------- render ---------------- */
+    /* render */
     return (
         <ReusableTable<Row>
             tableMode="single"
@@ -213,16 +220,19 @@ export default function FoodGroupPlanTable() {
             data={rows}
             loading={loading}
             error={error}
+
             filters={filters}
             showExportButtons
-            /* “Ekle” butonu */
-            onAdd={() => navigate("pollingManagement/FoodPlanModal")}
+
+            onAdd={() => navigate(MODAL_BASE)}
+
             currentPage={page}
             totalPages={totalPages}
             totalItems={totalItems}
             pageSize={pageSize}
             onPageChange={setPage}
             onPageSizeChange={s => { setPageSize(s); setPage(1); }}
+
             exportFileName="food_group_plan"
         />
     );

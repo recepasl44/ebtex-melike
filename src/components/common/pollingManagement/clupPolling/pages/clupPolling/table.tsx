@@ -93,7 +93,7 @@ export default function ClubPollingTable() {
             key: 'index',
             label: 'Sıra No',
             style: { width: 80, textAlign: 'center' },
-            render: (_r, _open, idx) => idx! + 1,
+            render: (_r: Row, _open?: ((row: Row) => void), idx?: number) => <>{(idx ?? 0) + 1}</>,
         },
         { key: 'club_name', label: 'Kulüp / Grup', render: r => r.club_name },
         { key: 'class_name', label: 'Sınıf / Şube', render: r => r.class_name },

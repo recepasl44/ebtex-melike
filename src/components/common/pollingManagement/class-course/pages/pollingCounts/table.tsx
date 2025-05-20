@@ -74,6 +74,12 @@ export default function PollingCountsTable() {
     const rows: Row[] = useMemo(() => {
         if (!attendancesData) return [];
 
+        type Student = {
+            first_name: string;
+            last_name: string;
+            [key: string]: any;
+        };
+
         return attendancesData.flatMap((att) => {
             const cls = att.group?.name ?? "";
 
@@ -94,7 +100,7 @@ export default function PollingCountsTable() {
                 ];
             }
 
-            return att.students.map((stu) => ({
+            return att.students.map((stu: Student) => ({
                 id: att.id,
                 class_name: cls,
                 student_name: `${stu.first_name} ${stu.last_name}`,
