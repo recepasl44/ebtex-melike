@@ -1,0 +1,256 @@
+// Example icon (your original Dashboardicon is kept the same):
+const Dashboardicon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="w-6 h-6 side-menu__icon"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth="1.5"
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0
+         .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621
+         0 1.125.504 1.125 1.125V21h4.125c.621
+         0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+    />
+  </svg>
+);
+
+export const MENUITEMS: any = [
+  //  ----- MAIN TITLE -----
+  {
+    menutitle: "MAIN",
+  },
+
+  // ----- ÖĞRENCİLER -----
+  {
+    title: "Öğrenciler",
+    icon: Dashboardicon,
+    type: "sub",
+    children: [
+      {
+        title: "Ön Kayıt",
+        type: "sub",
+        children: [
+          // Matches  route -> path: /pre-register
+          { title: "Ön Kayıt", path: "/pre-register/list", type: "link" },
+          // Matches  route -> path: /appointments
+          { title: "Randevu", path: "/appointments", type: "link" },
+          // Matches  route -> path: /meetings
+          { title: "Görüşme", path: "/meetings", type: "link" },
+          // Matches  route -> path: /student/import
+          {
+            title: "Toplu Öğrenci Aktarma",
+            path: "/student/import",
+            type: "link",
+          },
+        ],
+      },
+      {
+        title: "Kayıt",
+        type: "sub",
+        children: [
+          // Matches route -> path: /final-register/:studentId?
+          {
+            title: "Kesin Kayıt",
+            path: "/final-register",
+            type: "link",
+          },
+          // Matches route -> path: /service-management
+          {
+            title: "Hizmet Yönetimi",
+            path: "/service-management",
+            type: "link",
+          },
+          // Matches route -> path: /calculate
+          { title: "Ücret Hesapla", path: "/calculate", type: "link" },
+          { title: "Kayıt Kontrol", path: "/internals", type: "link" },
+        ],
+      },
+    ],
+  },
+  {
+    title: "Rehberlik Takip",
+    icon: Dashboardicon,
+    type: "sub",
+    active: false,
+    children: [
+      {
+        path: "/guidance/guide",
+        type: "link",
+        active: false,
+        selected: false,
+        title: "Öğrenci İzleme",
+      },
+    ],
+  },
+  // ----- OKUL YÖNETİMİ -----
+  {
+    title: "Okul Yönetimi",
+    icon: Dashboardicon,
+    type: "sub",
+    children: [
+      // Matches route -> path: /school
+      {
+        path: "/school",
+        type: "link",
+        title: "Okullar",
+      },
+      // Matches route -> path: /school-type
+      {
+        path: "/school-type",
+        type: "link",
+        title: "Okul Tipleri",
+      },
+    ],
+  },
+
+  // ----- SEZON YÖNETİMİ -----
+  {
+    title: "Sezon Yönetimi",
+    icon: Dashboardicon,
+    type: "sub",
+    children: [
+      // Matches route -> path: /seasons
+      {
+        path: "/seasons",
+        type: "link",
+        title: "Sezonlar",
+      },
+    ],
+  },
+
+  // ----- PARAMETRELER -----
+  {
+    title: "Parametreler",
+    icon: Dashboardicon,
+    type: "sub",
+    children: [
+      // If you don’t have a route for /parameters/country, remove or comment out:
+      {
+        path: "/parameters/country",
+        type: "link",
+        title: "Adres Yönetimi",
+      },
+    ],
+  },
+
+  // ----- AKADEMİK -----
+  {
+    title: "Akademik",
+    icon: Dashboardicon,
+    type: "sub",
+    children: [
+      // Matches route -> path: /educational-structure
+      {
+        path: "/educational-structure",
+        type: "link",
+        title: "Eğitim Yapısı",
+      },
+    ],
+  },
+  {
+    title: "Sınav Yönetimi",
+    icon: Dashboardicon,
+    type: "sub",
+    children: [
+      // Matches route -> path: /educational-structure
+      {
+        path: "/quiz/scholar/scholarmain",
+        type: "link",
+        title: "Bursluluk Sınavları",
+      },
+    ],
+  },
+
+  // ----- MUHASEBE -----
+  {
+    title: "Muhasebe",
+    icon: Dashboardicon,
+    type: "sub",
+    children: [
+      // Matches route -> path: /incomes
+      {
+        path: "/incomes",
+        type: "link",
+        title: "Gelirler",
+      },
+      {
+        path: "/expenses",
+        type: "link",
+        title: "Giderler",
+      },
+      {
+        path: "/studentpaymentdetails",
+        type: "link",
+        title: "Öğrenci Ödemeleri",
+      },
+
+      {
+        path: "/personel",
+        type: "link",
+        title: "personeller",
+      },
+      {
+        path: "/supplier",
+        type: "link",
+        title: "tedarikçiler",
+      },
+      {
+        path: "/invoice",
+        type: "link",
+        title: "faturalar",
+      },
+
+      // Matches route -> path: /debts
+      {
+        path: "/debts",
+        type: "link",
+        title: "Borçlar",
+      },
+      // Matches route -> path: /discountlist
+      {
+        path: "/discountlist",
+        type: "link",
+        title: "İndirimli Öğrenciler",
+      },
+      // Matches route -> path: /transfer
+      {
+        path: "/transfer",
+        type: "link",
+        title: "Transfer",
+      },
+      // Matches route -> path: /OverduePayments
+      {
+        path: "/OverduePayments",
+        type: "link",
+        title: "Gecikmiş Ödemeler",
+      },
+    ],
+  },
+  {
+    title: "Sınav Takip",
+    icon: Dashboardicon,
+    type: "sub",
+    children: [
+      {
+        path: "/exams/examResult",
+        type: "link",
+        title: "Sınav Sonuç",
+      },
+      {
+        path: "/exams/examAnalysis",
+        type: "link",
+        title: "Analiz Raporları",
+      },
+    ],
+  },
+
+  //  ----- WEB APPS -----
+  {
+    menutitle: "WEB APPS",
+  },
+];
