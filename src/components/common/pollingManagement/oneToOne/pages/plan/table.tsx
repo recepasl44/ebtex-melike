@@ -113,7 +113,7 @@ export default function OneToOnePlanTable() {
 
     /* ----- kolonlar --sds--------------------------------------------------- */
     const columns: ColumnDefinition<Row>[] = useMemo(() => [
-        { key: 'index', label: 'Öğrenci', render: (_r, _o, i) => i! + 1, style: { width: 60, textAlign: 'center' } },
+        { key: 'index', label: 'Öğrenci', render: (_row, _openDeleteModal, index) => (index !== undefined ? index + 1 : ''), style: { width: 60, textAlign: 'center' } },
         { key: 'request_date', label: 'Talep Tarihi', render: r => r.request_date },
         { key: 'lesson_name', label: 'Ders', render: r => r.lesson_name },
         { key: 'status_text', label: 'Durum', render: r => r.status_text },

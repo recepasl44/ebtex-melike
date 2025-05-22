@@ -20,14 +20,17 @@ import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 import SpkFlatpickr from "../../@spk-reusable-components/reusable-plugins/spk-flatpicker";
 import darkcontrol from "../../utils/darkmodecontroller";
-
-// ColumnDefinition artık opsiyonel olarak openDeleteModal fonksiyonunu da alabiliyor.
+// ColumnDefinition.render openDeleteModal fonksiyonunun yanında
+// satır index bilgisini de opsiyonel olarak alabilir.
 export interface ColumnDefinition<T> {
   key: string;
   label: string;
   style?: React.CSSProperties;
-
-  render?: (row: T, openDeleteModal?: (row: T) => void) => React.ReactNode;
+  render?: (
+    row: T,
+    openDeleteModal?: (row: T) => void,
+    rowIndex?: number
+  ) => React.ReactNode;
 }
 
 export interface FilterDefinition {
@@ -35,19 +38,21 @@ export interface FilterDefinition {
   label?: string;
   placeholder?: string;
   type?:
-    | "text"
-    | "number"
-    | "date"
-    | "doubledate"
-    | "checkbox"
-    | "select"
-    | "currency"
-    | "togglebar"
-    | "email"
-    | "phone"
-    | "textarea"
-    | "iban"
-    | "autocomplete"; // Yeni tip eklendi
+  | "text"
+  | "number"
+  | "date"
+  | "doubledate"
+  | "checkbox"
+  | "select"
+  | "currency"
+  | "togglebar"
+  | "email"
+  | "phone"
+  | "textarea"
+  | "iban"
+  | "autocomplete";
+
+  // Yeni tip eklendi
   required?: boolean;
   minLength?: number;
   maxLength?: number;
@@ -188,7 +193,9 @@ function ReusableTable<T extends { [key: string]: any }>({
       <tr key={`row-${rowIndex}`}>
         {columns.map((col) => (
           <td key={col.key}>
-            {col.render ? col.render(row, openDeleteModal) : row[col.key]}
+            {col.render
+              ? col.render(row, openDeleteModal, rowIndex)
+              : row[col.key]}
           </td>
         ))}
       </tr>
@@ -447,8 +454,8 @@ function ReusableTable<T extends { [key: string]: any }>({
                                   disabled={
                                     filter.dependencyKey
                                       ? !filters.find(
-                                          (f) => f.key === filter.dependencyKey
-                                        )?.value
+                                        (f) => f.key === filter.dependencyKey
+                                      )?.value
                                       : false
                                   }
                                 />
@@ -477,8 +484,8 @@ function ReusableTable<T extends { [key: string]: any }>({
                                 disabled={
                                   filter.dependencyKey
                                     ? !filters.find(
-                                        (f) => f.key === filter.dependencyKey
-                                      )?.value
+                                      (f) => f.key === filter.dependencyKey
+                                    )?.value
                                     : false
                                 }
                               />
@@ -505,9 +512,9 @@ function ReusableTable<T extends { [key: string]: any }>({
                                     disabled={
                                       filter.dependencyKey
                                         ? !filters.find(
-                                            (f) =>
-                                              f.key === filter.dependencyKey
-                                          )?.value
+                                          (f) =>
+                                            f.key === filter.dependencyKey
+                                        )?.value
                                         : false
                                     }
                                   >
@@ -545,8 +552,8 @@ function ReusableTable<T extends { [key: string]: any }>({
                                 disabled={
                                   filter.dependencyKey
                                     ? !filters.find(
-                                        (f) => f.key === filter.dependencyKey
-                                      )?.value
+                                      (f) => f.key === filter.dependencyKey
+                                    )?.value
                                     : false
                                 }
                               >
@@ -580,8 +587,8 @@ function ReusableTable<T extends { [key: string]: any }>({
                                 disabled={
                                   filter.dependencyKey
                                     ? !filters.find(
-                                        (f) => f.key === filter.dependencyKey
-                                      )?.value
+                                      (f) => f.key === filter.dependencyKey
+                                    )?.value
                                     : false
                                 }
                               />
@@ -604,8 +611,8 @@ function ReusableTable<T extends { [key: string]: any }>({
                               disabled={
                                 filter.dependencyKey
                                   ? !filters.find(
-                                      (f) => f.key === filter.dependencyKey
-                                    )?.value
+                                    (f) => f.key === filter.dependencyKey
+                                  )?.value
                                   : false
                               }
                             />
@@ -784,8 +791,8 @@ function ReusableTable<T extends { [key: string]: any }>({
                             disabled={
                               filter.dependencyKey
                                 ? !filters.find(
-                                    (f) => f.key === filter.dependencyKey
-                                  )?.value
+                                  (f) => f.key === filter.dependencyKey
+                                )?.value
                                 : false
                             }
                           />
@@ -814,8 +821,8 @@ function ReusableTable<T extends { [key: string]: any }>({
                           disabled={
                             filter.dependencyKey
                               ? !filters.find(
-                                  (f) => f.key === filter.dependencyKey
-                                )?.value
+                                (f) => f.key === filter.dependencyKey
+                              )?.value
                               : false
                           }
                         />
@@ -841,8 +848,8 @@ function ReusableTable<T extends { [key: string]: any }>({
                               disabled={
                                 filter.dependencyKey
                                   ? !filters.find(
-                                      (f) => f.key === filter.dependencyKey
-                                    )?.value
+                                    (f) => f.key === filter.dependencyKey
+                                  )?.value
                                   : false
                               }
                             >
@@ -880,8 +887,8 @@ function ReusableTable<T extends { [key: string]: any }>({
                           disabled={
                             filter.dependencyKey
                               ? !filters.find(
-                                  (f) => f.key === filter.dependencyKey
-                                )?.value
+                                (f) => f.key === filter.dependencyKey
+                              )?.value
                               : false
                           }
                         >
@@ -911,8 +918,8 @@ function ReusableTable<T extends { [key: string]: any }>({
                           disabled={
                             filter.dependencyKey
                               ? !filters.find(
-                                  (f) => f.key === filter.dependencyKey
-                                )?.value
+                                (f) => f.key === filter.dependencyKey
+                              )?.value
                               : false
                           }
                         />
@@ -935,8 +942,8 @@ function ReusableTable<T extends { [key: string]: any }>({
                         disabled={
                           filter.dependencyKey
                             ? !filters.find(
-                                (f) => f.key === filter.dependencyKey
-                              )?.value
+                              (f) => f.key === filter.dependencyKey
+                            )?.value
                             : false
                         }
                       />

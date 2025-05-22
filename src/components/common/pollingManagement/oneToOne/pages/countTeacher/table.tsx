@@ -103,7 +103,7 @@ export default function OneToOneTeacherCountTable() {
             key: 'index',
             label: 'Sıra No',
             style: { width: 70, textAlign: 'center' },
-            render: (_r, _o, idx) => idx! + 1,
+            render: (_r, _o, idx: any) => idx! + 1,
         },
         { key: 'lesson_name', label: 'Dersler', render: r => r.lesson_name },
         { key: 'teacher_name', label: 'Öğretmenler', render: r => r.teacher_name },

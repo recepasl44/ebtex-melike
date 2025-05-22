@@ -25,6 +25,11 @@ export interface UserData {
     confirmed: number
     role: string
     permissions: Permission[]
+    name?: string
+
+    name_surname?: string
+
+    username?: string
     status: number
     directorate_id: number | null
     workshop_id: number | null

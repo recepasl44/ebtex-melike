@@ -1,8 +1,8 @@
-import { data } from './list'
+import { AttendanceData } from './list'
 import AttendanceListStatus from '../../enums/attendance/list'
 
 export interface AttendancesAddPayload {
-    id: number
+    id?: number
     name: string
     group_type_id?: number
     group_id?: number
@@ -17,7 +17,7 @@ export interface AttendancesAddPayload {
 }
 
 export interface AttendancesAddState {
-    data: data | null
+    data: AttendanceData | null
     status: AttendanceListStatus
     error: string | null
 }
