@@ -111,7 +111,7 @@ export default function OneToOnePlanTable() {
         }))
     ), [attendancesData]);
 
-    /* ----- kolonlar ----------------------------------------------------- */
+    /* ----- kolonlar --sds--------------------------------------------------- */
     const columns: ColumnDefinition<Row>[] = useMemo(() => [
         { key: 'index', label: 'Öğrenci', render: (_r, _o, i) => i! + 1, style: { width: 60, textAlign: 'center' } },
         { key: 'request_date', label: 'Talep Tarihi', render: r => r.request_date },
