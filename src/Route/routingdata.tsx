@@ -364,6 +364,20 @@ import FoodAttendanceTable from "../components/common/pollingManagement/foodPoll
 import FoodOfficerListTable from "../components/common/pollingManagement/foodPolling/pages/officerList/table";
 import FoodOfficerModal from "../components/common/pollingManagement/foodPolling/pages/officerList/crud";
 import FoodPollingIndex from "../components/common/pollingManagement/foodPolling/index";
+//etüt
+import StudyPlanTable from "../components/common/pollingManagement/studyPolling/pages/studyPlan/table";
+import StudyPlanModal from "../components/common/pollingManagement/studyPolling/pages/studyPlan/crud";
+import StudyProgramTable from "../components/common/pollingManagement/studyPolling/pages/studyProgram/table";
+import StudyPollingTable from "../components/common/pollingManagement/studyPolling/pages/studyPolling/table";
+import StudyCountTable from "../components/common/pollingManagement/studyPolling/pages/pollingCount/table";
+import StudyPollingPage from "../components/common/pollingManagement/studyPolling/index";
+import StudyProgramCrud from "../components/common/pollingManagement/studyPolling/pages/studyProgram/crud";
+import StudyCountDetailModal from "../components/common/pollingManagement/studyPolling/pages/pollingCount/crud";
+import DemandManagementTable from "../components/common/pollingManagement/personel-teachers/pages/demandManagement/table";
+import DailyPollingTable from "../components/common/pollingManagement/personel-teachers/pages/daily/table";
+import PollingCountTable from "../components/common/pollingManagement/personel-teachers/pages/count/table";
+import StaffPollingManagementPage from "../components/common/pollingManagement/personel-teachers/index";
+
 
 
 
@@ -1367,12 +1381,73 @@ export const Routedata = [
     path: `${import.meta.env.BASE_URL}pollingManagement/foodPollingCount`,
     element: <FoodPollingCountsTable />,
   },
+  //yemek index
   {
     id: 67,
     path: `${import.meta.env.BASE_URL}pollingManagement/foodindex`,
     element: <FoodPollingIndex />,
   },
 
+  //etüt yoklama
+  {
+    id: 6338,
+    path: `${import.meta.env.BASE_URL}pollingManagement/studyPlan`,
+    element: <StudyPlanTable />,
+  },
+
+  {
+    id: 710,
+    path: `${import.meta.env.BASE_URL}pollingManagement/studyPlan/crud/:id?`,
+    element: (
+      <StudyPlanModal
+        show={true}
+        onClose={() => window.history.back()}
+        onRefresh={() => { }}
+      />
+    ),
+  },
+  {
+    id: 6338,
+    path: `${import.meta.env.BASE_URL}pollingManagement/studyProgram`,
+    element: <StudyProgramTable />,
+  },
+  //ekle ve crudunu unutma
+  {
+    id: 601,                       // benzersiz id
+    path: `${import.meta.env.BASE_URL}pollingManagement/studyProgram/:id?`,
+    element: (
+      <StudyProgramCrud
+        show={true}
+        onClose={() => window.history.back()}
+        onRefresh={() => { /* tablo refresh’ini üst bileşende tetikleyin */ }}
+      />
+    ),
+  },
+  {
+    id: 6366,
+    path: `${import.meta.env.BASE_URL}pollingManagement/studyPolling`,
+    element: <StudyPollingTable />,
+  },
+  {
+    id: 6366,
+    path: `${import.meta.env.BASE_URL}pollingManagement/studyCounts`,
+    element: <StudyCountTable />,
+  },
+  {
+    id: 601,
+    path: `${import.meta.env.BASE_URL}pollingManagement/studyCounts/:id`,
+    element: (
+      <StudyCountDetailModal
+        show={true}
+        onClose={() => window.history.back()}
+      />
+    ),
+  },
+  {
+    id: 67,
+    path: `${import.meta.env.BASE_URL}pollingManagement/studyindex`,
+    element: <StudyPollingPage />,
+  },
 
 
 
@@ -1444,24 +1519,21 @@ export const Routedata = [
     path: `${import.meta.env.BASE_URL}pollingManagement/oneToOneTeachers`,
     element: <TeacherOneByOnePlanTable />,
   },
-  // {
 
-  //   id: 120,
-  //   path: `${import.meta.env.BASE_URL}onebyonePolling/teacherPlan/crud/:id?`,
-  //   element: (
-  //     <TeacherPlanModal
-  //       show
-  //       onClose={() => { }}
-  //       onRefresh={() => { }}
-  //     />
-  //   ),
-  // },
+
+
+
 
   {
     id: 74,
     path: `${import.meta.env.BASE_URL}pollingManagement/oneToOnePlan`,
     element: <OneToOnePlanTable />,
   },
+
+  //EŞLEŞTİR
+
+
+
   {
     id: 75,
     path: `${import.meta.env.BASE_URL}pollingManagement/oneToOnePolling`,
@@ -1482,6 +1554,31 @@ export const Routedata = [
     path: `${import.meta.env.BASE_URL}pollingManagement/OneToOneManagementPageİndex`,
     element: <OneToOneManagementPage />,
   },
+
+
+  //personel-ögretmen yoklama
+  {
+    id: 2277,
+    path: `${import.meta.env.BASE_URL}pollingManagement/DemandManagement`,
+    element: <DemandManagementTable />,
+  },
+  {
+    id: 2707,
+    path: `${import.meta.env.BASE_URL}pollingManagement/daily`,
+    element: <DailyPollingTable />,
+  },
+  {
+    id: 2710,
+    path: `${import.meta.env.BASE_URL}pollingManagement/dailyCounts`,
+    element: <PollingCountsTable />,
+  },
+  {
+    id: 2750,
+    path: `${import.meta.env.BASE_URL}pollingManagement/staffindex`,
+    element: <StaffPollingManagementPage />,
+  }
+
+
 
 
 ];
