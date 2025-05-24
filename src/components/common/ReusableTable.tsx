@@ -20,6 +20,7 @@ import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 import SpkFlatpickr from "../../@spk-reusable-components/reusable-plugins/spk-flatpicker";
 import darkcontrol from "../../utils/darkmodecontroller";
+
 // ColumnDefinition.render openDeleteModal fonksiyonunun yanında
 // satır index bilgisini de opsiyonel olarak alabilir.
 export interface ColumnDefinition<T> {
@@ -50,7 +51,8 @@ export interface FilterDefinition {
   | "phone"
   | "textarea"
   | "iban"
-  | "autocomplete";
+  | "autocomplete"
+  | "multiselect";
 
   // Yeni tip eklendi
   required?: boolean;

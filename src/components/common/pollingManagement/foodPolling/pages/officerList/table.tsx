@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
-/* table.tsx – Yemek Yoklama › Görevli Listesi */
+
 
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -10,14 +9,16 @@ import ReusableTable, {
     FilterDefinition,
 } from '../../../../ReusableTable';
 
-/* ───────── API hook’ları ───────── */
-import { useAttendancesTable } from '../../../../../hooks/attendance/useList';
 
+import { useAttendancesTable } from '../../../../../hooks/attendance/useList';
 import { useAttendanceTeachersTable } from '../../../../../hooks/attendanceTeacher/useList';
+
 import { useGroupsTable } from '../../../../../hooks/group/useList';
 import { useUsedAreasList } from '../../../../../hooks/usedareas/useList';
 
-/* ───── satır tipi ───── */
+import { useUsersTable } from '../../../../../hooks/user/useList';
+
+
 interface Row {
     id: number;
     date: string;
@@ -29,13 +30,13 @@ interface Row {
     area_name: string;
 }
 
-/* router kökü */
+
 const ROOT = `${import.meta.env.BASE_URL}pollingManagement/foodOfficerList`;
 
 export default function FoodOfficerListTable() {
     const navigate = useNavigate();
 
-    /* —— filtre state’leri —— */
+
     const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' });
     const [timeRange, setTimeRange] = useState('');
     const [mealName, setMealName] = useState('');
@@ -47,28 +48,33 @@ export default function FoodOfficerListTable() {
     const [pageSize, setPageSize] = useState(10);
     const [page, setPage] = useState(1);
 
-    /* lazy-load bayrakları */
     const [enabled, setEnabled] = useState({
         groups: false,
         areas: false,
-        levels: false,
-        classes: false,
-        students: false,
         teachers: false,
+        users: false,
     });
 
-    /* —— yardımcı listeler —— */
-    const { groupsData } = useGroupsTable({ enabled: enabled.groups });
-    const { usedAreasData } = useUsedAreasList({ enabled: enabled.areas });
 
-    const { attendanceTeachersData: teachersData } =
+    const { groupsData = [] } = useGroupsTable({ enabled: enabled.groups });
+    const { usedAreasData = [] } = useUsedAreasList({ enabled: enabled.areas });
+
+    const { attendanceTeachersData: teachersData = [] } =
         useAttendanceTeachersTable({ enabled: enabled.teachers });
 
-    /* —— ana liste —— */
+
+    const { usersData: dutyUsers = [] } = useUsersTable({
+        enabled: enabled.users,
+        role_id: 2,
+        pageSize: 999,
+    });
+
     const {
-        attendancesData, loading, error,
+        attendancesData = [],
+        loading, error,
         totalPages, totalItems,
     } = useAttendancesTable({
+        enabled: true,
         page, pageSize,
         start_date: dateRange.startDate || undefined,
         end_date: dateRange.endDate || undefined,
@@ -79,12 +85,10 @@ export default function FoodOfficerListTable() {
         responsible_id: +responsible || undefined,
         duty_user_id: +manager || undefined,
         duty_teacher_id: +teacher || undefined,
-        enabled: true,
     });
 
-    /* —— attendances → rows —— */
     const rows: Row[] = useMemo(() => (
-        (attendancesData ?? []).map((a: any) => ({
+        attendancesData.map((a: any) => ({
             id: a.id,
             date: dayjs(a.start_date).format('DD.MM.YYYY'),
             time_range: a.time_range || '-',
@@ -96,83 +100,70 @@ export default function FoodOfficerListTable() {
         }))
     ), [attendancesData]);
 
-    /* —— kolonlar —— */
+
     const columns: ColumnDefinition<Row>[] = useMemo(() => [
         { key: 'date', label: 'Tarih', render: r => r.date },
         { key: 'time_range', label: 'Saat Aralığı', render: r => r.time_range },
         { key: 'meal_name', label: 'Öğün / Grup', render: r => r.meal_name },
-        {
-            key: 'cafeteria_responsible', label: 'Yemekhane Sorumlusu',
-            render: r => r.cafeteria_responsible
-        },
+        { key: 'cafeteria_resp', label: 'Yemekhane Sorumlusu', render: r => r.cafeteria_responsible },
         { key: 'duty_manager', label: 'Görevli Yönetici', render: r => r.duty_manager },
         { key: 'duty_teachers', label: 'Görevli Öğretmenler', render: r => r.duty_teachers },
         { key: 'area_name', label: 'Yemek Alanı', render: r => r.area_name },
-        /* işlemler */
+    ], []);
 
-    ], [navigate]);
 
-    /* —— filtreler —— */
     const filters: FilterDefinition[] = useMemo(() => [
         {
             key: 'dateRange', label: 'Tarih Aralığı', type: 'doubledate',
             value: dateRange,
             onChange: v => setDateRange(v ?? { startDate: '', endDate: '' }),
         },
-        {
-            key: 'time_range', label: 'Saat Aralığı', type: 'text',
-            value: timeRange, onChange: setTimeRange,
-        },
-        {
-            key: 'meal_name', label: 'Öğün Adı', type: 'text',
-            value: mealName, onChange: setMealName,
-        },
+        { key: 'time_range', label: 'Saat Aralığı', type: 'text', value: timeRange, onChange: setTimeRange },
+        { key: 'meal_name', label: 'Öğün Adı', type: 'text', value: mealName, onChange: setMealName },
+
         {
             key: 'group_id', label: 'Grup Adı', type: 'select',
             value: groupId, onChange: setGroupId,
             onClick: () => setEnabled(e => ({ ...e, groups: true })),
-            options: (groupsData ?? []).map(g => ({ value: String(g.id), label: g.name })),
+            options: groupsData.map(g => ({ value: String(g.id), label: g.name })),
         },
         {
             key: 'area_id', label: 'Yemek Alanı', type: 'select',
             value: areaId, onChange: setAreaId,
             onClick: () => setEnabled(e => ({ ...e, areas: true })),
-            options: (usedAreasData ?? []).map(a => ({ value: String(a.id), label: a.name })),
+            options: usedAreasData.map(a => ({ value: String(a.id), label: a.name })),
         },
+
+
         {
             key: 'responsible', label: 'Yemekhane Sorumlusu', type: 'select',
             value: responsible, onChange: setResponsible,
-            onClick: () => setEnabled(e => ({ ...e, teachers: true })),
-            options: (teachersData ?? []).map(t => ({
-                value: String(t.teacher_id),
-                label: t.teacher?.name_surname || '-',
-            })),
+            onClick: () => setEnabled(e => ({ ...e, users: true })),
+            options: dutyUsers.map(u => ({ value: String(u.id), label: u.name_surname || u.name || '-' })),
         },
         {
             key: 'manager', label: 'Görevli Yöneticiler', type: 'select',
             value: manager, onChange: setManager,
-            onClick: () => setEnabled(e => ({ ...e, teachers: true })),
-            options: (teachersData ?? []).map(t => ({
-                value: String(t.teacher_id),
-                label: t.teacher?.name_surname || '-',
-            })),
+            onClick: () => setEnabled(e => ({ ...e, users: true })),
+            options: dutyUsers.map(u => ({ value: String(u.id), label: u.name_surname || u.name || '-' })),
         },
+
+
         {
             key: 'teacher', label: 'Görevli Öğretmenler', type: 'select',
             value: teacher, onChange: setTeacher,
             onClick: () => setEnabled(e => ({ ...e, teachers: true })),
-            options: (teachersData ?? []).map(t => ({
+            options: teachersData.map(t => ({
                 value: String(t.teacher_id),
                 label: t.teacher?.name_surname || '-',
             })),
         },
     ], [
-        dateRange, timeRange, mealName, groupId, areaId,
-        responsible, manager, teacher,
-        groupsData, usedAreasData, teachersData,
+        dateRange, timeRange, mealName,
+        groupId, areaId, responsible, manager, teacher,
+        groupsData, usedAreasData, dutyUsers, teachersData,
     ]);
 
-    /* —— render —— */
     return (
         <ReusableTable<Row>
             tableMode="single"

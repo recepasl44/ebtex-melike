@@ -1,26 +1,23 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
+
+
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormikHelpers, FormikValues } from 'formik';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import ReusableModalForm, {
-    FieldDefinition,
-} from '../../../../ReusableModalForm';
+import ReusableModalForm, { FieldDefinition } from '../../../../ReusableModalForm';
 
-/* ────── CRUD hook’ları ─────────────────────────────────────────────────── */
+
 import { useAttendanceAdd } from '../../../../../hooks/attendance/useAdd';
 import { useAttendanceUpdate } from '../../../../../hooks/attendance/useUpdate';
 import { useAttendanceDetail } from '../../../../../hooks/attendance/useDetail';
 
-/* ────── Yardımcı listeler ─────────────────────────────────────────────── */
 import { useGroupsTable } from '../../../../../hooks/group/useList';
 import { useUsedAreasList } from '../../../../../hooks/usedareas/useList';
 import { useLevelsTable } from '../../../../../hooks/levels/useList';
 import { useClassroomList } from '../../../../../hooks/classrooms/useList';
-import { useUsersTable } from '../../../../../hooks/user/useList';          // role_id = 2
+import { useUsersTable } from '../../../../../hooks/user/useList';
 import { useAttendanceTeachersTable } from '../../../../../hooks/attendanceTeacher/useList';
 
-/* ────── Form tipi ─────────────────────────────────────────────────────── */
 interface IForm extends FormikValues {
     name: string;
     group_id: number;
@@ -29,9 +26,9 @@ interface IForm extends FormikValues {
     classroom_id: number;
     week_days: number[];
     time_range: string;
-    responsible_id: number;
-    manager_ids: number[];
-    teacher_ids: number[];
+    responsible_id: string;
+    manager_ids: string[];
+    teacher_ids: string[];
 }
 
 interface ModalProps {
@@ -40,14 +37,14 @@ interface ModalProps {
     onRefresh: () => void;
 }
 
-/* ======================================================================= */
+
 const FoodOfficerModal: React.FC<ModalProps> = ({ show, onClose, onRefresh }) => {
-    /* ────── mod & id ─────────────────────────────────────────────────────── */
+
     const { id } = useParams<{ id?: string }>();
     const mode: 'add' | 'update' = id ? 'update' : 'add';
-    const navigate = useNavigate();
+    const nav = useNavigate();
 
-    /* ────── lazy-load bayrakları ─────────────────────────────────────────── */
+
     const [levelId, setLevelId] = useState<number | null>(null);
     const [enabled, setEnabled] = useState({
         groups: true,
@@ -58,7 +55,7 @@ const FoodOfficerModal: React.FC<ModalProps> = ({ show, onClose, onRefresh }) =>
         users: false,
     });
 
-    /* ────── liste sorguları ─────────────────────────────────────────────── */
+
     const { groupsData = [] } = useGroupsTable({ enabled: enabled.groups, pageSize: 999 });
     const { usedAreasData = [] } = useUsedAreasList({ enabled: enabled.areas });
     const { levelsData = [] } = useLevelsTable({ enabled: enabled.levels });
@@ -69,7 +66,8 @@ const FoodOfficerModal: React.FC<ModalProps> = ({ show, onClose, onRefresh }) =>
         branchId: 0,
     });
 
-    const { usersData: managerList = [] } = useUsersTable({
+
+    const { usersData: dutyUsers = [] } = useUsersTable({
         enabled: enabled.users,
         role_id: 2,
         pageSize: 999,
@@ -78,14 +76,13 @@ const FoodOfficerModal: React.FC<ModalProps> = ({ show, onClose, onRefresh }) =>
     const { attendanceTeachersData: teachersData = [] } =
         useAttendanceTeachersTable({ enabled: enabled.teachers });
 
-    /* ────── CRUD hook’ları ──────────────────────────────────────────────── */
     const { addNewAttendance, status: addSt, error: addErr } = useAttendanceAdd();
     const { updateExistingAttendance, status: updSt, error: updErr } = useAttendanceUpdate();
     const { attendance: fetched, status: detSt, error: detErr,
         getAttendance } =
         useAttendanceDetail({ attendanceId: Number(id ?? 0), enabled: !!id });
 
-    /* ────── initial values ──────────────────────────────────────────────── */
+
     const [initial, setInitial] = useState<IForm>({
         name: '',
         group_id: 0,
@@ -94,18 +91,14 @@ const FoodOfficerModal: React.FC<ModalProps> = ({ show, onClose, onRefresh }) =>
         classroom_id: 0,
         week_days: [],
         time_range: '',
-        responsible_id: 0,
+        responsible_id: '',
         manager_ids: [],
         teacher_ids: [],
     });
 
-    /* update modunda veriyi çek */
-    useEffect(() => {
-        if (mode === 'update' && id) getAttendance(+id);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [id]);
 
-    /* gelen veriye göre form & bayraklar */
+    useEffect(() => { if (mode === 'update' && id) getAttendance(+id); }, [id]);
+
     useEffect(() => {
         if (mode === 'update' && fetched) {
             setInitial({
@@ -118,115 +111,104 @@ const FoodOfficerModal: React.FC<ModalProps> = ({ show, onClose, onRefresh }) =>
                     ? fetched.week_days
                     : fetched.days?.map((d: any) => d.day_id) ?? [],
                 time_range: fetched.time_range ?? '',
-                responsible_id: fetched.responsible_id ?? 0,
-                manager_ids: Array.isArray(fetched.manager_ids) ? fetched.manager_ids : [],
-                teacher_ids: fetched.teachers?.map((t: any) => t.id) ?? [],
+                responsible_id: fetched.responsible_id ? String(fetched.responsible_id) : '',
+                manager_ids: Array.isArray(fetched.manager_ids)
+                    ? fetched.manager_ids.map(String) : [],
+                teacher_ids: fetched.teachers?.map((t: any) => String(t.id)) ?? [],
             });
 
             setLevelId(fetched.level_id ?? null);
             setEnabled({
                 groups: true, areas: true, levels: true,
-                classes: true, teachers: true, users: true,
+                classes: true, teachers: true, users: true
             });
         }
     }, [fetched, mode]);
 
-    /* ────── option helper’ları ──────────────────────────────────────────── */
+
     const groupOpts = useMemo(() => groupsData.map(g => ({ value: g.id, label: g.name })), [groupsData]);
     const areaOpts = useMemo(() => usedAreasData.map(a => ({ value: a.id, label: a.name })), [usedAreasData]);
     const levelOpts = useMemo(() => levelsData.map(l => ({ value: l.id, label: l.name })), [levelsData]);
     const classOpts = useMemo(() => classroomData.map(c => ({ value: c.id, label: c.name })), [classroomData]);
-    const userOpts = useMemo(() => managerList.map(u => ({ value: u.id, label: u.name_surname || u.name || '-' })), [managerList]);
-    const teacherOpts = useMemo(() => teachersData.map(t => ({ value: t.teacher_id, label: t.teacher?.name_surname || '-' })), [teachersData]);
+    const userOpts = useMemo(() => dutyUsers.map(u => ({ value: String(u.id), label: u.name_surname || u.name || '-' })), [dutyUsers]);
+    const teacherOpts = useMemo(() => teachersData.map(t => ({ value: String(t.teacher_id), label: t.teacher?.name_surname || '-' })), [teachersData]);
 
-    /* ────── alan tanımları (dinamik) ─────────────────────────────────────── */
     const getFields = useCallback(
         (_: IForm): FieldDefinition[] => [
             { name: 'name', label: 'Öğün Adı', type: 'text', required: true },
 
-            {
-                name: 'group_id', label: 'Grup Adı', type: 'select',
-                required: true, options: groupOpts
-            },
+            { name: 'group_id', label: 'Grup Adı', type: 'select', options: groupOpts, required: true },
+            { name: 'used_area_id', label: 'Yemek Alanı', type: 'select', options: areaOpts },
 
             {
-                name: 'used_area_id', label: 'Yemek Alanı', type: 'select',
-                options: areaOpts
-            },
-
-            {
-                name: 'level_id', label: 'Sınıf Seviyesi', type: 'select',
-                required: true, options: levelOpts,
+                name: 'level_id', label: 'Sınıf Seviyesi', type: 'select', options: levelOpts, required: true,
                 onChange: (val, formik) => {
-                    const idNum = Number(val) || 0;
-                    setLevelId(idNum || null);
+                    const n = Number(val) || 0;
+                    setLevelId(n || null);
                     setEnabled(e => ({ ...e, classes: true }));
                     formik.setFieldValue('classroom_id', 0);
                 }
             },
-
             {
                 name: 'classroom_id', label: 'Sınıf / Şube', type: 'select',
-                dependencyKey: 'level_id',
-                options: classOpts,
+                dependencyKey: 'level_id', options: classOpts,
                 onClick: () => setEnabled(e => ({ ...e, classes: true }))
             },
 
             {
                 name: 'week_days', label: 'Haftanın Günleri', type: 'multiselect',
                 options: [
-                    { value: 1, label: 'Pazartesi' }, { value: 2, label: 'Salı' },
-                    { value: 3, label: 'Çarşamba' }, { value: 4, label: 'Perşembe' },
-                    { value: 5, label: 'Cuma' }, { value: 6, label: 'Cumartesi' },
+                    { value: 1, label: 'Pazartesi' }, { value: 2, label: 'Salı' }, { value: 3, label: 'Çarşamba' },
+                    { value: 4, label: 'Perşembe' }, { value: 5, label: 'Cuma' }, { value: 6, label: 'Cumartesi' },
                     { value: 7, label: 'Pazar' },
                 ]
             },
 
-            {
-                name: 'time_range', label: 'Saat Aralığı', type: 'text',
-                placeholder: '07:00 - 09:00', required: true
-            },
+            { name: 'time_range', label: 'Saat Aralığı', type: 'text', placeholder: '07:00 - 09:00', required: true },
+
 
             {
-                name: 'responsible_id', label: 'Yemekhane Sorumlusu', type: 'select',
-                options: userOpts,
+                name: 'responsible_id', label: 'Yemekhane Sorumlusu',
+                type: 'select', options: userOpts,
                 onClick: () => setEnabled(e => ({ ...e, users: true }))
             },
-
             {
-                name: 'manager_ids', label: 'Görevli Yöneticiler', type: 'multiselect',
-                options: userOpts,
+                name: 'manager_ids', label: 'Görevli Yöneticiler',
+                type: 'multiselect', options: userOpts,
                 onClick: () => setEnabled(e => ({ ...e, users: true }))
             },
-
             {
-                name: 'teacher_ids', label: 'Görevli Öğretmenler', type: 'multiselect',
-                options: teacherOpts,
+                name: 'teacher_ids', label: 'Görevli Öğretmenler',
+                type: 'multiselect', options: teacherOpts,
                 onClick: () => setEnabled(e => ({ ...e, teachers: true }))
             },
         ],
-        [groupOpts, areaOpts, levelOpts, classOpts, userOpts, teacherOpts],
+        [groupOpts, areaOpts, levelOpts, classOpts, userOpts, teacherOpts]
     );
 
-    /* ────── submit ──────────────────────────────────────────────────────── */
-    const handleSubmit = async (vals: IForm, _h: FormikHelpers<IForm>) => {
-        if (mode === 'add')
-            await addNewAttendance(vals);
-        else if (id)
-            await updateExistingAttendance({ attendanceId: +id, payload: vals });
 
-        onRefresh();
-        onClose();
+    const handleSubmit = async (vals: IForm, _h: FormikHelpers<IForm>) => {
+
+        const payload = {
+            ...vals,
+            responsible_id: vals.responsible_id ? Number(vals.responsible_id) : 0,
+            manager_ids: vals.manager_ids.map(Number),
+            teacher_ids: vals.teacher_ids.map(Number),
+        };
+
+        if (mode === 'add') await addNewAttendance(payload as any);
+        else if (id) await updateExistingAttendance({ attendanceId: +id, payload });
+
+        onRefresh(); onClose();
     };
 
-    /* ────── UI durumları ────────────────────────────────────────────────── */
+
     const isLoading = mode === 'add'
         ? addSt === 'LOADING'
         : updSt === 'LOADING' || detSt === 'LOADING';
+    const combinedErr = mode === 'add' ? addErr : (updErr || detErr);
 
-    const combinedError = mode === 'add' ? addErr : (updErr || detErr);
 
-    /* ────── render ──────────────────────────────────────────────────────── */
     return (
         <ReusableModalForm<IForm>
             show={show}
@@ -234,14 +216,13 @@ const FoodOfficerModal: React.FC<ModalProps> = ({ show, onClose, onRefresh }) =>
             title={mode === 'add' ? 'Kişi Ekle' : 'Kişi Düzenle'}
             fields={getFields}
             initialValues={initial}
-
             onSubmit={handleSubmit}
             confirmButtonLabel={mode === 'add' ? 'Kaydet' : 'Güncelle'}
             cancelButtonLabel="İptal"
             isLoading={isLoading}
-            error={combinedError || null}
+            error={combinedErr || null}
             autoGoBackOnModalClose
-            onClose={() => { onClose(); navigate(-1); }}
+            onClose={() => { onClose(); nav(-1); }}
         />
     );
 };

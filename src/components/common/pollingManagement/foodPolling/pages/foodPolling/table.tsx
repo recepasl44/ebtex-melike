@@ -1,16 +1,14 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
-/* table.tsx – Yemek Yoklama › Yemek Yoklama sekmesi */
+
 
 import { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import dayjs from 'dayjs';
+
+
 
 import ReusableTable, {
     ColumnDefinition,
     FilterDefinition,
 } from '../../../../ReusableTable';
 
-/* ───────── API hook’ları ─────────── */
 import { useAttendancesTable } from '../../../../../hooks/attendance/useList';
 import { useGroupsTable } from '../../../../../hooks/group/useList';
 import { useUsedAreasList } from '../../../../../hooks/usedareas/useList';
@@ -20,7 +18,6 @@ import { useClassroomList } from '../../../../../hooks/classrooms/useList';
 import { useAttendanceTeachersTable } from '../../../../../hooks/attendanceTeacher/useList';
 import { useUsersTable } from '../../../../../hooks/user/useList';
 
-/* ───────── tablo satır tipi ───────── */
 interface Row {
     id: number;
     meal_name: string;
@@ -30,13 +27,11 @@ interface Row {
     status: number;   // 0=Geldi • 1=Geç • 2=Gelmedi
 }
 
-/* router kökü (ekle/detay yok) */
-const ROOT = '/pollingManagement/foodAttendance';
+
 
 export default function FoodAttendanceTable() {
-    const nav = useNavigate();
 
-    /* ------------ filtre state’leri ------------- */
+
     const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' });
     const [mealName, setMealName] = useState('');
     const [groupId, setGroupId] = useState('');
@@ -50,13 +45,13 @@ export default function FoodAttendanceTable() {
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
 
-    /* lazy-load bayrakları */
+
     const [enabled, setEnabled] = useState({
         groups: false, areas: false, levels: false, classes: false,
         students: false, teachers: false, managers: false,
     });
 
-    /* ------------ yardımcı listeler ------------- */
+
     const { groupsData = [] } = useGroupsTable({ enabled: enabled.groups, pageSize: 999 });
     const { usedAreasData = [] } = useUsedAreasList({ enabled: enabled.areas });
     const { levelsData = [] } = useLevelsTable({ enabled: enabled.levels });
@@ -67,15 +62,13 @@ export default function FoodAttendanceTable() {
     });
     const { usersData: managersData = [] } = useUsersTable({
         enabled: enabled.managers,
-        role_id: 2,               // şimdilik sadece role_id 2
+        role_id: 2,
         pageSize: 999,
     });
     const { attendanceTeachersData: teachersData = [] }
         = useAttendanceTeachersTable({ enabled: enabled.teachers });
 
-    /* öğrenciler “tablo satırına” zaten API dönüyor; ayrıca çekmeye gerek yok */
 
-    /* ---------------- ana sorgu ----------------- */
     const {
         attendancesData,
         loading, error,
@@ -95,13 +88,12 @@ export default function FoodAttendanceTable() {
         enabled: true,
     });
 
-    /* ------------- attendances → rows ----------- */
+
     const rows: Row[] = useMemo(() => (
         (attendancesData ?? []).flatMap((a: any) => {
             const meal = a.name || '-';
             const cls = a.classroom?.name || a.level?.name || '-';
 
-            /* hiç öğrenci yoksa satır yine de gösterilsin */
             if (!a.students?.length) {
                 return [{
                     id: a.id, meal_name: meal, class_name: cls,
@@ -121,7 +113,7 @@ export default function FoodAttendanceTable() {
         })
     ), [attendancesData]);
 
-    /* ---------------- kolonlar ----------------- */
+
     const columns: ColumnDefinition<Row>[] = useMemo(() => [
         {
             key: 'index',
@@ -143,7 +135,7 @@ export default function FoodAttendanceTable() {
         },
     ], []);
 
-    /* ---------------- filtreler ---------------- */
+
     const filters: FilterDefinition[] = useMemo(() => [
         {
             key: 'dateRange', label: 'Tarih Aralığı', type: 'doubledate',
@@ -163,7 +155,7 @@ export default function FoodAttendanceTable() {
         {
             key: 'program_id', label: 'Okul Seviyesi', type: 'select',
             value: programId, onChange: setProgramId,
-            /* program listesi varsa ekleyin; şimdilik boş bırakıyoruz */
+
         },
         {
             key: 'level_id', label: 'Sınıf Seviyesi', type: 'select',
@@ -208,7 +200,7 @@ export default function FoodAttendanceTable() {
         teachersData, managersData,
     ]);
 
-    /* ---------------- render ------------------- */
+
     return (
         <ReusableTable<Row>
             pageTitle="Yemek Yoklama"

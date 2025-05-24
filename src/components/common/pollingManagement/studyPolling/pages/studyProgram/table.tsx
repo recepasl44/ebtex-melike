@@ -15,6 +15,9 @@ import { useAttendancesTable } from '../../../../../hooks/attendance/useList';
 import { useGroupsTable } from '../../../../../hooks/group/useList';
 import { useUsedAreasList } from '../../../../../hooks/usedareas/useList';
 import { useAttendanceTeachersTable } from '../../../../../hooks/attendanceTeacher/useList';
+import list_button from "../../../../../../assets/images/media/list-button.svg";
+import list_hover from "../../../../../../assets/images/media/list-hover.svg";
+import { Button } from 'react-bootstrap';
 
 /* ───── satır tipi ───── */
 interface Row {
@@ -107,21 +110,37 @@ export default function StudyProgramTable() {
             key: 'actions', label: 'İşlemler',
             style: { width: 110, textAlign: 'center' },
             render: row => (
-                <div className="d-flex justify-content-center gap-2">
+                <div>
                     {/* Düzenle */}
-                    <button
+                    <Button
+                        variant=""
                         className="btn btn-icon btn-sm btn-info-light rounded-pill"
                         onClick={() => navigate(`${ROOT}/crud/${row.id}`)}
                     >
                         <i className="ti ti-pencil" />
-                    </button>
+                    </Button>
+                    {/* Detay */}
+                    <Button
+                        variant="">
+                        <img
+                            src={list_button}
+                            alt="Seç"
+                            style={{
+                                width: "28px",
+                                height: "28px",
+                            }}
+                            onMouseEnter={(e) => (e.currentTarget.src = list_hover)}
+                            onMouseLeave={(e) => (e.currentTarget.src = list_button)}
+                        />
+                    </Button>
                     {/* Sil – isteğe bağlı */}
-                    <button
+                    <Button
+                        variant=""
                         className="btn btn-icon btn-sm btn-danger-light rounded-pill"
                         onClick={() => { /* openDeleteModal(row) */ }}
                     >
                         <i className="ti ti-trash" />
-                    </button>
+                    </Button>
                 </div>
             ),
         },

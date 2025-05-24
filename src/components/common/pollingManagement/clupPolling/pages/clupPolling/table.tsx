@@ -1,21 +1,19 @@
-/* table.tsx – Kulüp Yoklama listesi
-   konum: src/components/common/pollingManagement/clupPolling/pages/clupPolling/table.tsx */
+
 
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import dayjs from 'dayjs';
+
 
 import ReusableTable, {
     ColumnDefinition,
     FilterDefinition,
 } from '../../../../ReusableTable';
 
-/* ---------------------- API hook’ları ---------------------- */
 import { useAttendancesTable } from '../../../../../hooks/attendance/useList';
 import { useGroupsTable } from '../../../../../hooks/group/useList';
 import { useUsedAreasList } from '../../../../../hooks/usedareas/useList';
 
-/* ---------------------- Satır tipi ------------------------- */
+
 interface Row {
     id: number;
     club_name: string;    // Kulüp / Grup
@@ -24,11 +22,10 @@ interface Row {
     status: number;    // 0 Geldi – 1 Geç Geldi – 2 Gelmedi
 }
 
-/* =========================================================== */
+
 export default function ClubPollingTable() {
     const navigate = useNavigate();
 
-    /* ---------------- filtre state’leri ---------------- */
     const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' });
     const [clubName, setClubName] = useState('');
     const [groupId, setGroupId] = useState('');
@@ -37,17 +34,17 @@ export default function ClubPollingTable() {
     const [pageSize, setPageSize] = useState(10);
     const [page, setPage] = useState(1);
 
-    /* ---------------- lazy-load bayrakları -------------- */
+
     const [enabled, setEnabled] = useState({
         groups: false,
         areas: false,
     });
 
-    /* ---------------- yardımcı listeler ---------------- */
+
     const { groupsData } = useGroupsTable({ enabled: enabled.groups });
     const { usedAreasData } = useUsedAreasList({ enabled: enabled.areas });
 
-    /* ---------------- ana liste (Attendances) ----------- */
+
     const {
         attendancesData,
         loading, error,
@@ -62,14 +59,14 @@ export default function ClubPollingTable() {
         enabled: true,
     });
 
-    /* ---------------- attendances → Row[] --------------- */
+
     const rows: Row[] = useMemo(() => (
         (attendancesData ?? []).flatMap((a: any) => {
             const cls = a.classroom?.name || a.level?.name || '-';
             const club = a.name || '-';
 
             if (!a.students?.length) {
-                /* öğrenci yoksa boş satır göster */
+
                 return [{
                     id: a.id, club_name: club, class_name: cls,
                     student_name: '-', status: a.status ?? 0,
@@ -82,12 +79,12 @@ export default function ClubPollingTable() {
                 class_name: cls,
                 student_name: `${s.first_name ?? ''} ${s.last_name ?? ''}`.trim() ||
                     s.name_surname || s.name || '-',
-                status: s.pivot?.status ?? 0,      // pivot.status varsa kullan
+                status: s.pivot?.status ?? 0,
             }));
         })
     ), [attendancesData]);
 
-    /* ---------------- kolonlar -------------------------- */
+
     const columns: ColumnDefinition<Row>[] = useMemo(() => [
         {
             key: 'index',
@@ -110,7 +107,7 @@ export default function ClubPollingTable() {
         },
     ], []);
 
-    /* ---------------- filtreler ------------------------- */
+
     const filters: FilterDefinition[] = useMemo(() => [
         {
             key: 'dateRange', label: 'Tarih Aralığı', type: 'doubledate',
@@ -138,7 +135,7 @@ export default function ClubPollingTable() {
         },
     ], [dateRange, clubName, groupId, areaId, groupsData, usedAreasData]);
 
-    /* ---------------- render ---------------------------- */
+
     return (
         <ReusableTable<Row>
 

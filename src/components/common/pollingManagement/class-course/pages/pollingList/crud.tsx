@@ -1,4 +1,4 @@
-/* src/components/common/pollingManagement/class-course/pages/pollingList/crud.tsx */
+
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -7,11 +7,11 @@ import ReusableTable, { ColumnDefinition } from '../../../../ReusableTable';
 import { useAttendanceDetail } from '../../../../../hooks/attendance/useDetail';
 import { useAttendancesTable } from '../../../../../hooks/attendance/useList';
 
-/* ----- satır tipi ---------------------------------------------------- */
+
 interface Row {
     id: number;
     hour_range: string;
-    program_name: string;     // attendances->name
+    program_name: string;
     status: 0 | 1 | 2;        // 0 = Geldi • 1 = Geç Geldi • 2 = Gelmedi
     executive_status: string; // raporlu | görevli | izinli | …
 }
@@ -19,36 +19,48 @@ interface Row {
 export default function PollingListDetailTable() {
     const { id } = useParams<{ id?: string }>();
 
-    /* tekil yoklama detayı */
-    const { attendance, status, error } = useAttendanceDetail({
+
+    const {
+        attendance,
+        status: detailStatus,
+        error,
+    } = useAttendanceDetail({
         attendanceId: Number(id),
         enabled: !!id,
     });
 
-    /* program listesi (attendance.name alanını içerir) */
-    const { attendancesData: programsData } = useAttendancesTable({
-        enabled: !!attendance,      // yalnızca detail geldiyse çek
+
+    const {
+        attendancesData: programsData,
+        loading: programsLoading,
+    } = useAttendancesTable({
+        enabled: !!attendance,
         page: 1,
-        pageSize: 999,               // hepsini getir – filtreleme backend’de yoksa
+        pageSize: 999,
     });
 
-    /* detail → Row[] ----------------------------------------------------- */
+
+    const loading = detailStatus === 'LOADING' || programsLoading;
+
+
     const rows: Row[] = useMemo(() => {
         if (!attendance?.lessons?.length) return [];
 
         return attendance.lessons.map((l: any) => ({
             id: l.id,
-            hour_range: `${dayjs(l.start_time).format('HH:mm')} – ${dayjs(l.end_time).format('HH:mm')}`,
+            hour_range: `${dayjs(l.start_time).format('HH:mm')} – ${dayjs(
+                l.end_time,
+            ).format('HH:mm')}`,
             program_name:
-                programsData?.find(p => p.id === l.program_id)?.name
-                ?? l.program_name
-                ?? '-',
+                programsData?.find(p => p.id === l.program_id)?.name ??
+                l.program_name ??
+                '-',
             status: (l.status ?? 0) as 0 | 1 | 2,
             executive_status: l.executive_status ?? '-',
         }));
     }, [attendance, programsData]);
 
-    /* kolonlar ----------------------------------------------------------- */
+
     const columns: ColumnDefinition<Row>[] = useMemo(
         () => [
             { key: 'hour_range', label: 'Saat', render: r => r.hour_range },
@@ -57,16 +69,18 @@ export default function PollingListDetailTable() {
                 key: 'status',
                 label: 'Durum',
                 render: ({ status }) =>
-                    status === 0 ? 'Geldi'
-                        : status === 1 ? 'Geç Geldi'
-                            : 'Gelmedi',
+                    status === 0 ? 'Geldi' : status === 1 ? 'Geç Geldi' : 'Gelmedi',
             },
-            { key: 'executive_status', label: 'Yönetici Durumu', render: r => r.executive_status },
+            {
+                key: 'executive_status',
+                label: 'Yönetici Durumu',
+                render: r => r.executive_status,
+            },
         ],
         [],
     );
 
-    /* render ------------------------------------------------------------- */
+
     return (
         <ReusableTable<Row>
             columns={columns}
@@ -74,8 +88,8 @@ export default function PollingListDetailTable() {
             tableMode="single"
             showModal
             showExportButtons={false}
-            exportFileName="polling_list_detail"
-            loading={status === 'LOADING'}
+            exportFileName="Yoklama Listesi Detay Sayfası"
+            loading={loading}
             error={error}
         />
     );

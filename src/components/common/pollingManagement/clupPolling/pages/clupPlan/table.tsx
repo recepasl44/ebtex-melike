@@ -1,16 +1,15 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
-/* table.tsx – Kulüp / Grup Planlama listesi */
+
 
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import dayjs from 'dayjs';
+
 
 import ReusableTable, {
     ColumnDefinition,
     FilterDefinition,
 } from '../../../../ReusableTable';
 
-/* — veri / yardımcı listeler — */
+
 import { useAttendancesTable } from '../../../../../hooks/attendance/useList';
 import { useLevelsTable } from '../../../../../hooks/levels/useList';
 import { useClassroomList } from '../../../../../hooks/classrooms/useList';
@@ -18,7 +17,7 @@ import { useAttendanceStudentsTable } from '../../../../../hooks/attendanceStude
 import { useUsedAreasList } from '../../../../../hooks/usedareas/useList';
 import { useGroupsTable } from '../../../../../hooks/group/useList';
 
-/* — satır tipi — */
+
 interface Row {
     id: number;
     club_name: string;
@@ -29,11 +28,11 @@ interface Row {
 
 const BASE = `${import.meta.env.BASE_URL}pollingManagement/clupsPolling`;
 
-/* ———————————————————————————————————————————— */
+
 export default function ClubGroupPlanTable() {
     const navigate = useNavigate();
 
-    /* ----- filtre state’leri ----- */
+
     const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' });
     const [clubName, setClubName] = useState('');
     const [groupId, setGroupId] = useState('');
@@ -45,7 +44,6 @@ export default function ClubGroupPlanTable() {
     const [pageSize, setPageSize] = useState(10);
     const [page, setPage] = useState(1);
 
-    /* ----- lazy-load bayrakları ----- */
     const [enabled, setEnabled] = useState({
         groups: false,
         areas: false,
@@ -54,7 +52,7 @@ export default function ClubGroupPlanTable() {
         students: false,
     });
 
-    /* ----- yardımcı listeler ----- */
+
     const { groupsData } = useGroupsTable({ enabled: enabled.groups });
     const { usedAreasData } = useUsedAreasList({ enabled: enabled.areas });
 
@@ -70,7 +68,7 @@ export default function ClubGroupPlanTable() {
         enabled: enabled.students,
     });
 
-    /* ----- ana yoklama listesi ----- */
+
     const {
         attendancesData,
         loading, error,
@@ -85,10 +83,10 @@ export default function ClubGroupPlanTable() {
         classroom_id: +classroom || undefined,
         student_id: +student || undefined,
         club_name: clubName || undefined,
-        enabled: true,                     // attendances sadece açılışta
+        enabled: true,
     });
 
-    /* ----- attendances → rows ----- */
+
     const rows: Row[] = useMemo(() => (
         (attendancesData ?? []).flatMap((a: any) => {
             const cls = a.classroom?.name || a.level?.name || '-';
@@ -109,8 +107,6 @@ export default function ClubGroupPlanTable() {
             }));
         })
     ), [attendancesData]);
-
-    /* ----- kolonlar ----- */
     const columns: ColumnDefinition<Row>[] = useMemo(() => [
         {
             key: 'index',
@@ -136,11 +132,11 @@ export default function ClubGroupPlanTable() {
                     >
                         <i className="ti ti-pencil" />
                     </button>
-                    {/* sil (ReusableTable delete modal) */}
+
                     <button
                         type="button"
                         className="btn btn-icon btn-sm btn-danger-light rounded-pill"
-                        onClick={() => { /* openDeleteModal(row) */ }}
+                        onClick={() => { }}
                     >
                         <i className="ti ti-trash" />
                     </button>
@@ -149,7 +145,7 @@ export default function ClubGroupPlanTable() {
         },
     ], [navigate]);
 
-    /* ----- filtreler ----- */
+
     const filters: FilterDefinition[] = useMemo(() => [
         {
             key: 'dateRange', label: 'Tarih Aralığı', type: 'doubledate',
@@ -186,14 +182,14 @@ export default function ClubGroupPlanTable() {
             onClick: () => setEnabled(e => ({ ...e, classes: true })),
             options: (classroomData ?? []).map(c => ({ value: String(c.id), label: c.name })),
         },
-        /* ----- ✔ DOĞRU ÖĞRENCİ FİLTRESİ ----- */
+
         {
             key: 'student', label: 'Öğrenciler', type: 'select',
             value: student, onChange: setStudent,
             onClick: () => setEnabled(e => ({ ...e, students: true })),
             options: (studentsData ?? []).map((s: any) => ({
-                value: String(s.student_id),                               // <- doğru ID
-                label: s.student                                            // <- isim nerede?
+                value: String(s.student_id),
+                label: s.student
                     ? `${s.student.first_name} ${s.student.last_name}`
                     : '-',
             })),
@@ -205,7 +201,7 @@ export default function ClubGroupPlanTable() {
         classroomData, studentsData,
     ]);
 
-    /* ----- render ----- */
+
     return (
         <ReusableTable<Row>
             tableMode="single"

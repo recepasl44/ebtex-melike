@@ -3,7 +3,7 @@
 
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import dayjs from 'dayjs';
+
 
 import ReusableTable, {
     ColumnDefinition,
@@ -29,7 +29,6 @@ interface Row {
 }
 
 /* route kökü (modal veya sayfa) */
-const ROOT = `${import.meta.env.BASE_URL}pollingManagement/studyPolling`;
 
 export default function StudyPollingTable() {
     const navigate = useNavigate();

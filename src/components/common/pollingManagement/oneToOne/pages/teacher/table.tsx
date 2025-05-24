@@ -26,7 +26,8 @@ interface Row {
     work_area: string;
 }
 
-const BASE = `${import.meta.env.BASE_URL}onebyonePolling/teacherPlan`;
+
+const BASE = `${import.meta.env.BASE_URL}pollingManagement/oneToOneTeachers`;
 
 const TURKISH_DAYS = [
     '', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe',

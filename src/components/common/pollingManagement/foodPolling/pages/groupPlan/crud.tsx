@@ -6,7 +6,7 @@ import ReusableModalForm, {
     FieldDefinition,
 } from '../../../../ReusableModalForm';
 
-/* ────── CRUD & liste hook’ları ─────────────────────────────────────────── */
+
 import { useAttendanceAdd } from '../../../../../hooks/attendance/useAdd';
 import { useAttendanceUpdate } from '../../../../../hooks/attendance/useUpdate';
 import { useAttendanceDetail } from '../../../../../hooks/attendance/useDetail';
@@ -19,9 +19,8 @@ import { useAttendanceStudentsTable } from '../../../../../hooks/attendanceStude
 import { useAttendanceTeachersTable } from '../../../../../hooks/attendanceTeacher/useList';
 import { useUsersTable } from '../../../../../hooks/user/useList';
 
-/* ────── Tipler ─────────────────────────────────────────────────────────── */
 interface IForm extends FormikValues {
-    /* zorunlu alanlar */
+
     name: string;                 // kahvaltı / öğle yemeği / akşam yemeği
     group_id: number;
     used_area_id: number;
@@ -30,7 +29,6 @@ interface IForm extends FormikValues {
     week_days: number[];
     time_range: string;
 
-    /* opsiyonel alanlar */
     responsible_id?: number;
     manager_ids: number[];
     teacher_ids: number[];
@@ -42,21 +40,20 @@ interface ModalProps {
     onRefresh: () => void;
 }
 
-/* sabit öğün seçenekleri */
 const MEAL_OPTIONS = [
     { value: 'kahvaltı', label: 'Kahvaltı' },
     { value: 'öğle yemeği', label: 'Öğle Yemeği' },
     { value: 'akşam yemeği', label: 'Akşam Yemeği' },
 ];
 
-/* ======================================================================== */
+
 const FoodPlanModal: React.FC<ModalProps> = ({ show, onClose, onRefresh }) => {
-    /* ────── mod & id ─────────────────────────────────────────────────────── */
+
     const { id } = useParams<{ id?: string }>();
     const mode: 'add' | 'update' = id ? 'update' : 'add';
     const navigate = useNavigate();
 
-    /* ────── lazy-load bayrakları & seçilen seviye ────────────────────────── */
+
     const [levelId, setLevelId] = useState<number | null>(null);
     const [enabled, setEnabled] = useState({
         groups: false,
@@ -68,7 +65,7 @@ const FoodPlanModal: React.FC<ModalProps> = ({ show, onClose, onRefresh }) => {
         users: false,
     });
 
-    /* ────── listeler ─────────────────────────────────────────────────────── */
+
     const { groupsData = [] } = useGroupsTable({ enabled: enabled.groups, pageSize: 999 });
     const { usedAreasData = [] } = useUsedAreasList({ enabled: enabled.areas });
     const { levelsData = [] } = useLevelsTable({ enabled: enabled.levels });
@@ -77,15 +74,14 @@ const FoodPlanModal: React.FC<ModalProps> = ({ show, onClose, onRefresh }) => {
         level_id: levelId ?? undefined,
         branchId: 0,
     });
-    const { attendanceStudentsData: studentsData = [] } =
-        useAttendanceStudentsTable({ enabled: enabled.students });
+    useAttendanceStudentsTable({ enabled: enabled.students });
     const { attendanceTeachersData: teachersData = [] } =
         useAttendanceTeachersTable({ enabled: enabled.teachers });
-    /* role_id 2 → sorumlu / yönetici */
+
     const { usersData: managersData = [] } =
         useUsersTable({ enabled: enabled.users, role_id: 2, pageSize: 999 });
 
-    /* ────── CRUD hook’ları ──────────────────────────────────────────────── */
+
     const { addNewAttendance, status: addSt, error: addErr } = useAttendanceAdd();
     const { updateExistingAttendance, status: updSt, error: updErr } = useAttendanceUpdate();
     const { attendance: fetched, status: detSt, error: detErr,
@@ -94,7 +90,7 @@ const FoodPlanModal: React.FC<ModalProps> = ({ show, onClose, onRefresh }) => {
             enabled: !!id,
         });
 
-    /* ────── initial values ──────────────────────────────────────────────── */
+
     const [initial, setInitial] = useState<IForm>({
         name: '',
         group_id: 0,
@@ -108,13 +104,12 @@ const FoodPlanModal: React.FC<ModalProps> = ({ show, onClose, onRefresh }) => {
         teacher_ids: [],
     });
 
-    /* ────── update modunda veriyi çek ───────────────────────────────────── */
+
     useEffect(() => {
         if (mode === 'update' && id) getAttendance(+id);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+
     }, [id]);
 
-    /* ────── gelen veriye göre form & bayraklar ──────────────────────────── */
     useEffect(() => {
         if (mode === 'update' && fetched) {
             setInitial({
@@ -134,7 +129,7 @@ const FoodPlanModal: React.FC<ModalProps> = ({ show, onClose, onRefresh }) => {
                 teacher_ids: fetched.teachers?.map((t: any) => t.id) ?? [],
             });
 
-            /* yalnizca gereken listeleri aç */
+
             setEnabled({
                 groups: true,
                 areas: true,
@@ -148,15 +143,15 @@ const FoodPlanModal: React.FC<ModalProps> = ({ show, onClose, onRefresh }) => {
         }
     }, [fetched, mode]);
 
-    /* ────── option helper’ları ──────────────────────────────────────────── */
+
     const groupOpts = useMemo(() => groupsData.map(g => ({ value: g.id, label: g.name })), [groupsData]);
     const areaOpts = useMemo(() => usedAreasData.map(a => ({ value: a.id, label: a.name })), [usedAreasData]);
     const levelOpts = useMemo(() => levelsData.map(l => ({ value: l.id, label: l.name })), [levelsData]);
-    const classOpts = useMemo(() => classroomData.map(c => ({ value: c.id, label: c.name })), [classroomData]);
+    const classOpts = useMemo(() => classroomData.map((c: { id: any; name: any; }) => ({ value: c.id, label: c.name })), [classroomData]);
     const userOpts = useMemo(() => managersData.map(u => ({ value: u.id, label: u.name_surname || u.name || '-' })), [managersData]);
     const teacherOpts = useMemo(() => teachersData.map(t => ({ value: t.teacher_id, label: t.teacher?.name_surname || '-' })), [teachersData]);
 
-    /* ────── dinamik alanlar (FieldDefinition) ───────────────────────────── */
+
     const getFields = useCallback(
         (_v: IForm): FieldDefinition[] => [
             {
@@ -225,21 +220,19 @@ const FoodPlanModal: React.FC<ModalProps> = ({ show, onClose, onRefresh }) => {
         [groupOpts, areaOpts, levelOpts, classOpts, userOpts, teacherOpts],
     );
 
-    /* ────── submit ──────────────────────────────────────────────────────── */
+
     const handleSubmit = async (vals: IForm, _helpers: FormikHelpers<IForm>) => {
         if (mode === 'add') await addNewAttendance(vals);
         else if (id) await updateExistingAttendance({ attendanceId: +id, payload: vals });
         onRefresh(); onClose();
     };
 
-    /* ────── UI durumları ────────────────────────────────────────────────── */
     const isLoading = mode === 'add'
         ? addSt === 'LOADING'
         : updSt === 'LOADING' || detSt === 'LOADING';
 
     const combinedErr = mode === 'add' ? addErr : (updErr || detErr);
 
-    /* ────── render ──────────────────────────────────────────────────────── */
     return (
         <ReusableModalForm<IForm>
             show={show}
@@ -247,7 +240,7 @@ const FoodPlanModal: React.FC<ModalProps> = ({ show, onClose, onRefresh }) => {
             title={mode === 'add' ? 'Plan Ekle' : 'Plan Güncelle'}
             fields={getFields}
             initialValues={initial}
-            /* Formik değerlerini güncelle */
+
             onSubmit={handleSubmit}
             confirmButtonLabel={mode === 'add' ? 'Kaydet' : 'Güncelle'}
             cancelButtonLabel="İptal"

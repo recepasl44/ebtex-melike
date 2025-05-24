@@ -5,7 +5,7 @@
    ─────────────────────────────────────────────────────────────────────────── */
 
 import { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+
 import dayjs from 'dayjs';
 
 import ReusableTable, {
@@ -35,7 +35,7 @@ interface Row {
 
 /* ========================================================================== */
 export default function FoodPollingCountsTable() {
-    const navigate = useNavigate();
+
 
     /* ---------------- filtre state’leri ---------------- */
     const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' });

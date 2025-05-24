@@ -1,22 +1,19 @@
-/* table.tsx – Kulüp Yoklama > Yoklama Sayıları
-   konum: src/components/common/pollingManagement/clupPolling/pages/clupCount/table.tsx */
+
 
 import { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import dayjs from 'dayjs';
+
+
 
 import ReusableTable, {
     ColumnDefinition,
     FilterDefinition,
 } from '../../../../ReusableTable';
 
-/* -------- API hook’ları -------- */
 import { useAttendancesTable } from '../../../../../hooks/attendance/useList';
 import { useGroupsTable } from '../../../../../hooks/group/useList';
 import { useClassroomList } from '../../../../../hooks/classrooms/useList';
 import { useAttendanceStudentsTable } from '../../../../../hooks/attendanceStudent/useList';
 
-/* -------- Satır tipi -------- */
 type Row = {
     id: number;
     club_name: string;     // Kulüp / Grup
@@ -27,9 +24,9 @@ type Row = {
     late_count: number;     // Geç Geldi
 };
 
-/* =================================================================== */
+
 export default function ClubCountTable() {
-    const navigate = useNavigate();
+
 
     /* ------------ filtre state’leri ------------ */
     const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' });
@@ -41,14 +38,14 @@ export default function ClubCountTable() {
     const [pageSize, setPageSize] = useState(10);
     const [page, setPage] = useState(1);
 
-    /* ------------ lazy-load bayrakları ---------- */
+
     const [enabled, setEnabled] = useState({
         groups: false,
         classes: false,
         students: false,
     });
 
-    /* ------------ yardımcı listeler ------------- */
+
     const { groupsData } = useGroupsTable({ enabled: enabled.groups });
 
     const { classroomData } = useClassroomList({
@@ -61,7 +58,6 @@ export default function ClubCountTable() {
         enabled: enabled.students,
     });
 
-    /* ------------ ana liste (Attendances) ------- */
     const {
         attendancesData,
         loading, error,
@@ -77,14 +73,13 @@ export default function ClubCountTable() {
         enabled: true,
     });
 
-    /* ------------ attendances -> Row[] ---------- */
+
     const rows: Row[] = useMemo(() => (
         (attendancesData ?? []).flatMap((a: any) => {
             const cls = a.classroom?.name || a.level?.name || '-';
             const club = a.name || '-';
 
-            /* backend her yoklamadaki toplamları döndürüyorsa kullan,
-               yoksa 0 bırakılabilir */
+
             const presentTotal = a.present_count ?? 0;
             const absentTotal = a.absent_count ?? 0;
             const lateTotal = a.late_count ?? 0;
@@ -110,15 +105,13 @@ export default function ClubCountTable() {
         })
     ), [attendancesData]);
 
-    /* ------------ kolon tanımları --------------- */
     const columns: ColumnDefinition<Row>[] = useMemo(() => [
         {
             key: 'index',
             label: 'Sıra No',
             style: { width: 70, textAlign: 'center' },
             render: (row: Row) => {
-                // Find the index of the row in the current rows array
-                // This assumes rows is in scope (which it is in this component)
+
                 return rows.findIndex(r => r === row) + 1;
             }
         },
@@ -146,7 +139,6 @@ export default function ClubCountTable() {
         },
     ], [rows]);
 
-    /* ------------ filter tanımları -------------- */
     const filters: FilterDefinition[] = useMemo(() => [
         {
             key: 'dateRange', label: 'Tarih Aralığı', type: 'doubledate',
@@ -186,7 +178,6 @@ export default function ClubCountTable() {
     ], [dateRange, clubName, groupId, classroom, student,
         groupsData, classroomData, studentsData]);
 
-    /* ------------ render ------------------------ */
     return (
         <ReusableTable<Row>
 

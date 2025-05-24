@@ -3,7 +3,7 @@ import AttendanceListStatus from '../../enums/attendance/list'
 
 export interface AttendancesAddPayload {
     id?: number
-    name: string
+    name?: string
     group_type_id?: number
     group_id?: number
     program_id?: number

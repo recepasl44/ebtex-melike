@@ -111,7 +111,6 @@ export default function PollingCountsTable() {
         });
     }, [attendancesData]);
 
-    /* ---------------- kolonlar ------------------------- */
     const columns: ColumnDefinition<Row>[] = useMemo(
         () => [
             { key: "class_name", label: "Sınıf", render: (r) => r.class_name },
@@ -120,7 +119,7 @@ export default function PollingCountsTable() {
                 key: "present_count",
                 label: "Geldi",
                 style: { textAlign: "center", color: "#18c96e" },
-                render: (r) => r.present_count,
+                render: (r) => r.present_count == 1,
             },
             {
                 key: "absent_count",

@@ -7,8 +7,7 @@ import ReusableTable, {
     FilterDefinition,
 } from '../../../../ReusableTable';
 
-import dayjs from 'dayjs';
-import { useNavigate } from 'react-router-dom';
+
 
 /* -- data hook’ları ---------------------------------------------------- */
 import { useAttendancesTable } from '../../../../../hooks/attendance/useList';

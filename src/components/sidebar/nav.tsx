@@ -87,6 +87,45 @@ export const MENUITEMS: any = [
       },
     ],
   },
+  //yoklamna yönetimi
+  //yoklama
+  {
+    title: "Yoklama Yönetimi",
+    icon: Dashboardicon,
+    type: "sub",
+    children: [
+      {
+        path: "pollingManagement/index",
+        type: "link",
+        title: "Sınıf-Ders Yoklaması",
+      },
+      {
+        path: "pollingManagement/clupindex",
+        type: "link",
+        title: "Kulüp Yoklaması",
+      },
+      {
+        path: "pollingManagement/foodindex",
+        type: "link",
+        title: "Yemek Yoklaması",
+      },
+      {
+        path: "pollingManagement/OneToOneManagementPageİndex",
+        type: "link",
+        title: "Bire Bir Yoklama",
+      },
+      {
+        path: "pollingManagement/staffindex",
+        type: "link",
+        title: "Personel Öğretmen Yoklaması",
+      },
+      {
+        path: "pollingManagement/studyindex",
+        type: "link",
+        title: "Etüt Yoklaması",
+      },
+    ],
+  },
   // ----- OKUL YÖNETİMİ -----
   {
     title: "Okul Yönetimi",

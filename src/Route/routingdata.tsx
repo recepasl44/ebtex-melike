@@ -377,6 +377,7 @@ import DemandManagementTable from "../components/common/pollingManagement/person
 import DailyPollingTable from "../components/common/pollingManagement/personel-teachers/pages/daily/table";
 import PollingCountTable from "../components/common/pollingManagement/personel-teachers/pages/count/table";
 import StaffPollingManagementPage from "../components/common/pollingManagement/personel-teachers/index";
+import TeacherPlanCrudModal from "../components/common/pollingManagement/oneToOne/pages/teacher/crud";
 
 
 
@@ -1412,14 +1413,15 @@ export const Routedata = [
     element: <StudyProgramTable />,
   },
   //ekle ve crudunu unutma
+
   {
-    id: 601,                       // benzersiz id
+    id: 601,
     path: `${import.meta.env.BASE_URL}pollingManagement/studyProgram/:id?`,
     element: (
       <StudyProgramCrud
-        show={true}
-        onClose={() => window.history.back()}
-        onRefresh={() => { /* tablo refresh’ini üst bileşende tetikleyin */ }}
+        // show={true}
+        // onClose={() => window.history.back()}
+        onRefresh={() => { }}
       />
     ),
   },
@@ -1439,8 +1441,7 @@ export const Routedata = [
     element: (
       <StudyCountDetailModal
         show={true}
-        onClose={() => window.history.back()}
-      />
+        onClose={() => window.history.back()} attendanceId={0} />
     ),
   },
   {
@@ -1456,27 +1457,12 @@ export const Routedata = [
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   //kulüp yoklama
+  {
+    id: 71,
+    path: `${import.meta.env.BASE_URL}pollingManagement/clupsPollings`,
+    element: <ClubPollingTable />,
+  },
   {
     id: 69,
     path: `${import.meta.env.BASE_URL}pollingManagement/clupsPolling`,
@@ -1498,11 +1484,7 @@ export const Routedata = [
     path: `${import.meta.env.BASE_URL}pollingManagement/clupsProgram`,
     element: <ClubProgramTable />,
   },
-  {
-    id: 71,
-    path: `${import.meta.env.BASE_URL}pollingManagement/clupsPollings`,
-    element: <ClubPollingTable />,
-  },
+
   {
     id: 71,
     path: `${import.meta.env.BASE_URL}pollingManagement/clupsCounts`,
@@ -1516,9 +1498,22 @@ export const Routedata = [
   //birebir
   {
     id: 73,
-    path: `${import.meta.env.BASE_URL}pollingManagement/oneToOneTeachers`,
+    path: `${import.meta.env.BASE_URL}onebyonePolling/teacherPlan`,
     element: <TeacherOneByOnePlanTable />,
   },
+  {
+    id: 773,
+    path: `${import.meta.env.BASE_URL}onebyonePolling/teacherPlan/crud/:id?`,
+    element: (
+      <TeacherPlanCrudModal
+        show={true}
+        onClose={() => window.history.back()}
+        onRefresh={() => {/* listeyi yenile */ }}
+      />
+    ),
+  },
+
+
 
 
 

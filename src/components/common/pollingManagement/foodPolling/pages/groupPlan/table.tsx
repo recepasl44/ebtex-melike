@@ -1,16 +1,14 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
-/* table.tsx – Yemek Yoklama › Grup Planla */
+
 
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import dayjs from 'dayjs';
+
 
 import ReusableTable, {
     ColumnDefinition,
     FilterDefinition,
 } from '../../../../ReusableTable';
 
-/* ───────── API hook’ları ───────── */
 import { useAttendancesTable } from '../../../../../hooks/attendance/useList';
 import { useLevelsTable } from '../../../../../hooks/levels/useList';
 import { useClassroomList } from '../../../../../hooks/classrooms/useList';
@@ -19,7 +17,7 @@ import { useAttendanceTeachersTable } from '../../../../../hooks/attendanceTeach
 import { useGroupsTable } from '../../../../../hooks/group/useList';
 import { useUsedAreasList } from '../../../../../hooks/usedareas/useList';
 
-/* ───── Row tipi ───── */
+
 interface Row {
     id: number;
     meal_name: string;    // Öğün / Grup
@@ -28,15 +26,13 @@ interface Row {
     student_name: string; // Ad Soyad
 }
 
-/* Modal yolu (id opsiyonel) */
 const MODAL_BASE = `${import.meta.env.BASE_URL}pollingManagement/FoodPlanModal`;
 
 export default function FoodGroupPlanTable() {
     const navigate = useNavigate();
 
-    /* --- filtre state’leri --- */
     const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' });
-    const [mealName, setMealName] = useState('');          // 🔸 Öğün filtresi artık select
+    const [mealName, setMealName] = useState('');
     const [groupId, setGroupId] = useState('');
     const [areaId, setAreaId] = useState('');
     const [classLevel, setClassLevel] = useState('');
@@ -47,13 +43,13 @@ export default function FoodGroupPlanTable() {
     const [pageSize, setPageSize] = useState(10);
     const [page, setPage] = useState(1);
 
-    /* lazy-load bayrakları */
+
     const [enabled, setEnabled] = useState({
         groups: false, areas: false, levels: false,
         classes: false, students: false, teachers: false,
     });
 
-    /* yardımcı listeler */
+
     const { groupsData = [] } = useGroupsTable({ enabled: enabled.groups });
     const { usedAreasData = [] } = useUsedAreasList({ enabled: enabled.areas });
     const { levelsData = [] } = useLevelsTable({ enabled: enabled.levels });
@@ -67,7 +63,6 @@ export default function FoodGroupPlanTable() {
     const { attendanceTeachersData: teachersData = [] } =
         useAttendanceTeachersTable({ enabled: enabled.teachers });
 
-    /* ana liste */
     const {
         attendancesData, loading, error,
         totalPages, totalItems,
@@ -76,7 +71,7 @@ export default function FoodGroupPlanTable() {
         page, pageSize,
         start_date: dateRange.startDate || undefined,
         end_date: dateRange.endDate || undefined,
-        name: mealName || undefined,              // 🔸 backend’e seçilen öğün gönderilir
+        name: mealName || undefined,
         group_id: +groupId || undefined,
         used_area_id: +areaId || undefined,
         class_level: +classLevel || undefined,
@@ -85,7 +80,7 @@ export default function FoodGroupPlanTable() {
         teacher_id: +teacher || undefined,
     });
 
-    /* attendances → rows */
+
     const rows: Row[] = useMemo(() => (
         (attendancesData ?? []).flatMap((a: any) => {
             const cls = a.classroom?.name || a.level?.name || '-';
@@ -110,7 +105,7 @@ export default function FoodGroupPlanTable() {
         })
     ), [attendancesData]);
 
-    /* kolonlar */
+
     const columns: ColumnDefinition<Row>[] = useMemo(() => [
         {
             key: 'index', label: 'Sıra No',
@@ -138,7 +133,7 @@ export default function FoodGroupPlanTable() {
                     <button
                         type="button"
                         className="btn btn-icon btn-sm btn-danger-light rounded-pill"
-                        onClick={() => {/* openDeleteModal(row) */ }}
+                        onClick={() => { }}
                     >
                         <i className="ti ti-trash" />
                     </button>
@@ -147,7 +142,6 @@ export default function FoodGroupPlanTable() {
         },
     ], [navigate]);
 
-    /* sabit öğün seçenekleri */
     const mealOptions = [
 
         { value: 'kahvaltı', label: 'Kahvaltı' },
@@ -155,7 +149,7 @@ export default function FoodGroupPlanTable() {
         { value: 'akşam yemeği', label: 'Akşam Yemeği' },
     ];
 
-    /* filtreler */
+
     const filters: FilterDefinition[] = useMemo(() => [
         {
             key: 'dateRange', label: 'Tarih Aralığı', type: 'doubledate',
@@ -222,7 +216,6 @@ export default function FoodGroupPlanTable() {
         groupsData, usedAreasData, levelsData, classroomData, studentsData, teachersData,
     ]);
 
-    /* render */
     return (
         <ReusableTable<Row>
             tableMode="single"

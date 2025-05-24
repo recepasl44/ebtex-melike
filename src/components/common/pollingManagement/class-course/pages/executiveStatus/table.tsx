@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
-/* table.tsx – Öğretmen Birebir Planı listesi */
+
 
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -17,7 +16,6 @@ import { useClassroomList } from '../../../../../hooks/classrooms/useList';
 import { useAttendanceTeachersTable } from '../../../../../hooks/attendanceTeacher/useList';
 import { useAttendanceStudentsTable } from '../../../../../hooks/attendanceStudent/useList';
 
-/* — satır tipi — */
 interface Row {
     id: number;
     date: string;
@@ -32,7 +30,7 @@ interface Row {
 export default function ExecutiveStatusTable() {
     const navigate = useNavigate();
 
-    /* — filtre state’leri — */
+
     const [classLevel, setClassLevel] = useState('');
     const [classroom, setClassroom] = useState('');
     const [lesson, setLesson] = useState('');
@@ -45,7 +43,6 @@ export default function ExecutiveStatusTable() {
     const [pageSize, setPageSize] = useState(10);
     const [page, setPage] = useState(1);
 
-    /* lazy-load kontrolleri */
     const [enabled, setEnabled] = useState({
         levels: false,
         classes: false,
@@ -54,7 +51,6 @@ export default function ExecutiveStatusTable() {
         students: false,
     });
 
-    /* — yardımcı listeler — */
     const { levelsData } = useLevelsTable({ enabled: enabled.levels });
     const { classroomData } = useClassroomList({
         enabled: enabled.classes && !!classLevel,
@@ -72,7 +68,6 @@ export default function ExecutiveStatusTable() {
         enabled: enabled.students,
     });
 
-    /* — ana sorgu — */
     const {
         attendancesData,
         loading,
@@ -94,7 +89,7 @@ export default function ExecutiveStatusTable() {
         enabled: true,
     });
 
-    /* — API → satırlar — */
+
     const rows: Row[] = useMemo(() => (
         (attendancesData ?? []).map((a: any) => ({
             id: a.id,
@@ -110,7 +105,7 @@ export default function ExecutiveStatusTable() {
         }))
     ), [attendancesData]);
 
-    /* — kolonlar — */
+
     const columns: ColumnDefinition<Row>[] = useMemo(() => [
         { key: 'date', label: 'Tarih', render: r => r.date },
         { key: 'lesson', label: 'Ders', render: r => r.lesson },
@@ -140,7 +135,6 @@ export default function ExecutiveStatusTable() {
         },
     ], []);
 
-    /* — filtreler — */
     const filters: FilterDefinition[] = useMemo(() => [
         {
             key: 'dateRange', label: 'Tarih Aralığı', type: 'doubledate',

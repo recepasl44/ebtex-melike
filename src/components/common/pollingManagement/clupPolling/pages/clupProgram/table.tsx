@@ -1,5 +1,4 @@
-/* table.tsx – Kulüp Programı listesi
-   konum: src/components/common/pollingManagement/foodPolling/pages/clubProgram/table.tsx */
+
 
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -10,13 +9,11 @@ import ReusableTable, {
     FilterDefinition,
 } from '../../../../ReusableTable';
 
-/* -------- API hook’ları -------- */
 import { useAttendancesTable } from '../../../../../hooks/attendance/useList';
 import { useGroupsTable } from '../../../../../hooks/group/useList';
 import { useUsedAreasList } from '../../../../../hooks/usedareas/useList';
 import { useAttendanceTeachersTable } from '../../../../../hooks/attendanceTeacher/useList';
 
-/* -------- Tablo satır tipi -------- */
 interface Row {
     id: number;
     date: string;   // Tarih
@@ -27,11 +24,9 @@ interface Row {
     teacher_name: string;   // Görevli Öğretmen
 }
 
-/* ===================================================================== */
-export default function ClubProgramTable() {
-    const navigate = useNavigate();
 
-    /* ------------------------------------------------ filtre state’leri */
+export default function ClubProgramTable() {
+
     const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' });
     const [timeRange, setTimeRange] = useState('');
     const [clubName, setClubName] = useState('');
@@ -40,24 +35,21 @@ export default function ClubProgramTable() {
     const [weekDays, setWeekDays] = useState<string[]>([]);
     const [teacher, setTeacher] = useState('');
 
-    /* ------------------------------------------------ pagination  */
     const [pageSize, setPageSize] = useState(10);
     const [page, setPage] = useState(1);
 
-    /* ------------------------------------------------ lazy-load bayrakları */
+
     const [enabled, setEnabled] = useState({
         groups: false,
         areas: false,
         teachers: false,
     });
 
-    /* ------------------------------------------------ yardımcı listeler */
     const { groupsData } = useGroupsTable({ enabled: enabled.groups });
     const { usedAreasData } = useUsedAreasList({ enabled: enabled.areas });
     const { attendanceTeachersData: teachersData }
         = useAttendanceTeachersTable({ enabled: enabled.teachers });
 
-    /* ------------------------------------------------ ana liste (Attendances) */
     const {
         attendancesData,
         loading, error,
@@ -70,12 +62,11 @@ export default function ClubProgramTable() {
         used_area_id: +areaId || undefined,
         teacher_id: +teacher || undefined,
         club_name: clubName || undefined,
-        week_days: weekDays.length ? weekDays.join(',') : undefined,  // backend’in beklentisine göre
+        week_days: weekDays.length ? weekDays.join(',') : undefined,
         time_range: timeRange || undefined,
         enabled: true,
     });
 
-    /* ------------------------------------------------ attendances -> Row[]  */
     const rows: Row[] = useMemo(() => (
         (attendancesData ?? []).map((a: any) => ({
             id: a.id,
@@ -90,7 +81,7 @@ export default function ClubProgramTable() {
         }))
     ), [attendancesData]);
 
-    /* ------------------------------------------------ kolon tanımları */
+
     const columns: ColumnDefinition<Row>[] = useMemo(() => [
         { key: 'date', label: 'Tarih', render: r => r.date },
         { key: 'club_name', label: 'Kulüp / Grup', render: r => r.club_name },
@@ -100,7 +91,7 @@ export default function ClubProgramTable() {
         { key: 'teacher_name', label: 'Görevli Öğretmen', render: r => r.teacher_name },
     ], []);
 
-    /* ------------------------------------------------ filtre tanımları */
+
     const filters: FilterDefinition[] = useMemo(() => [
         {
             key: 'dateRange', label: 'Tarih Aralığı', type: 'doubledate',
@@ -158,7 +149,7 @@ export default function ClubProgramTable() {
         groupsData, usedAreasData, teachersData,
     ]);
 
-    /* ------------------------------------------------ render */
+
     return (
         <ReusableTable<Row>
 
