@@ -179,6 +179,7 @@ export default function ClubPlanModal({
         : updSt === 'LOADING' || detSt === 'LOADING';
     const error = addErr || updErr || detErr || null;
 
+    /* ---------------- render ---------------- */
     return (
         <ReusableModalForm<FormValues>
             show={show}
