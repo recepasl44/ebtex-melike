@@ -150,7 +150,7 @@ export default function OneToOneStudentCountTable() {
 
 
             <ReusableTable<Row>
-                // pageTitle="Öğrenci İstatistikleri"
+                pageTitle="Öğrenci İstatistikleri"
                 tableMode="single"
                 columns={columns}
                 data={rows}

@@ -207,7 +207,7 @@ export default function OneToOnePlanTable() {
             />
 
             <ReusableTable<Row>
-                // pageTitle="Öğrenci Bire-bir Talepleri"
+                pageTitle="Öğrenci Bire-bir Talepleri"
                 tableMode="single"
                 columns={columns}
                 data={rows}

@@ -288,7 +288,7 @@ export default function LessonPollingTable() {
                 navigate={function (): void { /* özel navigate kullanılmıyor */ }} />
 
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
-                {/* <span style={{ fontWeight: 600, fontSize: 18 }}>Ders Yoklama</span> */}
+                <span style={{ fontWeight: 600, fontSize: 18 }}>Ders Yoklama</span>
                 <button
                     style={{
                         marginLeft: 'auto', background: '#52c41a', color: '#fff',

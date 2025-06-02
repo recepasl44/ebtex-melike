@@ -168,7 +168,7 @@ export default function PollingCountsTable() {
             />
 
             <ReusableTable<Row>
-                // pageTitle="Yoklama Sayıları"
+                pageTitle="Yoklama Sayıları"
                 tableMode="single"
                 columns={columns}
                 data={rows}

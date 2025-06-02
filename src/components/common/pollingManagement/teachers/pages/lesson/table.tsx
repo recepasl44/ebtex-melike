@@ -276,7 +276,7 @@ export default function LessonPollingTable() {
             <FilterGroup filters={filters} navigate={navigate} columnsPerRow={4} />
 
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
-                {/* <span style={{ fontWeight: 600, fontSize: 18 }}>Ders Yoklama</span> */}
+                <span style={{ fontWeight: 600, fontSize: 18 }}>Ders Yoklama</span>
                 <button
                     style={{
                         marginLeft: 'auto', background: '#52c41a', color: '#fff',

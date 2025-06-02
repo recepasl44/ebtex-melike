@@ -337,6 +337,11 @@ const TrackCrud = lazy(
   () => import("../components/common/academic/educational_structure/track/crud")
 );
 
+const CountryParameters = lazy(() => import("../components/common/country_parameters/index"));
+const CountryCrud = lazy(() => import("../components/common/country_parameters/country/crud"));
+const CityCrud = lazy(() => import("../components/common/country_parameters/city/crud"));
+const CountyCrud = lazy(() => import("../components/common/country_parameters/county/crud"));
+const DistrictCrud = lazy(() => import("../components/common/country_parameters/district/crud"));
 const Questionlabeling = lazy(
   () => import("../components/common/questionlabeling/table")
 );
@@ -2027,6 +2032,11 @@ export const Routedata = [
     path: `${import.meta.env.BASE_URL}pollingManagement/idareİndex`,
     element: <AdministrativeSupportTeamPage />,
   },
+  { id: 9001, path: `${import.meta.env.BASE_URL}parameters/country`, element: <CountryParameters /> },
+  { id: 9002, path: `${import.meta.env.BASE_URL}parameters/country-crud/:id?`, element: <CountryCrud /> },
+  { id: 9003, path: `${import.meta.env.BASE_URL}parameters/city-crud/:id?`, element: <CityCrud /> },
+  { id: 9004, path: `${import.meta.env.BASE_URL}parameters/county-crud/:id?`, element: <CountyCrud /> },
+  { id: 9005, path: `${import.meta.env.BASE_URL}parameters/district-crud/:id?`, element: <DistrictCrud /> },
 
 
 

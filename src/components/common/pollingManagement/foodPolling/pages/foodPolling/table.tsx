@@ -221,7 +221,7 @@ export default function FoodAttendanceTable() {
             />
 
             <ReusableTable<Row>
-                // pageTitle="Yemek Yoklama"
+                pageTitle="Yemek Yoklama"
                 exportFileName="meal_attendance"
                 tableMode="single"
                 columns={columns}

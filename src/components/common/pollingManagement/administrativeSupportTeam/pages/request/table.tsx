@@ -54,7 +54,6 @@ export default function DemandManagementTable() {
     const [enabledUsers, setEnabledUsers] = useState(false);
     const { usersData = [] } =
         useUsersTable({ enabled: enabledUsers, role_id: 2, paginate: 999 });
-    console.log(usersData);
 
 
     const {
