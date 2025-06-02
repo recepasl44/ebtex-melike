@@ -26,6 +26,7 @@ export default function AdministrativeRequestAdd() {
         description: '',
         document_file: null,
     });
+    console.log('Initial values:', initial);
 
 
     const REQUEST_OPTIONS = [
