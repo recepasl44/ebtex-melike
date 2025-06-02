@@ -98,14 +98,10 @@ const Row1Component: React.FC<Row1Props> = (props) => {
       </Col>
                  {/* Personel İzin Takip Tablosu ve Takvim - Yan Yana */}
           <Row >
-            <Col xl={6} xxl={6}>
               <StaffLeaveTrackingTableRow
                 staffLeaveTracking={staffLeaveTracking}
               />
-            </Col>
-            <Col xl={6} xxl={6}>
               <Calendar />
-            </Col>
           </Row>
       <PersonnelTaskDistribution
         personnelTaskDistribution={staffTaskDistribution}

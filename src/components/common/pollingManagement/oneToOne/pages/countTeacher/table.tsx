@@ -1,56 +1,50 @@
 
-
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import ReusableTable, {
     ColumnDefinition,
-    FilterDefinition,
 } from '../../../../ReusableTable';
 
-/* -------- data hook’ları -------------------------------------------- */
+import FilterGroup, {
+    FilterDefinition,
+} from '../../components/organisms/SearchFilters';
+
 import { useAttendancesTable } from '../../../../../hooks/attendance/useList';
 import { useLevelsTable } from '../../../../../hooks/levels/useList';
 import { useClassroomList } from '../../../../../hooks/classrooms/useList';
 import { useLessonList } from '../../../../../hooks/lessons/useList';
 import { useAttendanceTeachersTable } from '../../../../../hooks/attendanceTeacher/useList';
 
-/* -------- tablo satır tipi ------------------------------------------ */
+/* ───────── Satır tipi ───────── */
 interface Row {
     id: number;
-    lesson_name: string;   // Ders
-    teacher_name: string;   // Öğretmen
-    demand_cnt: number;   // Talep
-    active_cnt: number;   // Aktif
-    present_cnt: number;   // Geldi
-    absent_cnt: number;   // Gelmedi
+    lesson_name: string;
+    teacher_name: string;
+    demand_cnt: number;
+    active_cnt: number;
+    present_cnt: number;
+    absent_cnt: number;
 }
 
-/* -------- modal / crud rotası kökü ---------------------------------- */
-const ROOT = `${import.meta.env.BASE_URL}pollingManagement/oneToOne/countTeacher`;
-
 export default function OneToOneTeacherCountTable() {
-    const navigate = useNavigate();
-
-    /* ---- filtre state’leri ------------------------------------------- */
+    /* —— filtre state’leri —— */
     const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' });
     const [classLevel, setClassLevel] = useState('');
     const [classroom, setClassroom] = useState('');
     const [lesson, setLesson] = useState('');
     const [teacher, setTeacher] = useState('');
 
-    const [pageSize, setPageSize] = useState(10);
+    /* —— sayfalama —— */
+    const [paginate, setPaginate] = useState(10);
     const [page, setPage] = useState(1);
 
-    /* ---- lazy flags --------------------------------------------------- */
+    /* —— lazy flags —— */
     const [enabled, setEnabled] = useState({
-        levels: false,
-        classes: false,
-        lessons: false,
-        teachers: false,
+        levels: false, classes: false, lessons: false, teachers: false,
     });
 
-    /* ---- yardımcı listeler ------------------------------------------- */
+
     const { levelsData = [] } = useLevelsTable({ enabled: enabled.levels });
     const { classroomData = [] } = useClassroomList({
         enabled: enabled.classes && !!classLevel,
@@ -64,15 +58,11 @@ export default function OneToOneTeacherCountTable() {
     const { attendanceTeachersData: teachersData = [] } =
         useAttendanceTeachersTable({ enabled: enabled.teachers });
 
-    /* ---- ana sorgu ---------------------------------------------------- */
     const {
         attendancesData = [],
-        loading,
-        error,
-        totalPages,
-        totalItems,
+        loading, error, totalPages, totalItems,
     } = useAttendancesTable({
-        page, pageSize,
+        page, pageSize: paginate,
         start_date: dateRange.startDate || undefined,
         end_date: dateRange.endDate || undefined,
         class_level: +classLevel || undefined,
@@ -83,10 +73,9 @@ export default function OneToOneTeacherCountTable() {
         enabled: true,
     });
 
-    /* ---- API → satırlar ---------------------------------------------- */
     const rows: Row[] = useMemo(() => (
         attendancesData.map((rec: any, idx: number) => ({
-            id: rec.id ?? idx,
+            id: idx,
             lesson_name: rec.lesson_name || rec.lesson?.name || '-',
             teacher_name: rec.teacher_name || rec.teacher?.name_surname || '-',
             demand_cnt: rec.demand_cnt ?? 0,
@@ -96,113 +85,81 @@ export default function OneToOneTeacherCountTable() {
         }))
     ), [attendancesData]);
 
-    /* ---- kolonlar ----------------------------------------------------- */
+    /* —— kolonlar —— */
     const columns: ColumnDefinition<Row>[] = [
-        {
-            key: 'index',
-            label: 'Sıra No',
-            style: { width: 70, textAlign: 'center' },
-            render: (_r, _o, idx: any) => idx! + 1,
-        },
-        { key: 'lesson_name', label: 'Dersler', render: r => r.lesson_name },
-        { key: 'teacher_name', label: 'Öğretmenler', render: r => r.teacher_name },
-        {
-            key: 'demand_cnt', label: 'Talep',
-            style: { textAlign: 'center' },
-            render: r => r.demand_cnt,
-        },
-        {
-            key: 'active_cnt', label: 'Aktif',
-            style: { textAlign: 'center' },
-            render: r => r.active_cnt,
-        },
-        {
-            key: 'present_cnt', label: 'Geldi',
-            style: { textAlign: 'center' },
-            render: r => <span className="text-success">{r.present_cnt}</span>,
-        },
-        {
-            key: 'absent_cnt', label: 'Gelmedi',
-            style: { textAlign: 'center' },
-            render: r => <span className="text-danger">{r.absent_cnt}</span>,
-        },
-        {
-            key: 'actions',
-            label: 'İşlemler',
-            style: { width: 90, textAlign: 'center' },
-            render: row => (
-                <button
-                    className="btn btn-icon btn-sm btn-info-light rounded-pill"
-                    onClick={() => navigate(`${ROOT}/${row.id}`)}   /* kalem */
-                >
-                    <i className="ti ti-pencil" />
-                </button>
-            ),
-        },
+        { key: 'index', label: 'Sıra No', style: { width: 70, textAlign: 'center' }, render: (_r, _o, idx) => idx! + 1 },
+        { key: 'lesson_name', label: 'Ders', render: r => r.lesson_name },
+        { key: 'teacher_name', label: 'Öğretmen Adı', render: r => r.teacher_name },
+        { key: 'demand_cnt', label: 'Talep', style: { textAlign: 'center' }, render: r => r.demand_cnt },
+        { key: 'active_cnt', label: 'Aktif', style: { textAlign: 'center' }, render: r => r.active_cnt },
+        { key: 'present_cnt', label: 'Geldi', style: { textAlign: 'center' }, render: r => <span className="text-success">{r.present_cnt}</span> },
+        { key: 'absent_cnt', label: 'Gelmedi', style: { textAlign: 'center' }, render: r => <span className="text-danger">{r.absent_cnt}</span> },
     ];
 
-    /* ---- filtreler ---------------------------------------------------- */
+
     const filters: FilterDefinition[] = [
         {
-            key: 'dateRange', label: 'Tarih Aralığı', type: 'doubledate',
+            key: 'dateRange', label: 'Tarih Aralığı', type: 'doubledate', col: 1,
             value: dateRange,
             onChange: v => setDateRange(v ?? { startDate: '', endDate: '' }),
         },
         {
-            key: 'class_level', label: 'Sınıf Seviyesi',
+            key: 'class_level', label: 'Sınıf Seviyesi', type: 'select', col: 1,
             value: classLevel,
             onClick: () => setEnabled(e => ({ ...e, levels: true })),
             onChange: v => { setClassLevel(v); setClassroom(''); },
             options: levelsData.map(l => ({ value: String(l.id), label: l.name })),
         },
         {
-            key: 'classroom', label: 'Sınıf / Şube',
+            key: 'classroom', label: 'Sınıf / Şube', type: 'select', col: 1,
             value: classroom,
             onClick: () => setEnabled(e => ({ ...e, classes: true })),
             onChange: setClassroom,
             options: classroomData.map(c => ({ value: String(c.id), label: c.name })),
         },
         {
-            key: 'lesson', label: 'Dersler',
+            key: 'lesson', label: 'Ders', type: 'select', col: 1,
             value: lesson,
             onClick: () => setEnabled(e => ({ ...e, lessons: true })),
             onChange: setLesson,
             options: lessonsData.map(l => ({ value: String(l.id), label: l.name })),
         },
         {
-            key: 'teacher', label: 'Öğretmenler',
+            key: 'teacher', label: 'Öğretmen', type: 'select', col: 1,
             value: teacher,
             onClick: () => setEnabled(e => ({ ...e, teachers: true })),
             onChange: setTeacher,
             options: teachersData.map(t => ({
                 value: String(t.teacher_id),
-                label: t.teacher?.name_surname ?? '-',
+                label: t.teacher?.name_surname || '-',
             })),
         },
     ];
 
-    /* ---- render ------------------------------------------------------- */
+
     return (
-        <ReusableTable<Row>
-            tableMode="single"
-            columns={columns}
-            data={rows}
-            loading={loading}
-            error={error}
-
-            filters={filters}
-            showExportButtons
-
-            onAdd={() => navigate(`${ROOT}/new`)}
-
-            currentPage={page}
-            totalPages={totalPages}
-            totalItems={totalItems}
-            pageSize={pageSize}
-            onPageChange={setPage}
-            onPageSizeChange={s => { setPageSize(s); setPage(1); }}
-
-            exportFileName="one_to_one_teacher_counts"
-        />
+        <div>
+            <FilterGroup
+                filters={filters}
+                columnsPerRow={4}
+                navigate={useNavigate()}
+            />
+            <ReusableTable<Row>
+                pageTitle="Öğretmen İstatistikleri"
+                tableMode="single"
+                columns={columns}
+                data={rows}
+                loading={loading}
+                error={error}
+                showExportButtons
+                currentPage={page}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                pageSize={paginate}
+                onPageChange={setPage}
+                onPageSizeChange={s => { setPaginate(s); setPage(1); }}
+                exportFileName="one_to_one_teacher_counts"
+            />
+        </div>
     );
 }

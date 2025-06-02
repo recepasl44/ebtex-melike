@@ -91,7 +91,6 @@ export function statusNumbersTable(_params?: any) {
       render: (row: ScheduledAssignmentData) => {
         return (
           <div className="flex gap-2 justify-content-center">
-            {" "}
             <Button
               variant="primary-light"
               size="sm"

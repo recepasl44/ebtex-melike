@@ -301,7 +301,7 @@ const AssignmentsCheckCrudModal: React.FC<Props> = ({
         if (mode === 'add') await addNewAssignmentStudent({
             ...vals,
             id: 0,
-            assigment_id: 0,
+            assignment_id: 0,
         });
         else if (id)
             await updateExistingAssignmentStudent({

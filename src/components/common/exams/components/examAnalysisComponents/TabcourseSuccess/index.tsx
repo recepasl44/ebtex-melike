@@ -12,7 +12,7 @@ interface TabcourseSuccessProps {
 
 const TabcourseSuccess: React.FC<TabcourseSuccessProps> = ({ initialData }) => {
   const [courseData, setCourseData] = useState(initialData);
- 
+
   // Get theme mode from Redux
   const localVariable = useSelector((state: RootState) => state.ui);
   const isDark = localVariable.dataThemeMode === "dark";
@@ -140,6 +140,8 @@ const TabcourseSuccess: React.FC<TabcourseSuccessProps> = ({ initialData }) => {
         style: {
           ...leftAlignedCellStyle,
           width: "300px",
+          background: isDark ? "#263548" : "#8699A3",
+          color: isDark ? "#E2E8F0" : "white",
         },
       },
       ...result.colnums.map((col, index) => ({
@@ -147,6 +149,8 @@ const TabcourseSuccess: React.FC<TabcourseSuccessProps> = ({ initialData }) => {
         content: renderCellContent(col.cell, col.rate),
         style: {
           ...centeredCellStyle,
+          background: isDark ? "#263548" : "#8699A3",
+          color: isDark ? "#E2E8F0" : "white",
         },
       })),
     ],
@@ -159,13 +163,17 @@ const TabcourseSuccess: React.FC<TabcourseSuccessProps> = ({ initialData }) => {
           isAccordion: true,
           style: {
             ...leftAlignedCellStyle,
+            background: isDark ? "#1E293B" : "#8699A366",
             padding: "0px 20px",
+            color: isDark ? "#E2E8F0" : "#000",
           },
         },
         ...unit.colnums.map((col) => ({
           content: renderCellContent(col.cell, col?.rate),
           style: {
             ...centeredCellStyle,
+            background: isDark ? "#1E293B" : "#8699A366",
+            color: isDark ? "#E2E8F0" : "#000",
           },
         })),
       ],
@@ -177,13 +185,16 @@ const TabcourseSuccess: React.FC<TabcourseSuccessProps> = ({ initialData }) => {
             style: {
               ...leftAlignedCellStyle,
               width: "300px",
+              background: isDark ? "#0F172A" : "#8699A31A",
               padding: "0px 55px",
+              color: isDark ? "#E2E8F0" : "#000",
             },
           },
           ...achievement.colnums.map((col) => ({
             content: renderCellContent(col.cell, col.rate),
             style: {
               ...centeredCellStyle,
+              background: isDark ? "#0F172A" : "#8699A31A",
               color: isDark ? "#E2E8F0" : "#000",
             },
           })),
@@ -208,7 +219,6 @@ const TabcourseSuccess: React.FC<TabcourseSuccessProps> = ({ initialData }) => {
         headers={headers}
         rows={rows}
         onCellAction={handleCellAction}
-        isDark={isDark}
       />
     </div>
   );

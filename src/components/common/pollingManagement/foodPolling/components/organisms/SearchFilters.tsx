@@ -6,6 +6,7 @@ import SpkFlatpickr from "../../../../../../@spk-reusable-components/reusable-pl
 export interface FilterDefinition {
     key: string;
     label: string;
+    col?: number;
     type:
     | "text"
     | "number"
@@ -19,9 +20,12 @@ export interface FilterDefinition {
     | "phone"
     | "textarea"
     | "iban"
-    | "autocomplete";
-    value?: string | { startDate: string; endDate: string };
+
+    | "autocomplete"
+    | "multiselect";
+    value?: string | string[] | { startDate: string; endDate: string };
     options?: { value: string; label: string }[];
+    selectProps?: any;
     plus?: boolean | string;
     dependencyKey?: string;
     onChange?: (value: any) => void;

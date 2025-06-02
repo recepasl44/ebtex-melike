@@ -1,13 +1,14 @@
 
-
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-
 import ReusableTable, {
     ColumnDefinition,
-    FilterDefinition,
 } from '../../../../ReusableTable';
+
+import FilterGroup, {
+    FilterDefinition,
+} from '../../components/organisms/SearchFilters';
 
 import { useAttendancesTable } from '../../../../../hooks/attendance/useList';
 import { useLevelsTable } from '../../../../../hooks/levels/useList';
@@ -16,21 +17,24 @@ import { useAttendanceStudentsTable } from '../../../../../hooks/attendanceStude
 import { useAttendanceTeachersTable } from '../../../../../hooks/attendanceTeacher/useList';
 import { useGroupsTable } from '../../../../../hooks/group/useList';
 import { useUsedAreasList } from '../../../../../hooks/usedareas/useList';
+import { useAttendanceDelete } from '../../../../../hooks/attendance/useDelete';
 
-
+/* ───────── Satır tipi ───────── */
 interface Row {
     id: number;
-    meal_name: string;    // Öğün / Grup
-    area_name: string;    // Yemek Alanı
-    class_name: string;   // Sınıf / Şube
-    student_name: string; // Ad Soyad
+    meal_name: string;
+    area_name: string;
+    class_name: string;
+    student_name: string;
 }
 
 const MODAL_BASE = `${import.meta.env.BASE_URL}pollingManagement/FoodPlanModal`;
 
 export default function FoodGroupPlanTable() {
     const navigate = useNavigate();
+    const { deleteExistingAttendance, error: deleteError } = useAttendanceDelete();
 
+    /* —— filtre state’leri —— */
     const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' });
     const [mealName, setMealName] = useState('');
     const [groupId, setGroupId] = useState('');
@@ -40,16 +44,17 @@ export default function FoodGroupPlanTable() {
     const [student, setStudent] = useState('');
     const [teacher, setTeacher] = useState('');
 
-    const [pageSize, setPageSize] = useState(10);
+    /* —— sayfalama —— */
+    const [paginate, setPaginate] = useState(10);
     const [page, setPage] = useState(1);
 
-
+    /* —— lazy flags —— */
     const [enabled, setEnabled] = useState({
         groups: false, areas: false, levels: false,
         classes: false, students: false, teachers: false,
     });
 
-
+    /* —— look-ups —— */
     const { groupsData = [] } = useGroupsTable({ enabled: enabled.groups });
     const { usedAreasData = [] } = useUsedAreasList({ enabled: enabled.areas });
     const { levelsData = [] } = useLevelsTable({ enabled: enabled.levels });
@@ -63,12 +68,13 @@ export default function FoodGroupPlanTable() {
     const { attendanceTeachersData: teachersData = [] } =
         useAttendanceTeachersTable({ enabled: enabled.teachers });
 
+    /* —— ana sorgu —— */
     const {
-        attendancesData, loading, error,
-        totalPages, totalItems,
+        attendancesData = [],
+        loading, error, totalPages, totalItems,
     } = useAttendancesTable({
         enabled: true,
-        page, pageSize,
+        page, paginate,
         start_date: dateRange.startDate || undefined,
         end_date: dateRange.endDate || undefined,
         name: mealName || undefined,
@@ -80,9 +86,9 @@ export default function FoodGroupPlanTable() {
         teacher_id: +teacher || undefined,
     });
 
-
+    /* —— satırlar —— */
     const rows: Row[] = useMemo(() => (
-        (attendancesData ?? []).flatMap((a: any) => {
+        attendancesData.flatMap((a: any) => {
             const cls = a.classroom?.name || a.level?.name || '-';
             const area = a.used_area?.name || '-';
             const meal = a.name || '-';
@@ -105,12 +111,13 @@ export default function FoodGroupPlanTable() {
         })
     ), [attendancesData]);
 
-
+    /* —— kolonlar —— */
     const columns: ColumnDefinition<Row>[] = useMemo(() => [
         {
             key: 'index', label: 'Sıra No',
             style: { width: 70, textAlign: 'center' },
-            render: (_r, _o, idx) => idx! + 1,
+            render: (_r, _o, idx) =>
+                <div className="text-center">{idx !== undefined ? idx + 1 : ''}</div>,
         },
         { key: 'meal_name', label: 'Öğün / Grup', render: r => r.meal_name },
         { key: 'area_name', label: 'Yemek Alanı', render: r => r.area_name },
@@ -119,9 +126,8 @@ export default function FoodGroupPlanTable() {
         {
             key: 'actions', label: 'İşlemler',
             style: { width: 110, textAlign: 'center' },
-            render: row => (
+            render: (row, openDeleteModal) => (
                 <div className="d-flex justify-content-center gap-2">
-                    {/* Düzenle */}
                     <button
                         type="button"
                         className="btn btn-icon btn-sm btn-info-light rounded-pill"
@@ -129,11 +135,10 @@ export default function FoodGroupPlanTable() {
                     >
                         <i className="ti ti-pencil" />
                     </button>
-                    {/* Sil */}
                     <button
                         type="button"
                         className="btn btn-icon btn-sm btn-danger-light rounded-pill"
-                        onClick={() => { }}
+                        onClick={() => openDeleteModal && openDeleteModal(row)}
                     >
                         <i className="ti ti-trash" />
                     </button>
@@ -142,101 +147,109 @@ export default function FoodGroupPlanTable() {
         },
     ], [navigate]);
 
+    /* —— sabit öğün seçenekleri —— */
     const mealOptions = [
-
         { value: 'kahvaltı', label: 'Kahvaltı' },
         { value: 'öğle yemeği', label: 'Öğle Yemeği' },
         { value: 'akşam yemeği', label: 'Akşam Yemeği' },
     ];
 
-
+    /* —— filtreler (col:1) —— */
     const filters: FilterDefinition[] = useMemo(() => [
         {
-            key: 'dateRange', label: 'Tarih Aralığı', type: 'doubledate',
-            value: dateRange, onChange: v => setDateRange(v ?? { startDate: '', endDate: '' })
+            key: 'dateRange', label: 'Tarih Aralığı', type: 'doubledate', col: 1,
+            value: dateRange,
+            onChange: v => setDateRange(v ?? { startDate: '', endDate: '' }),
         },
-
         {
-            key: 'meal_name', label: 'Öğün', type: 'select',   // 🔸 text → select
-            value: mealName, onChange: setMealName,
+            key: 'meal_name', label: 'Öğün', type: 'select', col: 1,
+            value: mealName,
+            onChange: setMealName,
             options: mealOptions,
         },
-
         {
-            key: 'group_id', label: 'Grup Adı', type: 'select',
-            value: groupId, onChange: setGroupId,
+            key: 'group_id', label: 'Grup Adı', type: 'select', col: 1,
+            value: groupId,
             onClick: () => setEnabled(e => ({ ...e, groups: true })),
-            options: groupsData.map(g => ({ value: String(g.id), label: g.name }))
+            onChange: setGroupId,
+            options: groupsData.map(g => ({ value: String(g.id), label: g.name })),
         },
-
         {
-            key: 'area_id', label: 'Yemek Alanı', type: 'select',
-            value: areaId, onChange: setAreaId,
+            key: 'area_id', label: 'Yemek Alanı', type: 'select', col: 1,
+            value: areaId,
             onClick: () => setEnabled(e => ({ ...e, areas: true })),
-            options: usedAreasData.map(a => ({ value: String(a.id), label: a.name }))
+            onChange: setAreaId,
+            options: usedAreasData.map(a => ({ value: String(a.id), label: a.name })),
         },
-
         {
-            key: 'class_level', label: 'Sınıf Seviyesi', type: 'select',
+            key: 'class_level', label: 'Sınıf Seviyesi', type: 'select', col: 1,
             value: classLevel,
             onClick: () => setEnabled(e => ({ ...e, levels: true })),
             onChange: v => { setClassLevel(v); setClassroom(''); },
-            options: levelsData.map(l => ({ value: String(l.id), label: l.name }))
+            options: levelsData.map(l => ({ value: String(l.id), label: l.name })),
         },
-
         {
-            key: 'classroom', label: 'Sınıf / Şube', type: 'select',
-            value: classroom, onChange: setClassroom,
+            key: 'classroom', label: 'Sınıf / Şube', type: 'select', col: 1,
+            value: classroom,
             onClick: () => setEnabled(e => ({ ...e, classes: true })),
-            options: classroomData.map(c => ({ value: String(c.id), label: c.name }))
+            onChange: setClassroom,
+            options: classroomData.map(c => ({ value: String(c.id), label: c.name })),
         },
-
         {
-            key: 'student', label: 'Öğrenciler', type: 'select',
-            value: student, onChange: setStudent,
+            key: 'student', label: 'Öğrenci', type: 'select', col: 1,
+            value: student,
             onClick: () => setEnabled(e => ({ ...e, students: true })),
+            onChange: setStudent,
             options: studentsData.map(s => ({
                 value: String(s.id),
                 label: s.name_surname || s.name ||
                     `${s.first_name ?? ''} ${s.last_name ?? ''}`.trim(),
-            }))
+            })),
         },
-
         {
-            key: 'teacher', label: 'Öğretmen / Personel', type: 'select',
-            value: teacher, onChange: setTeacher,
+            key: 'teacher', label: 'Öğretmen / Personel', type: 'select', col: 1,
+            value: teacher,
             onClick: () => setEnabled(e => ({ ...e, teachers: true })),
+            onChange: setTeacher,
             options: teachersData.map(t => ({
                 value: String(t.teacher_id),
                 label: t.teacher?.name_surname || '-',
-            }))
+            })),
         },
     ], [
         dateRange, mealName, groupId, areaId, classLevel, classroom, student, teacher,
         groupsData, usedAreasData, levelsData, classroomData, studentsData, teachersData,
     ]);
 
+    const handleDeleteRow = (row: Row) =>
+        row.id && deleteExistingAttendance(row.id);
+
+    /* —— render —— */
     return (
-        <ReusableTable<Row>
-            tableMode="single"
-            columns={columns}
-            data={rows}
-            loading={loading}
-            error={error}
+        <>
+            <FilterGroup
+                filters={filters}
+                columnsPerRow={4}
+                navigate={navigate}
+            />
 
-            filters={filters}
-            showExportButtons
-
-            onAdd={() => navigate(MODAL_BASE)}
-
-            currentPage={page}
-            totalPages={totalPages}
-            totalItems={totalItems}
-            pageSize={pageSize}
-            onPageChange={setPage}
-            onPageSizeChange={s => { setPageSize(s); setPage(1); }}
-
-            exportFileName="food_group_plan"
-        />
+            <ReusableTable<Row>
+                tableMode="single"
+                columns={columns}
+                data={rows}
+                loading={loading}
+                error={error || deleteError}
+                onDeleteRow={handleDeleteRow}
+                showExportButtons
+                onAdd={() => navigate(MODAL_BASE)}
+                currentPage={page}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                pageSize={paginate}
+                onPageChange={setPage}
+                onPageSizeChange={s => { setPaginate(s); setPage(1); }}
+                exportFileName="food_group_plan"
+            />
+        </>
     );
 }

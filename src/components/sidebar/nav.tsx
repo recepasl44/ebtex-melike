@@ -98,8 +98,27 @@ export const MENUITEMS: any = [
       {
         path: "pollingManagement/index",
         type: "link",
-        title: "Sınıf-Ders Yoklaması",
+        title: "Sınıf-Ders Yoklaması"
+        ,
       },
+      {
+        path: "pollingManagement/teachersIndex",
+        type: "link",
+        title: "Öğretmen Yoklaması"
+        ,
+      },
+      {
+        path: "pollingManagement/parentIndex",
+        type: "link",
+        title: "Veli Talep Girişi",
+      },
+      {
+        path: "pollingManagement/idareİndex",
+        type: "link",
+        title: "Okul-İdare Ve Destek Kadrosu",
+      },
+
+      ,
       {
         path: "pollingManagement/clupindex",
         type: "link",

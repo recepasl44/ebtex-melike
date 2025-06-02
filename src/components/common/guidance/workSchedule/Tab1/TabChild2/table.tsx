@@ -87,7 +87,6 @@ export default function interviewTable(_params?: any) {
       render: (row) => {
         return (
           <div className="flex gap-2">
-            {" "}
             <Button
               variant="info-light"
               size="sm"
@@ -99,7 +98,7 @@ export default function interviewTable(_params?: any) {
               }}
             >
               <i className="ti ti-pencil"></i>
-            </Button>{" "}
+            </Button>
             <Button
               variant="danger-light"
               size="sm"

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useCourseUpdate } from "../../hooks/course/useUpdate";
-import { useCourseAdd } from "../../hooks/course/useAdd";
-import { useCourseShow } from "../../hooks/course/useDetail";
+import { useCourseUpdate } from "../../../components/hooks/course/useUpdate";
+import { useCourseAdd } from "../../../components/hooks/course/useAdd";
+import { useCourseShow } from "../../../components/hooks/course/useDetail";
 import ReusableModalForm, { FieldDefinition } from "../ReusableModalForm";
 import { FormikHelpers, FormikValues } from "formik";
 

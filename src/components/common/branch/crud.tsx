@@ -2,9 +2,9 @@ import React, { useState, useEffect, FormEvent, ChangeEvent } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 
-import { useBranchAdd } from "../../hooks/branch/useBranchAdd";
-import { useBranchUpdate } from "../../hooks/branch/useBranchUpdate";
-import { useBranchShow } from "../../hooks/branch/useBranchShow";
+import { useBranchAdd } from "../../../components/hooks/branch/useBranchAdd";
+import { useBranchUpdate } from "../../../components/hooks/branch/useBranchUpdate";
+import { useBranchShow } from "../../../components/hooks/branch/useBranchShow";
 
 interface IBranchFormData {
   name: string;

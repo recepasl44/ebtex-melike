@@ -2,8 +2,8 @@ import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import ReusableTable, {
   ColumnDefinition,
-} from "../ReusableTable";
-import { useBranchTable } from "../../hooks/branch/useBranchList";
+} from "../../../components/common/ReusableTable";
+import { useBranchTable } from "../../../components/hooks/branch/useBranchList";
 import { Branch } from "../../../types/branch/list";
 import { Button } from "react-bootstrap";
 

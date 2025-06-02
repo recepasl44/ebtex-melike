@@ -1,9 +1,9 @@
 
 import  { Fragment, useContext, useEffect } from 'react'
-import Themeprimarycolor, * as switcherdata from "../common/data/switcherdata/switcherdata"
+import Themeprimarycolor, * as switcherdata from "../../components/common/data/switcherdata/switcherdata"
 import { connect } from "react-redux"
 import { Col, Nav, Tab } from "react-bootstrap"
-import {ThemeChanger} from  "../common/ui/redux/action"
+import {ThemeChanger} from  "../../components/common/ui/redux/action"
 import SpkButton from "../../@spk-reusable-components/reusable-uielements/spk-button"
 import SpkTooltips from '../../@spk-reusable-components/reusable-uielements/spk-tooltips'
 import { Link } from 'react-router-dom'

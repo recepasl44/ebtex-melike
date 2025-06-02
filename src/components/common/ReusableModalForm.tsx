@@ -56,13 +56,7 @@ export interface FieldDefinition {
   onFocus?: (formik: any) => void;
   onInputChange?: (text: string, formik: any) => void;
   plus?: string;
-    buttonText?: string; // Buton metni özelliği eklendi
-
-
   enableReinitialize?: boolean;
-    buttonVoid?: () => void; // Buton özelliği eklendi
-
-
 }
 
 /** Gelen field'lar için Yup şemasını otomatik oluşturur. */
@@ -107,8 +101,18 @@ function buildYupSchemaFromFields(fields: FieldDefinition[]) {
     }
 
     // Zorunlu mu?
-    if (f.required) {
-      schema = schema.required("Zorunlu alan");
+    if (f.type === "doubledate") {
+      const objSchema = Yup.object().shape({
+        startDate: Yup.string(),
+        endDate: Yup.string(),
+      });
+      shape[f.name] = f.required
+        ? Yup.object().shape({
+          startDate: Yup.string().required("Zorunlu alan"),
+          endDate: Yup.string().required("Zorunlu alan"),
+        })
+        : objSchema;
+      return;
     }
 
     // Pattern
@@ -176,10 +180,6 @@ interface ReusableModalFormProps<T extends FormikValues> {
   /** Stepper (Opsiyonel) */
   showStepper?: boolean;
   steps?: string[];
-  buttonVoid?: () => void; // Buton özelliği eklendi
-
-  buttonText?: string; // Buton metni özelliği eklendi
-
 
   children?: React.ReactNode;
   activeStep?: number;
@@ -210,12 +210,11 @@ export default function ReusableModalForm<T extends FormikValues>({
   autoGoBackOnModalClose = false,
   hideButtons = false,
   mode = "double",
- buttonVoid,
+
   /** Stepper */
   showStepper = false,
   steps = [],
   activeStep = 0,
-    buttonText,
   handleStepAttempt,
 }: ReusableModalFormProps<T>) {
   const navigate = useNavigate();
@@ -313,18 +312,13 @@ export default function ReusableModalForm<T extends FormikValues>({
                 </Modal.Body>
                 {!hideButtons && (
                   <Modal.Footer>
-                  <div className="me-auto">
-                      {buttonVoid && (
-                        <Button
-                          variant="outline-secondary"
-                          onClick={buttonVoid}
-                          disabled={isLoading}
-                        >
-                          {buttonText}
-                        </Button>
-                      )}
-                    </div>
-
+                    <Button
+                      variant="outline-secondary"
+                      onClick={handleClose}
+                      disabled={isLoading}
+                    >
+                      {cancelButtonLabel}
+                    </Button>
                     <Button
                       variant="outline-secondary"
                       type="submit"
@@ -1258,12 +1252,6 @@ export function renderField(
           name={f.name}
           className="form-control"
           placeholder={f.placeholder || ""}
-          onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-            formik.handleChange(e);
-            if (f.onChange) {
-              f.onChange(e.target.value, formik);
-            }
-          }}
         />
       </div>
     </BsForm.Group>

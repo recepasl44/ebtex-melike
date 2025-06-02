@@ -26,7 +26,7 @@ const Calendar = () => {
   };
 
   return (
-    <Col xxl={12} s>
+    <Col xxl={4} xl={4} lg={6}>
       <Card className="custom-card">
         <Card.Header>
           <Card.Title>Takvim</Card.Title>

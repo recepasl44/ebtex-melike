@@ -137,9 +137,7 @@ const Row3Component: React.FC<Row3Props> = ({ data }) => {
 
       {/* Personel izin tablosu  veli geri bildirim panemmli */}
       <Row>
-        <Col xxl={6} xl={6}>
         <StaffLeaveTrackingTableRow staffLeaveTracking={staffLeaveTracking} />
-        </Col>
         <Col xxl={6} xl={6}>
           <ParentFeedbackPanelTable data={parentFeedbackPanel} />
           <ExamCountdown examCountdown={examCountdown} />

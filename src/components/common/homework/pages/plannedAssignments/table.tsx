@@ -72,6 +72,8 @@ export default function PlannedAssignmentsTable() {
             status: assignStatus || undefined,
             start_date: dateRange.startDate || undefined,
             end_date: dateRange.endDate || undefined,
+            lesson: lesson || undefined,
+            unit: unit || undefined,
             page,
             pageSize,
             enabled: true,

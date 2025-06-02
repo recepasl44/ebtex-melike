@@ -175,11 +175,11 @@ export default function PersonelDetail() {
   return (
     <div className="flex" style={{ padding: "23px 50px 0" }}>
       <TabsContainer
-      tabs={tabsConfig as any} // Temporary type assertion to bypass type check
-      onTabChange={(p, c) => {
-        setParentIndex(p);
-        setChildIndex(c);
-      }}
+        tabs={tabsConfig}
+        onTabChange={(p, c) => {
+          setParentIndex(p);
+          setChildIndex(c);
+        }}
       />
     </div>
   );

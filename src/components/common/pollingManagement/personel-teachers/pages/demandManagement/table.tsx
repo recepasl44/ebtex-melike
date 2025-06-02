@@ -1,123 +1,141 @@
-/* -------------------------------------------------------------------------- */
-/* table.tsx – Personel / Öğretmen Yoklama › Talep Yönetimi                   */
-/* -------------------------------------------------------------------------- */
+/* DemandManagementTable.tsx – revize */
 
-import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useMemo, useState, useEffect } from 'react';
 import dayjs from 'dayjs';
-
 import ReusableTable, {
     ColumnDefinition,
     FilterDefinition,
 } from '../../../../ReusableTable';
 
-/* ───────── API hook’ları ───────── */
 import { useAttendancesTable } from '../../../../../hooks/attendance/useList';
 import { useUsersTable } from '../../../../../hooks/user/useList';
 
-/* ───── Satır tipi ───── */
+/* —— Row tipi —— */
 interface Row {
     id: number;
     personnel_name: string;
-    date_range: string;     // “01.01.2025 – 08.01.2025”
-    demand_type: string;    // İzin | Rapor | vb.
-    status: string;         // Bekliyor | Onaylandı | Reddedildi
-    description: string;    // Açıklama
-    reported: boolean;      // Muhasebeye Bildirildi mi?
+    date_range: string;
+    demand_type: string;
+    status: number;       // 0=Bekliyor • 1=Onaylandı • 2=Reddedildi
+    description: string;
+    reported: number;     // 0=Hayır • 1=Evet
+    clickedStatus: boolean;
+    clickedRep: boolean;
 }
 
-/* Router kökü (edit / detail v.s.) */
-const ROOT = `${import.meta.env.BASE_URL}pollingManagement/staffDemands`;
+/* —— Yardımcı eşlemeler —— */
+const STATUS_TXT = ['Onay Bekliyor', 'Onaylandı', 'Reddedildi'];
+const STATUS_CLR = ['text-warning', 'text-success', 'text-danger'];
+const REPORTED_TXT = ['Hayır', 'Evet'];
+const REPORTED_CLR = ['text-danger', 'text-success'];
 
 export default function DemandManagementTable() {
-    const navigate = useNavigate();
-
-    /* ——— filtre state’leri ——— */
+    /* — filtre state’leri — */
     const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' });
     const [personnel, setPersonnel] = useState('');
     const [demandType, setDemandType] = useState('');
-    const [status, setStatus] = useState('');
+    const [statusFlt, setStatusFlt] = useState('');
 
-    const [pageSize, setPageSize] = useState<number>(10);
-    const [page, setPage] = useState<number>(1);
+    const [paginate, setPaginate] = useState(10);
+    const [page, setPage] = useState(1);
 
-    /* ——— Lazy-load bayrakları ——— */
-    const [enabled, setEnabled] = useState({
-        users: false,
-    });
+    /* — lazy listeler — */
+    const [enabled, setEnabled] = useState({ users: false });
+    const { usersData = [] } =
+        useUsersTable({ enabled: enabled.users, role_id: 2, paginate: 999 });
 
-    /* ——— yardımcı listeler ——— */
-    const { usersData = [] } = useUsersTable({
-        enabled: enabled.users,
-        role_id: 2,          // öğretmen + yönetici
-        pageSize: 999,
-    });
+    /* — ana sorgu — */
+    const { attendancesData = [], loading, error, totalPages, totalItems } =
+        useAttendancesTable({
+            enabled: true,
+            page, paginate,
+            start_date: dateRange.startDate || undefined,
+            end_date: dateRange.endDate || undefined,
+            user_id: +personnel || undefined,
+            demand_type: demandType || undefined,
+            status: statusFlt || undefined,
+        });
 
-    /* ——— ana liste ———
-       Burada “attendance” API’si; backend’de “demands” verisini dönüyor
-       varsayımıyla kullanıldı. Uygulamanızda farklı slice varsa
-       yalnızca bu kısmı değiştirmeniz yeter.                               */
-    const {
-        attendancesData = [],
-        loading, error,
-        totalPages, totalItems,
-    } = useAttendancesTable({
-        enabled: true,
-        page, pageSize,
-        start_date: dateRange.startDate || undefined,
-        end_date: dateRange.endDate || undefined,
-        user_id: +personnel || undefined,
-        demand_type: demandType || undefined,
-        status: status || undefined,
-    });
-
-    /* ——— attendances → Row[] ——— */
-    const rows: Row[] = useMemo(() => (
+    /* — API → Row[] — */
+    const baseRows: Row[] = useMemo(() => (
         attendancesData.map((d: any) => ({
             id: d.id,
             personnel_name: d.user?.name_surname || '-',
             date_range: `${dayjs(d.start_date).format('D.M.YYYY')} – ${dayjs(d.end_date).format('D.M.YYYY')}`,
             demand_type: d.demand_type ?? '-',
-            status: d.status ?? '-',
+            status: d.status === 'Onaylandı' ? 1 : d.status === 'Reddedildi' ? 2 : 0,
             description: d.description ?? '-',
-            reported: !!d.is_reported_accounting,
+            reported: d.is_reported_accounting ? 1 : 0,
+            clickedStatus: false,
+            clickedRep: false,
         }))
     ), [attendancesData]);
 
-    /* ——— kolonlar ——— */
+    /* — lokal state — */
+    const [rows, setRows] = useState<Row[]>(baseRows);
+    useEffect(() => setRows(baseRows), [baseRows]);
+
+    /* — değiştirme handler’ları — */
+    const handleStatusChange = (idx: number, value: number) =>
+        setRows(r => r.map((row, i) =>
+            i === idx ? { ...row, status: value, clickedStatus: true } : row,
+        ));
+
+    const handleReportedChange = (idx: number, value: number) =>
+        setRows(r => r.map((row, i) =>
+            i === idx ? { ...row, reported: value, clickedRep: true } : row,
+        ));
+
+    /* — kolonlar — */
     const columns: ColumnDefinition<Row>[] = useMemo(() => [
         { key: 'personnel_name', label: 'Personel Adı', render: r => r.personnel_name },
         { key: 'date_range', label: 'Tarih Aralığı', render: r => r.date_range },
         { key: 'demand_type', label: 'Talep Türü', render: r => r.demand_type },
-        {
-            key: 'status', label: 'Durum',
-            render: r => {
-                if (r.status === 'Onaylandı') return <span className="text-success">{r.status}</span>;
-                if (r.status === 'Bekliyor') return <span className="text-warning">{r.status}</span>;
-                if (r.status === 'Reddedildi') return <span className="text-danger">{r.status}</span>;
-                return r.status;
-            }
-        },
         { key: 'description', label: 'Açıklama', render: r => r.description },
         {
-            key: 'reported', label: 'Muhasebeye Bildirildi mi?',
-            render: r => r.reported ? 'Evet' : 'Hayır'
+            key: 'reported',
+            label: 'Muhasebeye Bildirildi mi?',
+            style: { width: 180 },
+            render: (_r, _o, idx) => {
+                const row = rows[idx!];
+                return (
+                    <select
+                        className={`form-select p-1 ${row.clickedRep ? REPORTED_CLR[row.reported] : ''}`}
+                        style={{ cursor: 'pointer', fontWeight: 500 }}
+                        value={row.clickedRep ? row.reported : ''}
+                        onChange={e => handleReportedChange(idx!, Number(e.target.value))}
+                    >
+                        <option value="" disabled>Tıklayınız</option>
+                        <option value={0} className={REPORTED_CLR[0]}>{REPORTED_TXT[0]}</option>
+                        <option value={1} className={REPORTED_CLR[1]}>{REPORTED_TXT[1]}</option>
+                    </select>
+                );
+            },
         },
         {
-            key: 'actions', label: 'İşlem', style: { textAlign: 'center', width: 90 },
-            render: (row) => (
-                <button
-                    className="btn btn-icon btn-sm btn-info-light rounded-pill"
-                    /* → /pollingManagement/staffDemands/crud/{id} */
-                    onClick={() => navigate(`${ROOT}/crud/${row.id}`)}
-                >
-                    <i className="ti ti-pencil" />
-                </button>
-            ),
+            key: 'status',
+            label: 'Durum',
+            style: { width: 170 },
+            render: (_r, _o, idx) => {
+                const row = rows[idx!];
+                return (
+                    <select
+                        className={`form-select p-1 ${row.clickedStatus ? STATUS_CLR[row.status] : ''}`}
+                        style={{ cursor: 'pointer', fontWeight: 500 }}
+                        value={row.clickedStatus ? row.status : ''}
+                        onChange={e => handleStatusChange(idx!, Number(e.target.value))}
+                    >
+                        <option value="" disabled>Tıklayınız</option>
+                        <option value={0} className={STATUS_CLR[0]}>{STATUS_TXT[0]}</option>
+                        <option value={1} className={STATUS_CLR[1]}>{STATUS_TXT[1]}</option>
+                        <option value={2} className={STATUS_CLR[2]}>{STATUS_TXT[2]}</option>
+                    </select>
+                );
+            },
         },
-    ], [navigate]);
+    ], [rows]);
 
-    /* ——— filtreler ——— */
+    /* — filtreler — */
     const filters: FilterDefinition[] = useMemo(() => [
         {
             key: 'dateRange', label: 'Tarih Aralığı', type: 'doubledate',
@@ -126,8 +144,9 @@ export default function DemandManagementTable() {
         },
         {
             key: 'personnel', label: 'Personel Adı', type: 'select',
-            value: personnel, onChange: setPersonnel,
+            value: personnel,
             onClick: () => setEnabled(e => ({ ...e, users: true })),
+            onChange: setPersonnel,
             options: usersData.map(u => ({
                 value: String(u.id),
                 label: u.name_surname || u.name || '-',
@@ -135,24 +154,27 @@ export default function DemandManagementTable() {
         },
         {
             key: 'demandType', label: 'Talep Türü', type: 'select',
-            value: demandType, onChange: setDemandType,
+            value: demandType,
+            onChange: setDemandType,
             options: [
                 { value: 'izin', label: 'İzin' },
                 { value: 'rapor', label: 'Rapor' },
+                { value: 'görevli', label: 'Görevli' },
             ],
         },
         {
             key: 'status', label: 'Durum', type: 'select',
-            value: status, onChange: setStatus,
+            value: statusFlt,
+            onChange: setStatusFlt,
             options: [
-                { value: 'Bekliyor', label: 'Bekliyor' },
+                { value: 'Onay Bekliyor', label: 'Onay Bekliyor' },
                 { value: 'Onaylandı', label: 'Onaylandı' },
                 { value: 'Reddedildi', label: 'Reddedildi' },
             ],
         },
-    ], [dateRange, personnel, demandType, status, usersData]);
+    ], [dateRange, personnel, demandType, statusFlt, usersData]);
 
-    /* ——— render ——— */
+    /* — render — */
     return (
         <ReusableTable<Row>
             columns={columns}
@@ -163,13 +185,12 @@ export default function DemandManagementTable() {
             tableMode="single"
             showExportButtons
             exportFileName="staff_demand_list"
-
             currentPage={page}
             totalPages={totalPages}
             totalItems={totalItems}
-            pageSize={pageSize}
+            pageSize={paginate}
             onPageChange={setPage}
-            onPageSizeChange={s => { setPageSize(s); setPage(1); }}
+            onPageSizeChange={sz => { setPaginate(sz); setPage(1); }}
         />
     );
 }

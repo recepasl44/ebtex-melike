@@ -1,12 +1,10 @@
-
-import StudentDashboard from "./components/studentDashboard/component";
+import FoundingDirectorDashboard from "./components/foundingDirectorDashboard/component";
 import { dummyDataDashboar } from "./dummyData";
-
 
 const Dashboard = () => {
   return (
     <div style={{ fontFamily: "Poppins, sans-serif" }}>
-      {/* <FoundingDirectorDashboard data={dummyDataDashboar} /> */}
+      <FoundingDirectorDashboard data={dummyDataDashboar} />
       {/* <CorporateLeaderDashboard data={dummyDataDashboar} /> */}
       {/* <ManagementDashboard data={dummyDataDashboar} /> */}
       {/* <TeachersDashboard data={dummyDataDashboar} /> */}
@@ -14,11 +12,7 @@ const Dashboard = () => {
       {/* <StudentAffairsDashboard data={dummyDataDashboar} /> */}
       {/* <FinanceOfficerDashboard data={dummyDataDashboar} /> */}
       {/* <SupportStaffDashboard data={dummyDataDashboar} />  */}
-      {/* <SuerviceDriverDashboard data={dummyDataDashboar} /> */}
-      {/* <ServiceManagerDashboard data={dummyDataDashboar} /> */}
-       {/* <ParentGuardianDashboard data={dummyDataDashboar} />  */}
-       <StudentDashboard data={dummyDataDashboar} />
-  
+      {/* <SuerviceDriverDashboard data={dummyDataDashboar} />*/}
     </div>
   );
 };

@@ -101,7 +101,7 @@ const DailyCourseScheduleTable: React.FC<DailyCourseScheduleTableProps> = ({ dat
   };
 
   return (
-    <Col xxl={12} >
+    <Col xxl={4} xl={4} lg={6}>
       <Card className="custom-card">
         <Card.Header>
           <Card.Title>Günlük Ders Programı</Card.Title>

@@ -131,14 +131,10 @@ const Row2Component: React.FC<Row1Props> = (props) => {
       {/* Personel İzin Takip Tablosu ve Günlük ders Programı - Yan Yana */}
 
       <Row>
-        <Col xl={6} xxl={6}>
-           <StaffLeaveTrackingTableRow
+        <StaffLeaveTrackingTableRow
           staffLeaveTracking={staffLeaveTracking}
         />
-        </Col>
-        <Col xl={6} xxl={6}>
         <DailyCourseScheduleTable data={dailyCourseSchedule} />
-        </Col>
       </Row>
       {/* Haftalık Nöbet Ç,zelgesi*/} 
       <Row>

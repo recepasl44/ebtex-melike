@@ -2,8 +2,8 @@ import { useMemo, useState, useEffect } from "react";
 import { useNavigate, useLocation, data } from "react-router-dom";
 import ReusableTable, {
   ColumnDefinition,
-} from "../../ReusableTable";
-import { useMeetingsList } from "../../../hooks/meetings/useList";
+} from "../../../../components/common/ReusableTable";
+import { useMeetingsList } from "../../../../components/hooks/meetings/useList";
 import { Meeting } from "../../../../types/meetings/list";
 import { Button } from "react-bootstrap";
 import { useBranchTable } from "../../../hooks/branch/useBranchList";

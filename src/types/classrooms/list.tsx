@@ -1,4 +1,5 @@
 export interface IClassroom {
+  lesson_times: never[];
   classroom_id: number;
   id: number;
   name: string;

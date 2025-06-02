@@ -1,32 +1,34 @@
 
-
 import { useState, useMemo } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 
 import ReusableTable, {
     ColumnDefinition,
-    FilterDefinition,
 } from '../../../../ReusableTable';
+
+import FilterGroup, {
+    FilterDefinition,
+} from '../../components/organisms/SearchFilters';
 
 import { useAttendancesTable } from '../../../../../hooks/attendance/useList';
 import { useGroupsTable } from '../../../../../hooks/group/useList';
 import { useUsedAreasList } from '../../../../../hooks/usedareas/useList';
 import { useAttendanceTeachersTable } from '../../../../../hooks/attendanceTeacher/useList';
 
+/* ───────── Satır tipi ───────── */
 interface Row {
     id: number;
-    date: string;   // Tarih
-    club_name: string;   // Kulüp / Grup
-    week_days: string;   // Günler (metin, virgülle ayırdık)
-    time_range: string;   // Saat Aralığı
-    area_name: string;   // Kulüp Alanı
-    teacher_name: string;   // Görevli Öğretmen
+    date: string;
+    club_name: string;
+    week_days: string;
+    time_range: string;
+    area_name: string;
+    teacher_name: string;
 }
 
-
 export default function ClubProgramTable() {
-
+    /* —— filtre state’leri —— */
     const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' });
     const [timeRange, setTimeRange] = useState('');
     const [clubName, setClubName] = useState('');
@@ -35,27 +37,27 @@ export default function ClubProgramTable() {
     const [weekDays, setWeekDays] = useState<string[]>([]);
     const [teacher, setTeacher] = useState('');
 
-    const [pageSize, setPageSize] = useState(10);
+    /* —— sayfalama —— */
+    const [paginate, setPaginate] = useState(10);
     const [page, setPage] = useState(1);
 
-
+    /* —— lazy flags —— */
     const [enabled, setEnabled] = useState({
-        groups: false,
-        areas: false,
-        teachers: false,
+        groups: false, areas: false, teachers: false,
     });
 
-    const { groupsData } = useGroupsTable({ enabled: enabled.groups });
-    const { usedAreasData } = useUsedAreasList({ enabled: enabled.areas });
-    const { attendanceTeachersData: teachersData }
-        = useAttendanceTeachersTable({ enabled: enabled.teachers });
+    /* —— look-ups —— */
+    const { groupsData = [] } = useGroupsTable({ enabled: enabled.groups });
+    const { usedAreasData = [] } = useUsedAreasList({ enabled: enabled.areas });
+    const { attendanceTeachersData: teachersData = [] } =
+        useAttendanceTeachersTable({ enabled: enabled.teachers });
 
+    /* —— ana sorgu —— */
     const {
-        attendancesData,
-        loading, error,
-        totalPages, totalItems,
+        attendancesData = [],
+        loading, error, totalPages, totalItems,
     } = useAttendancesTable({
-        page, pageSize,
+        page, paginate,
         start_date: dateRange.startDate || undefined,
         end_date: dateRange.endDate || undefined,
         group_id: +groupId || undefined,
@@ -67,8 +69,15 @@ export default function ClubProgramTable() {
         enabled: true,
     });
 
+
+    const clubNameOptions = useMemo(() => {
+        const set = new Set<string>();
+        attendancesData.forEach((a: any) => { if (a.name) set.add(a.name); });
+        return Array.from(set).map(n => ({ value: n, label: n }));
+    }, [attendancesData]);
+    /* —— satırlar —— */
     const rows: Row[] = useMemo(() => (
-        (attendancesData ?? []).map((a: any) => ({
+        attendancesData.map((a: any) => ({
             id: a.id,
             date: dayjs(a.start_date).format('DD.MM.YYYY'),
             club_name: a.name || '-',
@@ -94,80 +103,88 @@ export default function ClubProgramTable() {
 
     const filters: FilterDefinition[] = useMemo(() => [
         {
-            key: 'dateRange', label: 'Tarih Aralığı', type: 'doubledate',
-            value: dateRange, onChange: v => setDateRange(v ?? { startDate: '', endDate: '' })
+            key: 'dateRange', label: 'Tarih Aralığı', type: 'doubledate', col: 1,
+            value: dateRange,
+            onChange: v => setDateRange(v ?? { startDate: '', endDate: '' }),
         },
-
         {
-            key: 'time_range', label: 'Saat Aralığı', type: 'text',
-            value: timeRange, onChange: setTimeRange
+            key: 'time_range', label: 'Saat Aralığı', type: 'text', col: 1,
+            value: timeRange,
+            onChange: setTimeRange,
         },
-
         {
-            key: 'club_name', label: 'Kulüp Adı', type: 'text',
-            value: clubName, onChange: setClubName
+            key: 'club_name', label: 'Kulüp Adı', type: 'select', col: 1,
+            value: clubName,
+            onChange: setClubName,
+            options: clubNameOptions,
         },
-
         {
-            key: 'group_id', label: 'Grup Adı', type: 'select',
-            value: groupId, onChange: setGroupId,
+            key: 'group_id', label: 'Grup Adı', type: 'select', col: 1,
+            value: groupId,
             onClick: () => setEnabled(e => ({ ...e, groups: true })),
-            options: (groupsData ?? []).map(g => ({ value: String(g.id), label: g.name }))
+            onChange: setGroupId,
+            options: groupsData.map(g => ({ value: String(g.id), label: g.name })),
         },
-
         {
-            key: 'area_id', label: 'Kulüp Alanı', type: 'select',
-            value: areaId, onChange: setAreaId,
+            key: 'area_id', label: 'Kulüp Alanı', type: 'select', col: 1,
+            value: areaId,
             onClick: () => setEnabled(e => ({ ...e, areas: true })),
-            options: (usedAreasData ?? []).map(a => ({ value: String(a.id), label: a.name }))
+            onChange: setAreaId,
+            options: usedAreasData.map(a => ({ value: String(a.id), label: a.name })),
         },
-
         {
-            key: 'week_days', label: 'Haftanın Günleri', type: 'select',
+            key: 'week_days', label: 'Haftanın Günleri', type: 'select', col: 1,
             value: weekDays,
-            onChange: (v: string | string[]) => setWeekDays(Array.isArray(v) ? v : v ? [v] : []),
+            onChange: (v: string | string[]) =>
+                setWeekDays(Array.isArray(v) ? v : (v ? [v] : [])),
+            isMulti: true,
             options: [
                 { value: '1', label: 'Pzt' }, { value: '2', label: 'Sal' },
                 { value: '3', label: 'Çar' }, { value: '4', label: 'Per' },
                 { value: '5', label: 'Cum' }, { value: '6', label: 'Cmt' },
                 { value: '7', label: 'Paz' },
             ],
-            isMulti: true
         },
-
         {
-            key: 'teacher', label: 'Görevli Öğretmenler', type: 'select',
-            value: teacher, onChange: setTeacher,
+            key: 'teacher', label: 'Görevli Öğretmen', type: 'select', col: 1,
+            value: teacher,
             onClick: () => setEnabled(e => ({ ...e, teachers: true })),
-            options: (teachersData ?? []).map((t: any) => ({
+            onChange: setTeacher,
+            options: teachersData.map((t: any) => ({
                 value: String(t.teacher_id),
                 label: t.teacher?.name_surname ?? '-',
-            }))
+            })),
         },
     ], [
         dateRange, timeRange, clubName, groupId, areaId, weekDays, teacher,
-        groupsData, usedAreasData, teachersData,
+        clubNameOptions, groupsData, usedAreasData, teachersData,
     ]);
 
 
     return (
-        <ReusableTable<Row>
+        <>
+            <FilterGroup
+                filters={filters}
+                columnsPerRow={4}
+                navigate={useNavigate()}
+            />
 
-            tableMode="single"
 
-            columns={columns}
-            data={rows}
-            loading={loading}
-            error={error}
-            filters={filters}
-            showExportButtons
-            currentPage={page}
-            totalPages={totalPages}
-            totalItems={totalItems}
-            pageSize={pageSize}
-            onPageChange={setPage}
-            onPageSizeChange={s => { setPageSize(s); setPage(1); }}
-            exportFileName="club_program_list"
-        />
+            <ReusableTable<Row>
+                tableMode="single"
+                columns={columns}
+                data={rows}
+                loading={loading}
+                error={error}
+                showExportButtons
+                currentPage={page}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                pageSize={paginate}
+                onPageChange={setPage}
+                onPageSizeChange={s => { setPaginate(s); setPage(1); }}
+                exportFileName="club_program_list"
+            />
+        </>
     );
 }

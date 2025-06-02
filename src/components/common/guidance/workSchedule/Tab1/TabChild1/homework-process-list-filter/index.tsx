@@ -244,10 +244,7 @@ const HomeworkListFilter: React.FC<HomeworkListFilterFilterProps> = ({
     student_id: debouncedName,
     period_id: period_id,
   });
-  localStorage.setItem(
-    "01100001 01100010 01110101 01111010 01100101 01110010 01101011 01101111 01101101 01110101 01110010 01100011 01110101",
-    studentId
-  );
+  localStorage.setItem("selected_student_id", studentId);
   // Pager options
   const onPageChange = (newPage: number) => {
     setPage(newPage);
@@ -282,9 +279,6 @@ const HomeworkListFilter: React.FC<HomeworkListFilterFilterProps> = ({
           onDeleteRow={() => {}}
           showExportButtons={true}
           exportFileName="parent_meetings"
-          period_paginate
-          period_field
-          period_date
         />
       ) : (
         <div className="alert alert-info mt-3">

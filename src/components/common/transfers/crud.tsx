@@ -4,9 +4,9 @@ import { FormikHelpers } from "formik";
 
 import ReusableModalForm, { FieldDefinition } from "../ReusableModalForm";
 import { ITransferForm } from "../../../types/transfers/add";
-import { useTransferAdd } from "../../hooks/transfers/useAdd";
-import { useTransferShow } from "../../hooks/transfers/useShow";
-import { useTransferUpdate } from "../../hooks/transfers/useUpdate";
+import { useTransferAdd } from "../../../components/hooks/transfers/useAdd";
+import { useTransferShow } from "../../../components/hooks/transfers/useShow";
+import { useTransferUpdate } from "../../../components/hooks/transfers/useUpdate";
 
 interface TransferModalProps {
   show: boolean;

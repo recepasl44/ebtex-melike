@@ -15,7 +15,6 @@ import {
   PdrMeetingList,
   PeriodicComparison,
   PollTypeDistribution,
-  ServiceRoutePlan,
   StaffLeaveTrackingTable,
   Status,
   Supplier,
@@ -24,9 +23,13 @@ import {
   WeeklyDutySchedule,
   WeeklyFoodsMenu,
 } from "../../../../../type";
-
-import ServiceRoutePlanTable from "./ServiceRoutePlanTable";
-import WageStatusChart from "./WageStatusChart";
+import UpcomingTasksAndRemindersTable from "./UpcomingTasksAndRemindersTable";
+import DistributionofPollingTypeChart from "./DistributionofPollingTypeChart";
+import ExamCountdown from "./ExamCountdown";
+import ServicesStatusTable from "./ServicesStatusTable";
+import MaleandfemaleStudentsCountChart from "./MaleandfemaleStudentsCountChart";
+import WeeklyShiftScheduleTable from "./WeeklyShiftScheduleTable";
+import ClassHourAttendanceSummaryTable from "./ClassHourAttendanceSummaryTable";
 interface LeftSectionProps {
   isDark: boolean;
   cardsData: any[];
@@ -50,27 +53,51 @@ interface LeftSectionProps {
   weeklyDutySchedule: WeeklyDutySchedule[];
   classHourAttendanceSummary: ClassHourAttendanceSummary[];
   upcomingAppointments: Appointment[];
-  serviceRoute:ServiceRoutePlan[]
 }
 
 const LeftSection: React.FC<LeftSectionProps> = ({
   cardsData,
-  serviceRoute,
+  examCountdown,
+  attendanceTypeDistribution,
+  serviceStatus,
+  upcomingTasksAndReminders,
+  maleandfemaleStudentsCount,
+  weeklyDutySchedule,
+  classHourAttendanceSummary,
 }) => {
   return (
     <Row>
       <CardsRow cardsData={cardsData} />
-      <Col xxl={8}>
-        {/* Servis route*/}
-        <ServiceRoutePlanTable serviceRoute={serviceRoute} />
-
+      <Col xxl={6}>
+        {/* Deneme sınavı Puan Dağılımı*/}
+        <MaleandfemaleStudentsCountChart
+          maleandfemaleStudentsCount={maleandfemaleStudentsCount}
+        />
+        {/* Haftalık nöbet cizelgesi */}
+        <WeeklyShiftScheduleTable data={weeklyDutySchedule} />
       </Col>
 
-      <Col xxl={4}>
-    {/* ücret planı durumu */}
-        <WageStatusChart wageStatus={[]}/>
-
+      <Col xxl={6}>
+        <ServicesStatusTable data={serviceStatus} />
+        {/* YOklama türü dağılımı*/}
+        <DistributionofPollingTypeChart data={attendanceTypeDistribution} />
+        {/* Sınav geri sayım */}
+        <ExamCountdown examCountdown={examCountdown} />
       </Col>
+
+      {/* New row for side-by-side components */}
+      <Row>
+        <Col xxl={6} xl={6}>
+          {/*Yaklaşan Görevler ve hatırlatmalar  */}
+          <UpcomingTasksAndRemindersTable
+            upcomingTasksAndReminders={upcomingTasksAndReminders}
+          />
+        </Col>
+        <Col xxl={6} xl={6}>
+          {/* Ders saati yoklama özeti*/}
+          <ClassHourAttendanceSummaryTable data={classHourAttendanceSummary} />
+        </Col>
+      </Row>
     </Row>
   );
 };

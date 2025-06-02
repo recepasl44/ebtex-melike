@@ -77,7 +77,7 @@ export interface AssignmentStudentData {
     delivery_format: string;
     question_count: number;
     source_id: string;
-    assignment_id: number;
+
     unit_id: number;
     lesson_id: number;
     level_id: number;
@@ -85,7 +85,7 @@ export interface AssignmentStudentData {
     assignment: any;
     planned_status: any;
     id: number;
-    assigment_id: number;
+    assignment_id: number;
     assigment: Assignment;
     student_id: number;
     student: Student;

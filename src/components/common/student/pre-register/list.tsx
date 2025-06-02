@@ -4,8 +4,8 @@ import ReusableTable, {
   ColumnDefinition,
   FilterDefinition,
   useDebounce,
-} from "../../ReusableTable";
-import { useListStudents } from "../../../hooks/student/useList";
+} from "../../../../components/common/ReusableTable";
+import { useListStudents } from "../../../../components/hooks/student/useList";
 import { IStudent } from "../../../../types/student/list";
 import { Button } from "react-bootstrap";
 import { useLevelsTable } from "../../../hooks/levels/useList";

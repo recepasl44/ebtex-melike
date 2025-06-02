@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { Spinner } from "react-bootstrap";
-import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable";
+import ReusableTable, { ColumnDefinition } from "../../../../../../components/common/ReusableTable";
 
 import { useDebtShow } from "../../../../../hooks/employee/salary/debt/useDebtShow";
 import { useWeeklyLessonCountShow } from "../../../../../hooks/employee/weekly_lesson_count/useWeeklyLessonCountShow";

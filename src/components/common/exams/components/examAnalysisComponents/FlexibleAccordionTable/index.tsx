@@ -8,17 +8,8 @@ const FlexibleAccordionTable: React.FC<FlexibleAccordionTableProps> = ({
   headers,
   rows,
   onCellAction,
-  isDark = false, // default to false
 }) => {
   const [openRows, setOpenRows] = useState<Record<string, boolean>>({});
-
-  const backgroundColor = isDark ? "#19191C" : "#FFFFFF";
-  const textColor = isDark ? "#E2E8F0" : "#000";
-  const borderStyle = `1px solid ${isDark ? "#374151" : "#E6EFF3"}`;
-
-
-  const headerBg = "#9e5cf71a";
-  const headerTextColor = "#9e5cf7";
 
   useEffect(() => {
     const defaults: Record<string, boolean> = {};
@@ -38,59 +29,33 @@ const FlexibleAccordionTable: React.FC<FlexibleAccordionTableProps> = ({
     setOpenRows((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  /**
-   * Merges default dark/light table styles with user-defined cell styles
-   */
   const getCellStyle = (
     isHeader?: boolean,
     style?: React.CSSProperties
-  ): React.CSSProperties => {
-    // Default styles for header vs regular cells:
-    const defaultHeaderStyles: React.CSSProperties = {
-      height: "26px",
-      textAlign: "center",
-      fontFamily: "Inter",
-      fontSize: "12px",
-      fontWeight: 700,
-      color: headerTextColor,
-      background: headerBg,
-      border: borderStyle,
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      whiteSpace: "nowrap",
-      verticalAlign: "middle",
-    };
+  ): React.CSSProperties => ({
+    verticalAlign: "middle",
+    ...(isHeader
+      ? {
+          backgroundColor: "#4D5875",
+          color: "white",
+          height: "16px",
+          padding: "0",
+          fontSize: "12px",
+          lineHeight: "16px",
+        }
+      : {
+          height: "26px",
+          padding: "0",
+          lineHeight: "26px",
+        }),
+    ...style,
+  });
 
-    const defaultCellStyles: React.CSSProperties = {
-      fontFamily: "Inter",
-      fontSize: "12px",
-      fontWeight: 400,
-      lineHeight: "150%",
-      border: borderStyle,
-      background: backgroundColor,
-      color: textColor,
-      verticalAlign: "middle",
-      // Set a default height to match your usage:
-      height: "26px",
-      // If you want to keep table layout consistent:
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      whiteSpace: "nowrap",
-    };
-
-    // Merge user-supplied style last so it can override defaults
-    return {
-      ...(isHeader ? defaultHeaderStyles : defaultCellStyles),
-      ...style,
-    };
-  };
-
-  // Helper to render the content inside each cell
   const CellContent: React.FC<{
     cell: TableCell;
     isOpen?: boolean;
     rowId: string;
-    cellIndex: number;
+    cellIndex: any;
   }> = ({ cell, isOpen, rowId, cellIndex }) => (
     <>
       {cell.isAccordion && (
@@ -106,7 +71,7 @@ const FlexibleAccordionTable: React.FC<FlexibleAccordionTableProps> = ({
       {cell.action && (
         <button
           onClick={(e) => {
-            e.stopPropagation(); // prevent the row accordion toggle
+            e.stopPropagation(); // Satır açma/kapatma işlemini engellemek için
             onCellAction?.(rowId, cellIndex, "action");
           }}
           style={{ marginLeft: 8 }}
@@ -117,7 +82,6 @@ const FlexibleAccordionTable: React.FC<FlexibleAccordionTableProps> = ({
     </>
   );
 
-  // Render a single cell (either th or td)
   const renderCell = (
     cell: TableCell,
     i: number,
@@ -151,7 +115,6 @@ const FlexibleAccordionTable: React.FC<FlexibleAccordionTableProps> = ({
     );
   };
 
-  // Recursively render rows and nested children
   const renderRowRecursive = (row: TableRow): React.ReactNode => {
     const isOpen = openRows[row.id] || false;
     const isAccordion = row.isAccordion;
@@ -187,9 +150,7 @@ const FlexibleAccordionTable: React.FC<FlexibleAccordionTableProps> = ({
         <thead>
           {headers.map((headerRow, rowIndex) => (
             <tr key={rowIndex}>
-              {headerRow.map((cell, cellIndex) =>
-                renderCell(cell, cellIndex, false)
-              )}
+              {headerRow.map((cell, cellIndex) => renderCell(cell, cellIndex))}
             </tr>
           ))}
         </thead>

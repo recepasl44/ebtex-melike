@@ -33,5 +33,4 @@ export interface TableCell {
     headers: TableCell[][];
     rows: TableRow[];
     onCellAction?: (rowId: string, cellIndex: number, actionType: string) => void;
-    isDark?: boolean;
   }

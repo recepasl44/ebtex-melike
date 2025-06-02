@@ -17,11 +17,6 @@ import { usePeriodsTable } from "../../../../../../hooks/periods/useList";
 
 interface PeriodFormData extends FormikValues {
   teacher_id?: number;
-  period_id?: number;
-  period?: {
-    start_date: string;
-    end_date: string;
-  };
   lesson_id?: number;
   unit_id?: number;
   chapter_id?: number;
@@ -48,16 +43,23 @@ const PeriodCrud: React.FC<PeriodModalProps> = ({ show, onRefresh }) => {
   const mode = id ? "update" : "add";
   const [formKey, setFormKey] = useState(0);
   // localStorage'dan tarihleri al
-  const studentId = getFromLocalStorage<string>(
-    "01100001 01100010 01110101 01111010 01100101 01110010 01101011 01101111 01101101 01110101 01110010 01100011 01110101",
-    ""
-  );
+  const startDate = getFromLocalStorage<string>("period_start_date", "");
+  const endDate = getFromLocalStorage<string>("period_end_date", "");
+  const studentId = getFromLocalStorage<string>("selected_student_id", "");
   const navigate = useNavigate();
+
+  // Context'teki tarih değişirse initialValues'i güncelle
+  useEffect(() => {
+    setInitialValues((prev) => ({
+      ...prev,
+      start_date: startDate,
+      end_date: endDate,
+    }));
+  }, [startDate, endDate]);
 
   const [initialValues, setInitialValues] = useState<PeriodFormData>({
     teacher_id: 0,
     program_id: 0,
-    period_id: 0,
     lesson_id: 0,
     unit_id: 0,
     chapter_id: 0,
@@ -65,99 +67,34 @@ const PeriodCrud: React.FC<PeriodModalProps> = ({ show, onRefresh }) => {
     source_id: 0,
     page_range: "",
     number_of_questions: 0,
-    start_date: "",
-    end_date: "",
+    start_date: startDate, // Context'ten gelen tarihi kullan
+    end_date: endDate, // Context'ten gelen tarihi kullan
     working_time: "",
     description: "",
     status: mode === "add" ? 2 : 0,
   });
 
-  const { periodsData } = usePeriodsTable({
+  const { periodsData, status: periodsStatus } = usePeriodsTable({
     enabled: true,
     page: 1,
     paginate: 100,
   });
 
-  // periodsData değiştiğinde içeriğini kontrol et
-  useEffect(() => {
-    if (periodsData && periodsData.length > 0) {
-      console.log("Periods veri yapısı:", periodsData[0]);
-      console.log(
-        "İlk period'un tarihleri:",
-        periodsData[0].start_date,
-        periodsData[0].end_date
-      );
-    }
-  }, [periodsData]);
-
-  // Period değişimini izle
-  useEffect(() => {
-    if (initialValues.period_id) {
-      console.log("Period ID değişti:", initialValues.period_id);
-
-      // Seçilen period'un verilerini bul
-      const selectedPeriod = periodsData.find(
-        (period) => period.id === Number(initialValues.period_id)
-      );
-
-      if (selectedPeriod) {
-        console.log(
-          "Seçilen period tarihleri:",
-          selectedPeriod.start_date,
-          selectedPeriod.end_date
-        );
-
-        // Period bilgilerine göre tarihleri güncelle
-        setInitialValues((prev) => ({
-          ...prev,
-          start_date: selectedPeriod.start_date || "",
-          end_date: selectedPeriod.end_date || "",
-        }));
-      }
-    }
-  }, [initialValues.period_id, periodsData]);
-
+  // Dersleri getir - Periyotlar yüklendiğinde ve program_id varsa
   const { lessonsData } = useLessonList({
-    enabled: true,
-    lesson_id: initialValues.lesson_id?.toString() || "",
+    enabled: periodsStatus === "SUCCEEDED" && !!initialValues.program_id,
+    program_id: initialValues.program_id?.toString() || "",
   });
 
   // Üniteleri getir - Dersler seçildiğinde
   const { unitsData } = useUnitsTable({
-    enabled: Boolean(initialValues.lesson_id),
+    enabled: !!initialValues.lesson_id,
     lesson_id: initialValues.lesson_id?.toString() || "",
   });
 
-  // program_id değişimini izle
-  useEffect(() => {
-    if (initialValues.program_id) {
-      // Program değişince altındaki bağımlı alanları sıfırla
-      if (initialValues.lesson_id || initialValues.unit_id) {
-        setInitialValues((prev) => ({
-          ...prev,
-          lesson_id: "",
-          unit_id: "",
-        }));
-      }
-    }
-  }, [initialValues.program_id]);
-
-  // lesson_id değişimini izle
-  useEffect(() => {
-    if (initialValues.lesson_id) {
-      // Ders değişince altındaki bağımlı alanı sıfırla
-      if (initialValues.unit_id) {
-        setInitialValues((prev) => ({
-          ...prev,
-          unit_id: "",
-        }));
-      }
-    }
-  }, [initialValues.lesson_id]);
-
   // Kaynakları getir - Üniteler seçildiğinde
   const { sourcesData } = useSourcesList({
-    enabled: Boolean(initialValues.program_id),
+    enabled: !!initialValues.unit_id,
   }) as { sourcesData: SourceData[] };
 
   const { me } = getUserDataField();
@@ -173,30 +110,6 @@ const PeriodCrud: React.FC<PeriodModalProps> = ({ show, onRefresh }) => {
             label: period.name,
             value: period.id,
           })),
-          onChange: (value, formik) => {
-            console.log("Period seçildi (update mode):", value);
-            formik.setFieldValue("period_id", value);
-
-            // Seçilen period'un verilerini bul
-            const selectedPeriod = periodsData.find(
-              (period) => period.id === Number(value)
-            );
-
-            if (selectedPeriod) {
-              formik.setFieldValue(
-                "start_date",
-                selectedPeriod.start_date || ""
-              );
-              formik.setFieldValue("end_date", selectedPeriod.end_date || "");
-
-              setInitialValues((prev) => ({
-                ...prev,
-                period_id: value,
-                start_date: selectedPeriod.start_date || "",
-                end_date: selectedPeriod.end_date || "",
-              }));
-            }
-          },
         },
         {
           name: "start_date",
@@ -222,11 +135,7 @@ const PeriodCrud: React.FC<PeriodModalProps> = ({ show, onRefresh }) => {
           })),
           onChange: (value, formik) => {
             formik.setFieldValue("lesson_id", value);
-
-            setInitialValues((prev) => ({
-              ...prev,
-              lesson_id: value,
-            }));
+            formik.setFieldValue("unit_id", "");
           },
         },
         {
@@ -239,36 +148,22 @@ const PeriodCrud: React.FC<PeriodModalProps> = ({ show, onRefresh }) => {
           })),
           onChange: (value, formik) => {
             formik.setFieldValue("unit_id", value);
-            setInitialValues((prev) => ({
-              ...prev,
-              level_id: value,
-            }));
+            formik.setFieldValue("chapter_id", "");
           },
         },
         {
           name: "source_id",
-          label: "Kaynaklar",
-          type: "multiselect",
+          label: "Kaynak",
+          type: "select",
           options:
             sourcesData?.map((source) => ({
-              label: source.name || "İsimsiz Kaynak",
-              value: source.id || source.teacher_id || 0,
+              label: source.name,
+              value: source.id || 0,
             })) || [],
           onChange: (value, formik) => {
-            console.log("Kaynaklar seçildi:", value);
-            formik.setFieldValue(
-              "source_ids",
-              Array.isArray(value) ? value : [value]
-            );
-
-            // Değişiklikleri initialValues'a da yansıt
-            setInitialValues((prev) => ({
-              ...prev,
-              source_ids: Array.isArray(value) ? value : [value],
-            }));
+            formik.setFieldValue("source_id", value);
           },
         },
-
         {
           name: "page_range",
           label: "Sayfa Aralığı",
@@ -295,7 +190,6 @@ const PeriodCrud: React.FC<PeriodModalProps> = ({ show, onRefresh }) => {
       ];
     } else {
       return [
-        // getFields fonksiyonu içerisindeki period_id alanını günceleyin
         {
           name: "period_id",
           label: "Periyot No",
@@ -304,34 +198,6 @@ const PeriodCrud: React.FC<PeriodModalProps> = ({ show, onRefresh }) => {
             label: period.name,
             value: period.id,
           })),
-          onChange: (value, formik) => {
-            console.log("Period seçildi:", value);
-            formik.setFieldValue("period_id", value);
-
-            // Seçilen period'un verilerini bul
-            const selectedPeriod = periodsData.find(
-              (period) => period.id === Number(value)
-            );
-
-            if (selectedPeriod) {
-              console.log("Seçilen period bilgileri:", selectedPeriod);
-
-              // Period'a ait tarih bilgilerini form alanlarına yerleştir
-              formik.setFieldValue(
-                "start_date",
-                selectedPeriod.start_date || ""
-              );
-              formik.setFieldValue("end_date", selectedPeriod.end_date || "");
-
-              // Aynı zamanda initialValues'a da kaydet
-              setInitialValues((prev) => ({
-                ...prev,
-                period_id: value,
-                start_date: selectedPeriod.start_date || "",
-                end_date: selectedPeriod.end_date || "",
-              }));
-            }
-          },
         },
         {
           name: "lesson",
@@ -342,18 +208,8 @@ const PeriodCrud: React.FC<PeriodModalProps> = ({ show, onRefresh }) => {
             value: lesson.id,
           })),
           onChange: (value, formik) => {
-            console.log("Ders seçildi:", value);
             formik.setFieldValue("lesson_id", value);
             formik.setFieldValue("unit_id", "");
-            formik.setFieldValue("chapter_id", "");
-
-            // Değişiklikleri initialValues'a da yansıt
-            setInitialValues((prev) => ({
-              ...prev,
-              lesson_id: value,
-              unit_id: "",
-              chapter_id: "",
-            }));
           },
         },
         {
@@ -367,40 +223,25 @@ const PeriodCrud: React.FC<PeriodModalProps> = ({ show, onRefresh }) => {
           onChange: (value, formik) => {
             formik.setFieldValue("unit_id", value);
             formik.setFieldValue("chapter_id", "");
-            // Değişiklikleri initialValues'a da yansıt
-            setInitialValues((prev) => ({
-              ...prev,
-              level_id: value,
-            }));
           },
         },
         {
           name: "source_id",
-          label: "Kaynaklar",
-          type: "multiselect",
+          label: "Kaynak",
+          type: "select",
           options:
             sourcesData?.map((source) => ({
-              label: source.name || "İsimsiz Kaynak",
-              value: source.id || source.teacher_id || 0,
+              label: source.name,
+              value: source.id || 0,
             })) || [],
           onChange: (value, formik) => {
-            console.log("Kaynaklar seçildi:", value);
-            formik.setFieldValue(
-              "source_ids",
-              Array.isArray(value) ? value : [value]
-            );
-
-            // Değişiklikleri initialValues'a da yansıt
-            setInitialValues((prev) => ({
-              ...prev,
-              source_ids: Array.isArray(value) ? value : [value],
-            }));
+            formik.setFieldValue("source_id", value);
           },
         },
         {
           name: "page_range",
           label: "Sayfa Aralığı",
-          type: "number",
+          type: "text",
         },
         {
           name: "number_of_questions",
@@ -450,11 +291,6 @@ const PeriodCrud: React.FC<PeriodModalProps> = ({ show, onRefresh }) => {
 
   useEffect(() => {
     if (mode === "update" && fetchedAssignment) {
-      // Eğer güncelleme modundaysak ve veri geldiyse
-      const selectedPeriod = periodsData.find(
-        (period) => period.id === Number(fetchedAssignment.period_id)
-      );
-
       setInitialValues({
         period_id: fetchedAssignment.period_id || 0,
         teacher_id: fetchedAssignment.teacher_id || 0,
@@ -466,14 +302,13 @@ const PeriodCrud: React.FC<PeriodModalProps> = ({ show, onRefresh }) => {
         page_range: fetchedAssignment.page_range || "",
         number_of_questions: fetchedAssignment.number_of_questions || 0,
         working_time: fetchedAssignment.working_time?.toString() || "",
-        start_date:
-          selectedPeriod?.start_date || fetchedAssignment.start_date || "",
-        end_date: selectedPeriod?.end_date || fetchedAssignment.end_date || "",
+        start_date: fetchedAssignment.start_date || "",
+        end_date: fetchedAssignment.end_date || "",
         description: fetchedAssignment.description || "",
         status: fetchedAssignment.status || 0,
       });
     }
-  }, [mode, fetchedAssignment, periodsData]);
+  }, [mode, fetchedAssignment]);
 
   const isLoading =
     (mode === "add" && addStatus === "LOADING") ||
@@ -489,11 +324,6 @@ const PeriodCrud: React.FC<PeriodModalProps> = ({ show, onRefresh }) => {
 
   const handleSubmit = async (values: PeriodFormData) => {
     try {
-      // Seçilen period'dan start_date ve end_date bilgilerini al
-      const selectedPeriod = periodsData.find(
-        (period) => period.id === Number(values.period_id)
-      );
-
       const payload = {
         period_id: Number(values.period_id || 0),
         teacher_id: Number(me?.value || 0),
@@ -504,17 +334,12 @@ const PeriodCrud: React.FC<PeriodModalProps> = ({ show, onRefresh }) => {
         source_id: Number(values.source_id || 0),
         number_of_questions: Number(values.number_of_questions || 0),
         working_time: values.working_time?.toString() || "",
-        // Öncelikle doğrudan girilen değerleri kullan, yoksa period'dan alınan değerleri kullan
-        start_date: values.start_date || selectedPeriod?.start_date || "",
-        end_date: values.end_date || selectedPeriod?.end_date || "",
+        start_date: startDate || values.start_date || "", // Öncelikle context'ten, yoksa formdan al
+        end_date: endDate || values.end_date || "",
         description: values.description || "",
         status: Number(values.status || (mode === "add" ? 2 : 0)),
-        student_id: Number(studentId || 0),
+        student_id: Number(studentId || 0), // Öğrenci ID'sini payload'a ekle
       };
-
-      console.log("Form değerleri:", values);
-      console.log("Seçilen period:", selectedPeriod);
-      console.log("Gönderilecek payload:", payload);
 
       if (mode === "add") {
         await addNewScheduledAssignment(payload);

@@ -361,7 +361,7 @@ const AssignmentStudentCrudModal: React.FC<Props> = ({
 
     const handleSubmit = async (vals: IForm, _h: FormikHelpers<IForm>) => {
         if (mode === 'add') {
-            await addNewAssignmentStudent({ id: 0, ...vals, assigment_id: 0 });
+            await addNewAssignmentStudent({ id: 0, ...vals });
         } else if (id) {
             await updateExistingAssignmentStudent({ assignmentStudentId: +id, payload: vals });
         }
@@ -390,6 +390,7 @@ const AssignmentStudentCrudModal: React.FC<Props> = ({
             }}
             autoGoBackOnModalClose
             mode="double"
+
         />
     );
 };

@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import ReusableTable, {
   ColumnDefinition,
   FilterDefinition,
-} from "../ReusableTable";
-import { useOverduePayments } from "../../hooks/overduePayments/useOverduePayments";
+} from "../../../components/common/ReusableTable";
+import { useOverduePayments } from "../../../components/hooks/overduePayments/useOverduePayments";
 import { OverduePayment } from "../../../types/overduePayments/list";
 import { OverduePaymentFilter } from "../../../enums/overduePayments/list";
 

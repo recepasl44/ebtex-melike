@@ -20,7 +20,6 @@ export interface PeriodData {
   name: string;
   start_date: string;
   end_date: string;
-  period_no?: number;
 }
 
 export interface Link {

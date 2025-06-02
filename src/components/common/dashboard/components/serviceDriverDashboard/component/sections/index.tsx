@@ -18,10 +18,11 @@ import boy from "../../../../../../../assets/images/faces/boy.png";
 import bigGirl from "../../../../../../../assets/images/faces/bigGirl.png";
 import bigGirl2 from "../../../../../../../assets/images/faces/bigGirl2.png";
 import free from "../../../../../../../assets/images/faces/1.jpg";
+import DailyCourseScheduleTable from "./leftSection/DailyCourseScheduleTable";
 import Calendar from "./Calendar";
-import { generateServiceDriverData } from "../../../../../../../utils/generateServiceDriverData";
-import ServicePaymentStatusTable from "./leftSection/ServicePaymentStatusTable";
-import QuickAttendanceListTable from "./leftSection/QuickAttendanceListTable";
+import { generateSupportStaffData } from "../../../../../../../utils/generatesupportStaffData";
+import WeeklyFoodMenuRow from "./leftSection/WeeklyFoodMenuRow";
+import SupportStaffTaskDistributionTable from "./leftSection/SupportStaffTaskDistributionTable";
 
 interface Row9Props {
   data: DashboardResponseType;
@@ -41,8 +42,8 @@ const Row9Component: React.FC<Row9Props> = ({ data }) => {
     science: bigGirl2,
     total: free,
   };
+  const Cardsdata = generateSupportStaffData(data);
 
-  const Cardsdata = generateServiceDriverData(data);
   const Overoptions = generateChartOptions();
   const Overseries = generateChartSeries(data);
 
@@ -95,12 +96,9 @@ const Row9Component: React.FC<Row9Props> = ({ data }) => {
   const attendanceTypeDistribution = data.data[0].poll_type_distribution;
   // Pdr Görüşmeleri Listesi
   const upcomingAppointments = data.data[0].upcoming_appointments;
-    // Servis Ödeme Durumu
-  const servicePaymentStatus = data.data[0].service_payment_status;
-    // servis rota olanı
-  const serviceRoute = data.data[0].service_route_plan;
-  // Hızlı Yoklama Listesi
-  const quickAttendanceList = data.data[0].quick_attendance_list;
+  // detek personeli görev dağılımı
+  const supportStaffTaskDistribution =
+    data.data[0].staff_task_distribution_table;
   return (
     <Row>
       {/* Sol Sütun - Col 9 */}
@@ -130,7 +128,6 @@ const Row9Component: React.FC<Row9Props> = ({ data }) => {
           weeklyDutySchedule={weeklyDutySchedule}
           classHourAttendanceSummary={classHourAttendanceSummary}
           upcomingAppointments={upcomingAppointments}
-          serviceRoute={serviceRoute}
         />
       </Col>
 
@@ -142,20 +139,30 @@ const Row9Component: React.FC<Row9Props> = ({ data }) => {
           attendanceData={attendanceData}
           daily_bulletins={daily_bulletins}
           numberOfFinalizedAssignments={numberOfFinalizedAssignments}
+          weeklyFoodsMenu={weeklyFoodsMenu}
         />
       </Col>
-      {/*Servis ödeme durumu ve hızlı yokmlama listesi */}
+      {/* Günlük ders Programı yemek menüsü Takvim */}
 
       <Row>
-           <Col xl={7}>
-          <ServicePaymentStatusTable servicePaymentStatus={servicePaymentStatus} />
+        <Col xl={4} xxl={4}>
+          <DailyCourseScheduleTable data={dailyCourseSchedule} />
         </Col>
-          <Col xl={5}>
-         <QuickAttendanceListTable quickAttendanceList={quickAttendanceList} />
+        <Col xl={4} xxl={4}>
+          {/* Haftalık yemek menüsü */}
+          <WeeklyFoodMenuRow weeklyFoodsMenu={weeklyFoodsMenu} />{" "}
+        </Col>
+        <Col xl={4} xxl={4}>
+          <Calendar />
         </Col>
       </Row>
-        <Calendar />
 
+      {/* Destek Personeli Görev dağılımı */}
+      <Row>
+        <SupportStaffTaskDistributionTable
+          data={supportStaffTaskDistribution}
+        />
+      </Row>
     </Row>
   );
 };

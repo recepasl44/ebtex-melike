@@ -5,7 +5,6 @@ const BranchModal = lazy(() => import("../components/common/branch/crud"));
 const Analytics = lazy(
   () => import("../container/dashboard/analytics/analytics")
 );
-import PlanCalenderCrud from "../components/common/guidance/workSchedule/Tab5/crud";
 
 const StudentImport = lazy(
   () => import("../components/common/student/import/index")
@@ -361,7 +360,7 @@ const SeasonModal = lazy(() => import("../components/common/seasons/crud"));
 //index
 import HomeworkTrackingPage from "../components/common/homework/index";
 //planlanan ödevler
-import PlannedAssignmentsTable from "../components/common/homework/pages/plannedAssignments/table";
+import PlannedAssignmentsTable from "./../components/common/homework/pages/plannedAssignments/table";
 import AssignmentCrudModal from "../components/common/homework/pages/plannedAssignments/crud";
 //ödev tanımlama
 import DefiningHomeworkPage from "../components/common/homework/pages/assignmentsDefinition/table";
@@ -420,7 +419,7 @@ import FoodPlanModal from "../components/common/pollingManagement/foodPolling/pa
 import FoodPollingCountsTable from "../components/common/pollingManagement/foodPolling/pages/pollingCount/table";
 import FoodAttendanceTable from "../components/common/pollingManagement/foodPolling/pages/foodPolling/table";
 import FoodOfficerListTable from "../components/common/pollingManagement/foodPolling/pages/officerList/table";
-import FoodOfficerModal from "../components/common/pollingManagement/foodPolling/pages/officerList/crud";
+// import FoodOfficerModal from "../components/common/pollingManagement/foodPolling/pages/officerList/crud";
 import FoodPollingIndex from "../components/common/pollingManagement/foodPolling/index";
 //etüt
 import StudyPlanTable from "../components/common/pollingManagement/studyPolling/pages/studyPlan/table";
@@ -436,6 +435,19 @@ import DailyPollingTable from "../components/common/pollingManagement/personel-t
 
 import StaffPollingManagementPage from "../components/common/pollingManagement/personel-teachers/index";
 import TeacherPlanCrudModal from "../components/common/pollingManagement/oneToOne/pages/teacher/crud";
+import TeacherMatchModal from "../components/common/pollingManagement/oneToOne/pages/plan/crud";
+import TeachersTable from "../components/common/pollingManagement/teachers/pages/teachers/table";
+import TeachersPollingTable from "../components/common/pollingManagement/teachers/pages/teachersPolling/table"
+  ;
+import TeacherPollingManagementPage from "../components/common/pollingManagement/teachers/teacherIndex";
+import LessonPollingTable from "../components/common/pollingManagement/teachers/pages/lesson/table";
+import ParentRequestEntryTable from "../components/common/pollingManagement/parent/pages/requestEntry/table";
+import ParentRequestEntryAdd from "../components/common/pollingManagement/parent/pages/requestEntry/crud";
+
+import ParentIndexPage from "../components/common/pollingManagement/parent/parentindex";
+import AdministrativeRequestTable from "../components/common/pollingManagement/administrativeSupportTeam/pages/request/table";
+import AdministrativeRequestAdd from "../components/common/pollingManagement/administrativeSupportTeam/pages/request/crud";
+import AdministrativeSupportTeamPage from "../components/common/pollingManagement/administrativeSupportTeam/index";
 
 
 
@@ -1487,17 +1499,6 @@ export const Routedata = [
       }/guidance/work-schedule/Tab1/TabChild4/detail_index/:id?`,
     element: <StatusNumbersIndex />,
   },
-    {
-    id: 62,
-    path: `${import.meta.env.BASE_URL}/guidance/work-schedule/Tab5/crud/:id?`,
-    element: (
-      <PlanCalenderCrud
-        show={true}
-        onClose={() => window.history.back()}
-        onRefresh={() => {}}
-      />
-    ),
-  },
 
   {
     id: 70,
@@ -1761,17 +1762,17 @@ export const Routedata = [
     path: `${import.meta.env.BASE_URL}pollingManagement/foodOfficerList`,
     element: <FoodOfficerListTable />,
   },
-  {
-    id: 601,                       // benzersiz id
-    path: `${import.meta.env.BASE_URL}pollingManagement/foodOfficerList/:id?`,
-    element: (
-      <FoodOfficerModal
-        show={true}
-        onClose={() => window.history.back()}
-        onRefresh={() => { /* tablo refresh’ini üst bileşende tetikleyin */ }}
-      />
-    ),
-  },
+  // {
+  //   id: 601,                       // benzersiz id
+  //   path: `${import.meta.env.BASE_URL}pollingManagement/foodOfficerList/:id?`,
+  //   element: (
+  //     <FoodOfficerModal
+  //       show={true}
+  //       onClose={() => window.history.back()}
+  //       onRefresh={() => { /* tablo refresh’ini üst bileşende tetikleyin */ }}
+  //     />
+  //   ),
+  // },
   //3:yemek yoklama
   {
     id: 6339,
@@ -1814,18 +1815,12 @@ export const Routedata = [
     path: `${import.meta.env.BASE_URL}pollingManagement/studyProgram`,
     element: <StudyProgramTable />,
   },
-  //ekle ve crudunu unutma
   {
-    id: 601,                       // benzersiz id
+    id: 601,
     path: `${import.meta.env.BASE_URL}pollingManagement/studyProgram/crud/:id?`,
-    element: (
-      <StudyProgramCrud
-      // show={true}
-      // onClose={() => window.history.back()}
-      // onRefresh={() => { /* tablo refresh’ini üst bileşende tetikleyin */ }}
-      />
-    ),
+    element: <StudyProgramCrud />,  // Modal içeriği burada render edilecek
   },
+
   {
     id: 6366,
     path: `${import.meta.env.BASE_URL}pollingManagement/studyPolling`,
@@ -1851,8 +1846,12 @@ export const Routedata = [
     element: <StudyPollingPage />,
   },
 
-
-
+  //sınıf dersın ogretmen sayfası 
+  {
+    id: 6501,
+    path: `${import.meta.env.BASE_URL}pollingManagement/classCourse/teachers`,
+    element: <TeachersTable />,
+  },
 
 
 
@@ -1925,6 +1924,14 @@ export const Routedata = [
     path: `${import.meta.env.BASE_URL}pollingManagement/oneToOnePlan`,
     element: <OneToOnePlanTable />,
   },
+  {
+    id: 75,
+    /* Modal içinden yönlenilecek detay-CRUD sayfası */
+    path: `${import.meta.env.BASE_URL}pollingManagement/oneToOnePlan/crud/:demandId/:teacherId`,
+    element: <TeacherMatchModal demandId={0} show={false} onClose={function (): void {
+      throw new Error("Function not implemented.");
+    }} />,   // (isteğe bağlı ayrı detay sayfası)
+  },
 
   //EŞLEŞTİR
 
@@ -1972,7 +1979,61 @@ export const Routedata = [
     id: 2750,
     path: `${import.meta.env.BASE_URL}pollingManagement/staffindex`,
     element: <StaffPollingManagementPage />,
-  }
+  },
+  {
+    id: 2710,
+    path: `${import.meta.env.BASE_URL}pollingManagement/TeachersPollingTable`,
+    element: <TeachersPollingTable />,
+  },
+  {
+    id: 27199,
+    path: `${import.meta.env.BASE_URL}pollingManagement/teachersIndex`,
+    element: <TeacherPollingManagementPage />,
+  },
+  {
+    id: 26199,
+    path: `${import.meta.env.BASE_URL}pollingManagement/LessonPollingTable`,
+    element: <LessonPollingTable />,
+  },
+  //veli
+  {
+    id: 26199,
+    path: `${import.meta.env.BASE_URL}pollingManagement/ParentRequestEntryTable`,
+    element: <ParentRequestEntryTable />,
+  },
+  {
+    path: '/requestEntry/crud',   // “Ekle” butonu
+    element: <ParentRequestEntryAdd />,
+  },
+  {
+    id: 27199,
+
+    path: `${import.meta.env.BASE_URL}pollingManagement/parentIndex`,
+    element: <ParentIndexPage />,
+  },
+  // Administrative & Support Team
+  {
+    id: 27200,
+    path: `${import.meta.env.BASE_URL}pollingManagement/AdministrativeRequestTable`,
+    element: <AdministrativeRequestTable />,
+  },
+  {
+    path: '/administrativeSupportTeam/request/crud',
+    element: <AdministrativeRequestAdd />,
+  },
+  {
+    id: 27199,
+
+    path: `${import.meta.env.BASE_URL}pollingManagement/idareİndex`,
+    element: <AdministrativeSupportTeamPage />,
+  },
+
+
+
+
+
+
+
 
 
 
