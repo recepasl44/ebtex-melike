@@ -415,7 +415,7 @@ export default function ReusableModalForm<T extends FormikValues>({
                       {cancelButtonLabel}
                     </Button>
                     <Button
-                      variant="outline-secondary"
+                      variant="outline-primary"
                       type="submit"
                       disabled={isLoading || !formik.isValid}
                       className="ms-2"
