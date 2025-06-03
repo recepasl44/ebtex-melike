@@ -12,11 +12,46 @@ const HomeworkTrackingPage: React.FC = () => {
     const [activeIdx, setActiveIdx] = useState(0);
 
     const tabsConfig = [
-        { label: 'Planlanan Ödevler', content: <PlannedAssignmentsTable /> },
-        { label: 'Ödev Tanımlama', content: <DefiningHomeworkPage /> },
-        { label: 'Ödev Kontrolü', content: <AssignmentsCheckTable /> },
-        { label: 'Ödev Listesi', content: <AssignmentsListTable /> },
-        { label: 'Ödev Sayıları', content: <AssignmentsCountPage /> },
+        {
+            label: 'Planlanan Ödevler',
+            content: <PlannedAssignmentsTable />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
+        {
+            label: 'Ödev Tanımlama',
+            content: <DefiningHomeworkPage />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
+        {
+            label: 'Ödev Kontrolü',
+            content: <AssignmentsCheckTable />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
+        {
+            label: 'Ödev Listesi',
+            content: <AssignmentsListTable />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
+        {
+            label: 'Ödev Sayıları',
+            content: <AssignmentsCountPage />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
     ];
 
     return (
