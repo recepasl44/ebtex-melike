@@ -88,6 +88,9 @@ const DiscountStudent = lazy(
 const EducationalStructure = lazy(
   () => import("../components/common/academic/educational_structure/index")
 );
+const AddressStructurePage = lazy(
+  () => import("../components/common/parameters/address_structure/index")
+);
 const DiscountStudentDetail = lazy(
   () => import("../components/common/discountStudent/detail")
 );
@@ -335,6 +338,19 @@ const ClassLevelCrud = lazy(
 // Educational Structure Track Crud
 const TrackCrud = lazy(
   () => import("../components/common/academic/educational_structure/track/crud")
+);
+
+const CountryModal = lazy(
+  () => import("../components/common/parameters/address_structure/country/crud")
+);
+const CityModal = lazy(
+  () => import("../components/common/parameters/address_structure/city/crud")
+);
+const CountyModal = lazy(
+  () => import("../components/common/parameters/address_structure/county/crud")
+);
+const DistrictModal = lazy(
+  () => import("../components/common/parameters/address_structure/district/crud")
 );
 
 const Questionlabeling = lazy(
@@ -1154,6 +1170,75 @@ export const Routedata = [
     path: `${import.meta.env.BASE_URL}educational-structure/track-crud/:id?`,
     element: (
       <TrackCrud
+        show={true}
+        token={""}
+        onClose={function (): void {
+          throw new Error("Function not implemented.");
+        }}
+        onRefresh={function (): void {
+          throw new Error("Function not implemented.");
+        }}
+      />
+    ),
+  },
+  {
+    id: 330,
+    path: `${import.meta.env.BASE_URL}parameters/country`,
+    element: <AddressStructurePage />,
+  },
+  {
+    id: 331,
+    path: `${import.meta.env.BASE_URL}parameters/country/country-crud/:id?`,
+    element: (
+      <CountryModal
+        show={true}
+        token={""}
+        onClose={function (): void {
+          throw new Error("Function not implemented.");
+        }}
+        onRefresh={function (): void {
+          throw new Error("Function not implemented.");
+        }}
+      />
+    ),
+  },
+  {
+    id: 332,
+    path: `${import.meta.env.BASE_URL}parameters/country/city-crud/:id?`,
+    element: (
+      <CityModal
+        show={true}
+        token={""}
+        onClose={function (): void {
+          throw new Error("Function not implemented.");
+        }}
+        onRefresh={function (): void {
+          throw new Error("Function not implemented.");
+        }}
+      />
+    ),
+  },
+  {
+    id: 333,
+    path: `${import.meta.env.BASE_URL}parameters/country/county-crud/:id?`,
+    element: (
+      <CountyModal
+        show={true}
+        token={""}
+        onClose={function (): void {
+          throw new Error("Function not implemented.");
+        }}
+        onRefresh={function (): void {
+          throw new Error("Function not implemented.");
+        }}
+      />
+    ),
+  },
+  {
+    id: 334,
+    path: `${import.meta.env.BASE_URL}parameters/country/district-crud/:id?`,
+    element: (
+      <DistrictModal
         show={true}
         token={""}
         onClose={function (): void {
