@@ -21,7 +21,7 @@ const HomeworkTrackingPage: React.FC = () => {
 
     return (
         <div className="px-4">
-            <h3>Ödev Takip</h3>
+            <h5>Ödev Takip</h5>
 
             <TabsContainer
                 tabs={tabsConfig}
