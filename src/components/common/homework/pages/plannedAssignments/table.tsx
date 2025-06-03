@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import ReusableTable, {
     ColumnDefinition,
 } from '../../../ReusableTable';
+import FilterGroup, {
+    FilterDefinition,
+} from '../../components/organisms/SearchFilters';
 
 import { useAssignmentsList } from '../../../../hooks/assignments/useList';
 import { useAssignmentDelete } from '../../../../hooks/assignments/useDelete';
@@ -98,7 +101,7 @@ export default function PlannedAssignmentsTable() {
     } = useAssignmentsList(filtersState);
 
     /* ---------------- filter components ---------------- */
-    const filters = useMemo(
+    const filters: FilterDefinition[] = useMemo(
         () => [
             {
                 key: 'class_level',
@@ -295,26 +298,32 @@ export default function PlannedAssignmentsTable() {
 
     /* ---------------- render ---------------- */
     return (
-        <ReusableTable<AssignmentData>
-            onAdd={() => navigate('/plannedhomework/crud')}
-            tableMode="single"
-            columns={columns}
-            data={assignmentsData}
-            loading={loading}
-            error={error}
-            filters={filters}
-            showModal={false}
-            showExportButtons
-            currentPage={page}
-            totalPages={totalPages}
-            totalItems={totalItems}
-            pageSize={pageSize}
-            onPageChange={setPage}
-            onPageSizeChange={(s) => {
-                setPageSize(s);
-                setPage(1);
-            }}
-            exportFileName="student_assignment_list"
-        />
+        <>
+            <FilterGroup
+                filters={filters}
+                navigate={navigate}
+                columnsPerRow={4}
+            />
+            <ReusableTable<AssignmentData>
+                onAdd={() => navigate('/plannedhomework/crud')}
+                tableMode="single"
+                columns={columns}
+                data={assignmentsData}
+                loading={loading}
+                error={error}
+                showModal={false}
+                showExportButtons
+                currentPage={page}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                pageSize={pageSize}
+                onPageChange={setPage}
+                onPageSizeChange={(s) => {
+                    setPageSize(s);
+                    setPage(1);
+                }}
+                exportFileName="student_assignment_list"
+            />
+        </>
     );
 }

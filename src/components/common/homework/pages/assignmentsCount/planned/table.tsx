@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import ReusableTable, { ColumnDefinition, FilterDefinition, } from '../../../../ReusableTable';
+import ReusableTable, { ColumnDefinition } from '../../../../ReusableTable';
+import FilterGroup, { FilterDefinition } from '../../../components/organisms/SearchFilters';
 import { useAssignmentStudentsList } from '../../../../../hooks/assignmentStudents/useList';
 import { AssignmentStudentData as AssignmentRow } from '../../../../../../types/assignmentStudents/list';
 
@@ -204,6 +205,11 @@ export default function PlannedHomeworkCount() {
 
     return (
         <div>
+            <FilterGroup
+                filters={filters}
+                navigate={navigate}
+                columnsPerRow={4}
+            />
             <ReusableTable<AssignmentRow>
                 columns={columns}
                 data={assignmentStudentsData}
@@ -212,7 +218,6 @@ export default function PlannedHomeworkCount() {
                 showExportButtons={true}
                 tableMode="single"
                 error={error}
-                filters={filters}
                 currentPage={page}
                 totalPages={totalPages}
                 totalItems={totalItems}
