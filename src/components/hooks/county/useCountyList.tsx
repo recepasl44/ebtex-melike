@@ -19,7 +19,7 @@ export function useListCounties(params :CountyLListArg) {
   useEffect(() => {
     if (!enabled) return;
     dispatch(fetchCounties({ ...otherParams, filter }));
-  }, [enabled, filter, dispatch]);
+  }, [enabled, filter, dispatch, JSON.stringify(otherParams)]);
 
 
   const Countriesdata = data || [];

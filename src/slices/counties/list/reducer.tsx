@@ -21,7 +21,7 @@ const countyListSlice = createSlice({
     });
     builder.addCase(fetchCounties.fulfilled, (state, action: PayloadAction<any>) => {
       state.status = CountyListStatus.SUCCEEDED;
-      state.data = action.payload;
+      state.data = action.payload.data;
     });
     builder.addCase(fetchCounties.rejected, (state, action) => {
       state.status = CountyListStatus.FAILED;

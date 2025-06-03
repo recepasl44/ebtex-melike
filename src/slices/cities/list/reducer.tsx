@@ -20,7 +20,7 @@ const cityListSlice = createSlice({
     });
     builder.addCase(fetchCities.fulfilled, (state, action: PayloadAction<any>) => {
       state.status = CityListStatus.SUCCEEDED;
-      state.data = [action.payload];
+      state.data = action.payload.data;
     });
     builder.addCase(fetchCities.rejected, (state, action) => {
       state.status = CityListStatus.FAILED;
