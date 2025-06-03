@@ -7,6 +7,7 @@ import ClubGroupPlanTable from './pages/clupPlan/table';
 import ClubProgramTable from './pages/clupProgram/table';
 import ClubPollingTable from './pages/clupPolling/table';
 import ClubCountTable from './pages/clupCount/table';
+import Pageheader from "../../../page-header/pageheader";
 
 /* -------------------------------------------------------------- */
 const ClupPollingManagementPage: React.FC = () => {
@@ -23,7 +24,7 @@ const ClupPollingManagementPage: React.FC = () => {
 
     return (
         <div className="px-4">
-            <h5>Kulüp Yoklama</h5>
+            <Pageheader title="Yoklama Yönetimi" currentpage="Kulüp Yoklama" />
 
             <TabsContainer
                 tabs={tabs}

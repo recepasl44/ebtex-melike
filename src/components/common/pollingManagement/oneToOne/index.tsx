@@ -10,6 +10,7 @@ import StudentPlanTable from './pages/plan/table';             // Birebir Planla
 import OneToOnePollingTable from './pages/polling/table';          // Birebir Yoklama
 import CountTeacherTable from './pages/countTeacher/table';     // Öğretmen Birebir Sayıları
 import CountStudentTable from './pages/countStudent/table';     // Öğrenci Birebir Sayıları
+import Pageheader from "../../../page-header/pageheader";
 
 /* -------------------------------------------------------------------- */
 const OneToOneManagementPage: React.FC = () => {
@@ -27,7 +28,7 @@ const OneToOneManagementPage: React.FC = () => {
 
   return (
     <div className="px-4">
-      <h5>Birebir Yoklama</h5>
+      <Pageheader title="Yoklama Yönetimi" currentpage="Birebir Yoklama" />
 
       <TabsContainer
         tabs={tabs}

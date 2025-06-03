@@ -6,6 +6,7 @@ import TabsContainer from './component/organisms/TabsContainer';
 import ExecutiveStatusTable from './pages/executiveStatus/table';
 import PollingListTable from './pages/pollingList/table';
 import PollingCountsTable from './pages/pollingCounts/table';
+import Pageheader from '../../../page-header/pageheader';
 
 
 
@@ -44,7 +45,7 @@ const PollingManagementPage: React.FC = () => {
 
     return (
         <div className="px-4">
-            <h5>Sınıf &amp; Ders</h5>
+            <Pageheader title="Yoklama Yönetimi" currentpage="Sınıf & Ders" />
 
             <TabsContainer
                 tabs={tabsConfig}

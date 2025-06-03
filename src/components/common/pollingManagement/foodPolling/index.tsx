@@ -7,6 +7,7 @@ import FoodAttendanceTable from './pages/foodPolling/table';
 import FoodGroupPlanTable from './pages/groupPlan/table';
 import FoodOfficerListTable from './pages/officerList/table';
 import FoodPollingCountsTable from './pages/pollingCount/table';
+import Pageheader from "../../../page-header/pageheader";
 
 /* -------------------------------------------------------------- */
 const ClupPollingManagementPage: React.FC = () => {
@@ -23,7 +24,7 @@ const ClupPollingManagementPage: React.FC = () => {
 
     return (
         <div className="px-4">
-            <h5>Yemek Yoklama</h5>
+            <Pageheader title="Yoklama Yönetimi" currentpage="Yemek Yoklama" />
 
             <TabsContainer
                 tabs={tabs}

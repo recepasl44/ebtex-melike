@@ -11,6 +11,7 @@ import TabsContainer from './component/organisms/TabsContainer';
 import DemandManagementTable from './pages/demandManagement/table';
 import DailyPollingTable from './pages/daily/table';
 import PollingCountsTable from './pages/count/table';
+import Pageheader from "../../../page-header/pageheader";
 
 /* ========================================================================== */
 const StaffPollingManagementPage: React.FC = () => {
@@ -26,7 +27,7 @@ const StaffPollingManagementPage: React.FC = () => {
 
     return (
         <div className="px-4">
-            <h5>Personel / Öğretmen Yoklama</h5>
+            <Pageheader title="Yoklama Yönetimi" currentpage="Personel / Öğretmen Yoklama" />
 
             <TabsContainer
                 tabs={tabsConfig}
