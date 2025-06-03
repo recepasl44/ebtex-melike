@@ -15,19 +15,25 @@ export function useAssignmentStudentsList(params: AssignmentStudentsListArg) {
     const [page, setPage] = useState<number>(params.page || 1);
     const [pageSize, setPageSize] = useState<number>(params.pageSize || 10);
     const [filter, setFilter] = useState<any>(null);
-    const { data, meta, status, error } = useSelector((state: RootState) => state.assignmentStudentsList);
+    const { data, meta, status, error } = useSelector(
+        (state: RootState) => state.assignmentStudentsList
+    );
 
-    const { enabled, ...otherParams } = params;
+    const buildQuery = () => {
+        const { enabled, ...rest } = params;
+        return {
+            ...rest,
+            filter,
+            page,
+            pageSize,
+            per_page: pageSize,
+        } as AssignmentStudentsListArg;
+    };
+
     useEffect(() => {
-        if (!enabled) return;
-        dispatch(
-            fetchAssignmentStudents({
-                ...otherParams,
-                filter,
-                enabled,
-            })
-        );
-    }, [enabled, filter, dispatch, otherParams.teacher_id]);
+        if (params?.enabled === false) return;
+        dispatch(fetchAssignmentStudents(buildQuery()));
+    }, [dispatch, filter, page, pageSize, params]);
 
     const loading = status === AssignmentStudentsListStatus.LOADING;
     const assignmentStudentsData: AssignmentStudentData[] = data || [];
