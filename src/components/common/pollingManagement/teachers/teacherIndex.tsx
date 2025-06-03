@@ -15,9 +15,30 @@ const TeacherPollingManagementPage: React.FC = () => {
 
     /* sekme başlıkları ve içerikleri */
     const tabsConfig = [
-        { label: 'Öğretmen Yoklama Listesi', content: <TeachersTable /> },
-        { label: 'Öğretmen Nöbet  Yoklama Listesi', content: <TeachersPollingTable /> },
-        { label: 'Ders Yoklama', content: <LessonPollingTable /> },
+        {
+            label: 'Öğretmen Yoklama Listesi',
+            content: <TeachersTable />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
+        {
+            label: 'Öğretmen Nöbet  Yoklama Listesi',
+            content: <TeachersPollingTable />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
+        {
+            label: 'Ders Yoklama',
+            content: <LessonPollingTable />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
     ];
 
     return (

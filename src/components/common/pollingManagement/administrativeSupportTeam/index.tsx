@@ -18,7 +18,14 @@ const AdministrativeSupportTeamPage: React.FC = () => {
 
     /* Sekme etiketleri + içerikleri                                           */
     const tabsConfig = [
-        { label: 'Talep Girişi', content: <AdministrativeRequestTable /> },
+        {
+            label: 'Talep Girişi',
+            content: <AdministrativeRequestTable />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
     ];
 
     return (

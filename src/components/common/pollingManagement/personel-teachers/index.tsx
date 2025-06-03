@@ -20,9 +20,30 @@ const StaffPollingManagementPage: React.FC = () => {
 
     /* Sekme etiketleri + içerikleri                                           */
     const tabsConfig = [
-        { label: 'Talep Yönetimi', content: <DemandManagementTable /> },
-        { label: 'Günlük Yoklama', content: <DailyPollingTable /> },
-        { label: 'Yoklama Sayıları', content: <PollingCountsTable /> },
+        {
+            label: 'Talep Yönetimi',
+            content: <DemandManagementTable />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
+        {
+            label: 'Günlük Yoklama',
+            content: <DailyPollingTable />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
+        {
+            label: 'Yoklama Sayıları',
+            content: <PollingCountsTable />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
     ];
 
     return (

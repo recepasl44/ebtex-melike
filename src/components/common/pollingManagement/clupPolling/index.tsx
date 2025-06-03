@@ -16,10 +16,38 @@ const ClupPollingManagementPage: React.FC = () => {
 
     /* sekme başlıkları ve içerikleri */
     const tabs = [
-        { label: 'Kulüp Planla', content: <ClubGroupPlanTable /> },
-        { label: 'Kulüp Programı', content: <ClubProgramTable /> },
-        { label: 'Kulüp Yoklama', content: <ClubPollingTable /> },
-        { label: 'Yoklama Sayıları', content: <ClubCountTable /> },
+        {
+            label: 'Kulüp Planla',
+            content: <ClubGroupPlanTable />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
+        {
+            label: 'Kulüp Programı',
+            content: <ClubProgramTable />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
+        {
+            label: 'Kulüp Yoklama',
+            content: <ClubPollingTable />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
+        {
+            label: 'Yoklama Sayıları',
+            content: <ClubCountTable />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
     ];
 
     return (
