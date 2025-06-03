@@ -7,10 +7,9 @@ import { updateCounty } from "../../../../slices/counties/update/thunk";
 import { showCounty } from "../../../../slices/counties/show/thunk";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../store";
+import { AddCountyPayload } from "../../../../types/counties/add";
 
-interface FormData extends FormikValues {
-  name: string;
-}
+interface FormData extends FormikValues, AddCountyPayload {}
 
 export default function CountyCrud() {
   const { id } = useParams<{ id?: string }>();
@@ -18,7 +17,10 @@ export default function CountyCrud() {
   const location = useLocation() as { state?: { city_id?: number } };
   const dispatch = useDispatch<AppDispatch>();
   const mode = id ? "update" : "add";
-  const [initialValues, setInitialValues] = useState<FormData>({ name: "" });
+  const [initialValues, setInitialValues] = useState<FormData>({
+    name: "",
+    city_id: location.state?.city_id ?? 0,
+  });
 
   const getFields = (): FieldDefinition[] => [
     { name: "name", label: "İlçe Adı", type: "text", required: true },
@@ -28,7 +30,10 @@ export default function CountyCrud() {
     if (mode === "update" && id) {
       dispatch(showCounty(Number(id))).then((res: any) => {
         if (showCounty.fulfilled.match(res)) {
-          setInitialValues({ name: res.payload.name });
+          setInitialValues({
+            name: res.payload.name,
+            city_id: res.payload.city_id,
+          });
         }
       });
     }
@@ -36,7 +41,7 @@ export default function CountyCrud() {
 
   const handleSubmit = async (values: FormData, _helpers: FormikHelpers<FormData>) => {
     if (mode === "add") {
-      await dispatch(addCounty({ ...values, city_id: location.state?.city_id || 0 }));
+      await dispatch(addCounty(values));
     } else if (id) {
       await dispatch(updateCounty({ countyId: Number(id), payload: values }));
     }
