@@ -1,10 +1,10 @@
 import { FormikHelpers, FormikValues } from "formik";
-import ReusableModalForm, { FieldDefinition } from "../../ReusableModalForm";
+import ReusableModalForm, { FieldDefinition } from "../../../ReusableModalForm";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useProgramAdd } from "../../../hooks/districts/useAdd";
-import { useProgramUpdate } from "../../../hooks/districts/useUpdate";
-import { useProgramDetail } from "../../../hooks/districts/useDetail";
+import { useDiscrictAdd } from "../../../../hooks/districts/useAdd";
+import { useDiscrictUpdate } from "../../../../hooks/districts/useUpdate";
+import { useDiscrictDetail } from "../../../../hooks/districts/useDetail";
 
 interface CountyFormData extends FormikValues {
   name: string;
@@ -17,7 +17,7 @@ interface CountyModalProps {
   onRefresh: () => void;
 }
 
-const CountyModal: React.FC<CountyModalProps> = ({}) => {
+const CountyModal: React.FC<CountyModalProps> = ({ }) => {
   const { id } = useParams<{ id?: string }>();
   const navigate = useNavigate();
   const mode = id ? "update" : "add";
@@ -37,35 +37,35 @@ const CountyModal: React.FC<CountyModalProps> = ({}) => {
     ];
   };
 
-  const { addedProgram, status: addStatus, error: addError, addNewProgram } = useProgramAdd();
+  const { addedDistrict, status: addStatus, error: addError, addNewDistrict } = useDiscrictAdd();
 
   const {
-    updatedProgram,
+    updatedDiscrict,
     status: updateStatus,
     error: updateError,
-    updateProgramDetails,
-  } = useProgramUpdate();
+    updateDiscrictDetails,
+  } = useDiscrictUpdate();
 
   const {
-    programDetail,
+    district,
     status: showStatus,
     error: showError,
-    getProgramDetail,
-  } = useProgramDetail();
+    getDistrict,
+  } = useDiscrictDetail({ districtId: 0, payload: { name: '' } });
 
   useEffect(() => {
     if (mode === "update" && id) {
-      getProgramDetail(Number(id));
+      getDistrict(Number(id));
     }
-  }, [mode, id, getProgramDetail]);
+  }, [mode, id, getDistrict]);
 
   useEffect(() => {
-    if (mode === "update" && programDetail) {
+    if (mode === "update" && district) {
       setInitialValues({
-        name: programDetail.name,
+        name: district.name,
       });
     }
-  }, [mode, programDetail]);
+  }, [mode, district]);
 
   const isLoading =
     (mode === "add" && addStatus === "LOADING") ||
@@ -79,9 +79,12 @@ const CountyModal: React.FC<CountyModalProps> = ({}) => {
   ) {
     try {
       if (mode === "add") {
-        await addNewProgram({ name: values.name });
+        await addNewDistrict({
+          name: values.name,
+          county_id: 0
+        });
       } else if (mode === "update" && id) {
-        await updateProgramDetails({ programId: Number(id), payload: { name: values.name } });
+        useDiscrictDetail({ districtId: Number(id), payload: { name: values.name } });
       }
       navigate("/parameters/country");
     } catch (error) {

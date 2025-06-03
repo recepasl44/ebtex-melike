@@ -3,19 +3,19 @@ import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../../../store';
 import { RootState } from '../../../store/rootReducer';
-import { addProgram } from '../../../slices/programs/add/thunk';
-import { ProgramAddPayload } from '../../../types/programs/add';  
+import { addDistrict } from '../../../slices/districts/add/thunk';
+import { AddDistrictPayload } from '../../../types/districts/add';
 
-export function useProgramAdd() {
+export function useDiscrictAdd() {
   const dispatch = useDispatch<AppDispatch>();
-  const { data, status, error } = useSelector((state: RootState) => state.programAdd);
+  const { data, status, error } = useSelector((state: RootState) => state.districtAdd);
 
-  const addNewProgram = useCallback(
-    async (payload: ProgramAddPayload) => {
-   
+  const addNewDistrict = useCallback(
+    async (payload: AddDistrictPayload) => {
 
-      const resultAction = await dispatch(addProgram(payload));
-      if (addProgram.fulfilled.match(resultAction)) {
+
+      const resultAction = await dispatch(addDistrict(payload));
+      if (addDistrict.fulfilled.match(resultAction)) {
         return resultAction.payload;
       }
       return null;
@@ -23,5 +23,5 @@ export function useProgramAdd() {
     [dispatch]
   );
 
-  return { addedProgram: data, status, error, addNewProgram };
+  return { addedDistrict: data, status, error, addNewDistrict };
 }

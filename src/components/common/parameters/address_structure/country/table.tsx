@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCountriesList } from "../../../hooks/countries/useCountriesList";
-import ReusableTable, { ColumnDefinition, useDebounce } from "../../ReusableTable";
-import { ICountry } from "../../../types/countries/list";
-import { deleteCountry } from "../../../slices/countries/delete/thunk";
+import { useCountriesList } from "../../../../hooks/countries/useCountriesList";
+import ReusableTable, { ColumnDefinition, useDebounce } from "../../../ReusableTable";
+import { ICountry } from "../../../../../types/countries/list";
+import { deleteCountry } from "../../../../../slices/countries/delete/thunk";
 import { Button } from "react-bootstrap";
-import sec_buton from "../../../assets/images/media/sec-buton.svg";
+import sec_buton from "../../../../../assets/images/media/sec-buton.svg";
 
 interface CountryTableProps {
   onSelectCountry?: (country: ICountry) => void;
@@ -114,12 +114,12 @@ export default function CountryTable({ onSelectCountry }: CountryTableProps) {
                 alt="Seç"
                 style={{ width: "28px", height: "28px" }}
                 onMouseEnter={(e) =>
-                  (e.currentTarget.src =
-                    "/src/assets/images/media/sec-buton-hover.svg")
+                (e.currentTarget.src =
+                  "/src/assets/images/media/sec-buton-hover.svg")
                 }
                 onMouseLeave={(e) =>
-                  (e.currentTarget.src =
-                    "/src/assets/images/media/sec-buton.svg")
+                (e.currentTarget.src =
+                  "/src/assets/images/media/sec-buton.svg")
                 }
               />
             </Button>{" "}

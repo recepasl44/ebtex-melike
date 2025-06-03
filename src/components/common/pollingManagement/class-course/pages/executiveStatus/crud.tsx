@@ -220,7 +220,6 @@ export default function ExecutiveStatusAdd() {
             onSubmit={handleSubmit}
             confirmButtonLabel="Kaydet"
             cancelButtonLabel="Vazgeç"
-            buttonVoid={() => navigate(-1)}
             isLoading={addStatus === 'LOADING'}
             error={addError || null}
             autoGoBackOnModalClose

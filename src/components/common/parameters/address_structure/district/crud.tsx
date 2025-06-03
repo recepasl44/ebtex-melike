@@ -1,10 +1,10 @@
 import { FormikHelpers, FormikValues } from "formik";
-import ReusableModalForm, { FieldDefinition } from "../../ReusableModalForm";
+import ReusableModalForm, { FieldDefinition } from "../../../ReusableModalForm";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useProgramAdd } from "../../../hooks/districts/useAdd";
-import { useProgramUpdate } from "../../../hooks/districts/useUpdate";
-import { useProgramDetail } from "../../../hooks/districts/useDetail";
+import { useDiscrictAdd } from "../../../../hooks/districts/useAdd";
+import { useDiscrictUpdate } from "../../../../hooks/districts/useUpdate";
+import { useDiscrictDetail } from "../../../../hooks/districts/useDetail";
 
 interface DistrictFormData extends FormikValues {
   name: string;
@@ -17,7 +17,7 @@ interface DistrictModalProps {
   onRefresh: () => void;
 }
 
-const DistrictModal: React.FC<DistrictModalProps> = ({}) => {
+const DistrictModal: React.FC<DistrictModalProps> = ({ }) => {
   const { id } = useParams<{ id?: string }>();
   const navigate = useNavigate();
   const mode = id ? "update" : "add";
@@ -37,21 +37,20 @@ const DistrictModal: React.FC<DistrictModalProps> = ({}) => {
     ];
   };
 
-  const { addedProgram, status: addStatus, error: addError, addNewProgram } = useProgramAdd();
+  const { addedDistrict, status: addStatus, error: addError, addNewDistrict } = useDiscrictAdd();
 
   const {
-    updatedProgram,
     status: updateStatus,
     error: updateError,
-    updateProgramDetails,
-  } = useProgramUpdate();
+    updateDiscrictDetails: updateProgramDetails,
+  } = useDiscrictUpdate();
 
   const {
-    programDetail,
+    district: programDetail,
     status: showStatus,
     error: showError,
-    getProgramDetail,
-  } = useProgramDetail();
+    getDistrict: getProgramDetail,
+  } = useDiscrictDetail({ districtId: 0, payload: { name: '' } });
 
   useEffect(() => {
     if (mode === "update" && id) {
@@ -79,9 +78,15 @@ const DistrictModal: React.FC<DistrictModalProps> = ({}) => {
   ) {
     try {
       if (mode === "add") {
-        await addNewProgram({ name: values.name });
+        await addNewDistrict({
+          name: values.name,
+          county_id: 0
+        });
       } else if (mode === "update" && id) {
-        await updateProgramDetails({ programId: Number(id), payload: { name: values.name } });
+        await updateProgramDetails(Number(id), {
+          name: values.name,
+          county_id: 0
+        });
       }
       navigate("/parameters/country");
     } catch (error) {

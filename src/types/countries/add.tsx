@@ -5,7 +5,7 @@ import { ICountry } from "./list";
 
 export interface CountryAddPayload {
     name: string;
-    city_id: number;
+    city_id?: number;
 }
 
 

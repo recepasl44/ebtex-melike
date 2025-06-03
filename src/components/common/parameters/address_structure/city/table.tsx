@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCityTable } from "../../../hooks/city/useList";
-import ReusableTable, { ColumnDefinition, useDebounce } from "../../ReusableTable";
-import { City } from "../../../types/city/list";
-import { deleteCity } from "../../../slices/cities/delete/thunk";
+import { useCityTable } from "../../../../hooks/city/useList";
+import ReusableTable, { ColumnDefinition, useDebounce } from "../../../ReusableTable";
+import { City } from "../../../../../types/city/list";
+import { deleteCity } from "../../../../../slices/cities/delete/thunk";
 import { Button } from "react-bootstrap";
-import sec_buton from "../../../assets/images/media/sec-buton.svg";
+import sec_buton from "../../../../../assets/images/media/sec-buton.svg";
 
 interface CityTableProps {
   onSelectCity?: (city: City) => void;
@@ -106,12 +106,12 @@ export default function CityTable({ countryId, onSelectCity, enabled }: CityTabl
                 alt="Seç"
                 style={{ width: "28px", height: "28px" }}
                 onMouseEnter={(e) =>
-                  (e.currentTarget.src =
-                    "/src/assets/images/media/sec-buton-hover.svg")
+                (e.currentTarget.src =
+                  "/src/assets/images/media/sec-buton-hover.svg")
                 }
                 onMouseLeave={(e) =>
-                  (e.currentTarget.src =
-                    "/src/assets/images/media/sec-buton.svg")
+                (e.currentTarget.src =
+                  "/src/assets/images/media/sec-buton.svg")
                 }
               />
             </Button>{" "}

@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDiscrictTable } from "../../../hooks/districts/useList";
-import ReusableTable, { ColumnDefinition, useDebounce } from "../../ReusableTable";
-import { IDistrict } from "../../../types/districts/list";
-import { deleteProgram } from "../../../slices/programs/delete/thunk";
+import { useDiscrictTable } from "../../../../hooks/districts/useList";
+import ReusableTable, { ColumnDefinition, useDebounce } from "../../../ReusableTable";
+import { IDistrict } from "../../../../../types/districts/list";
+import { deleteProgram } from "../../../../../slices/programs/delete/thunk";
 
 interface DistrictTableProps {
   countyId?: number;

@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useListCounties } from "../../../hooks/county/useCountyList";
-import ReusableTable, { ColumnDefinition, useDebounce } from "../../ReusableTable";
-import { County } from "../../../types/counties/list";
-import { deleteCounty } from "../../../slices/counties/delete/thunk";
+import { useListCounties } from "../../../../hooks/county/useCountyList";
+import ReusableTable, { ColumnDefinition, useDebounce } from "../../../ReusableTable";
+import { County } from "../../../../../types/counties/list";
+import { deleteCounty } from "../../../../../slices/counties/delete/thunk";
 import { Button } from "react-bootstrap";
-import sec_buton from "../../../assets/images/media/sec-buton.svg";
+import sec_buton from "../../../../../assets/images/media/sec-buton.svg";
 
 interface CountyTableProps {
   onSelectCounty?: (county: County) => void;
@@ -47,8 +47,8 @@ export default function CountyTable({ cityId, onSelectCounty, enabled }: CountyT
   const countyData: County[] = Array.isArray(Countriesdata)
     ? Countriesdata
     : Array.isArray(data)
-    ? data
-    : [];
+      ? data
+      : [];
 
   const filters = useMemo(() => {
     return [
@@ -111,12 +111,12 @@ export default function CountyTable({ cityId, onSelectCounty, enabled }: CountyT
                 alt="Seç"
                 style={{ width: "28px", height: "28px" }}
                 onMouseEnter={(e) =>
-                  (e.currentTarget.src =
-                    "/src/assets/images/media/sec-buton-hover.svg")
+                (e.currentTarget.src =
+                  "/src/assets/images/media/sec-buton-hover.svg")
                 }
                 onMouseLeave={(e) =>
-                  (e.currentTarget.src =
-                    "/src/assets/images/media/sec-buton.svg")
+                (e.currentTarget.src =
+                  "/src/assets/images/media/sec-buton.svg")
                 }
               />
             </Button>{" "}

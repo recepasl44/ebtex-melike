@@ -3,7 +3,7 @@ import { Program } from "./list";
 export interface ProgramUpdatePayload {
   categoryId?: any;
   payload: {
-    name?: any;
+    name: any;
   };
 }
 
