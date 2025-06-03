@@ -1,6 +1,6 @@
 
 import { useEffect, useMemo } from 'react';
-import { Modal } from 'react-bootstrap';
+import { Modal, Button } from 'react-bootstrap';
 import ReusableTable, {
     ColumnDefinition,
 
@@ -114,12 +114,12 @@ const StudyCountDetailModal: React.FC<Props> = ({
             centered
             dialogClassName="modal-90w"
         >
-            <Modal.Header closeButton>
-                <Modal.Title>Yoklama Sayıları Detay</Modal.Title>
-            </Modal.Header>
+        <Modal.Header closeButton>
+            <Modal.Title>Yoklama Sayıları Detay</Modal.Title>
+        </Modal.Header>
 
-            <Modal.Body className="p-0">
-                <ReusableTable<Row>
+        <Modal.Body className="p-0">
+            <ReusableTable<Row>
                     tableMode="single"
                     columns={columns}
                     data={rows}
@@ -130,6 +130,14 @@ const StudyCountDetailModal: React.FC<Props> = ({
 
                 />
             </Modal.Body>
+            <Modal.Footer>
+                <Button variant="outline-secondary" onClick={onClose}>
+                    Vazgeç
+                </Button>
+                <Button variant="outline-secondary" onClick={onClose}>
+                    Kaydet
+                </Button>
+            </Modal.Footer>
         </Modal>
     );
 };

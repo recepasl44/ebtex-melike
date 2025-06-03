@@ -2,6 +2,7 @@
 import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
+import { Modal, Button } from "react-bootstrap";
 
 import ReusableTable, {
     ColumnDefinition,
@@ -154,19 +155,35 @@ export default function TeacherOneByOnePlanCrud() {
     );
 
     /* -------- render -------- */
-    return (
-        <ReusableTable<SlotRow>
+    function handleSave() {
+        // TODO: save plan
+        navigate(-1);
+    }
 
-            pageTitle="Öğretmen Bire-bir Planı"
-            showModal
-            onCloseModal={() => navigate(-1)}
-            tableMode="single"
-            columns={columns}
-            data={displayedRows}
-            filters={filters}
-            loading={status === "LOADING"}
-            error={error}
-            showExportButtons={false}
-        />
+    return (
+        <Modal show onHide={() => navigate(-1)} centered size="lg">
+            <Modal.Header closeButton>
+                <Modal.Title>Öğretmen Bire-bir Planı</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <ReusableTable<SlotRow>
+                    tableMode="single"
+                    columns={columns}
+                    data={displayedRows}
+                    filters={filters}
+                    loading={status === "LOADING"}
+                    error={error}
+                    showExportButtons={false}
+                />
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="outline-secondary" onClick={() => navigate(-1)}>
+                    Vazgeç
+                </Button>
+                <Button variant="outline-secondary" onClick={handleSave}>
+                    Kaydet
+                </Button>
+            </Modal.Footer>
+        </Modal>
     );
 }

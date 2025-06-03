@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import ReusableTable, { ColumnDefinition } from '../../../../ReusableTable';
 import { useAttendanceTeachersTable } from '../../../../../hooks/attendanceTeacher/useList';
-import { Button } from 'react-bootstrap';
+import { Modal, Button } from 'react-bootstrap';
 
 import eslestirHover from '../../../../../../assets/images/media/eşleştir-hover.svg';
 import eslestir from '../../../../../../assets/images/media/eşleştir.svg';
@@ -74,17 +74,34 @@ export default function TeacherMatchModal({ demandId, show, onClose }: Props) {
     );
 
 
+    function handleSave() {
+        // TODO: save selected teacher
+        onClose();
+    }
+
     return (
-        <ReusableTable<Row>
-            pageTitle="Öğretmen Eşleştir"
-            showModal={show}
-            onCloseModal={onClose}
-            tableMode="single"
-            columns={columns}
-            data={rows}
-            loading={loading}
-            error={error}
-            showExportButtons={false}
-        />
+        <Modal show={show} onHide={onClose} centered size="lg">
+            <Modal.Header closeButton>
+                <Modal.Title>Öğretmen Eşleştir</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <ReusableTable<Row>
+                    tableMode="single"
+                    columns={columns}
+                    data={rows}
+                    loading={loading}
+                    error={error}
+                    showExportButtons={false}
+                />
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="outline-secondary" onClick={onClose}>
+                    Vazgeç
+                </Button>
+                <Button variant="outline-secondary" onClick={handleSave}>
+                    Kaydet
+                </Button>
+            </Modal.Footer>
+        </Modal>
     );
 }
