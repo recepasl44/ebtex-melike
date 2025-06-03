@@ -7,10 +7,9 @@ import { updateDistrict } from "../../../../slices/districts/update/thunk";
 import { showDistrict } from "../../../../slices/districts/show/thunk";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../store";
+import { AddDistrictPayload } from "../../../../types/districts/add";
 
-interface FormData extends FormikValues {
-  name: string;
-}
+interface FormData extends FormikValues, AddDistrictPayload {}
 
 export default function DistrictCrud() {
   const { id } = useParams<{ id?: string }>();
@@ -18,7 +17,10 @@ export default function DistrictCrud() {
   const location = useLocation() as { state?: { county_id?: number } };
   const dispatch = useDispatch<AppDispatch>();
   const mode = id ? "update" : "add";
-  const [initialValues, setInitialValues] = useState<FormData>({ name: "" });
+  const [initialValues, setInitialValues] = useState<FormData>({
+    name: "",
+    county_id: location.state?.county_id ?? 0,
+  });
 
   const getFields = (): FieldDefinition[] => [
     { name: "name", label: "Mahalle Adı", type: "text", required: true },
@@ -28,7 +30,10 @@ export default function DistrictCrud() {
     if (mode === "update" && id) {
       dispatch(showDistrict(Number(id))).then((res: any) => {
         if (showDistrict.fulfilled.match(res)) {
-          setInitialValues({ name: res.payload.name });
+          setInitialValues({
+            name: res.payload.name,
+            county_id: res.payload.data?.county_id ?? res.payload.county_id,
+          });
         }
       });
     }
@@ -36,7 +41,7 @@ export default function DistrictCrud() {
 
   const handleSubmit = async (values: FormData, _helpers: FormikHelpers<FormData>) => {
     if (mode === "add") {
-      await dispatch(addDistrict({ ...values, county_id: location.state?.county_id || 0 }));
+      await dispatch(addDistrict(values));
     } else if (id) {
       await dispatch(updateDistrict({ districtId: Number(id), payload: values }));
     }
