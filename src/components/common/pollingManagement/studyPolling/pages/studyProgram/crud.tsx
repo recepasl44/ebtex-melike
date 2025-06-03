@@ -2,6 +2,7 @@ import { useState, useMemo, useCallback } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import ReusableModalForm, { FieldDefinition } from "../../../../ReusableModalForm";
 import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable";
+import { Modal, Button } from "react-bootstrap";
 
 // Yönetici
 import { useUsersTable } from "../../../../../hooks/user/useList";
@@ -198,16 +199,33 @@ export default function StudyProgramCrud() {
 
     // Öğrenci listesi modunda modal
     if (isStudentListMode) {
+        const handleSave = () => {
+            // TODO: persist changes
+            navigate(-1);
+        };
+
         return (
-            <ReusableTable<StudentRow>
-                pageTitle="Öğrenci Listesi"
-                showModal={true}
-                columns={studentColumns}
-                data={students}
-                tableMode="single"
-                onCloseModal={() => navigate(-1)}
-                showExportButtons={false}
-            />
+            <Modal show onHide={() => navigate(-1)} centered size="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title>Öğrenci Listesi</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <ReusableTable<StudentRow>
+                        tableMode="single"
+                        columns={studentColumns}
+                        data={students}
+                        showExportButtons={false}
+                    />
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="outline-secondary" onClick={() => navigate(-1)}>
+                        Vazgeç
+                    </Button>
+                    <Button variant="outline-secondary" onClick={handleSave}>
+                        Kaydet
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         );
     }
 

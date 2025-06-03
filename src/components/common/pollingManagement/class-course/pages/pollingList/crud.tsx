@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
+import { Modal, Button } from 'react-bootstrap';
 
 import ReusableTable, { ColumnDefinition } from '../../../../ReusableTable';
 import { useAttendanceDetail } from '../../../../../hooks/attendance/useDetail';
@@ -105,17 +106,35 @@ export default function PollingListDetailTable() {
     );
 
 
+    function handleSave() {
+        // TODO: save changes if needed
+        navigate(-1);
+    }
+
     return (
-        <ReusableTable<Row>
-            columns={columns}
-            data={rows}
-            tableMode="single"
-            showModal
-            showExportButtons={false}
-            exportFileName="Yoklama Listesi Detay Sayfası"
-            loading={loading}
-            error={error}
-            onCloseModal={() => navigate(-1)}
-        />
+        <Modal show onHide={() => navigate(-1)} centered size="lg">
+            <Modal.Header closeButton>
+                <Modal.Title>Yoklama Listesi Detay</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <ReusableTable<Row>
+                    tableMode="single"
+                    columns={columns}
+                    data={rows}
+                    showExportButtons={false}
+                    exportFileName="Yoklama Listesi Detay Sayfası"
+                    loading={loading}
+                    error={error}
+                />
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="outline-secondary" onClick={() => navigate(-1)}>
+                    Vazgeç
+                </Button>
+                <Button variant="outline-secondary" onClick={handleSave}>
+                    Kaydet
+                </Button>
+            </Modal.Footer>
+        </Modal>
     );
 }
