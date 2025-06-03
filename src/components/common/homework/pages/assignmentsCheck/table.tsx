@@ -5,6 +5,7 @@ import ReusableTable, {
     ColumnDefinition,
     FilterDefinition,
 } from '../../../ReusableTable';
+import FilterGroup from '../../components/organisms/SearchFilters';
 
 import { useAssignmentStudentsList } from '../../../../hooks/assignmentStudents/useList';
 import { AssignmentStudentData as AssignmentRow } from '../../../../../types/assignmentStudents/list';
@@ -218,22 +219,29 @@ export default function AssignmentsCheckTable() {
 
 
     return (
-        <ReusableTable<AssignmentRow>
-            columns={columns}
-            data={assignmentStudentsData}
-            loading={loading}
-            error={error}
-            filters={filters}
-            showModal={false}
-            showExportButtons
-            tableMode="single"
-            currentPage={page}
-            totalPages={totalPages}
-            totalItems={totalItems}
-            pageSize={pageSize}
-            onPageChange={setPage}
-            onPageSizeChange={size => { setPageSize(size); setPage(1); }}
-            exportFileName="student_assignment_list"
-        />
+        <>
+            <FilterGroup
+                filters={filters}
+                columnsPerRow={4}
+                navigate={navigate}
+            />
+
+            <ReusableTable<AssignmentRow>
+                columns={columns}
+                data={assignmentStudentsData}
+                loading={loading}
+                error={error}
+                showModal={false}
+                showExportButtons
+                tableMode="single"
+                currentPage={page}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                pageSize={pageSize}
+                onPageChange={setPage}
+                onPageSizeChange={size => { setPageSize(size); setPage(1); }}
+                exportFileName="student_assignment_list"
+            />
+        </>
     );
 }

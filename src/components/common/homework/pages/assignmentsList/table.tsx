@@ -6,6 +6,7 @@ import ReusableTable, {
     ColumnDefinition,
     FilterDefinition,
 } from '../../../ReusableTable';
+import FilterGroup from '../../components/organisms/SearchFilters';
 
 import { useAssignmentStudentsList } from '../../../../hooks/assignmentStudents/useList';
 import { useAssignmentStudentDelete } from '../../../../hooks/assignmentStudents/useDelete';
@@ -258,26 +259,33 @@ export default function AssignmentsListTable() {
 
     /* ----------------------------------- UI ----------------------------------- */
     return (
-        <ReusableTable<AssignmentRow>
+        <>
+            <FilterGroup
+                filters={filters}
+                columnsPerRow={4}
+                navigate={navigate}
+            />
 
-            columns={columns}
-            data={assignmentStudentsData}
-            loading={loading}
-            showModal={false}
-            showExportButtons
-            tableMode="single"
-            error={error}
-            filters={filters}
-            currentPage={page}
-            totalPages={totalPages}
-            totalItems={totalItems}
-            pageSize={pageSize}
-            onPageChange={(p) => setPage(p)}
-            onPageSizeChange={(size) => {
-                setPageSize(size);
-                setPage(1);
-            }}
-            exportFileName="student_assignment_list"
-        />
+            <ReusableTable<AssignmentRow>
+
+                columns={columns}
+                data={assignmentStudentsData}
+                loading={loading}
+                showModal={false}
+                showExportButtons
+                tableMode="single"
+                error={error}
+                currentPage={page}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                pageSize={pageSize}
+                onPageChange={(p) => setPage(p)}
+                onPageSizeChange={(size) => {
+                    setPageSize(size);
+                    setPage(1);
+                }}
+                exportFileName="student_assignment_list"
+            />
+        </>
     );
 }
