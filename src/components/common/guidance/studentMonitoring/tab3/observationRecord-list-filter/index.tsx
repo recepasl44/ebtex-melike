@@ -8,7 +8,7 @@ import { useProgramsTable } from "../../../../../hooks/program/useList.tsx";
 import getUserDataField from "../../../../../../utils/user_data_field.tsx";
 import { useClassroomList } from "../../../../../hooks/classrooms/useList.tsx";
 import ReusableTable, { useDebounce } from "../../../../ReusableTable.tsx";
-import columnsObservationRecord from "./table";
+import columnsObservationRecord from "./table.tsx";
 import { useGuidanceObservationsList } from "../../../../../hooks/guidanceObservations/useList.tsx";
 import { useUpdateQueryParamsFromFilters } from "../../../../../hooks/utilshooks/useUpdateQueryParamsFromFilters.tsx";
 

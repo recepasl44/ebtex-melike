@@ -2,8 +2,8 @@ import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import ReusableTable, {
   ColumnDefinition,
-} from "../../../components/common/ReusableTable";
-import { useCoursesTable } from "../../../components/hooks/course/useList";
+} from "../ReusableTable";
+import { useCoursesTable } from "../../hooks/course/useList";
 import { data } from "../../../types/courses/list";
 import { Button } from "react-bootstrap";
 

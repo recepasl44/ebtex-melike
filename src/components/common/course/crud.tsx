@@ -1,14 +1,14 @@
 import { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { useCourseUpdate } from "../../../components/hooks/course/useUpdate";
-import { useCourseAdd } from "../../../components/hooks/course/useAdd";
-import { useCourseShow } from "../../../components/hooks/course/useDetail";
+import { useCourseUpdate } from "../../hooks/course/useUpdate";
+import { useCourseAdd } from "../../hooks/course/useAdd";
+import { useCourseShow } from "../../hooks/course/useDetail";
 import ReusableModalForm, { FieldDefinition } from "../ReusableModalForm";
 import { FormikHelpers, FormikValues } from "formik";
 import DependentSelectField from "../../../utils/DependentSelectField";
-import { Option } from "../../../components/hooks/utilshooks/useDependentOptions";
-import { useBranchTable } from "../../../components/hooks/branch/useBranchList";
-import { useListStudents } from "../../../components/hooks/student/useList";
+import { Option } from "../../hooks/utilshooks/useDependentOptions";
+import { useBranchTable } from "../../hooks/branch/useBranchList";
+import { useListStudents } from "../../hooks/student/useList";
 
 interface CourseModalProps {
   show: boolean;

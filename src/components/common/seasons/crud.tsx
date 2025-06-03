@@ -3,9 +3,9 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { FormikHelpers, FormikValues } from "formik";
 import ReusableModalForm, { FieldDefinition } from "../ReusableModalForm";
-import { useSeasonAdd } from "../../../components/hooks/season/useSeasonsAdd";
-import { useSeasonUpdate } from "../../../components/hooks/season/useSeasonsUpdate";
-import { useSeasonDetail } from "../../../components/hooks/season/useSeasonsDetail";
+import { useSeasonAdd } from "../../hooks/season/useSeasonsAdd";
+import { useSeasonUpdate } from "../../hooks/season/useSeasonsUpdate";
+import { useSeasonDetail } from "../../hooks/season/useSeasonsDetail";
 
 interface ISeasonForm {
     name: string;

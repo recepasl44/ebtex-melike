@@ -3,7 +3,7 @@ import AssignmentStudentsListStatus from '../../enums/assignmentStudents/list';
 
 export interface AssignmentStudentsAddPayload {
     id: number;
-    assignment_id: number;
+    assigment_id: number;
     student_id: number;
     status?: number;
     completion_percentage?: number;

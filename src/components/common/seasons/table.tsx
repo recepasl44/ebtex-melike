@@ -2,9 +2,9 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
-import ReusableTable, { ColumnDefinition } from "../../common/ReusableTable";
-import { useSeasonsList } from "../../../components/hooks/season/useSeasonsList";
-import { useSeasonDelete } from "../../../components/hooks/season/useSeasonsDelete";
+import ReusableTable, { ColumnDefinition } from "../ReusableTable";
+import { useSeasonsList } from "../../hooks/season/useSeasonsList";
+import { useSeasonDelete } from "../../hooks/season/useSeasonsDelete";
 import { Season } from "../../../types/seasons/list";
 
 export default function SeasonsListPage() {

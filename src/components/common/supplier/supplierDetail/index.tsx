@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react"
 import { Modal, Button } from "react-bootstrap"
 import { useParams } from "react-router-dom"
-import SupplierOverviewTab from "./tabs/supplierSummery"
-import SupplierInvoiceTab from "./tabs/invoice/table"
-import SupplierDebtTab from "./tabs/debts/table"
-import SupplierRefundTab from "./tabs/refunds/table"
-import SupplierPaymentTab from "./tabs/payments/table"
-import SupplierNotesTab from "./tabs/notes/table"
+import SupplierOverviewTab from "./tabs/supplierSummery.tsx"
+import SupplierInvoiceTab from "./tabs/invoice/table.tsx"
+import SupplierDebtTab from "./tabs/debts/table.tsx"
+import SupplierRefundTab from "./tabs/refunds/table.tsx"
+import SupplierPaymentTab from "./tabs/payments/table.tsx"
+import SupplierNotesTab from "./tabs/notes/table.tsx"
 import TabsContainer from "../../guidance/components/organisms/TabsContainer.tsx"
 
 
 
-import { useSupplierShow } from "../../../hooks/suppliers/useSuppliersShow"
+import { useSupplierShow } from "../../../hooks/suppliers/useSuppliersShow.tsx"
 
 interface ISupplierDetailModalProps {
   show: boolean

@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import ReusableTable, {
   ColumnDefinition,
   FilterDefinition,
-} from "../../../components/common/ReusableTable";
-import { useSchoolTable } from "../../../components/hooks/school/useSchoolList";
-import { useSchoolDelete } from "../../../components/hooks/school/useSchoolDelete";
+} from "../ReusableTable";
+import { useSchoolTable } from "../../hooks/school/useSchoolList";
+import { useSchoolDelete } from "../../hooks/school/useSchoolDelete";
 import { ISchool } from "../../../types/schools/list";
 
 export default function SchoolListPage() {

@@ -2,15 +2,15 @@ import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import ReusableTable, {
   ColumnDefinition,
-} from "../../../components/common/ReusableTable";
-import { useCoursesTable } from "../../../components/hooks/course/useList";
+} from "../ReusableTable";
+import { useCoursesTable } from "../../hooks/course/useList";
 import { data } from "../../../types/courses/list";
 import { Button } from "react-bootstrap";
-import { useBranchTable } from "../../../components/hooks/branch/useBranchList";
-import { useListStudents } from "../../../components/hooks/student/useList";
+import { useBranchTable } from "../../hooks/branch/useBranchList";
+import { useListStudents } from "../../hooks/student/useList";
 import { useUpdateQueryParamsFromFilters } from "../../hooks/utilshooks/useUpdateQueryParamsFromFilters";
 import { useDependentFiltersUpdate } from "../../hooks/utilshooks/useDependentFiltersUpdate";
-import { useCourseDelete } from "../../../components/hooks/course/useDelete";
+import { useCourseDelete } from "../../hooks/course/useDelete";
 
 type QueryParams = {
   page: number;

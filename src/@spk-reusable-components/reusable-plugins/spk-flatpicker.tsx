@@ -1,4 +1,5 @@
-import React from 'react';
+import{ forwardRef } from 'react';
+
 import Flatpickr from 'react-flatpickr';
 
 interface SpkFlatpickrProps {
@@ -11,10 +12,32 @@ interface SpkFlatpickrProps {
   disable?: boolean
 }
 
-const SpkFlatpickr: React.FC<SpkFlatpickrProps> = ({ value, onfunChange, inputClass, placeholder, dataEnableTime = false, disable = false, options }) => {
-  return (
-    <Flatpickr className={inputClass} value={value} onChange={onfunChange} disabled={disable} options={options} placeholder={placeholder} data-enable-time={dataEnableTime} />
-  );
-};
+const SpkFlatpickr = forwardRef<any, SpkFlatpickrProps>(
+  (
+    {
+      value,
+      onfunChange,
+      inputClass,
+      placeholder,
+      dataEnableTime = false,
+      disable = false,
+      options,
+    },
+    ref,
+  ) => {
+    return (
+      <Flatpickr
+        ref={ref as any}
+        className={inputClass}
+        value={value}
+        onChange={onfunChange}
+        disabled={disable}
+        options={options}
+        placeholder={placeholder}
+        data-enable-time={dataEnableTime}
+      />
+    );
+  },
+);
 
 export default SpkFlatpickr;

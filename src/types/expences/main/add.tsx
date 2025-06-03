@@ -1,4 +1,4 @@
-import { IExpense } from "../../../types/expences/main/list";
+import { IExpense } from "./list";
 import ExpenseListStatus from "../../../enums/expense/summary/list";
 
 export interface ExpenseAddPayload {

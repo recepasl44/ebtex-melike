@@ -1,5 +1,5 @@
 import  { Fragment, useContext, useEffect} from 'react'
-import Themeprimarycolor, * as switcherdata from "../../components/common/data/switcherdata/switcherdata"
+import Themeprimarycolor, * as switcherdata from "../common/data/switcherdata/switcherdata"
 import { connect } from "react-redux"
 import SpkButton from '../../@spk-reusable-components/reusable-uielements/spk-button';
 import { ThemeChanger } from '../common/ui/redux/action';

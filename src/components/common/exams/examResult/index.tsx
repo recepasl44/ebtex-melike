@@ -54,7 +54,7 @@ const ExamsResult = () => {
     {
       key: "filter2",
       label: "Sınıf Seviyesi",
-      type: "select",
+      type: "multiselect",
       options: [
         { value: "1", label: "Option 1" },
         { value: "2", label: "Option 2" },
@@ -94,7 +94,7 @@ const ExamsResult = () => {
     {
       key: "filter6",
       label: "Sınavlar",
-      type: "select",
+      type: "multiselect",
       options: [
         { value: "1", label: "Option 1" },
         { value: "2", label: "Option 2" },

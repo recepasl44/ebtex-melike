@@ -96,6 +96,7 @@ export function homeworkNumbersTable(_params?: any) {
       render: (row: ScheduledAssignmentData) => {
         return (
           <div className="flex gap-2">
+            {" "}
             <Button
               variant="primary-light"
               size="sm"

@@ -11,12 +11,13 @@ export interface ScheduledAssignmentsAddPayload {
   topic_id: number;
   achievement_id?: number;
   source_id: number;
-  number_of_questions: number;
-  working_time: string;
+  number_of_questions?: number;
+  working_time?: string;
   start_date: string;
   end_date?: string;
-  description: string;
+  description?: string;
   status: number;
+  
 }
 
 export interface ScheduledAssignmentsAddState {

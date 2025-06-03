@@ -29,7 +29,6 @@ export interface Teacher {
 }
 
 export interface Data {
-    name_surname: string | undefined
     id: number
     attendance_id: number
     attendance: Attendance | null

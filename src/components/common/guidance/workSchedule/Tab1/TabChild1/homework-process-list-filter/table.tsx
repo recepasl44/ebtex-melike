@@ -6,28 +6,6 @@ export default function periodHomework(_params?: any) {
   const navigate = useNavigate();
   const periodHomework: ColumnDefinition<ScheduledAssignmentData>[] = [
     {
-      key: "start_date",
-      label: "Baslangıc Tarihi",
-      render: (row: ScheduledAssignmentData) => {
-        // Null check eklendi
-        const date = row?.period?.start_date
-          ? new Date(row.period.start_date).toLocaleDateString("tr-TR")
-          : "-";
-        return <span>{date}</span>;
-      },
-    },
-    {
-      key: "end_date",
-      label: "Bitiş Tarihi",
-      render: (row: ScheduledAssignmentData) => {
-        // Null check eklendi
-        const date = row?.period?.end_date
-          ? new Date(row.period.end_date).toLocaleDateString("tr-TR")
-          : "-";
-        return <span>{date}</span>;
-      },
-    },
-    {
       key: "lesson",
       label: "Ders",
       render: (row: ScheduledAssignmentData) => {

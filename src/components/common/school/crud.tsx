@@ -1,9 +1,9 @@
 import React, { useState, useEffect, FormEvent, ChangeEvent } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { useSchoolAdd } from "../../../components/hooks/school/useSchoolAdd";
-import { useSchoolUpdate } from "../../../components/hooks/school/useSchoolUpdate";
-import { useSchoolShow } from "../../../components/hooks/school/useSchoolShow";
+import { useSchoolAdd } from "../../hooks/school/useSchoolAdd";
+import { useSchoolUpdate } from "../../hooks/school/useSchoolUpdate";
+import { useSchoolShow } from "../../hooks/school/useSchoolShow";
 interface ISchoolModalProps {
   show: boolean;
   token: string;

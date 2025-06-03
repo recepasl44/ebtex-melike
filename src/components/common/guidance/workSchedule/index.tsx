@@ -8,6 +8,7 @@ import PositionmatikListFilter from "./Tab3/positionmatic-list-filter";
 import PositionmatikTable from "./Tab2/Tabchild1234/PositionmatikTable";
 import QuestionTimeFilter from "./Tab4";
 import PlanCalendarFilter from "./Tab5";
+import Pageheader from "../../../page-header/pageheader";
 
 const WorkSchedule = () => {
   const handleAnnualPlanChange = (data: { id: string; name: string }) => {
@@ -183,7 +184,7 @@ const WorkSchedule = () => {
 
   return (
     <div>
-      <h5>Çalışma Takvimi</h5>
+      <Pageheader title="Rehberlik Takip" currentpage="Çalışma Takvimi" />
       <TabsContainer tabs={tabsConfig} />
     </div>
   );

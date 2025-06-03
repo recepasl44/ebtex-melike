@@ -1,12 +1,10 @@
 import { Button } from "react-bootstrap";
 import { ColumnDefinition } from "../../../../ReusableTable";
 import { ScheduledAssignmentData } from "../../../../../../types/scheduledAssignments/list";
-import { useNavigate } from "react-router-dom";
-import { useScheduledAssignmentDelete } from "../../../../../hooks/scheduledAssignments/useDelete";
+import { useNavigate, useSearchParams } from "react-router-dom";
 export default function annualPlan(_params?: any) {
   const navigate = useNavigate();
-  const { deleteExistingScheduledAssignment } = useScheduledAssignmentDelete();
-
+  const [searchParams, setSearchParams] = useSearchParams();
   const annualPlan: ColumnDefinition<ScheduledAssignmentData>[] = [
     {
       key: "start_date",
@@ -56,15 +54,15 @@ export default function annualPlan(_params?: any) {
         let color = "";
 
         switch (row.status) {
-          case 2:
+          case 0:
             statusText = "Planlanan";
             color = "#21CE9E";
             break;
-          case 1:
+          case 3:
             statusText = "Eksik";
             color = "#FFC658";
             break;
-          case 0:
+          case 1:
             statusText = "Aktif";
             color = "#0EA5E8";
             break;
@@ -89,9 +87,10 @@ export default function annualPlan(_params?: any) {
     {
       key: "actions",
       label: "İşlem",
-      render: (row) => {
+      render: (row, openDeleteModal) => {
         return (
           <div className="flex gap-2">
+            {" "}
             <Button
               variant="info-light"
               size="sm"
@@ -101,13 +100,18 @@ export default function annualPlan(_params?: any) {
               }}
             >
               <i className="ti ti-pencil"></i>
-            </Button>
+            </Button>{" "}
             <Button
               variant="danger-light"
               size="sm"
               className="btn-icon rounded-pill"
               onClick={() => {
-                deleteExistingScheduledAssignment(row.id);
+                const newParams = new URLSearchParams(searchParams);
+                newParams.set("delete_id", row.id.toString());
+                setSearchParams(newParams);
+                if (openDeleteModal) {
+                  openDeleteModal(row);
+                }
               }}
             >
               <i className="ti ti-trash"></i>

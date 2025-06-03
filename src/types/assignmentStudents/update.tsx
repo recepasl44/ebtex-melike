@@ -4,7 +4,7 @@ import AssignmentsListStatus from '../../enums/assignmentStudents/list';
 export interface AssignmentStudentsUpdatePayload {
     assignmentStudentId: number;
     payload: {
-        assignment_id?: number;
+        assigment_id?: number;
         student_id?: number;
         status?: number;
         completion_percentage?: number;

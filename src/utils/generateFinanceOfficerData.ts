@@ -64,7 +64,7 @@ export function generateFinanceOfficerData(data: any): CardDataItem[] {
             { label: "Gelir", value: `₺${data?.data?.[0]?.today_account_status?.income?.bank || "0"}`, prefix: "Banka" },
             { label: "Gider", value: `₺${data?.data?.[0]?.today_account_status?.expense?.bank || "0"}`, prefix: "Banka" }
           ],
-          iconClass: "ti ti-report-money",
+          iconClass: "ti ti-wallet",
           backgroundColor: "primary2"
         },
       ];

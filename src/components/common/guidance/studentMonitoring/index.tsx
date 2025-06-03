@@ -26,6 +26,7 @@ import { useGuardiansTable } from "../../../hooks/guardian/useList.tsx";
 import ObservationRecordListFilter from "./tab3/observationRecord-list-filter";
 import ParentMeetingListFilter from "./tab4/parent-meetingList-filter";
 import { useGuidanceMeetingsTable } from "../../../hooks/guidanceMeeting/useList.tsx";
+import Pageheader from "../../../page-header/pageheader";
 
 const StudentTrackingPage = () => {
   const [loadingStep1, setLoadingStep1] = useState(false);
@@ -437,7 +438,7 @@ const StudentTrackingPage = () => {
       ),
       activeBgColor: "#5C67F7",
       activeTextColor: "#FFFFFF",
-      passiveBgColor: "#E1E4FB",
+      passiveBgColor: "#5C67F726",
       passiveTextColor: "#5C67F7",
     },
     {
@@ -451,7 +452,7 @@ const StudentTrackingPage = () => {
       ),
       activeBgColor: "#5C67F7",
       activeTextColor: "#FFFFFF",
-      passiveBgColor: "#E1E4FB",
+      passiveBgColor: "#5C67F726",
       passiveTextColor: "#5C67F7",
     },
     {
@@ -465,7 +466,7 @@ const StudentTrackingPage = () => {
       ),
       activeBgColor: "#5C67F7",
       activeTextColor: "#FFFFFF",
-      passiveBgColor: "#E1E4FB",
+      passiveBgColor: "#5C67F726",
       passiveTextColor: "#5C67F7",
     },
     {
@@ -479,14 +480,14 @@ const StudentTrackingPage = () => {
       ),
       activeBgColor: "#5C67F7",
       activeTextColor: "#FFFFFF",
-      passiveBgColor: "#E1E4FB",
+      passiveBgColor: "#5C67F726",
       passiveTextColor: "#5C67F7",
     },
   ];
 
   return (
     <div>
-      <h5>Öğrenci İzleme</h5>
+      <Pageheader title="Rehberlik Takip" currentpage="Öğrenci İzleme" />
       <TabsContainer tabs={tabsConfig} onTabChange={handleTabChange} />
     </div>
   );

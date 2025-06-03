@@ -2,16 +2,17 @@ import { useEffect, useMemo, useState } from "react";
 import FilterGroup, {
   FilterDefinition,
 } from "../../../components/organisms/SearchFilter.tsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useProgramsTable } from "../../../../../hooks/program/useList.tsx";
 import getUserDataField from "../../../../../../utils/user_data_field.tsx";
 import { useClassroomList } from "../../../../../hooks/classrooms/useList.tsx";
 import ReusableTable from "../../../../ReusableTable.tsx";
-import { useScheduledAssignmentsTable } from "../../../../../hooks/scheduledAssignments/useList";
-import annualPlan from "./table";
+import { useScheduledAssignmentsTable } from "../../../../../hooks/scheduledAssignments/useList.tsx";
+import annualPlan from "./table.tsx";
 import { useUpdateQueryParamsFromFilters } from "../../../../../hooks/utilshooks/useUpdateQueryParamsFromFilters.tsx";
 import { useLessonList } from "../../../../../hooks/lessons/useList.tsx";
 import { useUnitsTable } from "../../../../../hooks/units/useList.tsx";
+import { useScheduledAssignmentDelete } from "../../../../../hooks/scheduledAssignments/useDelete.tsx";
 
 type QueryParams = {
   [x: string]: any;
@@ -38,8 +39,12 @@ const AnnualPlanListFilter: React.FC<AnnualPlanListFilterProps> = () => {
     level_id: false,
     unit_id: false,
   });
-  const { default_branche } = getUserDataField();
+  // URL'den delete_id'yi al
+  const [searchParams] = useSearchParams();
+  const deleteId = searchParams.get("delete_id");
 
+  const { deleteExistingScheduledAssignment } = useScheduledAssignmentDelete();
+  const { default_branche } = getUserDataField();
   const levelParams = useMemo(
     () => ({
       enabled: program_id ? true : false,
@@ -217,10 +222,10 @@ const AnnualPlanListFilter: React.FC<AnnualPlanListFilterProps> = () => {
         handleFilterChange("status", val);
       },
       options: [
-        { value: "0", label: "Aktif" },
-        { value: "2", label: "Verildi" },
-        { value: "1", label: "Eksik" },
-        { value: "3", label: "Verilmedi" },
+        { value: "1", label: "Aktif" },
+        { value: "0", label: "Verildi" },
+        { value: "3", label: "Eksik" },
+        { value: "2", label: "Verilmedi" },
       ],
     },
   ];
@@ -268,6 +273,9 @@ const AnnualPlanListFilter: React.FC<AnnualPlanListFilterProps> = () => {
         onAdd={() => navigate("/guidance/work-schedule/annual-plan-crud")}
         showExportButtons={true}
         exportFileName="parent_meetings"
+        onDeleteRow={() => {
+          deleteExistingScheduledAssignment(Number(deleteId));
+        }}
       />
     </div>
   );

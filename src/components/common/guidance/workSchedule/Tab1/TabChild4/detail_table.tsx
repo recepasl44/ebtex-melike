@@ -4,7 +4,7 @@ import { ColumnDefinition } from "../../../../ReusableTable";
 const statusNumbersTable = (): ColumnDefinition<ScheduledAssignmentData>[] => {
   return [
     {
-      key: "name",
+      key: "period_no",
       label: "Periyot No",
       render: (row: ScheduledAssignmentData) => (
         <div
@@ -14,7 +14,7 @@ const statusNumbersTable = (): ColumnDefinition<ScheduledAssignmentData>[] => {
             alignItems: "center",
           }}
         >
-          {row.period?.name || "-"}
+          {row.period?.period_no || "-"}
         </div>
       ),
     },

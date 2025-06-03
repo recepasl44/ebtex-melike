@@ -329,9 +329,9 @@ import tuitionFeesDeleteReducer from "../slices/employee/tuition_fees/delete/red
 
 import dailyDataList from "../slices/employee/dailyData/list/reducer";
 import dailyDataDetail from "../slices/employee/dailyData/detail/reducer";
-import dailyDataAdd from "../slices/employee/dailyData//add/reducer";
-import dailyDataUpdate from "../slices/employee/dailyData//update/reducer";
-import dailyDataDelete from "../slices/employee/dailyData//delete/reducer";
+import dailyDataAdd from "../slices/employee/dailyData/add/reducer";
+import dailyDataUpdate from "../slices/employee/dailyData/update/reducer";
+import dailyDataDelete from "../slices/employee/dailyData/delete/reducer";
 import costPlanningListReducer from "../slices/employee/cost_planning/list/reducer";
 import budgetEstimateReducer from "../slices/accounting/budget_estimate/list/reducer";
 import financialSummaryReducer from "../slices/accounting/financial_summary/reducer";

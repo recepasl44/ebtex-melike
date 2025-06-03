@@ -1,5 +1,5 @@
-import FoundingDirectorDashboard from "./components/foundingDirectorDashboard/component";
-import { dummyDataDashboar } from "./dummyData";
+import { dummyDataDashboar } from "./dummyData.ts";
+import FoundingDirectorDashboard from "./fields/foundingDirectorDashboard/index.tsx";
 
 const Dashboard = () => {
   return (
@@ -11,8 +11,11 @@ const Dashboard = () => {
       {/* <PDRDashboard data={dummyDataDashboar} /> */}
       {/* <StudentAffairsDashboard data={dummyDataDashboar} /> */}
       {/* <FinanceOfficerDashboard data={dummyDataDashboar} /> */}
-      {/* <SupportStaffDashboard data={dummyDataDashboar} />  */}
-      {/* <SuerviceDriverDashboard data={dummyDataDashboar} />*/}
+      {/* <SupportStaffDashboard data={dummyDataDashboar} /> */}
+      {/* <SuerviceDriverDashboard data={dummyDataDashboar} /> */}
+      {/*     <ServiceManagerDashboard data={dummyDataDashboar} />*/}
+      {/* <ParentGuardianDashboard data={dummyDataDashboar} />*/}
+      {/* <StudentDashboard data={dummyDataDashboar} /> */}
     </div>
   );
 };

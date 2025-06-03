@@ -27,7 +27,7 @@ export interface CardDataItem {
           change: {
             label: "Değişim",
             value: data?.data?.[0]?.register_number?.rate || "0%",
-            color: data?.data?.[0]?.register_number?.rate?.includes("-") ? "danger" : "success"
+            color: data?.data?.[0]?.register_number?.rate?.includes("-") ? "" : "success"
           },
           iconClass: "ti ti-users",
           backgroundColor: "primary"
@@ -52,7 +52,7 @@ export interface CardDataItem {
             { label: "Gelir", value: `₺${data?.data?.[0]?.today_account_status?.income?.bank || "0"}`, prefix: "Banka" },
             { label: "Gider", value: `₺${data?.data?.[0]?.today_account_status?.expense?.bank || "0"}`, prefix: "Banka" }
           ],
-          iconClass: "ti ti-report-money",
+          iconClass: "ti ti-wallet",
           backgroundColor: "primary2"
         },
         {
@@ -60,13 +60,9 @@ export interface CardDataItem {
           title: "Finansal Durum",
           values: [
             { label: "Varlıklar", value: `₺${data?.data?.[0]?.finance_status?.entity || "0"}` },
-            { label: "Borçlar", value: `₺${data?.data?.[0]?.finance_status?.debt || "0"}` }
+            { label: "Borçlar", value: `₺${data?.data?.[0]?.finance_status?.debt || "0"}` },
+            { label: "Net", value: `₺${data?.data?.[0]?.finance_status?.net || "0"}` }
           ],
-          change: {
-            label: "Net",
-            value: `₺${data?.data?.[0]?.finance_status?.net || "0"}`,
-            color: parseFloat(String(data?.data?.[0]?.finance_status?.net || "0")) < 0 ? "danger" : "success"
-          },
           iconClass: "ti ti-chart-line",
           backgroundColor: "primary3"
         }

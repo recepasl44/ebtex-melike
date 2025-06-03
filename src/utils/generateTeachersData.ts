@@ -31,7 +31,7 @@ export function generateTeachersData(data: any): CardDataItem[] {
         { label: "Haftalık Ders Sayısı", value: String(data?.data?.[0]?.course_and_class_information?.weekly_lesson || "0") },
         { label: "Öğrenci Sayısı", value: String(data?.data?.[0]?.course_and_class_information?.student || "0") }
       ],
-      iconClass: "bi bi-laptop",
+      iconClass: "ti ti-chalkboard",
       backgroundColor: "primary"
     },
     {
@@ -42,7 +42,7 @@ export function generateTeachersData(data: any): CardDataItem[] {
         { label: "Öğrenci", value: `${data?.data?.[0]?.consultancy_information?.student || "0"}` },
         { label: "Görüşme", value: `${data?.data?.[0]?.consultancy_information?.meet || "0"}` },
       ],
-      iconClass: "bi bi-info-circle",
+      iconClass: "ti ti-user-exclamation",
       backgroundColor: "primary1"
     },
     {
@@ -62,7 +62,7 @@ export function generateTeachersData(data: any): CardDataItem[] {
           value: `${data?.data?.[0]?.course_distribution?.find((item: CourseDistributionItem) => item.name === "11.sınıf")?.consultancy || "0"}`
         },
       ],
-      iconClass: "bi bi-pie-chart",
+      iconClass: "ti ti-chart-pie",
       backgroundColor: "primary2"
     },
     {

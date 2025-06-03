@@ -2,19 +2,17 @@ import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { FC, useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../../store";
 
 interface TabConfig {
   label: string;
-  content?: React.ReactNode;
+  content: React.ReactNode;
   children?: TabConfig[] | undefined;
   activeBgColor?: string;
   activeTextColor?: string;
   passiveBgColor?: string;
   passiveTextColor?: string;
-  width?: string; // Tab width
-  height?: string; // Tab height
+  width?: string;
+  height?: string;
 }
 interface TabsContainerProps {
   tabs: TabConfig[];
@@ -22,28 +20,61 @@ interface TabsContainerProps {
 }
 
 const TabsContainer: FC<TabsContainerProps> = ({ tabs, onTabChange }) => {
-  const [value, setValue] = useState<number>(0);
-  const [childValue, setChildValue] = useState<number | null>(null);
+  // LocalStorage'dan kaydedilmiş tab durumunu al
+  const [value, setValue] = useState<number>(() => {
+    const savedValue = localStorage.getItem("selectedParentTab");
+    return savedValue ? parseInt(savedValue, 10) : 0;
+  });
 
-  // Redux Store'dan dark/light bilgisi
-  const localVariable = useSelector((state: RootState) => state.ui);
-  const isDark = localVariable.dataThemeMode === "dark";
+  const [childValue, setChildValue] = useState<number | null>(() => {
+    const savedChildValue = localStorage.getItem("selectedChildTab");
+    return savedChildValue ? parseInt(savedChildValue, 10) : null;
+  });
 
   useEffect(() => {
-    if (tabs?.[0]?.children?.length) {
+    // Tab yapısı değişirse doğrulama yap
+    const savedParentTab = localStorage.getItem("selectedParentTab");
+    if (savedParentTab) {
+      const parentIndex = parseInt(savedParentTab, 10);
+      const validParentIndex = parentIndex < tabs.length ? parentIndex : 0;
+      setValue(validParentIndex);
+
+      if (tabs[validParentIndex]?.children?.length) {
+        const savedChildTab = localStorage.getItem("selectedChildTab");
+        if (savedChildTab) {
+          const childIndex = parseInt(savedChildTab, 10);
+          const validChildIndex =
+            childIndex < tabs[validParentIndex].children!.length
+              ? childIndex
+              : 0;
+          setChildValue(validChildIndex);
+        } else {
+          setChildValue(0);
+        }
+      }
+    } else if (tabs?.[0]?.children?.length) {
       setChildValue(0);
     }
   }, [tabs]);
 
   const handleChange = (_: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+    localStorage.setItem("selectedParentTab", newValue.toString());
     const hasChildren = tabs?.[newValue]?.children?.length;
-    setChildValue(hasChildren ? 0 : null);
+    if (hasChildren) {
+      setChildValue(0);
+      localStorage.setItem("selectedChildTab", "0");
+    } else {
+      setChildValue(null);
+      localStorage.removeItem("selectedChildTab");
+    }
+
     if (onTabChange) onTabChange(newValue, hasChildren ? 0 : null);
   };
 
   const handleChildChange = (_: React.SyntheticEvent, newValue: number) => {
     setChildValue(newValue);
+    localStorage.setItem("selectedChildTab", newValue.toString());
     if (onTabChange) onTabChange(value, newValue);
   };
 
@@ -65,13 +96,10 @@ const TabsContainer: FC<TabsContainerProps> = ({ tabs, onTabChange }) => {
   return (
     <Box
       sx={{
-        mt: 2,
         overflowX: "auto",
         minWidth: "100%",
-        backgroundColor: isDark ? "var(--custom-white)" : "#FFFFFF",
         borderRadius: "8px",
         padding: "12px",
-        border: "1px solid var(--bootstrap-card-border)",
         // Tab component stilini override et
         "& .MuiTab-root": tabStyle.components.MuiTab.styleOverrides.root,
       }}
@@ -113,6 +141,7 @@ const TabsContainer: FC<TabsContainerProps> = ({ tabs, onTabChange }) => {
               px: 1,
               py: 1,
               mr: 3,
+              opacity: "1 !important",
             }}
           />
         ))}
@@ -169,6 +198,7 @@ const TabsContainer: FC<TabsContainerProps> = ({ tabs, onTabChange }) => {
                         px: 1,
                         py: 1,
                         mr: 3,
+                        opacity: "1 !important",
                       }}
                     />
                   ))}

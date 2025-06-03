@@ -60,7 +60,7 @@ const PositionmatikListFilter: React.FC<PositionmatikFilterProps> = ({
     const params = new URLSearchParams(location.search);
     if (params.get("program_id")) setProgramId(params.get("program_id") || "");
     if (params.get("level_id")) setLevelId(params.get("level_id") || "");
-    if (params.get("first_name")) setStudentId(params.get("first_name") || "");
+    if (params.get("student_id")) setStudentId(params.get("student_id") || "");
   }, [location.search]);
 
   useEffect(() => {
@@ -81,9 +81,9 @@ const PositionmatikListFilter: React.FC<PositionmatikFilterProps> = ({
 
   const filterState = useMemo(
     () => ({
-      student_id: studentId,
+      student_id: debouncedName,
     }),
-    [studentId]
+    [debouncedName]
   );
 
   // URL parametrelerini güncelleme
@@ -131,7 +131,7 @@ const PositionmatikListFilter: React.FC<PositionmatikFilterProps> = ({
       })),
     },
     {
-      key: "filter3",
+      key: "student_id",
       label: "Öğrenci",
       type: "autocomplete",
       value: inputName,

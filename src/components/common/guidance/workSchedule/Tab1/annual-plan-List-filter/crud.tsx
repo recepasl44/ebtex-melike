@@ -31,6 +31,9 @@ interface ScheduledAssignmentFormData extends FormikValues {
   end_date?: string;
   description?: string;
   status?: number;
+  // Form field'ları için ek alanlar
+  lesson?: number | string;
+  source_id?: (number | string)[] | string;
 }
 
 interface AnnualPlanModalProps {
@@ -61,11 +64,13 @@ const AnnualPlanCrud: React.FC<AnnualPlanModalProps> = ({
       program_id: "",
       level_id: "",
       lesson_id: "",
+      lesson: "", // Form field için
       unit_id: "",
       chapter_id: 0,
       topic_id: 0,
       achievement_id: 0,
       source_ids: [],
+      source_id: [], // Form field için
       number_of_questions: 0,
       working_time: "",
       start_date: "",
@@ -103,6 +108,7 @@ const AnnualPlanCrud: React.FC<AnnualPlanModalProps> = ({
   const { lessonsData } = useLessonList({
     enabled: Boolean(initialValues.program_id),
     program_id: initialValues.program_id?.toString() || "",
+    level_id: initialValues.level_id?.toString() || "",
   });
   const { unitsData } = useUnitsTable({
     enabled: Boolean(initialValues.lesson_id),
@@ -123,6 +129,13 @@ const AnnualPlanCrud: React.FC<AnnualPlanModalProps> = ({
         onChange: (value, formik) => {
           formik.setFieldValue("program_id", value);
           formik.setFieldValue("level_id", "");
+          formik.setFieldValue("lesson", "");
+          formik.setFieldValue("lesson_id", "");
+
+          setInitialValues((prev) => ({
+            ...prev,
+            program_id: value,
+          }));
         },
       },
       {
@@ -130,6 +143,17 @@ const AnnualPlanCrud: React.FC<AnnualPlanModalProps> = ({
         label: "Sınıf / Şube",
         type: "select",
         options: levelOptions,
+        onChange: (value, formik) => {
+          formik.setFieldValue("level_id", value);
+          formik.setFieldValue("lesson", "");
+          formik.setFieldValue("lesson_id", "");
+          formik.setFieldValue("unit_id", "");
+
+          setInitialValues((prev) => ({
+            ...prev,
+            level_id: value,
+          }));
+        },
       },
       {
         name: "lesson",
@@ -140,8 +164,14 @@ const AnnualPlanCrud: React.FC<AnnualPlanModalProps> = ({
           value: lesson.id,
         })),
         onChange: (value, formik) => {
+          formik.setFieldValue("lesson", value);
           formik.setFieldValue("lesson_id", value);
           formik.setFieldValue("unit_id", "");
+
+          setInitialValues((prev) => ({
+            ...prev,
+            lesson_id: value,
+          }));
         },
       },
       {
@@ -155,6 +185,10 @@ const AnnualPlanCrud: React.FC<AnnualPlanModalProps> = ({
         onChange: (value, formik) => {
           formik.setFieldValue("unit_id", value);
           formik.setFieldValue("chapter_id", "");
+          setInitialValues((prev) => ({
+            ...prev,
+            unit_id: value,
+          }));
         },
       },
       {
@@ -164,20 +198,25 @@ const AnnualPlanCrud: React.FC<AnnualPlanModalProps> = ({
         options:
           sourcesData?.map((source) => ({
             label: source.name || "İsimsiz Kaynak",
-            value: source.teacher_id || 0,
+            value: source.id || source.teacher_id || 0,
           })) || [],
         onChange: (value, formik) => {
+          formik.setFieldValue("source_id", value);
           formik.setFieldValue(
             "source_ids",
             Array.isArray(value) ? value : [value]
           );
+
+          setInitialValues((prev) => ({
+            ...prev,
+            source_ids: Array.isArray(value) ? value : [value],
+          }));
         },
       },
       {
         name: "start_date",
         label: "Başlangıç Tarihi",
         type: "date",
-        required: true,
       },
       {
         name: "end_date",
@@ -223,6 +262,7 @@ const AnnualPlanCrud: React.FC<AnnualPlanModalProps> = ({
         program_id: fetchedAssignment.program_id,
         level_id: fetchedAssignment.level_id,
         lesson_id: fetchedAssignment.lesson_id,
+        lesson: fetchedAssignment.lesson_id, // Form field için
         unit_id: fetchedAssignment.unit_id,
         chapter_id: fetchedAssignment.chapter_id || 0,
         topic_id: fetchedAssignment.topic_id || 0,
@@ -230,6 +270,9 @@ const AnnualPlanCrud: React.FC<AnnualPlanModalProps> = ({
         source_ids: fetchedAssignment.source_id
           ? [fetchedAssignment.source_id]
           : [],
+        source_id: fetchedAssignment.source_id
+          ? [fetchedAssignment.source_id]
+          : [], // Form field için
         number_of_questions: fetchedAssignment.number_of_questions,
         working_time: fetchedAssignment.working_time?.toString() || "",
         start_date: fetchedAssignment.start_date || "",
@@ -255,11 +298,10 @@ const AnnualPlanCrud: React.FC<AnnualPlanModalProps> = ({
   const handleSubmit = async (values: ScheduledAssignmentFormData) => {
     try {
       const payload = {
-        ...values,
         teacher_id: Number(values.teacher_id || 0),
         program_id: Number(values.program_id),
         level_id: Number(values.level_id),
-        lesson_id: Number(values.lesson_id),
+        lesson_id: Number(values.lesson_id || values.lesson),
         unit_id: Number(values.unit_id),
         chapter_id: Number(values.chapter_id || 0),
         topic_id: Number(values.topic_id || 0),
@@ -267,6 +309,8 @@ const AnnualPlanCrud: React.FC<AnnualPlanModalProps> = ({
         source_id:
           Array.isArray(values.source_ids) && values.source_ids.length > 0
             ? Number(values.source_ids[0])
+            : Array.isArray(values.source_id) && values.source_id.length > 0
+            ? Number(values.source_id[0])
             : 0,
         number_of_questions: Number(values.number_of_questions),
         working_time: values.working_time?.toString() || "",
@@ -291,6 +335,7 @@ const AnnualPlanCrud: React.FC<AnnualPlanModalProps> = ({
       console.error("Form gönderme hatası:", error);
     }
   };
+
   return (
     <ReusableModalForm<ScheduledAssignmentFormData>
       show={show}

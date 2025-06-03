@@ -10,10 +10,11 @@ import FilterGroup, {
 } from "../../components/organisms/SearchFilter";
 import { useScheduledAssignmentsTable } from "../../../../hooks/scheduledAssignments/useList";
 import ReusableTable, { useDebounce } from "../../../ReusableTable";
-import PlanCalendar from "./table";
+
 import DateNavigation from "./DateNavigation";
 import { useUpdateQueryParamsFromFilters } from "../../../../hooks/utilshooks/useUpdateQueryParamsFromFilters";
 import { format } from "date-fns";
+import planCalendarTable from "./table";
 
 type QueryParams = {
   [x: string]: any;
@@ -205,7 +206,7 @@ const PlanCalendarFilter: React.FC<PlanCalendarFilterProps> = ({
       />
 
       <ReusableTable
-        columns={PlanCalendar}
+        columns={planCalendarTable()}
         data={scheduledAssignmentsData}
         loading={false}
         currentPage={page}
@@ -216,7 +217,10 @@ const PlanCalendarFilter: React.FC<PlanCalendarFilterProps> = ({
         error={null}
         onPageChange={onPageChange}
         onPageSizeChange={onPageSizeChange}
-        onAdd={() => {}}
+        onAdd={() => {
+          const formattedDate = format(selectedDate, "yyyy-MM-dd");
+          navigate(`/guidance/work-schedule/Tab5/crud?date=${formattedDate}`);
+        }}
         showExportButtons={true}
         exportFileName="parent_meetings"
       />

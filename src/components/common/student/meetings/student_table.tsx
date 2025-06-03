@@ -5,7 +5,7 @@ import { Button } from "react-bootstrap";
 import { useMeetingsList } from "../../../hooks/meetings/useList";
 import { useLocation, useNavigate } from "react-router-dom";
 import { deleteMeeting } from "../../../../slices/meetings/delete/thunk";
-import CalculateModal from "../../student/calculate/CalculateModal";
+import CalculateModal from "../calculate/CalculateModal";
 
 export default function StudentMeetingTable() {
   const navigate = useNavigate();

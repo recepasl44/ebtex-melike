@@ -37,7 +37,7 @@ export function generateSupportStaffData(data: any): CardDataItem[] {
             { label: "Geç Gelen Araç Sayısı", value: `${data?.data?.[0]?.service_transportation_status?.number_of_late_arriving_vehicles || "0"}`},
             { label: "Sezon", value: `${data?.data?.[0]?.service_transportation_status?.service_student_capacity || "0"}`},
           ],
-          iconClass: "bi bi-bus-front",
+          iconClass: "ri-bus-2-line",
           backgroundColor: "primary1"
         },
         {
@@ -48,7 +48,7 @@ export function generateSupportStaffData(data: any): CardDataItem[] {
             { label: "Allınan Yoklama", value: `${data?.data?.[0]?.number_of_cafeteria_attendance?.lunch || "0"}` },
             { label: "Eksik Yoklama", value: `${data?.data?.[0]?.number_of_cafeteria_attendance?.snack || "0"}` }
           ],
-          iconClass: "bi bi-fork-knife",
+          iconClass: "ti ti-tools-kitchen-2",
           backgroundColor: "primary2"
         },
              {
@@ -59,7 +59,7 @@ export function generateSupportStaffData(data: any): CardDataItem[] {
             { label: "2. Kat", value: `${data?.data?.[0]?.number_of_classrooms?.[1]?.total || "0"}` },
             { label: "3. Kat", value: `${data?.data?.[0]?.number_of_classrooms?.[2]?.total || "0"}` }
           ],
-          iconClass: "bi bi-laptop",
+          iconClass: "ti ti-chalkboard",
           backgroundColor: "primary3"
         },
       ];

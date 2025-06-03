@@ -2,9 +2,9 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
-import ReusableTable, { ColumnDefinition } from "../../common/ReusableTable";
-import { useSchoolTypesList } from "../../../components/hooks/schoolTypes/useSchoolTypesList";
-import { useSchoolTypeDelete } from "../../../components/hooks/schoolTypes/useSchoolTypesDelete";
+import ReusableTable, { ColumnDefinition } from "../ReusableTable";
+import { useSchoolTypesList } from "../../hooks/schoolTypes/useSchoolTypesList";
+import { useSchoolTypeDelete } from "../../hooks/schoolTypes/useSchoolTypesDelete";
 import { ISchoolType } from "../../../types/schoolTypes/list";
 
 export default function SchoolTypeListPage() {

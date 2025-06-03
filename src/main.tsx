@@ -4,7 +4,7 @@ import "./index.scss";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Routedata } from "./Route/routingdata.tsx";
 import { Provider } from "react-redux";
-import store from "./store";
+import store from "./store/index.ts";
 import RootWrapper from "./pages/Rootwrapper.tsx";
 import Loader from "./components/loader/loader.tsx";
 const App = lazy(() => import("./pages/App.tsx"));

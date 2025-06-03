@@ -51,7 +51,7 @@ export interface CardDataItem {
             { label: "Bu Hafta", value: `${data?.data?.[0]?.number_of_parent_meetings?.this_week || "0"}`},
             { label: "Sezon", value: `${data?.data?.[0]?.number_of_parent_meetings?.seasson || "0"}`},
           ],
-          iconClass: "bi bi-hand-thumbs-up",
+          iconClass: "ti ti-heart-handshake",
           backgroundColor: "primary2"
         },
         {

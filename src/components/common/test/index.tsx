@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ReusableTable, { ColumnDefinition } from '../../../components/common/ReusableTable';
+import ReusableTable, { ColumnDefinition } from '../ReusableTable';
 import { Button } from 'react-bootstrap';
 import { useProgramsTable } from '../../hooks/program/useList';
 import { useLevelsTable } from '../../hooks/levels/useList';

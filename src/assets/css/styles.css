@@ -79,7 +79,7 @@ typography
   --secondary-rgb: 158, 92, 247;
   --warning-rgb: 255, 198, 88;
   --info-rgb: 14, 165, 232;
-  --success-rgb: 158, 154, 247;
+  --success-rgb: 33, 206, 158;
   --danger-rgb: 251, 66, 66;
   --light-rgb: 249, 250, 252;
   --dark-rgb: 249, 250, 252;
@@ -33418,7 +33418,7 @@ html[dir=rtl] .carousel-item-prev:not(.carousel-item-end) {
 /* Start:: breadcrumb */
 /* Start:: Breadcrumb Styles */
 .page-header-breadcrumb {
-  margin-block: 1.75rem;
+  margin-block: 0.3rem;
 }
 
 .page-header-breadcrumb .breadcrumb-item+.breadcrumb-item::before {
@@ -64602,4 +64602,234 @@ select option {
   height: 0.8125rem;
   flex-shrink: 0;
   fill: var(--icon-color);
+}
+
+/*  spk accoridon header */
+.accordion-button:not(.collapsed) {
+  background-color: rgba(158, 92, 247, 0.2);
+  color: #9E5CF7;
+}
+
+/* Aktif durumdaki ok işaretinin rengini de değiştirmek için */
+.accordion-button:not(.collapsed)::after {
+  color: #9E5CF7;
+  border-color: #9E5CF7;
+}
+
+
+/* Calendar container */
+.calendar-container {
+  min-height: 330px;
+}
+/* Light mode için text renkleri */
+.light-mode .fc .fc-daygrid-day-number {
+  color: #000 !important;
+  font-weight: 500;
+}
+.light-mode .fc .fc-col-header-cell-cushion {
+  color: #000 !important;
+  font-weight: 600;
+}
+.light-mode .fc-timegrid-slot-label-cushion,
+.light-mode .fc-timegrid-axis-cushion,
+.light-mode .fc-list-day-text,
+.light-mode .fc-list-day-side-text {
+  color: #000 !important;
+}
+/* Light mode için takvim içi elementler */
+.light-mode .fc .fc-daygrid-more-link {
+  color: #1a73e8 !important;
+}
+.light-mode .fc .fc-daygrid-day.fc-day-today {
+  background-color: rgba(85, 140, 245, 0.1) !important;
+}
+/* Dark mode için takvim içi elementler */
+.dark-mode .fc .fc-daygrid-day-number {
+  color: #fff !important;
+}
+.dark-mode .fc .fc-col-header-cell-cushion {
+  color: #fff !important;
+}
+/* Takvim genel boyut ayarlamaları */
+.small-calendar-view .fc-daygrid-body {
+  font-size: 0.85rem;
+}
+.calendar-day-cell {
+  min-height: 18px !important;
+}
+.calendar-day-header {
+  padding: 2px 0 !important;
+}
+/* Responsive ayarlar */
+@media (max-width: 768px) {
+  .calendar-container {
+    min-height: 250px;
+  }
+  
+  .fc .fc-toolbar-title {
+    font-size: 1rem;
+  }
+}
+/* Light Mode CSS düzenlemeleri */
+.light-mode .fc .fc-daygrid-day-number {
+  color: #000 !important;
+  font-weight: 500;
+}
+.light-mode .fc .fc-col-header-cell-cushion {
+  color: #000 !important;
+  font-weight: 600;
+}
+/* Saat çizelgesi için */
+.light-mode .fc .fc-timegrid-slot-label-cushion {
+  color: #000 !important;
+}
+.light-mode .fc .fc-timegrid-axis-cushion {
+  color: #000 !important;
+}
+/* Başlıklar için */
+.light-mode .fc .fc-timegrid-axis-frame {
+  color: #000 !important;
+}
+.light-mode .fc .fc-timegrid-slot-label {
+  color: #000 !important;
+  font-weight: 500;
+}
+/* Liste görünümü için */
+.light-mode .fc .fc-list-day-cushion {
+  color: #000 !important;
+}
+.light-mode .fc .fc-list-event-time {
+  color: #000 !important;
+}
+.light-mode .fc .fc-list-event-title {
+  color: #000 !important;
+}
+/* Dark mode için ince ayarlar */
+.dark-mode .fc .fc-timegrid-slot-label-cushion {
+  color: #fff !important;
+}
+.dark-mode .fc .fc-timegrid-axis-cushion {
+  color: #fff !important;
+}
+/* Ortak düzenlemeler */
+.fc .fc-timegrid-slot {
+  height: 1.5em;  /* Saatler arası yükseklik */
+}
+.small-calendar-view {
+  font-size: 0.85rem;
+}
+/* Takvim genel stil ayarları */
+.calendar-container {
+  min-height: 100px;
+  width: 100%;
+}
+/* Kart stil ayarları */
+.custom-card {
+  margin: 0 auto;
+}
+.light-mode-card {
+  border-radius: 9.429px;
+  background: #FFF;
+  box-shadow: 0px 3.771px 3.771px 0px rgba(0, 0, 0, 0.25);
+}
+.calendar-header {
+  text-align: center;
+  padding: 10px 0;
+}
+/* Küçük takvim için özelleştirmeler */
+.fc {
+  font-size: 0.8rem !important;
+}
+/* Günlük görünümde her saat için stil */
+.fc .fc-timegrid-slot {
+  height: 22px !important; /* Daha küçük yükseklik */
+  border-bottom: 1px solid var(--fc-border-color);
+}
+/* Saat etiketleri için belirgin stiller */
+.fc .fc-timegrid-slot-label {
+  font-weight: bold;
+  vertical-align: middle;
+}
+/* Saat etiketi içindeki metin */
+.fc .fc-timegrid-slot-label-cushion {
+  font-size: 0.75rem;
+  padding-right: 4px;
+}
+/* Light Mode CSS düzenlemeleri */
+.light-mode .fc .fc-daygrid-day-number {
+  color: #000 !important;
+  font-weight: 500;
+  font-size: 0.75rem;
+}
+.light-mode .fc .fc-col-header-cell-cushion {
+  color: #000 !important;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+/* Saat çizelgesi için light mode */
+.light-mode .fc .fc-timegrid-slot-label-cushion {
+  color: #000 !important;
+}
+.light-mode .fc .fc-timegrid-axis-cushion {
+  color: #000 !important;
+}
+/* Olay içeriği için stiller */
+.event-content {
+  padding: 1px 2px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.event-title {
+  font-weight: bold;
+  display: block;
+  font-size: 0.7rem;
+}
+.event-description {
+  display: block;
+  font-size: 0.65rem;
+  opacity: 0.9;
+}
+/* Takvim günleri için daha küçük stiller */
+.calendar-day-cell {
+  min-height: 15px !important;
+}
+.calendar-day-header {
+  padding: 1px 0 !important;
+  font-size: 0.8rem !important;
+}
+/* Buton boyutlarını küçült */
+.fc .fc-button {
+  font-size: 0.7rem !important;
+  padding: 2px 4px !important;
+}
+/* Dark mode için ince ayarlar */
+.dark-mode .fc .fc-timegrid-slot-label-cushion,
+.dark-mode .fc .fc-timegrid-axis-cushion {
+  color: #fff !important;
+}
+/* Günün etkin saatini gösteren gösterge için */
+.fc .fc-timegrid-now-indicator-line {
+  border-color: #f00;
+  border-width: 1px;
+}
+/* Takvim içeriğini ortalamak için */
+.fc-view-harness {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+/* Mobil görünüm için daha kompakt ayarlar */
+@media (max-width: 768px) {
+  .calendar-container {
+    min-height: 400px;
+  }
+  
+  .fc .fc-timegrid-slot {
+    height: 25px !important;
+  }
+  
+  .event-title, .event-description {
+    font-size: 0.8em;
+  }
 }

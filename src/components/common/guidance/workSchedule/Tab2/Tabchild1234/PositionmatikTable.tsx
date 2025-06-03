@@ -4,16 +4,20 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../../../store";
 import { ScheduledAssignmentData } from "../../../../../../types/scheduledAssignments/list";
 import { useScheduledAssignmentsTable } from "../../../../../hooks/scheduledAssignments/useList";
+import { useSearchParams } from "react-router-dom";
 
 const PositionmatikTable = () => {
+  const [searchParams] = useSearchParams();
+  const studentId = searchParams.get("student_id") || "";
   const { scheduledAssignmentsData } = useScheduledAssignmentsTable({
     enabled: true,
     page: 1,
     pageSize: 100,
+    student_id: studentId,
   });
 
   // Tüm veriyi atıyoruz (burada setState yok, sadece ilk kullanım).
-  const [homeworkData] = useState<ScheduledAssignmentData[]>(
+  const [homeworkData, setHomeworkData] = useState<ScheduledAssignmentData[]>(
     scheduledAssignmentsData
   );
 
@@ -26,6 +30,11 @@ const PositionmatikTable = () => {
   useEffect(() => {
     forceUpdate({});
   }, [isDark]);
+  useEffect(() => {
+    if (scheduledAssignmentsData) {
+      setHomeworkData(scheduledAssignmentsData);
+    }
+  }, [scheduledAssignmentsData]);
 
   // Temel stil sabitleri
   const background = isDark ? "#19191C" : "#FFFFFF";
@@ -130,7 +139,14 @@ const PositionmatikTable = () => {
       },
       // Status
       {
-        content: subject.status?.toString() || "",
+        content:
+          subject.status === 0
+            ? "Zayıf"
+            : subject.status === 1
+            ? "Orta"
+            : subject.status === 2
+            ? "İyi"
+            : "",
         style: {
           ...centeredCellStyle,
           width: "80px",
@@ -180,7 +196,22 @@ const PositionmatikTable = () => {
       },
       // Final Status
       {
-        content: subject.status?.toString() || "",
+        content: (() => {
+          switch (subject.status) {
+            case 0:
+              return <span style={{ color: "#FB4242" }}>Edilmedi</span>;
+            case 1:
+              return <span style={{ color: "#01EF8C" }}>Yapıldı</span>;
+            case 2:
+              return <span style={{ color: "#FB4242" }}>Gelmedi</span>;
+            case 3:
+              return <span style={{ color: "#FFC658" }}>Eksik</span>;
+            case 4:
+              return <span style={{ color: "#FB4242" }}>Yapmadı</span>;
+            default:
+              return "";
+          }
+        })(),
         style: {
           ...centeredCellStyle,
           width: "100px",

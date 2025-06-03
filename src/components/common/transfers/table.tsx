@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import ReusableTable, {
   ColumnDefinition,
   FilterDefinition,
-} from "../../../components/common/ReusableTable";
-import { useTransfersTable } from "../../../components/hooks/transfers/useList";
+} from "../ReusableTable";
+import { useTransfersTable } from "../../hooks/transfers/useList";
 import { TransferData } from "../../../types/transfers/list";
 
 export default function TransfersTable() {

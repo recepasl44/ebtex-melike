@@ -1,7 +1,6 @@
 import { FormikValues } from "formik";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "react-bootstrap";
 import ReusableModalForm, {
   FieldDefinition,
 } from "../../../../../ReusableModalForm";
@@ -33,7 +32,10 @@ const PeriodDateCrud: React.FC<PeriodDateModalProps> = ({ show, onClose }) => {
   const { me } = getUserDataField();
 
   useEffect(() => {
-    const storedId = localStorage.getItem("selected_student_id") || "";
+    const storedId =
+      localStorage.getItem(
+        "01100001 01100010 01110101 01111010 01100101 01110010 01101011 01101111 01101101 01110101 01110010 01100011 01110101"
+      ) || "";
     setInitialValues((prev) => ({ ...prev, student_id: storedId }));
     console.log(storedId);
   }, []);
@@ -81,21 +83,15 @@ const PeriodDateCrud: React.FC<PeriodDateModalProps> = ({ show, onClose }) => {
       confirmButtonLabel={"Kaydet"}
       cancelButtonLabel="İptal"
       onClose={onClose}
+      buttonVoid={() => {
+        // Ders ekleme sayfasına yönlendir
+        navigate(
+          "/guidance/work-schedule/Tab1/TabChild1/homework-process-list-filter/crud"
+        );
+      }}
+      buttonText="Ders Ekle"
       mode="single"
-    >
-      <div className="d-flex justify-content-end">
-        <Button
-          variant="outline-secondary"
-          onClick={() =>
-            navigate(
-              "/guidance/work-schedule/Tab1/TabChild1/homework-process-list-filter/crud"
-            )
-          }
-        >
-          Ders Ekle
-        </Button>
-      </div>
-    </ReusableModalForm>
+    />
   );
 };
 

@@ -2,9 +2,9 @@
 import React, { useState, useEffect, FormEvent, ChangeEvent } from "react";
 import { Modal, Button, Form, Spinner } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { useSchoolTypeAdd } from "../../../components/hooks/schoolTypes/useSchoolTypesAdd";
-import { useSchoolTypeUpdate } from "../../../components/hooks/schoolTypes/useSchoolTypesUpdate";
-import { useSchoolTypeShow } from "../../../components/hooks/schoolTypes/useSchoolTypesShow";
+import { useSchoolTypeAdd } from "../../hooks/schoolTypes/useSchoolTypesAdd";
+import { useSchoolTypeUpdate } from "../../hooks/schoolTypes/useSchoolTypesUpdate";
+import { useSchoolTypeShow } from "../../hooks/schoolTypes/useSchoolTypesShow";
 
 interface Props {
     show: boolean;

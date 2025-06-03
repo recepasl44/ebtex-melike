@@ -26,7 +26,7 @@ export function generatePDRData(data: any): CardDataItem[] {
         { label: "Haftalık Ders Sayısı", value: String(data?.data?.[0]?.course_and_class_information?.weekly_lesson || "0") },
         { label: "Öğrenci Sayısı", value: String(data?.data?.[0]?.course_and_class_information?.student || "0") }
       ],
-      iconClass: "bi bi-laptop",
+      iconClass: "ti ti-chalkboard",
       backgroundColor: "primary"
     },
     {
@@ -37,7 +37,7 @@ export function generatePDRData(data: any): CardDataItem[] {
         { label: "Öğrenci", value: `${data?.data?.[0]?.consultancy_information?.student || "0"}` },
         { label: "Görüşme", value: `${data?.data?.[0]?.consultancy_information?.meet || "0"}` },
       ],
-      iconClass: "bi bi-info-circle",
+      iconClass: "ti ti-heart-handshake",
       backgroundColor: "primary1"
     },
     {
@@ -57,7 +57,7 @@ export function generatePDRData(data: any): CardDataItem[] {
           value: `${data?.data?.[0]?.number_of_parent_meetings.seasson || "0"}`
         },
       ],
-      iconClass: "bi bi-pie-chart",
+      iconClass: "ti ti-message",
       backgroundColor: "primary2"
     },
     {
