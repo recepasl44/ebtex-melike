@@ -8,6 +8,7 @@ import StudyPlanTable from './pages/studyPlan/table';
 import StudyProgramTable from './pages/studyProgram/table';
 import StudyPollingTable from './pages/studyPolling/table';
 import PollingCountTable from './pages/pollingCount/table';
+import Pageheader from "../../../page-header/pageheader";
 
 const StudyPollingPage: React.FC = () => {
     /* active-tab state */
@@ -23,7 +24,7 @@ const StudyPollingPage: React.FC = () => {
 
     return (
         <div className="px-4">
-            <h5>Etüt Yoklama</h5>
+            <Pageheader title="Yoklama Yönetimi" currentpage="Etüt Yoklama" />
 
             <TabsContainer
                 tabs={tabsConfig}

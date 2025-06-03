@@ -5,6 +5,7 @@ import TabsContainer from './component/organisms/TabsContainer';
 import TeachersTable from './pages/teachers/table';
 import TeachersPollingTable from './pages/teachersPolling/table';
 import LessonPollingTable from './pages/lesson/table';
+import Pageheader from "../../../page-header/pageheader";
 
 
 
@@ -21,7 +22,7 @@ const TeacherPollingManagementPage: React.FC = () => {
 
     return (
         <div className="px-4">
-            <h5>Öğretmen Yoklama</h5>
+            <Pageheader title="Yoklama Yönetimi" currentpage="Öğretmen Yoklama" />
 
             <TabsContainer
                 tabs={tabsConfig}

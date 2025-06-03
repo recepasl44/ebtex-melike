@@ -2,6 +2,7 @@ import { useState, FC } from 'react';
 import TabsContainer from '../class-course/component/organisms/TabsContainer';
 
 import ParentRequestEntryTable from './pages/requestEntry/table';
+import Pageheader from "../../../page-header/pageheader";
 
 
 const ParentIndexPage: FC = () => {
@@ -13,7 +14,7 @@ const ParentIndexPage: FC = () => {
 
     return (
         <div className="px-4">
-            <h5>Veli Talep Girişi</h5>
+            <Pageheader title="Yoklama Yönetimi" currentpage="Veli Talep Girişi" />
 
             <TabsContainer
                 tabs={tabs}

@@ -9,6 +9,7 @@ import TabsContainer from './component/organisms/TabsContainer';
 
 /* Sayfa içerikleri                                                          */
 import AdministrativeRequestTable from './pages/request/table';
+import Pageheader from '../../../page-header/pageheader';
 
 /* ========================================================================== */
 const AdministrativeSupportTeamPage: React.FC = () => {
@@ -22,7 +23,7 @@ const AdministrativeSupportTeamPage: React.FC = () => {
 
     return (
         <div className="px-4">
-            <h5>Okul-İdare Ve Destek Kadrosu</h5>
+            <Pageheader title="Yoklama Yönetimi" currentpage="Okul-İdare Ve Destek Kadrosu" />
 
             <TabsContainer
                 tabs={tabsConfig}
