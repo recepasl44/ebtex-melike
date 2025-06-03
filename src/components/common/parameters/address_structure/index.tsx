@@ -9,7 +9,10 @@ export default function AddressStructurePage() {
   const [selectedCountryId, setSelectedCountryId] = useState<number>();
   const [selectedCityId, setSelectedCityId] = useState<number>();
   const [selectedCountyId, setSelectedCountyId] = useState<number>();
-  const [enabled, setEnabled] = useState(false);
+
+  const [cityEnabled, setCityEnabled] = useState(false);
+  const [countyEnabled, setCountyEnabled] = useState(false);
+  const [districtEnabled, setDistrictEnabled] = useState(false);
 
   return (
     <div>
@@ -20,7 +23,11 @@ export default function AddressStructurePage() {
             <CountryTable
               onSelectCountry={(country) => {
                 setSelectedCountryId(country.id);
-                setEnabled(true);
+                setCityEnabled(true);
+                setCountyEnabled(false);
+                setDistrictEnabled(false);
+                setSelectedCityId(undefined);
+                setSelectedCountyId(undefined);
               }}
             />
           </Card>
@@ -30,10 +37,12 @@ export default function AddressStructurePage() {
             <h5>Şehirler</h5>
             <CityTable
               countryId={selectedCountryId}
-              enabled={enabled}
+              enabled={cityEnabled}
               onSelectCity={(city) => {
                 setSelectedCityId(city.id);
-                setEnabled(true);
+                setCountyEnabled(true);
+                setDistrictEnabled(false);
+                setSelectedCountyId(undefined);
               }}
             />
           </Card>
@@ -43,10 +52,10 @@ export default function AddressStructurePage() {
             <h5>İlçeler</h5>
             <CountyTable
               cityId={selectedCityId}
-              enabled={enabled}
+              enabled={countyEnabled}
               onSelectCounty={(county) => {
                 setSelectedCountyId(county.id);
-                setEnabled(true);
+                setDistrictEnabled(true);
               }}
             />
           </Card>
@@ -54,7 +63,7 @@ export default function AddressStructurePage() {
         <Col md={3}>
           <Card>
             <h5>Mahalleler</h5>
-            <DistrictTable countyId={selectedCountyId} enabled={enabled} />
+            <DistrictTable countyId={selectedCountyId} enabled={districtEnabled} />
           </Card>
         </Col>
       </Row>

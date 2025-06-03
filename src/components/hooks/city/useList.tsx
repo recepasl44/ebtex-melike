@@ -22,12 +22,11 @@ export function useCityTable(params: CityLListArg) {
 
     dispatch(
       fetchCities({
-        enabled,
         ...otherParams,
         filter,
       })
     );
-  }, [enabled, filter, dispatch]);
+  }, [enabled, filter, dispatch, JSON.stringify(otherParams)]);
   const loading = status === CityListStatus.LOADING;
   const cityData: City[] = data || [];
 

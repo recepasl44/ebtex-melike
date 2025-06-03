@@ -27,7 +27,7 @@ export function useDiscrictTable(params: DistrictListArg) {
         filter,
       })
     );
-  }, [enabled, filter, dispatch]);
+  }, [enabled, filter, dispatch, JSON.stringify(otherParams)]);
 
   const loading = status === DistrictsListStatus.LOADING;
   const discrictData: IDistrict[] | null = Array.isArray(data) ? data : data ? [data] : null;

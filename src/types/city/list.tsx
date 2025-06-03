@@ -15,6 +15,12 @@ export interface CityListState {
   status: CityListStatus;
   error: string | null;
 }
+
+export interface CityListResponse {
+  data: City[];
+  links?: any;
+  meta?: any;
+}
 export interface CityLListArg {
   enabled?: boolean;
   [key: string]: any;
