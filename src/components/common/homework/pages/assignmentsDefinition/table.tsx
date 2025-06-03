@@ -5,8 +5,10 @@ import { Badge } from "react-bootstrap";
 
 import ReusableTable, {
     ColumnDefinition,
-    FilterDefinition,
 } from "../../../ReusableTable";
+import FilterGroup, {
+    FilterDefinition,
+} from "../../components/organisms/SearchFilters";
 
 import { useAssignmentStudentsList } from "../../../../hooks/assignmentStudents/useList";
 import { useAssignmentStudentDelete } from "../../../../hooks/assignmentStudents/useDelete";
@@ -244,23 +246,29 @@ export default function DefiningHomeworkPage() {
 
 
     return (
-        <ReusableTable<AssignmentRow>
-            columns={columns}
-            data={assignmentStudentsData}
-            loading={loading}
-            error={error}
-            filters={filters}
-            showModal={false}
-            showExportButtons
-            tableMode="single"
-            currentPage={page}
-            totalPages={totalPages}
-            totalItems={totalItems}
-            pageSize={pageSize}
-            onPageChange={setPage}
-            onPageSizeChange={size => { setPageSize(size); setPage(1); }}
-            exportFileName="defining-homework"
-            onAdd={() => navigate('/homework/definingHomework/crud')}
-        />
+        <>
+            <FilterGroup
+                filters={filters}
+                navigate={navigate}
+                columnsPerRow={4}
+            />
+            <ReusableTable<AssignmentRow>
+                columns={columns}
+                data={assignmentStudentsData}
+                loading={loading}
+                error={error}
+                showModal={false}
+                showExportButtons
+                tableMode="single"
+                currentPage={page}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                pageSize={pageSize}
+                onPageChange={setPage}
+                onPageSizeChange={size => { setPageSize(size); setPage(1); }}
+                exportFileName="defining-homework"
+                onAdd={() => navigate('/homework/definingHomework/crud')}
+            />
+        </>
     );
 }

@@ -4,8 +4,10 @@ import { Button } from 'react-bootstrap';
 
 import ReusableTable, {
     ColumnDefinition,
-    FilterDefinition,
 } from '../../../ReusableTable';
+import FilterGroup, {
+    FilterDefinition,
+} from '../../components/organisms/SearchFilters';
 
 import { useAssignmentStudentsList } from '../../../../hooks/assignmentStudents/useList';
 import { useAssignmentStudentDelete } from '../../../../hooks/assignmentStudents/useDelete';
@@ -258,26 +260,32 @@ export default function AssignmentsListTable() {
 
     /* ----------------------------------- UI ----------------------------------- */
     return (
-        <ReusableTable<AssignmentRow>
+        <>
+            <FilterGroup
+                filters={filters}
+                navigate={navigate}
+                columnsPerRow={4}
+            />
+            <ReusableTable<AssignmentRow>
 
-            columns={columns}
-            data={assignmentStudentsData}
-            loading={loading}
-            showModal={false}
-            showExportButtons
-            tableMode="single"
-            error={error}
-            filters={filters}
-            currentPage={page}
-            totalPages={totalPages}
-            totalItems={totalItems}
-            pageSize={pageSize}
-            onPageChange={(p) => setPage(p)}
-            onPageSizeChange={(size) => {
-                setPageSize(size);
-                setPage(1);
-            }}
-            exportFileName="student_assignment_list"
-        />
+                columns={columns}
+                data={assignmentStudentsData}
+                loading={loading}
+                showModal={false}
+                showExportButtons
+                tableMode="single"
+                error={error}
+                currentPage={page}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                pageSize={pageSize}
+                onPageChange={(p) => setPage(p)}
+                onPageSizeChange={(size) => {
+                    setPageSize(size);
+                    setPage(1);
+                }}
+                exportFileName="student_assignment_list"
+            />
+        </>
     );
 }
