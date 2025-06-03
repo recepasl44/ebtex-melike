@@ -80,7 +80,7 @@ export default function CountyTable({ cityId, onSelectCounty, enabled }: CountyT
           <div className="flex gap-2">
             <button
               onClick={() => {
-                navigate(`/parameters/country/county-crud/${row.id}`);
+                navigate(`${import.meta.env.BASE_URL}parameters/country/county-crud/${row.id}`);
               }}
               className="btn btn-icon btn-sm btn-info-light rounded-pill"
             >
@@ -98,7 +98,7 @@ export default function CountyTable({ cityId, onSelectCounty, enabled }: CountyT
                 if (onSelectCounty) {
                   onSelectCounty(row);
                 } else {
-                  navigate("/parameters/country", {
+                  navigate(`${import.meta.env.BASE_URL}parameters/country`, {
                     state: { county_id: row.id, enabled: true },
                   });
                 }
@@ -140,7 +140,7 @@ export default function CountyTable({ cityId, onSelectCounty, enabled }: CountyT
         filters={filters}
         onAdd={() => {
           if (enabled) {
-            navigate("/parameters/country/county-crud/");
+            navigate(`${import.meta.env.BASE_URL}parameters/country/county-crud/`);
           }
         }}
         onDeleteRow={(row) => {

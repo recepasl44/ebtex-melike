@@ -93,7 +93,7 @@ export default function CityTable({ countryId, onSelectCity, enabled }: CityTabl
                 if (onSelectCity) {
                   onSelectCity(row);
                 } else {
-                  navigate("/parameters/country", {
+                  navigate(`${import.meta.env.BASE_URL}parameters/country`, {
                     state: { city_id: row.id, enabled: true },
                   });
                 }
@@ -135,7 +135,7 @@ export default function CityTable({ countryId, onSelectCity, enabled }: CityTabl
         filters={filters}
         onAdd={() => {
           if (enabled) {
-            navigate("/parameters/country/city-crud/");
+            navigate(`${import.meta.env.BASE_URL}parameters/country/city-crud/`);
           }
         }}
         onDeleteRow={(row) => {

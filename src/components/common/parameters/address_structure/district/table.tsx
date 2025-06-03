@@ -49,7 +49,7 @@ export default function DistrictTable({ countyId, enabled }: DistrictTableProps)
           <div className="flex gap-2">
             <button
               onClick={() => {
-                navigate(`/parameters/country/district-crud/${row.id}`);
+                navigate(`${import.meta.env.BASE_URL}parameters/country/district-crud/${row.id}`);
               }}
               className="btn btn-icon btn-sm btn-info-light rounded-pill"
             >
@@ -82,7 +82,7 @@ export default function DistrictTable({ countyId, enabled }: DistrictTableProps)
         filters={[]}
         onAdd={() => {
           if (enabled) {
-            navigate("/parameters/country/district-crud/");
+            navigate(`${import.meta.env.BASE_URL}parameters/country/district-crud/`);
           }
         }}
         onDeleteRow={(row) => {

@@ -88,7 +88,7 @@ const DistrictModal: React.FC<DistrictModalProps> = ({ }) => {
           county_id: 0
         });
       }
-      navigate("/parameters/country");
+      navigate(`${import.meta.env.BASE_URL}parameters/country`);
     } catch (error) {
       console.error("Error saving district:", error);
     }
@@ -105,7 +105,7 @@ const DistrictModal: React.FC<DistrictModalProps> = ({ }) => {
       cancelButtonLabel="Vazgeç"
       isLoading={isLoading}
       error={combinedError || null}
-      onClose={() => navigate("/parameters/country")}
+      onClose={() => navigate(`${import.meta.env.BASE_URL}parameters/country`)}
       autoGoBackOnModalClose
     />
   );

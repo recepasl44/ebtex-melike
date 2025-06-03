@@ -82,7 +82,7 @@ const CityModal: React.FC<CityModalProps> = ({}) => {
       } else if (mode === "update" && id) {
         await updateExistingCourse({ courseId: Number(id), payload: values });
       }
-      navigate("/parameters/country");
+      navigate(`${import.meta.env.BASE_URL}parameters/country`);
     } catch (error) {
       console.error("Error saving city:", error);
     }
@@ -99,7 +99,7 @@ const CityModal: React.FC<CityModalProps> = ({}) => {
       cancelButtonLabel="Vazgeç"
       isLoading={isLoading}
       error={combinedError || null}
-      onClose={() => navigate("/parameters/country")}
+      onClose={() => navigate(`${import.meta.env.BASE_URL}parameters/country`)}
       autoGoBackOnModalClose
     />
   );

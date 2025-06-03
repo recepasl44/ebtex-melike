@@ -86,7 +86,7 @@ const CountyModal: React.FC<CountyModalProps> = ({ }) => {
       } else if (mode === "update" && id) {
         useDiscrictDetail({ districtId: Number(id), payload: { name: values.name } });
       }
-      navigate("/parameters/country");
+      navigate(`${import.meta.env.BASE_URL}parameters/country`);
     } catch (error) {
       console.error("Error saving county:", error);
     }
@@ -103,7 +103,7 @@ const CountyModal: React.FC<CountyModalProps> = ({ }) => {
       cancelButtonLabel="Vazgeç"
       isLoading={isLoading}
       error={combinedError || null}
-      onClose={() => navigate("/parameters/country")}
+      onClose={() => navigate(`${import.meta.env.BASE_URL}parameters/country`)}
       autoGoBackOnModalClose
     />
   );

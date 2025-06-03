@@ -83,7 +83,7 @@ export default function CountryTable({ onSelectCountry }: CountryTableProps) {
           <div className="flex gap-2">
             <button
               onClick={() => {
-                navigate(`/parameters/country/country-crud/${row.id}`);
+                navigate(`${import.meta.env.BASE_URL}parameters/country/country-crud/${row.id}`);
               }}
               className="btn btn-icon btn-sm btn-info-light rounded-pill"
             >
@@ -101,7 +101,7 @@ export default function CountryTable({ onSelectCountry }: CountryTableProps) {
                 if (onSelectCountry) {
                   onSelectCountry(row);
                 } else {
-                  navigate("/parameters/country", {
+                  navigate(`${import.meta.env.BASE_URL}parameters/country`, {
                     state: { country_id: row.id, enabled: true },
                   });
                 }
@@ -144,7 +144,7 @@ export default function CountryTable({ onSelectCountry }: CountryTableProps) {
         totalPages={totalPages}
         totalItems={totalItems}
         onAdd={() => {
-          navigate("/parameters/country/country-crud/");
+          navigate(`${import.meta.env.BASE_URL}parameters/country/country-crud/`);
         }}
         onPageChange={(newPage) => {
           setPage(newPage);
