@@ -9,7 +9,14 @@ const ParentIndexPage: FC = () => {
     const [activeIdx, setActiveIdx] = useState<number>(0);
 
     const tabs = [
-        { label: 'Talep Girişi', content: <ParentRequestEntryTable /> },
+        {
+            label: 'Talep Girişi',
+            content: <ParentRequestEntryTable />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
     ];
 
     return (

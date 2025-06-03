@@ -16,10 +16,38 @@ const ClupPollingManagementPage: React.FC = () => {
 
     /* sekme başlıkları ve içerikleri */
     const tabs = [
-        { label: 'Grup Planla', content: <FoodGroupPlanTable /> },
-        { label: 'Görevli Listesi', content: <FoodOfficerListTable /> },
-        { label: 'Yemek Yoklama', content: <FoodAttendanceTable /> },
-        { label: 'Yoklama Sayıları', content: <FoodPollingCountsTable /> },
+        {
+            label: 'Grup Planla',
+            content: <FoodGroupPlanTable />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
+        {
+            label: 'Görevli Listesi',
+            content: <FoodOfficerListTable />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
+        {
+            label: 'Yemek Yoklama',
+            content: <FoodAttendanceTable />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
+        {
+            label: 'Yoklama Sayıları',
+            content: <FoodPollingCountsTable />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
     ];
 
     return (

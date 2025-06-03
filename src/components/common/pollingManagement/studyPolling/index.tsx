@@ -16,10 +16,38 @@ const StudyPollingPage: React.FC = () => {
 
     /* tabs: label + React element to render */
     const tabsConfig = [
-        { label: 'Etüt Planla', content: <StudyPlanTable /> },
-        { label: 'Etüt Programı', content: <StudyProgramTable /> },
-        { label: 'Etüt Yoklama', content: <StudyPollingTable /> },
-        { label: 'Yoklama Sayıları', content: <PollingCountTable /> },
+        {
+            label: 'Etüt Planla',
+            content: <StudyPlanTable />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
+        {
+            label: 'Etüt Programı',
+            content: <StudyProgramTable />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
+        {
+            label: 'Etüt Yoklama',
+            content: <StudyPollingTable />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
+        {
+            label: 'Yoklama Sayıları',
+            content: <PollingCountTable />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
     ];
 
     return (

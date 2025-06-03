@@ -21,7 +21,7 @@ const PollingManagementPage: React.FC = () => {
             content: <ExecutiveStatusTable />,
             activeBgColor: '#5C67F7',
             activeTextColor: '#FFFFFF',
-            passiveBgColor: '#E1E4FB',
+            passiveBgColor: '#5C67F726',
             passiveTextColor: '#5C67F7',
         },
         {
@@ -29,7 +29,7 @@ const PollingManagementPage: React.FC = () => {
             content: <PollingListTable />,
             activeBgColor: '#5C67F7',
             activeTextColor: '#FFFFFF',
-            passiveBgColor: '#E1E4FB',
+            passiveBgColor: '#5C67F726',
             passiveTextColor: '#5C67F7',
         },
         {
@@ -37,7 +37,7 @@ const PollingManagementPage: React.FC = () => {
             content: <PollingCountsTable />,
             activeBgColor: '#5C67F7',
             activeTextColor: '#FFFFFF',
-            passiveBgColor: '#E1E4FB',
+            passiveBgColor: '#5C67F726',
             passiveTextColor: '#5C67F7',
         },
 

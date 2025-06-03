@@ -19,11 +19,46 @@ const OneToOneManagementPage: React.FC = () => {
 
   /* sekme başlıkları ve içerikleri */
   const tabs = [
-    { label: 'Öğretmen Birebir', content: <TeacherOneByOnePlanTable /> },
-    { label: 'Birebir Planla', content: <StudentPlanTable /> },
-    { label: 'Birebir Yoklama', content: <OneToOnePollingTable /> },
-    { label: 'Öğretmen Birebir Sayıları', content: <CountTeacherTable /> },
-    { label: 'Öğrenci Birebir Sayıları', content: <CountStudentTable /> },
+    {
+      label: 'Öğretmen Birebir',
+      content: <TeacherOneByOnePlanTable />,
+      activeBgColor: '#5C67F7',
+      activeTextColor: '#FFFFFF',
+      passiveBgColor: '#5C67F726',
+      passiveTextColor: '#5C67F7',
+    },
+    {
+      label: 'Birebir Planla',
+      content: <StudentPlanTable />,
+      activeBgColor: '#5C67F7',
+      activeTextColor: '#FFFFFF',
+      passiveBgColor: '#5C67F726',
+      passiveTextColor: '#5C67F7',
+    },
+    {
+      label: 'Birebir Yoklama',
+      content: <OneToOnePollingTable />,
+      activeBgColor: '#5C67F7',
+      activeTextColor: '#FFFFFF',
+      passiveBgColor: '#5C67F726',
+      passiveTextColor: '#5C67F7',
+    },
+    {
+      label: 'Öğretmen Birebir Sayıları',
+      content: <CountTeacherTable />,
+      activeBgColor: '#5C67F7',
+      activeTextColor: '#FFFFFF',
+      passiveBgColor: '#5C67F726',
+      passiveTextColor: '#5C67F7',
+    },
+    {
+      label: 'Öğrenci Birebir Sayıları',
+      content: <CountStudentTable />,
+      activeBgColor: '#5C67F7',
+      activeTextColor: '#FFFFFF',
+      passiveBgColor: '#5C67F726',
+      passiveTextColor: '#5C67F7',
+    },
   ];
 
   return (
