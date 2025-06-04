@@ -1,4 +1,4 @@
-import { FormikValues } from "formik";
+import { FormikValues, FormikHelpers } from "formik";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ReusableModalForm, {
@@ -59,7 +59,10 @@ const PeriodDateCrud: React.FC<PeriodDateModalProps> = ({ show, onClose }) => {
 
   const { addNewPeriod } = usePeriodAdd();
 
-  const handleSubmit = (values: PeriodDateFormData) => {
+  const handleSubmit = (
+    values: PeriodDateFormData,
+    _helpers: FormikHelpers<PeriodDateFormData>
+  ) => {
     try {
       const payload = {
         start_date: values.start_date || "",

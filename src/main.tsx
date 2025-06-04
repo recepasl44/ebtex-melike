@@ -2,7 +2,7 @@ import { lazy, StrictMode, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.scss";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Routedata } from "./Route/routingdata.tsx";
+import { Routedata } from "./route/routingdata.tsx";
 import { Provider } from "react-redux";
 import store from "./store/index.ts";
 import RootWrapper from "./pages/Rootwrapper.tsx";
@@ -113,8 +113,8 @@ createRoot(document.getElementById("root")!).render(
                 />
               </Route>
               <Route path={`${import.meta.env.BASE_URL}`} element={<App />}>
-                {Routedata.map((idx) => (
-                  <Route key={idx.id} path={idx.path} element={idx.element} />
+                {Routedata.map((route: any) => (
+                  <Route key={route.id} path={route.path} element={route.element} />
                 ))}
               </Route>
 

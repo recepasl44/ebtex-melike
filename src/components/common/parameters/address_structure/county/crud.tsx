@@ -51,7 +51,7 @@ const CountyModal: React.FC<CountyModalProps> = ({
     status: showStatus,
     error: showError,
     getDistrict,
-  } = useDiscrictDetail({ districtId: 0, payload: { name: '' } });
+  } = useDiscrictDetail();
 
   /* İlçeyi getir */
   useEffect(() => {
