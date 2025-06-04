@@ -99,7 +99,7 @@ interface ReusableTableProps<T> {
   onCloseModal?: () => void;
   pageTitle?: string; // Sayfa başlığı; ihtiyaç duyulursa tipi kullanılabilir
   customHeader?: React.ReactNode;
-   period_paginate?: boolean;
+  period_paginate?: boolean;
   period_field?: boolean;
   period_date?: boolean;
 
@@ -143,7 +143,7 @@ function ReusableTable<T extends { [key: string]: any }>({
   onCloseModal,
   pageTitle,
   customHeader,
-   period_paginate,
+  period_paginate,
   period_field,
   period_date,
 
@@ -1046,14 +1046,14 @@ function ReusableTable<T extends { [key: string]: any }>({
                   {currentPage}. Periyot{" "}
                   {data && data.length > 0
                     ? new Date(data[0].period?.start_date).toLocaleDateString(
-                        "tr-TR"
-                      )
+                      "tr-TR"
+                    )
                     : "-"}{" "}
                   -{" "}
                   {data && data.length > 0
                     ? new Date(data[0].period?.end_date).toLocaleDateString(
-                        "tr-TR"
-                      )
+                      "tr-TR"
+                    )
                     : "-"}
                 </span>
               </div>
@@ -1088,157 +1088,157 @@ function ReusableTable<T extends { [key: string]: any }>({
               </Table>
             </div>
           </Card.Body>
-           {period_paginate
+          {period_paginate
             ? hasPagination && (
-                <Card.Footer>
-                  <div className="d-flex align-items-end">
-                    {period_field && (data?.length || 0) >= 1 ? (
-                      <div>
-                        <div className="d-flex align-items-center gap-2">
-                          <span style={{ minWidth: "115px" }}>
-                            Planlanan Soru
-                          </span>
-                          <input
-                            type="text"
-                            className="form-control"
-                            value={
-                              data && data.length > 0
-                                ? data[0].stats.planned_questions
-                                : ""
-                            }
-                            readOnly
-                          />
-                          <span style={{ minWidth: "115px" }}>
-                            Gerçekleşen Soru
-                          </span>
-                          <input
-                            type="text"
-                            className="form-control"
-                            value={
-                              data && data.length > 0
-                                ? data[0].stats.happened_questions
-                                : ""
-                            }
-                            readOnly
-                          />
-                        </div>
-                        <div className="d-flex align-items-center gap-2">
-                          <span style={{ minWidth: "115px" }}>
-                            Planlanan Süre
-                          </span>
-                          <input
-                            type="text"
-                            className="form-control"
-                            value={
-                              data && data.length > 0
-                                ? data[0].stats.planned_time
-                                : ""
-                            }
-                            readOnly
-                          />
-                          <span style={{ minWidth: "115px" }}>
-                            Gerçekleşen Süre
-                          </span>
-                          <input
-                            type="text"
-                            className="form-control"
-                            value={
-                              data && data.length > 0
-                                ? data[0].stats.happened_time
-                                : ""
-                            }
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                    ) : null}
-
-                    <div className="ms-auto">
-                      <nav
-                        aria-label="Page navigation"
-                        className="pagination-style-3 justify-content-end"
-                      >
-                        {" "}
-                        <Pagination className="mb-0 flex-wrap ">
-                          <div>
-                            <Pagination.Item
-                              disabled={!canGoPrev}
-                              onClick={() => onPageChange!(currentPage! - 1)}
-                            >
-                              <i
-                                className="bi bi-chevron-left fw-100"
-                                style={{ marginRight: "3px" }}
-                              />
-                              Önceki Periyot
-                            </Pagination.Item>
-                          </div>
-                          <div className="ms-auto">
-                            <Pagination.Item
-                              disabled={
-                                !canGoNext || !data || data.length === 0
-                              }
-                              onClick={() => onPageChange!(currentPage! + 1)}
-                            >
-                              <span>Sonraki Periyot</span>
-                              <i
-                                className="bi bi-chevron-right fw-100"
-                                style={{ marginLeft: "3px" }}
-                              />
-                            </Pagination.Item>
-                          </div>
-                        </Pagination>
-                      </nav>
-                    </div>
-                  </div>
-                </Card.Footer>
-              )
-            : hasPagination && (
-                <Card.Footer>
-                  <div className="d-flex align-items-center">
+              <Card.Footer>
+                <div className="d-flex align-items-end">
+                  {period_field && (data?.length || 0) >= 1 ? (
                     <div>
-                      Toplam <b>{totalItems}</b> kayıt
+                      <div className="d-flex align-items-center gap-2">
+                        <span style={{ minWidth: "115px" }}>
+                          Planlanan Soru
+                        </span>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={
+                            data && data.length > 0
+                              ? data[0].stats.planned_questions
+                              : ""
+                          }
+                          readOnly
+                        />
+                        <span style={{ minWidth: "115px" }}>
+                          Gerçekleşen Soru
+                        </span>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={
+                            data && data.length > 0
+                              ? data[0].stats.happened_questions
+                              : ""
+                          }
+                          readOnly
+                        />
+                      </div>
+                      <div className="d-flex align-items-center gap-2">
+                        <span style={{ minWidth: "115px" }}>
+                          Planlanan Süre
+                        </span>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={
+                            data && data.length > 0
+                              ? data[0].stats.planned_time
+                              : ""
+                          }
+                          readOnly
+                        />
+                        <span style={{ minWidth: "115px" }}>
+                          Gerçekleşen Süre
+                        </span>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={
+                            data && data.length > 0
+                              ? data[0].stats.happened_time
+                              : ""
+                          }
+                          readOnly
+                        />
+                      </div>
                     </div>
-                    <div className="ms-auto">
-                      <nav
-                        aria-label="Page navigation"
-                        className="pagination-style-4"
-                      >
-                        <Pagination className="mb-0 flex-wrap">
+                  ) : null}
+
+                  <div className="ms-auto">
+                    <nav
+                      aria-label="Page navigation"
+                      className="pagination-style-3 justify-content-end"
+                    >
+                      {" "}
+                      <Pagination className="mb-0 flex-wrap ">
+                        <div>
                           <Pagination.Item
                             disabled={!canGoPrev}
                             onClick={() => onPageChange!(currentPage! - 1)}
                           >
-                            Önceki
+                            <i
+                              className="bi bi-chevron-left fw-100"
+                              style={{ marginRight: "3px" }}
+                            />
+                            Önceki Periyot
                           </Pagination.Item>
-                          {currentPage && currentPage > 1 && (
-                            <Pagination.Item
-                              onClick={() => onPageChange!(currentPage! - 1)}
-                            >
-                              {currentPage! - 1}
-                            </Pagination.Item>
-                          )}
-                          <Pagination.Item active>
-                            {currentPage}
-                          </Pagination.Item>
-                          {currentPage && currentPage < totalPages! && (
-                            <Pagination.Item
-                              onClick={() => onPageChange!(currentPage! + 1)}
-                            >
-                              {currentPage! + 1}
-                            </Pagination.Item>
-                          )}
+                        </div>
+                        <div className="ms-auto">
                           <Pagination.Item
-                            disabled={!canGoNext}
+                            disabled={
+                              !canGoNext || !data || data.length === 0
+                            }
                             onClick={() => onPageChange!(currentPage! + 1)}
                           >
-                            Sonraki
+                            <span>Sonraki Periyot</span>
+                            <i
+                              className="bi bi-chevron-right fw-100"
+                              style={{ marginLeft: "3px" }}
+                            />
                           </Pagination.Item>
-                        </Pagination>
-                      </nav>
-                    </div>
+                        </div>
+                      </Pagination>
+                    </nav>
                   </div>
-                </Card.Footer>
-              )}
+                </div>
+              </Card.Footer>
+            )
+            : hasPagination && (
+              <Card.Footer>
+                <div className="d-flex align-items-center">
+                  <div>
+                    Toplam <b>{totalItems}</b> kayıt
+                  </div>
+                  <div className="ms-auto">
+                    <nav
+                      aria-label="Page navigation"
+                      className="pagination-style-4"
+                    >
+                      <Pagination className="mb-0 flex-wrap">
+                        <Pagination.Item
+                          disabled={!canGoPrev}
+                          onClick={() => onPageChange!(currentPage! - 1)}
+                        >
+                          Önceki
+                        </Pagination.Item>
+                        {currentPage && currentPage > 1 && (
+                          <Pagination.Item
+                            onClick={() => onPageChange!(currentPage! - 1)}
+                          >
+                            {currentPage! - 1}
+                          </Pagination.Item>
+                        )}
+                        <Pagination.Item active>
+                          {currentPage}
+                        </Pagination.Item>
+                        {currentPage && currentPage < totalPages! && (
+                          <Pagination.Item
+                            onClick={() => onPageChange!(currentPage! + 1)}
+                          >
+                            {currentPage! + 1}
+                          </Pagination.Item>
+                        )}
+                        <Pagination.Item
+                          disabled={!canGoNext}
+                          onClick={() => onPageChange!(currentPage! + 1)}
+                        >
+                          Sonraki
+                        </Pagination.Item>
+                      </Pagination>
+                    </nav>
+                  </div>
+                </div>
+              </Card.Footer>
+            )}
 
         </Card>
 
@@ -1262,7 +1262,7 @@ function ReusableTable<T extends { [key: string]: any }>({
     return showModal ? (
       <Modal show={true} onHide={onCloseModal} centered size="lg">
         <Modal.Header closeButton>
-          <Modal.Title>{exportFileName}</Modal.Title>
+          <Modal.Title>{modalTitle ?? exportFileName}</Modal.Title>
         </Modal.Header>
         <Modal.Body>{content}</Modal.Body>
       </Modal>

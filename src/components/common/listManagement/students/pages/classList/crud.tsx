@@ -2,47 +2,80 @@
  *  Sınıf Listesi – CRUD (görüntüleme / dışa aktarım)
  *  route : /listManagement/students/classList/crud/:id
  * -----------------------------------------------------------------*/
-import { useMemo, useState } from 'react';
-import { useParams, useLocation, useNavigate } from 'react-router-dom';
-import { Form, Button } from 'react-bootstrap';
+import { useEffect, useMemo, useState } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { Button, Form } from 'react-bootstrap';
 
-import ReusableTable, { ColumnDefinition } from '../../../../ReusableTable';
+import ReusableTable, {
+  ColumnDefinition,
+  useDebounce,
+} from '../../../../ReusableTable';
+
 import { useListStudents } from '../../../../../hooks/student/useList';
+import { useUpdateQueryParamsFromFilters } from '../../../../../hooks/utilshooks/useUpdateQueryParamsFromFilters';
 
+/* ---------- Veri tipleri ---------- */
 interface Row {
   id: number;
   student_no: string;
   gender: string;
   full_name: string;
+  image_url?: string | null;
 }
 
+type QueryParams = {
+  program_id?: string;
+  level_id?: string;
+  student_id?: string;
+};
+
+/* ---------- Bileşen ---------- */
 export default function StudentListCrud() {
-  /* —— URL param / query’leri —— */
-  const { id } = useParams<{ id: string }>();
+  const { id: classroomId } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { search } = useLocation();
-  const qs = new URLSearchParams(search);
+  const location = useLocation();
 
-  const classroomId = Number(id);
-  const programId = Number(qs.get('program'));
-  const levelId = Number(qs.get('level'));
+  /* --- filtre state’leri --- */
+  const [programId, setProgramId] = useState('');
+  const [levelId, setLevelId] = useState('');
+  const [studentId, setStudentId] = useState('');
 
-  const headerTitle = 'Sınıf Listesi';
+  /* --- sayfalama --- */
+  const [page, setPage] = useState(1);
+  const [paginate, setPaginate] = useState(50);
 
-  /* —— resimli liste anahtarı —— */
+  /* --- resimli liste anahtarı --- */
   const [withImages, setWithImages] = useState(false);
 
-  /* —— öğrenci listesi —— */
-  const { data = [], loading, error } = useListStudents({
-    enabled: true,
+  /* --- debounce --- */
+  const debouncedStudent = useDebounce<string>(studentId, 400);
+
+  /* --- URL paramlarını oku --- */
+  useEffect(() => {
+    const qs = new URLSearchParams(location.search);
+    if (qs.get('program_id')) setProgramId(qs.get('program_id')!);
+    if (qs.get('level_id')) setLevelId(qs.get('level_id')!);
+    if (qs.get('student_id')) setStudentId(qs.get('student_id')!);
+  }, [location.search]);
+
+  /* --- API çağrısı --- */
+  const {
+    data = [],
+    loading,
+    error,
+    totalPages = 1,
+    totalItems = 0,
+  } = useListStudents({
+    enabled: !!classroomId,
+    classroom_id: classroomId,
     program_id: programId || undefined,
     level_id: levelId || undefined,
-    classroom_id: classroomId,
-    page: 1,
-    paginate: 50,
+    student_id: debouncedStudent || undefined,
+    page,
+    paginate,
   });
 
-  /* —— rows —— */
+  /* --- rows --- */
   const rows: Row[] = useMemo(
     () =>
       data.map((s: any) => ({
@@ -50,42 +83,62 @@ export default function StudentListCrud() {
         student_no: s.student_no ?? '-',
         gender: s.gender_id === 1 ? 'Kadın' : 'Erkek',
         full_name: `${s.first_name ?? ''} ${s.last_name ?? ''}`.trim(),
+        image_url: s.image_url ?? null,            // API’de varsa
       })),
     [data],
   );
 
-  /* —— kolonlar —— */
-  const columns: ColumnDefinition<Row>[] = [
+  /* --- dinamik kolonlar --- */
+  const baseColumns: ColumnDefinition<Row>[] = [
     { key: 'index', label: 'Sıra No', render: (_r, _o, idx) => idx! + 1 },
     { key: 'student_no', label: 'Okul No', render: r => r.student_no },
     { key: 'gender', label: 'Cinsiyet', render: r => r.gender },
-    { key: 'full_name', label: 'Adı Soyadı', render: r => r.full_name },
   ];
 
-  /* —— Excel dışa aktarımı —— */
-  const handleExportExcel = () => {
-    const header = [
-      ['T.C'],
-      [headerTitle],
-      ['Sıra No', 'Okul No', 'Cinsiyet', 'Adı Soyadı'],
-    ];
-    const body = rows.map((r, idx) => [
-      String(idx + 1),
-      r.student_no,
-      r.gender,
-      r.full_name,
-    ]);
-    const csv = [...header, ...body].map(r => r.join(',')).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'class_list.csv';
-    link.click();
-    URL.revokeObjectURL(url);
+  const imageColumn: ColumnDefinition<Row> = {
+    key: 'image',
+    label: 'Öğrencinin Resmi',
+    render: r =>
+      r.image_url ? (
+        <img
+          src={r.image_url}
+          alt="Öğrenci"
+          style={{ width: 42, height: 42, objectFit: 'cover', borderRadius: 4 }}
+        />
+      ) : (
+        '—'
+      ),
   };
 
-  /* —— özel header node —— */
+  const tailColumn: ColumnDefinition<Row> = {
+    key: 'full_name',
+    label: 'Adı Soyadı',
+    render: r => r.full_name,
+  };
+
+  const columns: ColumnDefinition<Row>[] = withImages
+    ? [...baseColumns, imageColumn, tailColumn] // resim cinsiyetten sonra
+    : [...baseColumns, tailColumn];
+
+  /* --- URL param senkronu --- */
+  const filterState = useMemo<QueryParams>(
+    () => ({
+      program_id: programId,
+      level_id: levelId,
+      student_id: debouncedStudent,
+    }),
+    [programId, levelId, debouncedStudent],
+  );
+
+  useUpdateQueryParamsFromFilters(filterState, params => {
+    const q = new URLSearchParams();
+    if (params.program_id) q.set('program_id', params.program_id);
+    if (params.level_id) q.set('level_id', params.level_id);
+    if (params.student_id) q.set('student_id', params.student_id);
+    navigate(`?${q.toString()}`, { replace: true });
+  });
+
+  /* --- header --- */
   const headerNode = (
     <div className="d-flex align-items-center gap-3 mb-2">
       <Form.Check
@@ -95,26 +148,32 @@ export default function StudentListCrud() {
         checked={withImages}
         onChange={e => setWithImages(e.currentTarget.checked)}
       />
-      {withImages && <Form.Control type="file" multiple size="sm" />}
-      <Button variant="outline-secondary" size="sm" onClick={handleExportExcel}>
-        Excel
-      </Button>
     </div>
   );
 
-  /* —— render —— */
+  /* --- render --- */
   return (
     <ReusableTable<Row>
       tableMode="single"
-      modalTitle="sınıf listesi düzenle"
-      pageTitle={headerTitle}
+      modalTitle="Sınıf Listesi"
+      pageTitle="Sınıf Listesi"
       columns={columns}
       data={rows}
       loading={loading}
       error={error}
-      showExportButtons={false}
+      currentPage={page}
+      totalPages={totalPages}
+      totalItems={totalItems}
+      pageSize={paginate}
+      onPageChange={setPage}
+      onPageSizeChange={size => {
+        setPaginate(size);
+        setPage(1);
+      }}
       customHeader={headerNode}
-      showModal={true}
+      showExportButtons
+      exportFileName="class_list"
+      showModal
       onCloseModal={() => navigate(-1)}
     />
   );
