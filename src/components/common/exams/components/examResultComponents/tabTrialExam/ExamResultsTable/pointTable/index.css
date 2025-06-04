@@ -1,0 +1,38 @@
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-weight: 500;
+    font-size: 14px;
+  }
+  
+  .custom-table th,
+  .custom-table td {
+    border: 1px solid white;
+    padding: 8px;
+    color: white;
+    text-align: center;
+  }
+  
+  .custom-table thead th {
+    background-color: #b88ae4; /* başlık */
+  }
+  
+  .custom-table .score-type {
+    background-color: #807bdf; /* sol: puan türü */
+    font-weight: bold;
+  }
+  
+  .custom-table .score {
+    background-color: #807bdf; /* sol: puan */
+    font-weight: bold;
+  }
+  
+  .custom-table .label-cell {
+    background-color: #b88ae4; /* Başarı Sırası / Katılım Sayısı */
+    font-weight: bold;
+  }
+  
+  .custom-table .data-cell {
+    background-color: #c796e8; /* sayısal değerler */
+  }
+  
