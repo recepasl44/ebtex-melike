@@ -1262,7 +1262,7 @@ function ReusableTable<T extends { [key: string]: any }>({
     return showModal ? (
       <Modal show={true} onHide={onCloseModal} centered size="lg">
         <Modal.Header closeButton>
-          <Modal.Title>{exportFileName}</Modal.Title>
+          <Modal.Title>{modalTitle ?? exportFileName}</Modal.Title>
         </Modal.Header>
         <Modal.Body>{content}</Modal.Body>
       </Modal>

@@ -32,14 +32,24 @@ export default function StudentListCrud() {
   /* —— resimli liste anahtarı —— */
   const [withImages, setWithImages] = useState(false);
 
+  /* —— sayfalama —— */
+  const [page, setPage] = useState(1);
+  const [paginate, setPaginate] = useState(50);
+
   /* —— öğrenci listesi —— */
-  const { data = [], loading, error } = useListStudents({
+  const {
+    data = [],
+    loading,
+    error,
+    totalPages,
+    totalItems,
+  } = useListStudents({
     enabled: true,
     program_id: programId || undefined,
     level_id: levelId || undefined,
     classroom_id: classroomId,
-    page: 1,
-    paginate: 50,
+    page,
+    paginate,
   });
 
   /* —— rows —— */
@@ -67,6 +77,7 @@ export default function StudentListCrud() {
     const header = [
       ['T.C'],
       [headerTitle],
+      [],
       ['Sıra No', 'Okul No', 'Cinsiyet', 'Adı Soyadı'],
     ];
     const body = rows.map((r, idx) => [
@@ -114,6 +125,15 @@ export default function StudentListCrud() {
       error={error}
       showExportButtons={false}
       customHeader={headerNode}
+      currentPage={page}
+      totalPages={totalPages}
+      totalItems={totalItems}
+      pageSize={paginate}
+      onPageChange={setPage}
+      onPageSizeChange={s => {
+        setPaginate(s);
+        setPage(1);
+      }}
       showModal={true}
       onCloseModal={() => navigate(-1)}
     />
