@@ -20,7 +20,11 @@ interface Row {
   student_no: string;
   gender: string;
   full_name: string;
-  image_url?: string | null;
+  /**
+   * Öğrencinin vesikalık fotoğrafı için URL
+   * API'den `profile_picture` alanı olarak geliyor
+   */
+  profile_picture?: string | null;
 }
 
 type QueryParams = {
@@ -83,7 +87,7 @@ export default function StudentListCrud() {
         student_no: s.student_no ?? '-',
         gender: s.gender_id === 1 ? 'Kadın' : 'Erkek',
         full_name: `${s.first_name ?? ''} ${s.last_name ?? ''}`.trim(),
-        image_url: s.image_url ?? null,            // API’de varsa
+        profile_picture: s.profile_picture ?? null, // "Vesikalık" fotoğraf
       })),
     [data],
   );
@@ -99,9 +103,9 @@ export default function StudentListCrud() {
     key: 'image',
     label: 'Öğrencinin Resmi',
     render: r =>
-      r.image_url ? (
+      r.profile_picture ? (
         <img
-          src={r.image_url}
+          src={r.profile_picture}
           alt="Öğrenci"
           style={{ width: 42, height: 42, objectFit: 'cover', borderRadius: 4 }}
         />
