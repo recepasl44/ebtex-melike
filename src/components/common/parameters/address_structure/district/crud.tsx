@@ -50,7 +50,7 @@ const DistrictModal: React.FC<DistrictModalProps> = ({ }) => {
     status: showStatus,
     error: showError,
     getDistrict: getProgramDetail,
-  } = useDiscrictDetail({ districtId: 0, payload: { name: '' } });
+  } = useDiscrictDetail();
 
   useEffect(() => {
     if (mode === "update" && id) {

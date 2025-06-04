@@ -18,9 +18,24 @@ interface SpkMultiselectProps {
     dropdownHeight?: number | any;
 }
 
-const SpkMultiselect: React.FC<SpkMultiselectProps> = ({ options, mainClass, placeholder, multi = true, labelField, valueField, values = [], clearable = true, searchable = true, disabledLabel, loading = false, onChange, noDataLabel, dropdownHeight }) => {
+const SpkMultiselect: React.FC<SpkMultiselectProps> = ({
+    options,
+    mainClass,
+    placeholder,
+    multi = true,
+    labelField,
+    valueField,
+    values = [],
+    clearable = true,
+    searchable = true,
+    disabledLabel,
+    loading = false,
+    onChange,
+    noDataLabel,
+    dropdownHeight,
+}) => {
     return (
-        <Select
+        <Select<any>
             className={mainClass}
             placeholder={placeholder}
             multi={multi}
@@ -33,8 +48,8 @@ const SpkMultiselect: React.FC<SpkMultiselectProps> = ({ options, mainClass, pla
             disabledLabel={disabledLabel}
             loading={loading}
             onChange={onChange}
-            onSelect={() => {}}
-            onDeselect={() => {}}
+            onSelect={(_v: any) => {}}
+            onDeselect={(_v: any) => {}}
             noDataLabel={noDataLabel}
             dropdownHeight={dropdownHeight}
         />

@@ -106,8 +106,9 @@ export default function PlannedAssignmentsTable() {
             {
                 key: 'class_level',
                 label: 'Sınıf Seviyesi',
+                type: 'select',
                 value: class_level,
-                onClick: () => setFiltersEnabled((p) => ({ ...p, class_level: true })),
+                onClick: (_v) => setFiltersEnabled((p) => ({ ...p, class_level: true })),
                 onChange: (v: string) => {
                     setClassLevel(v);
                     setClassroom('');
@@ -122,8 +123,9 @@ export default function PlannedAssignmentsTable() {
             {
                 key: 'classroom',
                 label: 'Sınıf / Şube',
+                type: 'select',
                 value: classroom,
-                onClick: () => setFiltersEnabled((p) => ({ ...p, classroom: true })),
+                onClick: (_v) => setFiltersEnabled((p) => ({ ...p, classroom: true })),
                 onChange: setClassroom,
                 options: (classroomData || []).map((c: any) => ({
                     value: String(c.id),
@@ -133,6 +135,7 @@ export default function PlannedAssignmentsTable() {
             {
                 key: 'lesson',
                 label: 'Ders',
+                type: 'select',
                 value: lesson,
                 onChange: (v: string) => {
                     setLesson(v);
@@ -146,8 +149,9 @@ export default function PlannedAssignmentsTable() {
             {
                 key: 'unit',
                 label: 'Ünite / Konu',
+                type: 'select',
                 value: unit,
-                onClick: () => setFiltersEnabled((p) => ({ ...p, unit: true })),
+                onClick: (_v) => setFiltersEnabled((p) => ({ ...p, unit: true })),
                 onChange: setUnit,
                 options: (unitsData || []).map((u: any) => ({
                     value: String(u.id),
@@ -170,6 +174,7 @@ export default function PlannedAssignmentsTable() {
             {
                 key: 'status',
                 label: 'Durum',
+                type: 'select',
                 value: assignStatus,
                 onChange: setAssignStatus,
                 options: [
