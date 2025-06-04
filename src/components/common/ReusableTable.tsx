@@ -102,6 +102,8 @@ interface ReusableTableProps<T> {
   period_paginate?: boolean;
   period_field?: boolean;
   period_date?: boolean;
+  /** CSV export verisini özelleştirmek için kullanılır */
+  customCsvData?: (string | number | boolean | null)[][];
 
 }
 export function useDebounce<T>(value: T, delay: number): T {
@@ -147,18 +149,22 @@ function ReusableTable<T extends { [key: string]: any }>({
   period_field,
   period_date,
 
+  customCsvData,
+
 }: ReusableTableProps<T>) {
   const navigate = useNavigate(); // useNavigate hook'u eklendi
 
   // CSV başlıkları ve veri dönüşümü
   const csvHeaders = useMemo(() => {
+    if (customCsvData) return undefined;
     return columns.map((col) => ({
       label: col.label,
       key: col.key,
     }));
-  }, [columns]);
+  }, [columns, customCsvData]);
 
   const csvData = useMemo(() => {
+    if (customCsvData) return customCsvData;
     return (data ?? []).map((row) => {
       const newObj: any = {};
       columns.forEach((col) => {
@@ -166,7 +172,7 @@ function ReusableTable<T extends { [key: string]: any }>({
       });
       return newObj;
     });
-  }, [data, columns]);
+  }, [customCsvData, data, columns]);
 
   const handleExportPDF = () => {
     const doc = new jsPDF("p", "pt");
