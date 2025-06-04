@@ -48,8 +48,6 @@ const SpkMultiselect: React.FC<SpkMultiselectProps> = ({
             disabledLabel={disabledLabel}
             loading={loading}
             onChange={onChange}
-            onSelect={(_v: any) => {}}
-            onDeselect={(_v: any) => {}}
             noDataLabel={noDataLabel}
             dropdownHeight={dropdownHeight}
         />

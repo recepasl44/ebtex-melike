@@ -1232,11 +1232,7 @@ export const Routedata = [
     element: (
       <CountyModal
         show={true}
-        token={""}
         onClose={function (): void {
-          throw new Error("Function not implemented.");
-        }}
-        onRefresh={function (): void {
           throw new Error("Function not implemented.");
         }}
       />

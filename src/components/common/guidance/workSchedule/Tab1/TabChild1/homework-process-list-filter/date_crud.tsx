@@ -20,7 +20,11 @@ interface PeriodDateModalProps {
   onRefresh: () => void;
 }
 
-const PeriodDateCrud: React.FC<PeriodDateModalProps> = ({ show, onClose }) => {
+const PeriodDateCrud: React.FC<PeriodDateModalProps> = ({
+  show,
+  onClose,
+  onRefresh,
+}) => {
   const [initialValues, setInitialValues] = useState<PeriodDateFormData>({
     start_date: "",
     end_date: "",
@@ -71,6 +75,7 @@ const PeriodDateCrud: React.FC<PeriodDateModalProps> = ({ show, onClose }) => {
         teacher_id: me?.value || 0,
       };
       addNewPeriod(payload);
+      onRefresh();
     } catch (error) {
       console.error("Error adding period:", error);
     }
