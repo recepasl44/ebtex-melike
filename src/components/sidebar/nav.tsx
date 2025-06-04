@@ -25,6 +25,20 @@ export const MENUITEMS: any = [
     menutitle: "MAIN",
   },
 
+  // ----- YOKLAMA YÖNETİMİ -----
+  {
+    title: "Yoklama Yönetimi",
+    icon: Dashboardicon,
+    type: "sub",
+    children: [
+      {
+        title: "Öğrenciler",
+        path: "listManagement/students/index",
+        type: "link",
+      },
+    ],
+  },
+
   // ----- ÖĞRENCİLER -----
   {
     title: "Öğrenciler",
