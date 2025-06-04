@@ -27,9 +27,7 @@ export default function StudentListCrud() {
   const programId = Number(qs.get('program'));
   const levelId = Number(qs.get('level'));
 
-  const headerTitle = `${qs.get('programName') ?? ''} ` +
-    `${qs.get('levelName') ?? ''} ` +
-    `${qs.get('className') ?? ''} SINIF LİSTESİ`.trim();
+  const headerTitle = 'Sınıf Listesi';
 
   /* —— resimli liste anahtarı —— */
   const [withImages, setWithImages] = useState(false);

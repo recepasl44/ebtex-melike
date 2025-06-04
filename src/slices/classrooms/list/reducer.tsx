@@ -1,9 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { fetchClassrooms } from "./thunk";
-import { IClassroom, ClassroomListState, ClassroomListStatus } from "../../../types/classrooms/list";
+import { ClassroomListState, ClassroomListStatus, ListClassroomResponse } from "../../../types/classrooms/list";
 
 const initialState: ClassroomListState = {
-  data: [],
+  data: null,
+  links: null,
+  meta: null,
   status: ClassroomListStatus.IDLE,
   error: null,
 };
@@ -17,9 +19,11 @@ const classroomListSlice = createSlice({
       state.status = ClassroomListStatus.LOADING;
       state.error = null;
     });
-    builder.addCase(fetchClassrooms.fulfilled, (state, action: PayloadAction<IClassroom[]>) => {
+    builder.addCase(fetchClassrooms.fulfilled, (state, action: PayloadAction<ListClassroomResponse>) => {
       state.status = ClassroomListStatus.SUCCEEDED;
-      state.data = action.payload;
+      state.data = action.payload.data;
+      state.links = action.payload.links;
+      state.meta = action.payload.meta;
     });
     builder.addCase(fetchClassrooms.rejected, (state, action) => {
       state.status = ClassroomListStatus.FAILED;
