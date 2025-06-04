@@ -19,6 +19,8 @@ interface Row {
   full_name: string;
 
   profile_picture?: string | null;
+  guardian_full_name?: string;
+  guardian_phone?: string;
 }
 
 type QueryParams = {
@@ -44,6 +46,7 @@ export default function StudentListCrud() {
 
 
   const [withImages, setWithImages] = useState(false);
+  const [withGuardian, setWithGuardian] = useState(false);
 
 
   const debouncedStudent = useDebounce<string>(studentId, 400);
@@ -81,6 +84,8 @@ export default function StudentListCrud() {
         gender: s.gender_id === 1 ? 'Kadın' : 'Erkek',
         full_name: `${s.first_name ?? ''} ${s.last_name ?? ''}`.trim(),
         profile_picture: s.profile_picture ?? null, // "Vesikalık" fotoğraf
+        guardian_full_name: s.guardian?.full_name ?? '-',
+        guardian_phone: s.guardian?.phone ?? '-',
       })),
     [data],
   );
@@ -112,9 +117,25 @@ export default function StudentListCrud() {
     render: r => r.full_name,
   };
 
-  const columns: ColumnDefinition<Row>[] = withImages
-    ? [...baseColumns, imageColumn, tailColumn]
-    : [...baseColumns, tailColumn];
+  const guardianNameColumn: ColumnDefinition<Row> = {
+    key: 'guardian_full_name',
+    label: 'Veli Adı Soyadı',
+    render: r => r.guardian_full_name ?? '-',
+  };
+
+  const guardianPhoneColumn: ColumnDefinition<Row> = {
+    key: 'guardian_phone',
+    label: 'Veli Telefon',
+    render: r => r.guardian_phone ?? '-',
+  };
+
+  const columns: ColumnDefinition<Row>[] = useMemo(() => {
+    let cols: ColumnDefinition<Row>[] = [...baseColumns];
+    if (withImages) cols = [...cols, imageColumn];
+    cols = [...cols, tailColumn];
+    if (withGuardian) cols = [...cols, guardianNameColumn, guardianPhoneColumn];
+    return cols;
+  }, [baseColumns, imageColumn, tailColumn, withImages, withGuardian]);
 
 
   const filterState = useMemo<QueryParams>(
@@ -143,6 +164,13 @@ export default function StudentListCrud() {
         label="Resimli Liste"
         checked={withImages}
         onChange={e => setWithImages(e.currentTarget.checked)}
+      />
+      <Form.Check
+        type="switch"
+        id="with-guardian"
+        label="Veli Bilgileri"
+        checked={withGuardian}
+        onChange={e => setWithGuardian(e.currentTarget.checked)}
       />
     </div>
   );
