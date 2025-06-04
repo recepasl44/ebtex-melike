@@ -20,12 +20,12 @@ export function useListStudents(params: FetchStudentsArgs) {
   // Params değiştiğinde sayfa ve pageSize değerlerini güncelle
   useEffect(() => {
     if (params.paginate !== undefined && params.paginate !== paginate) {
-      setPaginate(params.page);
+      setPaginate(params.paginate);
     }
     if (params.page !== undefined && params.page !== page) {
       setPage(params.page);
     }
-  }, [params.paginate, params.page]);
+  }, [params.paginate, params.page, paginate, page]);
 
   const {
     data: studentData,
