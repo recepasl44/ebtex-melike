@@ -405,7 +405,11 @@ const RentDetailPage = lazy(() => import("../components/common/rent/RentDetail")
 const RentDetailTable = lazy(() => import("../components/common/rent/table"));
 const RentDetailCrud = lazy(() => import("../components/common/rent/crud"));
 const EstimatedBudgetTable = lazy(() => import("../components/common/estimatedBudget/table"));
-//assignmentStudents 
+//assignmentStudents
+
+// list management - students
+import StudentListManagementPage from "../components/common/listManagement/students/index";
+import ClassListTable from "../components/common/listManagement/students/pages/classList/table";
 
 
 //yoklama sayfaları
@@ -2111,6 +2115,18 @@ export const Routedata = [
 
     path: `${import.meta.env.BASE_URL}pollingManagement/idareİndex`,
     element: <AdministrativeSupportTeamPage />,
+  },
+
+  // list management - students
+  {
+    id: 29000,
+    path: `${import.meta.env.BASE_URL}listManagement/students/index`,
+    element: <StudentListManagementPage />,
+  },
+  {
+    id: 29001,
+    path: `${import.meta.env.BASE_URL}listManagement/students/classList`,
+    element: <ClassListTable />,
   },
 
 
