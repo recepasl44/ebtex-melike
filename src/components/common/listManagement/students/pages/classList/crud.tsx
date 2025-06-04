@@ -1,5 +1,11 @@
+/* ------------------------------------------------------------------
+ *  Sınıf Listesi – CRUD (görüntüleme / dışa aktarım)
+ *  route : /listManagement/students/classList/crud/:id
+ * -----------------------------------------------------------------*/
 import { useMemo, useState } from 'react';
+import { useParams, useLocation } from 'react-router-dom';
 import { Form, Button } from 'react-bootstrap';
+
 import ReusableTable, { ColumnDefinition } from '../../../../ReusableTable';
 import { useListStudents } from '../../../../../hooks/student/useList';
 
@@ -10,34 +16,34 @@ interface Row {
   full_name: string;
 }
 
-interface Props {
-  show: boolean;
-  onClose: () => void;
-  programId: number;
-  levelId: number;
-  classroomId: number;
-  headerTitle: string;
-}
+export default function StudentListCrud() {
+  /* —— URL param / query’leri —— */
+  const { id } = useParams<{ id: string }>();
+  const { search } = useLocation();
+  const qs = new URLSearchParams(search);
 
-export default function StudentListModal({
-  show,
-  onClose,
-  programId,
-  levelId,
-  classroomId,
-  headerTitle,
-}: Props) {
+  const classroomId = Number(id);
+  const programId = Number(qs.get('program'));
+  const levelId = Number(qs.get('level'));
+
+  const headerTitle = `${qs.get('programName') ?? ''} ` +
+    `${qs.get('levelName') ?? ''} ` +
+    `${qs.get('className') ?? ''} SINIF LİSTESİ`.trim();
+
+  /* —— resimli liste anahtarı —— */
   const [withImages, setWithImages] = useState(false);
 
+  /* —— öğrenci listesi —— */
   const { data = [], loading, error } = useListStudents({
-    enabled: show,
-    program_id: programId,
-    level_id: levelId,
+    enabled: true,
+    program_id: programId || undefined,
+    level_id: levelId || undefined,
     classroom_id: classroomId,
     page: 1,
     paginate: 50,
   });
 
+  /* —— rows —— */
   const rows: Row[] = useMemo(
     () =>
       data.map((s: any) => ({
@@ -49,6 +55,7 @@ export default function StudentListModal({
     [data],
   );
 
+  /* —— kolonlar —— */
   const columns: ColumnDefinition<Row>[] = [
     { key: 'index', label: 'Sıra No', render: (_r, _o, idx) => idx! + 1 },
     { key: 'student_no', label: 'Okul No', render: r => r.student_no },
@@ -56,13 +63,19 @@ export default function StudentListModal({
     { key: 'full_name', label: 'Adı Soyadı', render: r => r.full_name },
   ];
 
+  /* —— Excel dışa aktarımı —— */
   const handleExportExcel = () => {
     const header = [
       ['T.C'],
       [headerTitle],
       ['Sıra No', 'Okul No', 'Cinsiyet', 'Adı Soyadı'],
     ];
-    const body = rows.map((r, idx) => [String(idx + 1), r.student_no, r.gender, r.full_name]);
+    const body = rows.map((r, idx) => [
+      String(idx + 1),
+      r.student_no,
+      r.gender,
+      r.full_name,
+    ]);
     const csv = [...header, ...body].map(r => r.join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -73,6 +86,7 @@ export default function StudentListModal({
     URL.revokeObjectURL(url);
   };
 
+  /* —— özel header node —— */
   const headerNode = (
     <div className="d-flex align-items-center gap-3 mb-2">
       <Form.Check
@@ -89,10 +103,9 @@ export default function StudentListModal({
     </div>
   );
 
+  /* —— render —— */
   return (
     <ReusableTable<Row>
-      showModal={show}
-      onCloseModal={onClose}
       tableMode="single"
       pageTitle={headerTitle}
       columns={columns}

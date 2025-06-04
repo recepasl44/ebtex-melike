@@ -1,9 +1,15 @@
+/* ------------------------------------------------------------------
+ *  Sınıf Listeleri – ClassListTable
+ *  route : /listManagement/students/classList
+ * -----------------------------------------------------------------*/
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
+
 import ReusableTable, { ColumnDefinition } from '../../../../ReusableTable';
 import { useClassroomList } from '../../../../../hooks/classrooms/useList';
-import StudentListModal from './crud';
 
+/* ───────── Row tipi ───────── */
 interface Row {
   id: number;
   program_id: number;
@@ -13,12 +19,29 @@ interface Row {
   classroom_name: string;
 }
 
+const ROOT = `${import.meta.env.BASE_URL}listManagement/students/classList`;
+
 export default function ClassListTable() {
-  const { classroomData = [], loading, error } = useClassroomList({
+  const navigate = useNavigate();
+
+  /* —— sayfalama —— */
+  const [page, setPage] = useState(1);
+  const [paginate, setPaginate] = useState(10);
+
+  /* —— ana liste —— */
+  const {
+    classroomData = [],
+    loading,
+    error,
+    totalPages,
+    totalItems,
+  } = useClassroomList({
     enabled: true,
-    branchId: 0,
+    page,
+    paginate,
   });
 
+  /* —— rows —— */
   const rows: Row[] = useMemo(
     () =>
       classroomData.map((c: any) => ({
@@ -32,8 +55,7 @@ export default function ClassListTable() {
     [classroomData],
   );
 
-  const [selected, setSelected] = useState<Row | null>(null);
-
+  /* —— kolonlar —— */
   const columns: ColumnDefinition<Row>[] = useMemo(
     () => [
       { key: 'program_name', label: 'Okul Seviyesi', render: r => r.program_name },
@@ -42,37 +64,48 @@ export default function ClassListTable() {
       {
         key: 'actions',
         label: 'İşlemler',
-        render: r => (
-          <Button variant="primary" size="sm" onClick={() => setSelected(r)}>
+        style: { width: 90, textAlign: 'center' },
+        render: row => (
+          <Button
+            variant=""
+            className="btn btn-icon btn-sm btn-primary-light rounded-pill"
+            /* Program & seviye bilgilerini query string’le aktarıyoruz */
+            onClick={() =>
+              navigate(
+                `${ROOT}/crud/${row.id}?program=${row.program_id}&level=${row.level_id}` +
+                `&programName=${encodeURIComponent(row.program_name)}` +
+                `&levelName=${encodeURIComponent(row.level_name)}` +
+                `&className=${encodeURIComponent(row.classroom_name)}`
+              )
+            }
+          >
             <i className="ti ti-eye" />
           </Button>
         ),
       },
     ],
-    [],
+    [navigate],
   );
 
+  /* —— render —— */
   return (
-    <>
-      <ReusableTable<Row>
-        // pageTitle="Sınıf Listeleri"
-        tableMode="single"
-        columns={columns}
-        data={rows}
-        loading={loading}
-        error={error}
-        showExportButtons={false}
-      />
-      {selected && (
-        <StudentListModal
-          show
-          onClose={() => setSelected(null)}
-          programId={selected.program_id}
-          levelId={selected.level_id}
-          classroomId={selected.id}
-          headerTitle={`${selected.program_name} ${selected.level_name} ${selected.classroom_name} SINIF LİSTESİ`}
-        />
-      )}
-    </>
+    <ReusableTable<Row>
+      tableMode="single"
+      columns={columns}
+      data={rows}
+      loading={loading}
+      error={error}
+      showExportButtons
+      currentPage={page}
+      totalPages={totalPages}
+      totalItems={totalItems}
+      pageSize={paginate}
+      onPageChange={setPage}
+      onPageSizeChange={s => {
+        setPaginate(s);
+        setPage(1);
+      }}
+      exportFileName="class_list"
+    />
   );
 }
