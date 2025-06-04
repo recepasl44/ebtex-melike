@@ -1,3 +1,4 @@
+// src/hooks/student/useList.ts
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store/rootReducer";
@@ -13,43 +14,39 @@ import {
 
 export function useListStudents(params: FetchStudentsArgs) {
   const dispatch = useDispatch<AppDispatch>();
-  const [filter, setFilter] = useState<any>(null);
-  const [paginate, setPaginate] = useState<number>(params.paginate || 10);
-  const [page, setPage] = useState<number>(params.page || 1);
 
-  // Params değiştiğinde sayfa ve pageSize değerlerini güncelle
-  useEffect(() => {
-    if (params.paginate !== undefined && params.paginate !== paginate) {
-      setPaginate(params.page);
-    }
-    if (params.page !== undefined && params.page !== page) {
-      setPage(params.page);
-    }
-  }, [params.paginate, params.page]);
+  /***
+   *  Tek kaynaktan veri doğruluğu için
+   *  page / pageSize’i direkt paramdan yönetiyoruz.
+   */
+  const paginate = params.paginate ?? 10;
+  const page = params.page ?? 1;
 
+  /* --------- Redux state --------- */
   const {
     data: studentData,
     meta,
     status,
     error,
   } = useSelector((state: RootState) => state.studentList);
+
   const { enabled = true, ...otherParams } = params;
 
+  /* --------- API çağrısı --------- */
   useEffect(() => {
     if (!enabled) return;
 
     dispatch(
       fetchStudents({
         ...otherParams,
-        paginate,
+        paginate,           // <- doğru değerler
         page,
-        filter,
+        filter: params.filter ?? null,
       })
     );
   }, [
     enabled,
     dispatch,
-    filter,
     paginate,
     page,
     otherParams.first_name,
@@ -61,20 +58,16 @@ export function useListStudents(params: FetchStudentsArgs) {
     otherParams.endDate,
   ]);
 
+  /* --------- Geri dönüş --------- */
   const loading = status === StudentListStatus.LOADING;
   const data: ListStudentResponse["data"] = studentData || [];
-  const paginationMeta: ListStudentResponse["meta"] | null = meta;
+  const pagination: ListStudentResponse["meta"] | null = meta;
+
   return {
     data,
     loading,
-    setFilter,
-    setPaginate,
-    setPage,
-    paginate,
-    page,
-    filter,
     error,
-    totalPages: paginationMeta ? paginationMeta.last_page : 1,
-    totalItems: paginationMeta ? paginationMeta.total : 0,
+    totalPages: pagination ? pagination.last_page : 1,
+    totalItems: pagination ? pagination.total : 0,
   };
 }

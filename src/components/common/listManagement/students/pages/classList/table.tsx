@@ -1,7 +1,4 @@
-/* ------------------------------------------------------------------
- *  Sınıf Listeleri – ClassListTable
- *  route : /listManagement/students/classList
- * -----------------------------------------------------------------*/
+
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
@@ -9,7 +6,7 @@ import { Button } from 'react-bootstrap';
 import ReusableTable, { ColumnDefinition } from '../../../../ReusableTable';
 import { useClassroomList } from '../../../../../hooks/classrooms/useList';
 
-/* ───────── Row tipi ───────── */
+
 interface Row {
   id: number;
   program_id: number;
@@ -24,11 +21,10 @@ const ROOT = `${import.meta.env.BASE_URL}listManagement/students/classList`;
 export default function ClassListTable() {
   const navigate = useNavigate();
 
-  /* —— sayfalama —— */
-  const [page, setPage] = useState(1);
-  const [paginate, setPaginate] = useState(10);
 
-  /* —— ana liste —— */
+  const [paginate, setPaginate] = useState(10);
+  const [page, setPage] = useState(1);
+
   const {
     classroomData = [],
     loading,
@@ -38,10 +34,10 @@ export default function ClassListTable() {
   } = useClassroomList({
     enabled: true,
     page,
-    pageSize: paginate,
+    paginate,
   });
 
-  /* —— rows —— */
+
   const rows: Row[] = useMemo(
     () =>
       classroomData.map((c: any) => ({
@@ -55,7 +51,7 @@ export default function ClassListTable() {
     [classroomData],
   );
 
-  /* —— kolonlar —— */
+
   const columns: ColumnDefinition<Row>[] = useMemo(
     () => [
       { key: 'program_name', label: 'Okul Seviyesi', render: r => r.program_name },
@@ -69,7 +65,7 @@ export default function ClassListTable() {
           <Button
             variant=""
             className="btn btn-icon btn-sm btn-primary-light rounded-pill"
-            /* Program & seviye bilgilerini query string’le aktarıyoruz */
+
             onClick={() =>
               navigate(
                 `${ROOT}/crud/${row.id}?program=${row.program_id}&level=${row.level_id}` +
@@ -87,7 +83,7 @@ export default function ClassListTable() {
     [navigate],
   );
 
-  /* —— render —— */
+
   return (
     <ReusableTable<Row>
       tableMode="single"
@@ -101,10 +97,7 @@ export default function ClassListTable() {
       totalItems={totalItems}
       pageSize={paginate}
       onPageChange={setPage}
-      onPageSizeChange={s => {
-        setPaginate(s);
-        setPage(1);
-      }}
+      onPageSizeChange={s => { setPaginate(s); setPage(1); }}
       exportFileName="class_list"
     />
   );
