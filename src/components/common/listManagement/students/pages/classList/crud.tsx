@@ -147,6 +147,33 @@ export default function StudentListCrud() {
     </div>
   );
 
+  const seasonName = useMemo(() => {
+    try {
+      const userDataString = localStorage.getItem('userData');
+      if (!userDataString) return '';
+      const userData = JSON.parse(userDataString);
+      return userData.default_season?.name ?? '';
+    } catch {
+      return '';
+    }
+  }, []);
+
+  const exportCsvData = useMemo(() => {
+    const headerRows = [
+      ['T.C'],
+      [seasonName],
+      ['Sınıf Listesi'],
+      columns.map(c => c.label),
+    ];
+    const tableRows = rows.map(r =>
+      columns.map(col => {
+        if (col.key === 'image') return r.profile_picture ?? '';
+        return (r as any)[col.key] ?? '';
+      }),
+    );
+    return [...headerRows, ...tableRows];
+  }, [seasonName, columns, rows]);
+
 
   return (
     <ReusableTable<Row>
@@ -166,6 +193,7 @@ export default function StudentListCrud() {
       customHeader={headerNode}
       showExportButtons
       exportFileName="class_list"
+      customCsvData={exportCsvData}
       showModal
       onCloseModal={() => navigate(-1)}
     />
