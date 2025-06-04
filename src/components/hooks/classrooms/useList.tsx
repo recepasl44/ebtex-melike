@@ -10,7 +10,7 @@ import {
 export function useClassroomList(params: ClassroomListArg) {
   const dispatch = useDispatch<AppDispatch>();
 
-  const { data, status, error } = useSelector(
+  const { data, meta, status, error } = useSelector(
     (state: RootState) => state.classroomList
   );
 
@@ -44,12 +44,14 @@ export function useClassroomList(params: ClassroomListArg) {
   ]);
 
   return {
-    classroomData: data,
+    classroomData: data ?? [],
     loading: status === ClassroomListStatus.LOADING,
     error,
     page,
     setPage,
     pageSize,
     setPageSize,
+    totalPages: meta ? meta.last_page : 1,
+    totalItems: meta ? meta.total : 0,
   };
 }

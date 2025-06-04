@@ -16,6 +16,28 @@ export interface IClassroom {
   level: unknown;
 }
 
+export interface ClassroomMeta {
+  current_page: number;
+  from: number;
+  last_page: number;
+  links: { url: string | null; label: string; active: boolean }[];
+  path: string;
+  per_page: number;
+  to: number;
+  total: number;
+}
+
+export interface ListClassroomResponse {
+  data: IClassroom[];
+  links: {
+    first: string;
+    last: string;
+    prev: string | null;
+    next: string | null;
+  };
+  meta: ClassroomMeta;
+}
+
 export interface ClassroomListArg {
   [key: string]: any;
   enabled?: boolean;
@@ -30,7 +52,9 @@ export enum ClassroomListStatus {
 
 // Redux slice’daki state tipi:
 export interface ClassroomListState {
-  data: IClassroom[];
+  data: IClassroom[] | null;
+  links: ListClassroomResponse['links'] | null;
+  meta: ListClassroomResponse['meta'] | null;
   status: ClassroomListStatus;
   error: string | null;
 }

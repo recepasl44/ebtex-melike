@@ -38,7 +38,7 @@ export default function ClassListTable() {
   } = useClassroomList({
     enabled: true,
     page,
-    paginate,
+    pageSize: paginate,
   });
 
   /* —— rows —— */
