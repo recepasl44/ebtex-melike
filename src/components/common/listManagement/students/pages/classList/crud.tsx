@@ -3,7 +3,7 @@
  *  route : /listManagement/students/classList/crud/:id
  * -----------------------------------------------------------------*/
 import { useMemo, useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { Form, Button } from 'react-bootstrap';
 
 import ReusableTable, { ColumnDefinition } from '../../../../ReusableTable';
@@ -19,6 +19,7 @@ interface Row {
 export default function StudentListCrud() {
   /* —— URL param / query’leri —— */
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { search } = useLocation();
   const qs = new URLSearchParams(search);
 
@@ -107,6 +108,7 @@ export default function StudentListCrud() {
   return (
     <ReusableTable<Row>
       tableMode="single"
+      modalTitle="sınıf listesi düzenle"
       pageTitle={headerTitle}
       columns={columns}
       data={rows}
@@ -114,6 +116,8 @@ export default function StudentListCrud() {
       error={error}
       showExportButtons={false}
       customHeader={headerNode}
+      showModal={true}
+      onCloseModal={() => navigate(-1)}
     />
   );
 }
