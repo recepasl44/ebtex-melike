@@ -55,7 +55,7 @@ export default function ClassListTable() {
   return (
     <>
       <ReusableTable<Row>
-        pageTitle="Sınıf Listeleri"
+        // pageTitle="Sınıf Listeleri"
         tableMode="single"
         columns={columns}
         data={rows}

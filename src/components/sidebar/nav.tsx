@@ -25,9 +25,9 @@ export const MENUITEMS: any = [
     menutitle: "MAIN",
   },
 
-  // ----- YOKLAMA YÖNETİMİ -----
+  // ----- LİSTE YÖNETİMİ -----
   {
-    title: "Yoklama Yönetimi",
+    title: "Liste Yönetimi",
     icon: Dashboardicon,
     type: "sub",
     children: [

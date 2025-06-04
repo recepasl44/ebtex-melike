@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import TabsContainer from './component/organisms/TabsContainer';
 import ClassListTable from './pages/classList/table';
-import Pageheader from '../../page-header/pageheader';
+import Pageheader from '../../../page-header/pageheader';
 
 const StudentListManagementPage: React.FC = () => {
     const [activeIdx, setActiveIdx] = useState<number>(0);
@@ -19,7 +19,7 @@ const StudentListManagementPage: React.FC = () => {
 
     return (
         <div className="px-4">
-            <Pageheader title="Yoklama Yönetimi" currentpage="Öğrenciler" />
+            <Pageheader title="Liste Yönetimi" currentpage="Öğrenciler" />
             <TabsContainer tabs={tabs} onTabChange={setActiveIdx} />
         </div>
     );
