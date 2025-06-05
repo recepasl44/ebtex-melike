@@ -483,7 +483,7 @@ export default function StudentListPage() {
       <Pageheader title="Öğrenci Yönetimi" currentpage="Ön Kayıt / Liste" />
       <ReusableTable<IStudent>
         onAdd={() => navigate(`/pre-register/crud`)}
-        pageTitle="Ön Kayıt / Liste"
+        // pageTitle="Ön Kayıt / Liste"
         exportFileName="students"
         showExportButtons={true}
         columns={columns}
