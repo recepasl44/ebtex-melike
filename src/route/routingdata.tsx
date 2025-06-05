@@ -306,8 +306,8 @@ const Invoicedetail = lazy(() => import("../components/common/invoice/detail"));
 const Createinvoice = lazy(
   () => import("../components/common/invoice/auto_create_invoice")
 );
-const CombineFinalRegister = lazy(
-  () => import("../components/common/student/final-register/combine")
+const RegisterIndex = lazy(
+  () => import("../components/common/student/register")
 );
 
 const SchoolTypeCrud = lazy(
@@ -948,7 +948,7 @@ export const Routedata = [
   {
     id: 23,
     path: `${import.meta.env.BASE_URL}final-register/:studentId?`,
-    element: <CombineFinalRegister />,
+    element: <RegisterIndex />,
   },
   {
     id: 23,
