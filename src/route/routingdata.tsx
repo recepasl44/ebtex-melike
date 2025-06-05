@@ -97,6 +97,9 @@ const DiscountStudentDetail = lazy(
 const PreRegisterList = lazy(
   () => import("../components/common/student/pre-register/list")
 );
+const PreRegisterIndex = lazy(
+  () => import("../components/common/student/pre-register/index")
+);
 const AppointmentsList = lazy(
   () => import("../components/common/student/appointments/index")
 );
@@ -950,6 +953,11 @@ export const Routedata = [
     id: 23,
     path: `${import.meta.env.BASE_URL}final-register/:studentId?`,
     element: <CombineFinalRegister />,
+  },
+  {
+    id: 23,
+    path: `${import.meta.env.BASE_URL}pre-register/index`,
+    element: <PreRegisterIndex />,
   },
   {
     id: 23,
