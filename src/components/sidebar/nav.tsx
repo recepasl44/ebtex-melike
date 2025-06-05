@@ -56,21 +56,11 @@ export const MENUITEMS: any = [
         title: "Kayıt",
         type: "sub",
         children: [
-          // Matches route -> path: /final-register/:studentId?
           {
-            title: "Kesin Kayıt",
+            title: "Kayıt",
             path: "/final-register",
             type: "link",
           },
-          // Matches route -> path: /service-management
-          {
-            title: "Hizmet Yönetimi",
-            path: "/service-management",
-            type: "link",
-          },
-          // Matches route -> path: /calculate
-          { title: "Ücret Hesapla", path: "/calculate", type: "link" },
-          { title: "Kayıt Kontrol", path: "/internals", type: "link" },
         ],
       },
     ],
