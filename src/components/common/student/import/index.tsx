@@ -255,7 +255,7 @@ export default function ExcelImportPage() {
       }}
       className="px-4"
     >
-      <Pageheader title="Öğrenci Yönetimi" currentpage="Toplu Öğrenci Aktarma" />
+      {/* <Pageheader title="Öğrenci Yönetimi" currentpage="Toplu Öğrenci Aktarma" /> */}
       {/* Content Area */}
       <div style={{ width: "100%", borderRadius: "8px" }}>
         <div style={{ marginBottom: "2rem" }}>

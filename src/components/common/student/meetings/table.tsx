@@ -369,8 +369,8 @@ export default function MeetingListPage() {
         render: (row) =>
           row.student
             ? String(
-                (row.student as { identification_no: string }).identification_no
-              )
+              (row.student as { identification_no: string }).identification_no
+            )
             : "-",
       },
       {
@@ -458,7 +458,7 @@ export default function MeetingListPage() {
 
   return (
     <div className="px-4">
-      <Pageheader title="Öğrenci Yönetimi" currentpage="Görüşmeler" />
+      {/* <Pageheader title="Öğrenci Yönetimi" currentpage="Görüşmeler" /> */}
       <ReusableTable<Meeting>
         columns={columns}
         data={meetingsData}

@@ -480,7 +480,7 @@ export default function StudentListPage() {
 
   return (
     <div className="px-4">
-      <Pageheader title="Öğrenci Yönetimi" currentpage="Ön Kayıt / Liste" />
+      {/* <Pageheader title="Öğrenci Yönetimi" currentpage="Ön Kayıt / Liste" /> */}
       <ReusableTable<IStudent>
         onAdd={() => navigate(`/pre-register/crud`)}
         // pageTitle="Ön Kayıt / Liste"

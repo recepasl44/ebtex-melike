@@ -406,7 +406,7 @@ export default function QuestionLabeling() {
 
   return (
     <div className="px-4">
-      <Pageheader title="Öğrenci Yönetimi" currentpage="Randevu Listesi" />
+      {/* <Pageheader title="Öğrenci Yönetimi" currentpage="Randevu Listesi" /> */}
       <ReusableTable<data>
         columns={columns}
         // pageTitle="Randevu Listesi"
