@@ -67,7 +67,7 @@ export default function QuestionLabeling() {
     enabled: filtersEnabled.program_id,
   });
 
-  const {} = useSchoolTable({
+  const { } = useSchoolTable({
     enabled: filtersEnabled.Class_level,
     page: 1,
     pageSize: 100,
@@ -406,7 +406,7 @@ export default function QuestionLabeling() {
   return (
     <ReusableTable<data>
       columns={columns}
-      pageTitle="Randevu Listesi"
+      // pageTitle="Randevu Listesi"
       data={appointmentData as data[]}
       loading={loading}
       showModal={false}

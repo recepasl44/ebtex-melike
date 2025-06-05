@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import TabsContainer from '../../pollingManagement/class-course/component/organisms/TabsContainer';
-import Pageheader from '../../page-header/pageheader';
+import Pageheader from '../../../page-header/pageheader';
 
 import PreRegisterList from './list';
 import AppointmentsList from '../appointments';
