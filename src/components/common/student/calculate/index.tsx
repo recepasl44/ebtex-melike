@@ -18,6 +18,7 @@ import { useCoursesTable } from "../../../hooks/course/useList";
 import { useSchoolTypesList } from "../../../hooks/schoolTypes/useSchoolTypesList";
 import { useServicesTable } from "../../../hooks/service/useList";
 import { useDiscountsTable } from "../../../hooks/discounts/useList";
+import Pageheader from "../../../page-header/pageheader";
 import { usePaymentMethodsList } from "../../../hooks/paymentMethods/useList";
 
 // Types
@@ -346,7 +347,8 @@ export default function CalculatePage({ studentId }: CalculatePageProps = {}) {
   }
 
   return (
-    <div>
+    <div className="px-4">
+      <Pageheader title="Öğrenci Yönetimi" currentpage="Ücret Hesapla" />
       {/* Hizmet Yok Modal */}
       <Modal
         show={showNoServiceModal}

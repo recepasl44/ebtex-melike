@@ -17,6 +17,7 @@ import CreateEnrollmentStep2, {
 } from "./step2/create_enrollment";
 import CreateInstallmentStep3 from "./step3/create_installment"; // <-- Step3 bileşeni
 import CreateInstallmentStep4 from "./step4/create_aggrement"; // <-- Step3 bileşeni
+import Pageheader from "../../../page-header/pageheader";
 
 // Hooks
 import { useListStudents } from "../../../hooks/student/useList";
@@ -404,7 +405,8 @@ const [selectedBranchId, setSelectedBranchId] = useState<number>(
   };
 
   return (
-    <>
+    <div className="px-4">
+      <Pageheader title="Öğrenci Yönetimi" currentpage="Kesin Kayıt" />
       {/* TCKN Kontrol Modal */}
       {isClient && (
         <Modal
@@ -586,7 +588,7 @@ const [selectedBranchId, setSelectedBranchId] = useState<number>(
           </Card.Body>
         </Card>
       )}
-    </>
+    </div>
   );
 };
 
