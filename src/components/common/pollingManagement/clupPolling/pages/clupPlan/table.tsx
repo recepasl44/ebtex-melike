@@ -11,6 +11,7 @@ import ReusableTable, {
 
 
 import { useAttendancesTable } from '../../../../../hooks/attendance/useList';
+import { useAttendanceDelete } from '../../../../../hooks/attendance/useDelete';
 import { useLevelsTable } from '../../../../../hooks/levels/useList';
 import { useClassroomList } from '../../../../../hooks/classrooms/useList';
 import { useAttendanceStudentsTable } from '../../../../../hooks/attendanceStudent/useList';
@@ -31,6 +32,7 @@ const BASE = `${import.meta.env.BASE_URL}pollingManagement/clupsPolling`;
 
 export default function ClubGroupPlanTable() {
     const navigate = useNavigate();
+    const { deleteExistingAttendance, error: deleteError } = useAttendanceDelete();
 
 
     const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' });
@@ -122,7 +124,7 @@ export default function ClubGroupPlanTable() {
             key: 'actions',
             label: 'İşlemler',
             style: { width: 110, textAlign: 'center' },
-            render: (row: Row) => (
+            render: (row: Row, openDeleteModal?: (row: Row) => void) => (
                 <div className="d-flex justify-content-center gap-2">
                     {/* düzenle */}
                     <button
@@ -136,7 +138,7 @@ export default function ClubGroupPlanTable() {
                     <button
                         type="button"
                         className="btn btn-icon btn-sm btn-danger-light rounded-pill"
-                        onClick={() => { }}
+                        onClick={() => openDeleteModal && openDeleteModal(row)}
                     >
                         <i className="ti ti-trash" />
                     </button>
@@ -201,6 +203,11 @@ export default function ClubGroupPlanTable() {
         classroomData, studentsData,
     ]);
 
+    function handleDeleteRow(row: Row) {
+        if (!row.id) return;
+        deleteExistingAttendance(row.id);
+    }
+
 
     return (
         <ReusableTable<Row>
@@ -209,7 +216,7 @@ export default function ClubGroupPlanTable() {
             columns={columns}
             data={rows}
             loading={loading}
-            error={error}
+            error={error || deleteError}
             filters={filters}
             showExportButtons
             currentPage={page}
@@ -219,6 +226,7 @@ export default function ClubGroupPlanTable() {
             onPageChange={setPage}
             onPageSizeChange={s => { setPageSize(s); setPage(1); }}
             exportFileName="club_group_plan"
+            onDeleteRow={handleDeleteRow}
         />
     );
 }
