@@ -1,4 +1,4 @@
-import  { Fragment } from 'react'
+import { Fragment } from 'react'
 import SpkBreadcrumb from '../../@spk-reusable-components/reusable-uielements/spk-breadcrumb'
 import { Link } from 'react-router-dom'
 import SpkButton from '../../@spk-reusable-components/reusable-uielements/spk-button'
@@ -23,7 +23,7 @@ const Pageheader = (props: any) => {
           <SpkButton Buttonvariant="white">
             <i className="ri-filter-3-line align-middle me-1 lh-1"></i> Filter
           </SpkButton>
-          <SpkButton Buttonvariant='primary' Customclass="me-0">
+          <SpkButton Buttonvariant="primary" Customclass="me-0">
             <i className="ri-share-forward-line me-1"></i> Share
           </SpkButton>
         </div>

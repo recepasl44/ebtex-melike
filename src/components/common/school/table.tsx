@@ -5,6 +5,7 @@ import ReusableTable, {
   ColumnDefinition,
   FilterDefinition,
 } from "../../../components/common/ReusableTable";
+import Pageheader from "../../../components/page-header/pageheader";
 import { useSchoolTable } from "../../../components/hooks/school/useSchoolList";
 import { useSchoolDelete } from "../../../components/hooks/school/useSchoolDelete";
 import { ISchool } from "../../../types/schools/list";
@@ -101,7 +102,8 @@ export default function SchoolListPage() {
   );
 
   return (
-
+    <>
+    <Pageheader title="Tanımlar" currentpage="Okul Listesi" activepage="Okul Listesi" />
 
     <ReusableTable<ISchool>
       pageTitle="Okul Listesi"
@@ -125,6 +127,7 @@ export default function SchoolListPage() {
       showExportButtons
       exportFileName="schools"
     />
+    </>
 
   );
 }

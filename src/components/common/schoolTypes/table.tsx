@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
 import ReusableTable, { ColumnDefinition } from "../../common/ReusableTable";
+import Pageheader from "../../../components/page-header/pageheader";
 import { useSchoolTypesList } from "../../../components/hooks/schoolTypes/useSchoolTypesList";
 import { useSchoolTypeDelete } from "../../../components/hooks/schoolTypes/useSchoolTypesDelete";
 import { ISchoolType } from "../../../types/schoolTypes/list";
@@ -59,7 +60,8 @@ export default function SchoolTypeListPage() {
     );
 
     return (
-
+        <>
+        <Pageheader title="Tanımlar" currentpage="Okul Tipleri" activepage="Okul Tipleri" />
 
         <ReusableTable<ISchoolType>
             pageTitle="Okul Tipleri"
@@ -85,6 +87,8 @@ export default function SchoolTypeListPage() {
             exportFileName="school-types"
             onDeleteRow={(row) => removeSchoolType(row.id)}
         />
+
+        </>
 
     );
 }
