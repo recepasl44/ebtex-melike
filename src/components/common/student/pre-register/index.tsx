@@ -45,9 +45,11 @@ const PreRegisterIndexPage: React.FC = () => {
   ];
 
   return (
-    <div className="px-4">
+    <div className="px-4 w-100">
       <Pageheader title="Öğrenci Yönetimi" currentpage="Ön Kayıt" />
-      <TabsContainer tabs={tabsConfig} onTabChange={setActiveIdx} />
+      <div className="mt-3">
+        <TabsContainer tabs={tabsConfig} onTabChange={setActiveIdx} />
+      </div>
     </div>
   );
 };
