@@ -1,0 +1,29 @@
+import React from "react";
+import { Row } from "react-bootstrap";
+import InfoBoxRow from "../../../../components/InfoBoxRow.tsx";
+import DailyAttendanceRow from "../../../../components/DailyAttendanceRow.tsx";
+import { DailyBulletin } from "../../../../type.ts";
+import CurrentBulletin from "../../../../components/CurrentBulletin.tsx";
+
+
+
+
+
+interface RightSectionProps {
+  isDark: boolean;
+  attendanceData: any[];
+  daily_bulletins:DailyBulletin[];
+}
+
+const RightSection: React.FC<RightSectionProps> = ({ isDark, attendanceData ,daily_bulletins}) => {
+  return (
+    <Row>
+      <InfoBoxRow isDark={isDark} />
+      <DailyAttendanceRow attendanceData={attendanceData} />
+      <CurrentBulletin
+        daily_bulletins={daily_bulletins} />
+    </Row>
+  );
+};
+
+export default RightSection;
