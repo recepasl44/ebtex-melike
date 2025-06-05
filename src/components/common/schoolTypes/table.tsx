@@ -1,6 +1,7 @@
 
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import Pageheader from "../../../components/page-header/pageheader";
 
 import ReusableTable, { ColumnDefinition } from "../ReusableTable";
 import { useSchoolTypesList } from "../../hooks/schoolTypes/useSchoolTypesList";
@@ -59,32 +60,35 @@ export default function SchoolTypeListPage() {
     );
 
     return (
+        <>
+            <Pageheader title="Tanımlar" currentpage="Okul Listesi" activepage="Okul Listesi" />
 
 
-        <ReusableTable<ISchoolType>
-            pageTitle="Okul Tipleri"
+            <ReusableTable<ISchoolType>
+                // pageTitle="Okul Tipleri"
 
-            columns={columns}
-            data={schoolTypesData}
-            loading={loading}
-            showModal={false}
-            showExportButtons
-            tableMode="single"
-            error={error}
-            filters={[]}
-            onAdd={() => navigate("/school-type/crud")}
-            currentPage={page}
-            totalPages={totalPages}
-            totalItems={totalItems}
-            pageSize={paginate}
-            onPageChange={setPage}
-            onPageSizeChange={(newSize) => {
-                setPaginate(newSize);
-                setPage(1);
-            }}
-            exportFileName="school-types"
-            onDeleteRow={(row) => removeSchoolType(row.id)}
-        />
+                columns={columns}
+                data={schoolTypesData}
+                loading={loading}
+                showModal={false}
+                showExportButtons
+                tableMode="single"
+                error={error}
+                filters={[]}
+                onAdd={() => navigate("/school-type/crud")}
+                currentPage={page}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                pageSize={paginate}
+                onPageChange={setPage}
+                onPageSizeChange={(newSize) => {
+                    setPaginate(newSize);
+                    setPage(1);
+                }}
+                exportFileName="school-types"
+                onDeleteRow={(row) => removeSchoolType(row.id)}
+            />
+        </>
 
     );
 }

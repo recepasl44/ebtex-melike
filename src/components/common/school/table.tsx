@@ -4,6 +4,7 @@ import ReusableTable, {
   ColumnDefinition,
   FilterDefinition,
 } from "../ReusableTable";
+import Pageheader from "../../../components/page-header/pageheader";
 import { useSchoolTable } from "../../hooks/school/useSchoolList";
 import { useSchoolDelete } from "../../hooks/school/useSchoolDelete";
 import { ISchool } from "../../../types/schools/list";
@@ -98,27 +99,32 @@ export default function SchoolListPage() {
   );
 
   return (
-    <ReusableTable<ISchool>
-      pageTitle="Okul Listesi"
-      columns={columns}
-      data={schoolData}
-      filters={filters}
-      loading={loading}
-      error={error}
-      currentPage={page}
-      totalPages={totalPages}
-      totalItems={totalItems}
-      pageSize={paginate}
-      onPageChange={(newPage) => setPage(newPage)}
-      onPageSizeChange={(newSize) => {
-        setPaginate(newSize);
-        setPage(1);
-      }}
-      onAdd={() => navigate("/schoolcrud")}
-      onDeleteRow={(row) => removeSchool(row.id)}
-      tableMode="single"
-      showExportButtons
-      exportFileName="schools"
-    />
+
+    <>
+      <Pageheader title="Tanımlar" currentpage="Okul Listesi" activepage="Okul Listesi" />
+
+      <ReusableTable<ISchool>
+        // pageTitle="Okul Listesi"
+        columns={columns}
+        data={schoolData}
+        filters={filters}
+        loading={loading}
+        error={error}
+        currentPage={page}
+        totalPages={totalPages}
+        totalItems={totalItems}
+        pageSize={paginate}
+        onPageChange={(newPage) => setPage(newPage)}
+        onPageSizeChange={(newSize) => {
+          setPaginate(newSize);
+          setPage(1);
+        }}
+        onAdd={() => navigate("/schoolcrud")}
+        onDeleteRow={(row) => removeSchool(row.id)}
+        tableMode="single"
+        showExportButtons
+        exportFileName="schools"
+      />
+    </>
   );
 }
