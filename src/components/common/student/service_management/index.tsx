@@ -3,13 +3,15 @@ import { useState } from "react";
 import { Row, Col, Card } from "react-bootstrap";
 import ServiceTable from "./service/table"; // 1. adımda oluşturduğumuz service table
 import DiscountTable from "./discount/table"; // 2. adımda oluşturduğumuz discount table
+import Pageheader from "../../../page-header/pageheader";
 
 export default function CombinedPage() {
   const [selectedServiceId, setSelectedServiceId] = useState<number>();
   const [enabled, setEnabled] = useState(false);
 
   return (
-    <div>
+    <div className="px-4">
+      <Pageheader title="Öğrenci Yönetimi" currentpage="Hizmet Yönetimi" />
       <Row>
         <Col md={6}>
           <Card>

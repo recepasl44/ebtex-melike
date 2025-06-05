@@ -17,6 +17,7 @@ import { useListStudents } from "../../../hooks/student/useList";
 import { useAppointmentDelete } from "../../../hooks/appointment/deleteAppointment";
 import appoipmentButtonHover from "../../../../assets/images/media/appoipment-buton-hover.svg";
 import appoipmentButton from "../../../../assets/images/media/appoipment-buton.svg";
+import Pageheader from "../../../page-header/pageheader";
 
 type QueryParams = {
   [x: string]: any;
@@ -404,33 +405,36 @@ export default function QuestionLabeling() {
   );
 
   return (
-    <ReusableTable<data>
-      columns={columns}
-      pageTitle="Randevu Listesi"
-      data={appointmentData as data[]}
-      loading={loading}
-      showModal={false}
-      showExportButtons={true}
-      tableMode="single"
-      error={error}
-      filters={filters}
-      currentPage={page}
-      totalPages={totalPages}
-      totalItems={totalItems}
-      pageSize={pageSize}
-      onPageChange={(newPage) => {
-        setPage(newPage);
-      }}
-      onPageSizeChange={(newSize) => {
-        setPageSize(newSize);
-        setPage(1);
-      }}
-      exportFileName="question_labeling"
-      onDeleteRow={(row) => {
-        if (row.id !== undefined) {
-          removeAppointment(row.id);
-        }
-      }}
-    />
+    <div className="px-4">
+      <Pageheader title="Öğrenci Yönetimi" currentpage="Randevu Listesi" />
+      <ReusableTable<data>
+        columns={columns}
+        pageTitle="Randevu Listesi"
+        data={appointmentData as data[]}
+        loading={loading}
+        showModal={false}
+        showExportButtons={true}
+        tableMode="single"
+        error={error}
+        filters={filters}
+        currentPage={page}
+        totalPages={totalPages}
+        totalItems={totalItems}
+        pageSize={pageSize}
+        onPageChange={(newPage) => {
+          setPage(newPage);
+        }}
+        onPageSizeChange={(newSize) => {
+          setPageSize(newSize);
+          setPage(1);
+        }}
+        exportFileName="question_labeling"
+        onDeleteRow={(row) => {
+          if (row.id !== undefined) {
+            removeAppointment(row.id);
+          }
+        }}
+      />
+    </div>
   );
 }

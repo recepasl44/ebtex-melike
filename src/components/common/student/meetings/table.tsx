@@ -16,6 +16,7 @@ import info from "../../../../assets/images/media/info.svg";
 import info_hover from "../../../../assets/images/media/info-hover.svg";
 import inside from "../../../../assets/images/media/svg/inside-button.svg";
 import outside from "../../../../assets/images/media/svg/outside-button.svg";
+import Pageheader from "../../../page-header/pageheader";
 
 type QueryParams = {
   [x: string]: any;
@@ -456,22 +457,25 @@ export default function MeetingListPage() {
   );
 
   return (
-    <ReusableTable<Meeting>
-      columns={columns}
-      data={meetingsData}
-      loading={loading}
-      error={error}
-      showModal={false}
-      showExportButtons={true}
-      filters={filters}
-      tableMode="single"
-      totalPages={totalPages}
-      totalItems={totalItems}
-      pageSize={pageSize}
-      exportFileName="meetings"
-      currentPage={page}
-      onPageChange={setPage}
-      onPageSizeChange={setPageSize}
-    />
+    <div className="px-4">
+      <Pageheader title="Öğrenci Yönetimi" currentpage="Görüşmeler" />
+      <ReusableTable<Meeting>
+        columns={columns}
+        data={meetingsData}
+        loading={loading}
+        error={error}
+        showModal={false}
+        showExportButtons={true}
+        filters={filters}
+        tableMode="single"
+        totalPages={totalPages}
+        totalItems={totalItems}
+        pageSize={pageSize}
+        exportFileName="meetings"
+        currentPage={page}
+        onPageChange={setPage}
+        onPageSizeChange={setPageSize}
+      />
+    </div>
   );
 }

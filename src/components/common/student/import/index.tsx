@@ -3,6 +3,7 @@ import React, { useState, useRef } from "react";
 import { toast } from "react-toastify";
 import { Modal, Button } from "react-bootstrap";
 import { Link } from "@mui/material";
+import Pageheader from "../../../page-header/pageheader";
 
 interface IRule {
   icon: string;
@@ -252,7 +253,9 @@ export default function ExcelImportPage() {
         minHeight: "100vh",
         width: "100%"
       }}
+      className="px-4"
     >
+      <Pageheader title="Öğrenci Yönetimi" currentpage="Toplu Öğrenci Aktarma" />
       {/* Content Area */}
       <div style={{ width: "100%", borderRadius: "8px" }}>
         <div style={{ marginBottom: "2rem" }}>

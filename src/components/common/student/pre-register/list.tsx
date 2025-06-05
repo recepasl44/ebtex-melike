@@ -17,6 +17,7 @@ import { deleteStudent } from "../../../../slices/student/delete/thunk";
 import appointment_button from "../../../../assets/images/media/appoipment-buton.svg";
 import appointment_hover from "../../../../assets/images/media/appoipment-buton-hover.svg";
 import { formatDateForApi } from "../../../../utils/formatters";
+import Pageheader from "../../../page-header/pageheader";
 
 type QueryParams = {
   [x: string]: any;
@@ -478,25 +479,28 @@ export default function StudentListPage() {
 
 
   return (
-    <ReusableTable<IStudent>
-      onAdd={() => navigate(`/pre-register/crud`)}
-      pageTitle="Ön Kayıt / Liste"
-      exportFileName="students"
-      showExportButtons={true}
-      columns={columns}
-      data={data}
-      filters={filters}
-      loading={loading}
-      error={error}
+    <div className="px-4">
+      <Pageheader title="Öğrenci Yönetimi" currentpage="Ön Kayıt / Liste" />
+      <ReusableTable<IStudent>
+        onAdd={() => navigate(`/pre-register/crud`)}
+        pageTitle="Ön Kayıt / Liste"
+        exportFileName="students"
+        showExportButtons={true}
+        columns={columns}
+        data={data}
+        filters={filters}
+        loading={loading}
+        error={error}
 
-      totalPages={totalPages}
-      totalItems={totalItems}
+        totalPages={totalPages}
+        totalItems={totalItems}
 
-      tableMode="single"
+        tableMode="single"
 
-      onDeleteRow={(row) => {
-        deleteStudent(row.id);
-      }}
-    />
+        onDeleteRow={(row) => {
+          deleteStudent(row.id);
+        }}
+      />
+    </div>
   );
 }
