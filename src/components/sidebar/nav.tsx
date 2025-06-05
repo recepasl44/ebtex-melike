@@ -33,21 +33,8 @@ export const MENUITEMS: any = [
     children: [
       {
         title: "Ön Kayıt",
-        type: "sub",
-        children: [
-          // Matches  route -> path: /pre-register
-          { title: "Ön Kayıt", path: "/pre-register/list", type: "link" },
-          // Matches  route -> path: /appointments
-          { title: "Randevu", path: "/appointments", type: "link" },
-          // Matches  route -> path: /meetings
-          { title: "Görüşme", path: "/meetings", type: "link" },
-          // Matches  route -> path: /student/import
-          {
-            title: "Toplu Öğrenci Aktarma",
-            path: "/student/import",
-            type: "link",
-          },
-        ],
+        type: "link",
+        path: "/pre-register/list",
       },
       {
         title: "Kayıt",

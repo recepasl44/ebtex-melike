@@ -9,9 +9,6 @@ const Analytics = lazy(
 const StudentImport = lazy(
   () => import("../components/common/student/import/index")
 );
-const StudentList = lazy(
-  () => import("../components/common/student/pre-register/list")
-);
 const Calculate = lazy(
   () => import("../components/common/student/calculate/index")
 );
@@ -83,6 +80,9 @@ const EducationalStructure = lazy(
 );
 const PreRegisterList = lazy(
   () => import("../components/common/student/pre-register/list")
+);
+const PreRegisterIndex = lazy(
+  () => import("../components/common/student/pre-register/index")
 );
 const AppointmentsList = lazy(
   () => import("../components/common/student/appointments/index")
@@ -410,7 +410,7 @@ export const Routedata = [
   {
     id: 4,
     path: `${import.meta.env.BASE_URL}student/pre-register`,
-    element: <StudentList />,
+    element: <PreRegisterIndex />,
   },
   {
     id: 5,
@@ -816,7 +816,7 @@ export const Routedata = [
   {
     id: 23,
     path: `${import.meta.env.BASE_URL}pre-register/list`,
-    element: <PreRegisterList />,
+    element: <PreRegisterIndex />,
   },
   {
     id: 23,
