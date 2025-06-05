@@ -15,9 +15,7 @@ const StudentList = lazy(
 const Calculate = lazy(
   () => import("../components/common/student/calculate/index")
 );
-const StudentManagementPage = lazy(
-  () => import("../components/common/student/index")
-);
+
 // exams
 const ExamsResult = lazy(() => import("../components/common/exams/examResult"));
 const ExamAnalysis = lazy(
@@ -512,11 +510,7 @@ export const Routedata = [
     path: `${import.meta.env.BASE_URL}student/pre-register`,
     element: <StudentList />,
   },
-  {
-    id: 40,
-    path: `${import.meta.env.BASE_URL}students`,
-    element: <StudentManagementPage />,
-  },
+
   {
     id: 5,
     path: `${import.meta.env.BASE_URL}course/list`,
