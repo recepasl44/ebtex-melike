@@ -45,24 +45,8 @@ export const MENUITEMS: any = [
     icon: Dashboardicon,
     type: "sub",
     children: [
-      {
-        title: "Ön Kayıt",
-        type: "sub",
-        children: [
-          { title: "Ön Kayıt", path: "/pre-register", type: "link" },
-        ],
-      },
-      {
-        title: "Kayıt",
-        type: "sub",
-        children: [
-          {
-            title: "Kayıt",
-            path: "/final-register",
-            type: "link",
-          },
-        ],
-      },
+      { title: "Ön Kayıt", path: "/pre-register", type: "link" },
+      { title: "Kayıt", path: "/final-register", type: "link" },
     ],
   },
   //ödev

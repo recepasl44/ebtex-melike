@@ -27,7 +27,9 @@ function Menuloop({ MenuItems, toggleSidemenu, local_varaiable, level, HoverTogg
           ""
         )}
         </span>
-        <i className="ri-arrow-down-s-line side-menu__angle"></i>
+        {MenuItems.children && MenuItems.children.length > 0 && (
+          <i className="ri-arrow-down-s-line side-menu__angle"></i>
+        )}
       </Link>
       <ul className={`slide-menu child${level}  ${MenuItems.active ? 'double-menu-active' : ''} ${MenuItems?.dirchange ? "force-left" : ""} `} style={MenuItems.active ? { display: "block" } : { display: "none" }}>
         {level <= 1 ? <li className="slide side-menu__label1">
