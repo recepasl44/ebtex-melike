@@ -1,4 +1,7 @@
-import TabsContainer from '../guidance/components/organisms/TabsContainer';
+
+import React, { useState } from 'react';
+import TabsContainer from './component/organisms/TabsContainer';
+
 import FinancialSummary from '../accounting/financialSummary';
 import DebtsTable from '../debts/table';
 import OtherIncomeTable from '../otherIncome/table';
@@ -10,7 +13,10 @@ import TransfersTable from '../transfers/table';
 import Tasks from './Tasks';
 import Pageheader from '../../page-header/pageheader';
 
-const DailyModule = () => {
+const DailyModule: React.FC = () => {
+  /* aktif sekme index’i */
+  const [, setActiveIdx] = useState<number>(0);
+
   const tabsConfig = [
     {
       label: 'Finansal Özet',
@@ -89,7 +95,10 @@ const DailyModule = () => {
   return (
     <div className="px-4">
       <Pageheader title="Finans ve Muhasebe" currentpage="Günlük İşlemler" />
-      <TabsContainer tabs={tabsConfig} />
+      <TabsContainer
+        tabs={tabsConfig}
+        onTabChange={(idx: number) => setActiveIdx(idx)}
+      />
     </div>
   );
 };

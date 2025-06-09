@@ -399,9 +399,7 @@ import StatusNumbersIndex from "../components/common/guidance/workSchedule/Tab1/
 import Dashboard from "../components/common/dashboard";
 import ChecksAndPromissoryTable from "../components/common/checksandpromissory/table";
 const DailyModule = lazy(() => import("../components/common/daily"));
-const DailyBuradaModule = lazy(
-  () => import("../components/common/dailyburada")
-);
+
 
 const RentDetailPage = lazy(() => import("../components/common/rent/RentDetail"));
 const RentDetailTable = lazy(() => import("../components/common/rent/table"));
@@ -1745,11 +1743,7 @@ export const Routedata = [
     path: `${import.meta.env.BASE_URL}daily`,
     element: <DailyModule />,
   },
-  {
-    id: 20001,
-    path: `${import.meta.env.BASE_URL}dailyburada`,
-    element: <DailyBuradaModule />,
-  },
+
   {
     id: 2001,
     path: `${import.meta.env.BASE_URL}rentdetail/:id`,

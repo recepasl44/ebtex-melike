@@ -233,11 +233,7 @@ export const MENUITEMS: any = [
         path: "/daily",
         type: "link",
       },
-      {
-        title: "Günlük Burada",
-        path: "/dailyburada",
-        type: "link",
-      },
+
       {
         title: "Gelirler",
         type: "sub",
