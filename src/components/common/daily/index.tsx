@@ -1,12 +1,13 @@
 import TabsContainer from '../guidance/components/organisms/TabsContainer';
 import Summary from './Summary';
 import PaymentDetailsTable from '../payment_details/table';
-import OtherIncomeTable from '../otherIncome/table';
+import IncomeListPage from '../income/table';
 import ExpenseListPage from '../expences/main/table';
 import CreditCardTable from '../creditcard/table';
 import PaymentTab from '../personel/financialSummary/PaymentTab';
 import TransfersTable from '../transfers/table';
-import Tasks from './Tasks';
+import Payments from './Payments';
+import Authority from './Authority';
 
 const DailyModule = () => {
   const tabsConfig = [
@@ -27,8 +28,8 @@ const DailyModule = () => {
       passiveTextColor: '#5C67F7',
     },
     {
-      label: 'Farklı Gelirler',
-      content: <OtherIncomeTable />,
+      label: 'Gelirler',
+      content: <IncomeListPage />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#E1E4FB',
@@ -43,6 +44,14 @@ const DailyModule = () => {
       passiveTextColor: '#5C67F7',
     },
     {
+      label: 'Personel Ödemeleri',
+      content: <PaymentTab />,
+      activeBgColor: '#5C67F7',
+      activeTextColor: '#FFFFFF',
+      passiveBgColor: '#E1E4FB',
+      passiveTextColor: '#5C67F7',
+    },
+    {
       label: 'Kart Yönetimi',
       content: <CreditCardTable />,
       activeBgColor: '#5C67F7',
@@ -51,8 +60,8 @@ const DailyModule = () => {
       passiveTextColor: '#5C67F7',
     },
     {
-      label: 'Personel Ödemeleri',
-      content: <PaymentTab />,
+      label: 'Ödemeler',
+      content: <Payments />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#E1E4FB',
@@ -67,8 +76,8 @@ const DailyModule = () => {
       passiveTextColor: '#5C67F7',
     },
     {
-      label: 'Notlar',
-      content: <Tasks />,
+      label: 'Yetkili',
+      content: <Authority />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#E1E4FB',
