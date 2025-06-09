@@ -1,8 +1,7 @@
 import TabsContainer from '../guidance/components/organisms/TabsContainer';
 import Summary from './Summary';
-import DebtsTable from '../debts/table';
-import IncomeListPage from '../income/table';
 import PaymentDetailsTable from '../payment_details/table';
+import OtherIncomeTable from '../otherIncome/table';
 import ExpenseListPage from '../expences/main/table';
 import CreditCardTable from '../creditcard/table';
 import PaymentTab from '../personel/financialSummary/PaymentTab';
@@ -21,15 +20,15 @@ const DailyModule = () => {
     },
     {
       label: 'Taksitler',
-      content: <DebtsTable />,
+      content: <PaymentDetailsTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#E1E4FB',
       passiveTextColor: '#5C67F7',
     },
     {
-      label: 'Gelirler',
-      content: <IncomeListPage />,
+      label: 'Farklı Gelirler',
+      content: <OtherIncomeTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#E1E4FB',
@@ -44,14 +43,6 @@ const DailyModule = () => {
       passiveTextColor: '#5C67F7',
     },
     {
-      label: 'Personel Ödemeleri',
-      content: <PaymentTab />,
-      activeBgColor: '#5C67F7',
-      activeTextColor: '#FFFFFF',
-      passiveBgColor: '#E1E4FB',
-      passiveTextColor: '#5C67F7',
-    },
-    {
       label: 'Kart Yönetimi',
       content: <CreditCardTable />,
       activeBgColor: '#5C67F7',
@@ -60,8 +51,8 @@ const DailyModule = () => {
       passiveTextColor: '#5C67F7',
     },
     {
-      label: 'Ödemeler',
-      content: <PaymentDetailsTable />,
+      label: 'Personel Ödemeleri',
+      content: <PaymentTab />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#E1E4FB',
@@ -76,7 +67,7 @@ const DailyModule = () => {
       passiveTextColor: '#5C67F7',
     },
     {
-      label: 'Yetkili',
+      label: 'Notlar',
       content: <Tasks />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
