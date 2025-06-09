@@ -1,4 +1,4 @@
-import TabsContainer from '../guidance/components/organisms/TabsContainer';
+import TabsContainer from './component/organisms/TabsContainer';
 import FinancialSummary from '../accounting/financialSummary';
 import DebtsTable from '../debts/table';
 import OtherIncomeTable from '../otherIncome/table';
