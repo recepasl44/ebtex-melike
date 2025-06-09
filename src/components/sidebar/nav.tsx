@@ -234,6 +234,11 @@ export const MENUITEMS: any = [
         type: "link",
       },
       {
+        title: "Günlük Burada",
+        path: "/dailyburada",
+        type: "link",
+      },
+      {
         title: "Gelirler",
         type: "sub",
         children: [
