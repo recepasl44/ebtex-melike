@@ -1,13 +1,12 @@
 import TabsContainer from '../guidance/components/organisms/TabsContainer';
 import Summary from './Summary';
 import PaymentDetailsTable from '../payment_details/table';
-import IncomeListPage from '../income/table';
+import OtherIncomeTable from '../otherIncome/table';
 import ExpenseListPage from '../expences/main/table';
 import CreditCardTable from '../creditcard/table';
 import PaymentTab from '../personel/financialSummary/PaymentTab';
 import TransfersTable from '../transfers/table';
-import Payments from './Payments';
-import Authority from './Authority';
+import Tasks from './Tasks';
 
 const DailyModule = () => {
   const tabsConfig = [
@@ -28,8 +27,8 @@ const DailyModule = () => {
       passiveTextColor: '#5C67F7',
     },
     {
-      label: 'Gelirler',
-      content: <IncomeListPage />,
+      label: 'Farklı Gelirler',
+      content: <OtherIncomeTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#E1E4FB',
@@ -38,6 +37,15 @@ const DailyModule = () => {
     {
       label: 'Giderler',
       content: <ExpenseListPage />,
+      activeBgColor: '#5C67F7',
+      activeTextColor: '#FFFFFF',
+      passiveBgColor: '#E1E4FB',
+      passiveTextColor: '#5C67F7',
+    },
+
+    {
+      label: 'Kart Yönetimi',
+      content: <CreditCardTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#E1E4FB',
@@ -52,22 +60,6 @@ const DailyModule = () => {
       passiveTextColor: '#5C67F7',
     },
     {
-      label: 'Kart Yönetimi',
-      content: <CreditCardTable />,
-      activeBgColor: '#5C67F7',
-      activeTextColor: '#FFFFFF',
-      passiveBgColor: '#E1E4FB',
-      passiveTextColor: '#5C67F7',
-    },
-    {
-      label: 'Ödemeler',
-      content: <Payments />,
-      activeBgColor: '#5C67F7',
-      activeTextColor: '#FFFFFF',
-      passiveBgColor: '#E1E4FB',
-      passiveTextColor: '#5C67F7',
-    },
-    {
       label: 'Transfer',
       content: <TransfersTable />,
       activeBgColor: '#5C67F7',
@@ -76,8 +68,8 @@ const DailyModule = () => {
       passiveTextColor: '#5C67F7',
     },
     {
-      label: 'Yetkili',
-      content: <Authority />,
+      label: 'Notlar',
+      content: <Tasks />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#E1E4FB',
