@@ -230,22 +230,8 @@ export const MENUITEMS: any = [
     children: [
       {
         title: "Günlük İşlemler",
-        type: "sub",
-        children: [
-          { title: "Finansal Özet", path: "/financial-summary", type: "link" },
-          { title: "Taksitler", path: "/debts", type: "link" },
-          { title: "Farklı Gelirler", path: "/other-income", type: "link" },
-          { title: "Giderler", path: "/expenses", type: "link" },
-          { title: "Kart Yönetimi", path: "/creditcards", type: "link" },
-          {
-            title: "Personel Ödemeleri",
-            path: "/studentpaymentdetails",
-            type: "link",
-          },
-          { title: "Günlük", path: "/daily", type: "link" },
-          { title: "Transfer", path: "/transfer", type: "link" },
-
-        ],
+        path: "/daily",
+        type: "link",
       },
       {
         title: "Gelirler",
