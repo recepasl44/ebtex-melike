@@ -23,7 +23,7 @@ const DailyModule: React.FC = () => {
       content: <FinancialSummary />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
-      passiveBgColor: '#E1E4FB',
+      passiveBgColor: '#5C67F726',
       passiveTextColor: '#5C67F7',
     },
     {
@@ -31,7 +31,7 @@ const DailyModule: React.FC = () => {
       content: <DebtsTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
-      passiveBgColor: '#E1E4FB',
+      passiveBgColor: '#5C67F726',
       passiveTextColor: '#5C67F7',
     },
     {
@@ -39,7 +39,7 @@ const DailyModule: React.FC = () => {
       content: <OtherIncomeTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
-      passiveBgColor: '#E1E4FB',
+      passiveBgColor: '#5C67F726',
       passiveTextColor: '#5C67F7',
     },
     {
@@ -47,7 +47,7 @@ const DailyModule: React.FC = () => {
       content: <ExpenseListPage />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
-      passiveBgColor: '#E1E4FB',
+      passiveBgColor: '#5C67F726',
       passiveTextColor: '#5C67F7',
     },
     {
@@ -55,7 +55,7 @@ const DailyModule: React.FC = () => {
       content: <PaymentTab />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
-      passiveBgColor: '#E1E4FB',
+      passiveBgColor: '#5C67F726',
       passiveTextColor: '#5C67F7',
     },
     {
@@ -63,7 +63,7 @@ const DailyModule: React.FC = () => {
       content: <CreditCardTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
-      passiveBgColor: '#E1E4FB',
+      passiveBgColor: '#5C67F726',
       passiveTextColor: '#5C67F7',
     },
     {
@@ -71,7 +71,7 @@ const DailyModule: React.FC = () => {
       content: <PaymentDetailsTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
-      passiveBgColor: '#E1E4FB',
+      passiveBgColor: '#5C67F726',
       passiveTextColor: '#5C67F7',
     },
     {
@@ -79,7 +79,7 @@ const DailyModule: React.FC = () => {
       content: <TransfersTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
-      passiveBgColor: '#E1E4FB',
+      passiveBgColor: '#5C67F726',
       passiveTextColor: '#5C67F7',
     },
     {
@@ -87,7 +87,7 @@ const DailyModule: React.FC = () => {
       content: <Tasks />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
-      passiveBgColor: '#E1E4FB',
+      passiveBgColor: '#5C67F726',
       passiveTextColor: '#5C67F7',
     },
   ];
