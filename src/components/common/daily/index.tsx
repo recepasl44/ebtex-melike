@@ -1,18 +1,20 @@
 import TabsContainer from '../guidance/components/organisms/TabsContainer';
-import Summary from './Summary';
-import PaymentDetailsTable from '../payment_details/table';
+import FinancialSummary from '../accounting/financialSummary';
+import DebtsTable from '../debts/table';
 import OtherIncomeTable from '../otherIncome/table';
 import ExpenseListPage from '../expences/main/table';
-import CreditCardTable from '../creditcard/table';
 import PaymentTab from '../personel/financialSummary/PaymentTab';
+import CreditCardTable from '../creditcard/table';
+import PaymentDetailsTable from '../payment_details/table';
 import TransfersTable from '../transfers/table';
 import Tasks from './Tasks';
+import Pageheader from '../../page-header/pageheader';
 
 const DailyModule = () => {
   const tabsConfig = [
     {
       label: 'Finansal Özet',
-      content: <Summary />,
+      content: <FinancialSummary />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#E1E4FB',
@@ -20,14 +22,14 @@ const DailyModule = () => {
     },
     {
       label: 'Taksitler',
-      content: <PaymentDetailsTable />,
+      content: <DebtsTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#E1E4FB',
       passiveTextColor: '#5C67F7',
     },
     {
-      label: 'Farklı Gelirler',
+      label: 'Gelirler',
       content: <OtherIncomeTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
@@ -43,6 +45,14 @@ const DailyModule = () => {
       passiveTextColor: '#5C67F7',
     },
     {
+      label: 'Personel Ödemeleri',
+      content: <PaymentTab />,
+      activeBgColor: '#5C67F7',
+      activeTextColor: '#FFFFFF',
+      passiveBgColor: '#E1E4FB',
+      passiveTextColor: '#5C67F7',
+    },
+    {
       label: 'Kart Yönetimi',
       content: <CreditCardTable />,
       activeBgColor: '#5C67F7',
@@ -51,8 +61,8 @@ const DailyModule = () => {
       passiveTextColor: '#5C67F7',
     },
     {
-      label: 'Personel Ödemeleri',
-      content: <PaymentTab />,
+      label: 'Ödemeler',
+      content: <PaymentDetailsTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#E1E4FB',
@@ -67,7 +77,7 @@ const DailyModule = () => {
       passiveTextColor: '#5C67F7',
     },
     {
-      label: 'Notlar',
+      label: 'Yetkili',
       content: <Tasks />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
@@ -77,7 +87,8 @@ const DailyModule = () => {
   ];
 
   return (
-    <div className="flex" style={{ padding: '23px 50px 0' }}>
+    <div className="px-4">
+      <Pageheader title="Finans ve Muhasebe" currentpage="Günlük İşlemler" />
       <TabsContainer tabs={tabsConfig} />
     </div>
   );
