@@ -4,7 +4,7 @@ import TabsContainer from './component/organisms/TabsContainer';
 
 import DailyTransactionsFinancialSummary from '../dailyTransactionsFinancialSummary';
 import StudentInstallmentsTable from '../studentInstallments';
-import OtherIncomeTable from '../otherIncome/table';
+import DailyIncomeTable from '../dailyIncome/table';
 import ExpenseListPage from '../expences/main/table';
 import PaymentTab from '../personel/financialSummary/PaymentTab';
 import CreditCardTable from '../creditcard/table';
@@ -36,7 +36,7 @@ const DailyModule: React.FC = () => {
     },
     {
       label: 'Gelirler',
-      content: <OtherIncomeTable />,
+      content: <DailyIncomeTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#5C67F726',
