@@ -8,7 +8,7 @@ import OtherIncomeTable from '../otherIncome/table';
 import ExpenseListPage from '../expences/main/table';
 import PaymentTab from '../personel/financialSummary/PaymentTab';
 import CreditCardTable from '../creditcard/table';
-import PaymentDetailsTable from '../payment_details/table';
+import DailyTransactionsPaymentsTable from '../dailyTransactionsPayments/table';
 import TransfersTable from '../transfers/table';
 import Tasks from './Tasks';
 import Pageheader from '../../page-header/pageheader';
@@ -68,7 +68,7 @@ const DailyModule: React.FC = () => {
     },
     {
       label: 'Ödemeler',
-      content: <PaymentDetailsTable />,
+      content: <DailyTransactionsPaymentsTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#5C67F726',
