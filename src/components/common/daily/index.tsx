@@ -10,7 +10,7 @@ import DailyStaffAppointmentsTable from "../dailyStaffAppointments";
 import DailyCardManagementTable from '../dailyCardManagement';
 import DailyTransactionsPaymentsTable from '../dailyTransactionsPayments/table';
 import DailyTransferTable from '../dailyTransfer';
-import DailyOperationsAuthorized from '../dailyOperationsAuthorized';
+import DailyAuthority from '../dailyAuthority';
 import Pageheader from '../../page-header/pageheader';
 
 const DailyModule: React.FC = () => {
@@ -84,7 +84,7 @@ const DailyModule: React.FC = () => {
     },
     {
       label: 'Yetkili',
-      content: <DailyOperationsAuthorized />,
+      content: <DailyAuthority />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#5C67F726',
