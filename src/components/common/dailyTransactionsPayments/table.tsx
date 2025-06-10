@@ -30,7 +30,7 @@ export default function DailyTransactionsPaymentsTable() {
       {
         key: 'payment_method_name',
         label: 'Ödeme Şekli',
-        render: r => r.payment_method_name || '-',
+        render: r => r.payment_method_id || '-',
       },
       { key: 'id', label: 'Makbuz No', render: r => String(r.id) },
       { key: 'description', label: 'Açıklama', render: r => r.description || '-' },
