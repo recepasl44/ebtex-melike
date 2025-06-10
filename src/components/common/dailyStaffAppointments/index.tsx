@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import ReusableTable, { ColumnDefinition } from "../ReusableTable";
-import { usePersonnelTable } from "../hooks/employee/personel/useList";
-import type { Personel } from "../../types/employee/personel/list";
+import { usePersonnelTable } from "../../hooks/employee/personel/useList";
+import type { Personel } from "../../../types/employee/personel/list";
 
 interface StaffPaymentRow {
   odenecek: string;
@@ -70,8 +70,8 @@ export default function DailyStaffAppointmentsTable() {
         totalPages={1}
         totalItems={rows.length}
         pageSize={rows.length}
-        onPageChange={() => {}}
-        onPageSizeChange={() => {}}
+        onPageChange={() => { }}
+        onPageSizeChange={() => { }}
         showExportButtons
         exportFileName="daily-staff-payments"
       />
