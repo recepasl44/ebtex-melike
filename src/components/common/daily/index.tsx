@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import TabsContainer from './component/organisms/TabsContainer';
 
 import DailyTransactionsFinancialSummary from '../dailyTransactionsFinancialSummary';
-import DebtsTable from '../debts/table';
+import StudentInstallmentsTable from '../studentInstallments';
 import OtherIncomeTable from '../otherIncome/table';
 import ExpenseListPage from '../expences/main/table';
 import PaymentTab from '../personel/financialSummary/PaymentTab';
@@ -27,8 +27,8 @@ const DailyModule: React.FC = () => {
       passiveTextColor: '#5C67F7',
     },
     {
-      label: 'Taksitler',
-      content: <DebtsTable />,
+      label: 'Öğrenci Taksitleri',
+      content: <StudentInstallmentsTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#5C67F726',
