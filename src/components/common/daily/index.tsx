@@ -5,7 +5,7 @@ import TabsContainer from './component/organisms/TabsContainer';
 import DailyTransactionsFinancialSummary from '../dailyTransactionsFinancialSummary';
 import StudentInstallmentsTable from '../studentInstallments';
 import DailyIncomeTable from '../dailyIncome/table';
-import ExpenseListPage from '../expences/main/table';
+import DailyExpensesTable from '../dailyExpenses';
 import PaymentTab from '../personel/financialSummary/PaymentTab';
 import CreditCardTable from '../creditcard/table';
 import DailyTransactionsPaymentsTable from '../dailyTransactionsPayments/table';
@@ -44,7 +44,7 @@ const DailyModule: React.FC = () => {
     },
     {
       label: 'Giderler',
-      content: <ExpenseListPage />,
+      content: <DailyExpensesTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#5C67F726',
