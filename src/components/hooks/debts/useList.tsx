@@ -31,8 +31,14 @@ export function useDebtsTable() {
   const debtsData: DebtData[] = data || [];
   const paginationMeta: DebtMeta | null = meta;
 
-  const totalPages = paginationMeta ? paginationMeta.last_page : 1;
-  const totalItems = paginationMeta ? paginationMeta.total : 0;
+  const totalPages =
+    paginationMeta && typeof paginationMeta.last_page === 'number'
+      ? paginationMeta.last_page
+      : 1;
+  const totalItems =
+    paginationMeta && typeof paginationMeta.total === 'number'
+      ? paginationMeta.total
+      : debtsData.length;
 
   return {
     debtsData,
