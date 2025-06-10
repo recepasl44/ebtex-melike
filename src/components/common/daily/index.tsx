@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import TabsContainer from './component/organisms/TabsContainer';
 
-import TransactionsFinancialSummary from './transactionsFinancialSummary';
+import FinancialSummary from '../accounting/financialSummary';
 import DebtsTable from '../debts/table';
 import OtherIncomeTable from '../otherIncome/table';
 import ExpenseListPage from '../expences/main/table';
@@ -20,7 +20,7 @@ const DailyModule: React.FC = () => {
   const tabsConfig = [
     {
       label: 'Finansal Özet',
-      content: <TransactionsFinancialSummary />,
+      content: <FinancialSummary />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#5C67F726',
