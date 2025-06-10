@@ -7,7 +7,7 @@ import StudentInstallmentsTable from '../studentInstallments';
 import DailyIncomeTable from '../dailyIncome/table';
 import DailyExpensesTable from '../dailyExpenses';
 import DailyStaffAppointmentsTable from "../dailyStaffAppointments";
-import CreditCardTable from '../creditcard/table';
+import DailyCardManagementTable from '../dailyCardManagement';
 import DailyTransactionsPaymentsTable from '../dailyTransactionsPayments/table';
 import TransfersTable from '../transfers/table';
 import DailyOperationsAuthorized from '../dailyOperationsAuthorized';
@@ -60,7 +60,7 @@ const DailyModule: React.FC = () => {
     },
     {
       label: 'Kart Yönetimi',
-      content: <CreditCardTable />,
+      content: <DailyCardManagementTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#5C67F726',
