@@ -10,23 +10,13 @@ export default function IncomeListPage() {
 
   const [enabled] = useState<boolean>(false);
   const [filter, setFilter] = useState<'daily' | 'monthly' | 'period'>('period');
-  const [date, setDate] = useState<string>('');
-  const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
-  const [year, setYear] = useState<number>(new Date().getFullYear());
-  const [startDate, setStartDate] = useState<string>('2021-04-06');
-  const [endDate, setEndDate] = useState<string>('2025-04-06');
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
   const [pageSize, setPageSize] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
 
-  const filters = useMemo(() => {
-    const basicFilters: FilterDefinition[] = [
-      {
-        key: 'search',
-        label: 'Arama',
-        value: searchTerm,
-        onChange: setSearchTerm,
-      },
+  const filters = useMemo((): FilterDefinition[] => {
+    return [
       {
         key: 'filter',
         label: 'Filtre',
@@ -35,55 +25,21 @@ export default function IncomeListPage() {
         options: [
           { value: 'daily', label: 'Günlük' },
           { value: 'monthly', label: 'Aylık' },
-          { value: 'period', label: 'Periyot' },
+          { value: 'period', label: 'Dönemlik' },
         ],
       },
+      {
+        key: 'dateRange',
+        label: 'Tarih Aralığı',
+        type: 'doubledate',
+        value: { startDate, endDate },
+        onChange: (val: { startDate: string; endDate: string }) => {
+          setStartDate(val.startDate);
+          setEndDate(val.endDate);
+        },
+      },
     ];
-
-    if (filter === 'daily') {
-      basicFilters.push({
-        key: 'date',
-        label: 'Tarih',
-        value: date,
-        onChange: setDate,
-        type: 'date',
-      });
-    }
-    if (filter === 'monthly') {
-      basicFilters.push({
-        key: 'month',
-        label: 'Ay',
-        value: month,
-        onChange: (value) => setMonth(Number(value)),
-        type: 'number',
-      });
-      basicFilters.push({
-        key: 'year',
-        label: 'Yıl',
-        value: year,
-        onChange: (value) => setYear(Number(value)),
-        type: 'number',
-      });
-    }
-    if (filter === 'period') {
-      basicFilters.push({
-        key: 'startDate',
-        label: 'Başlangıç Tarihi',
-        value: startDate,
-        onChange: setStartDate,
-        type: 'date',
-      });
-      basicFilters.push({
-        key: 'endDate',
-        label: 'Bitiş Tarihi',
-        value: endDate,
-        onChange: setEndDate,
-        type: 'date',
-      });
-    }
-
-    return basicFilters;
-  }, [filter, searchTerm, date, month, year, startDate, endDate]);
+  }, [filter, startDate, endDate]);
 
   const incomeParams = useMemo(() => {
     return {
@@ -91,47 +47,26 @@ export default function IncomeListPage() {
       filter,
       pageSize,
       page,
-      date: filter === 'daily' ? date : undefined,
-      month: filter === 'monthly' ? month : undefined,
-      year: filter === 'monthly' ? year : undefined,
-      startDate: filter === 'period' ? startDate : undefined,
-      endDate: filter === 'period' ? endDate : undefined,
-      searchTerm,
+      startDate,
+      endDate,
     };
-  }, [filter, pageSize, page, date, month, year, startDate, endDate, searchTerm, enabled]);
+  }, [filter, pageSize, page, startDate, endDate, enabled]);
 
   const { incomesData, loading, error, totalPages, totalItems, setPage: updatePage, setPageSize: setIncomePageSize } = useIncomeTable(incomeParams);
 
-  const columns: ColumnDefinition<IncomeData>[] = useMemo(() => [
-    {
-      key: 'service_id',
-      label: 'Servis ID',
-    },
-    {
-      key: 'service_name',
-      label: 'Servis Adı',
-    },
-    {
-      key: 'total_income',
-      label: 'Toplam Gelir',
-    },
-    {
-      key: 'payment_date',
-      label: 'Ödeme Tarihi',
-      render: (row) => row.payment_date || '-',
-    },
-    {
-      key: 'actions',
-      label: 'İşlemler',
-      render: (row) => (
-        <>
-          <Button variant="primary" size="sm" onClick={() => navigate(`/income/${row.service_id}`)}>
-            Detaylar
-          </Button>
-        </>
-      ),
-    },
-  ], [navigate]);
+  const columns: ColumnDefinition<IncomeData>[] = useMemo(
+    () => [
+      { key: 'service_type', label: 'Hizmet Türü' },
+      { key: 'receivable_amount', label: 'Alacak Tutar' },
+      { key: 'paid_amount', label: 'Ödenen Tutar' },
+      {
+        key: 'remaining_amount',
+        label: 'Kalan Tutar',
+        render: (row) => row.receivable_amount - row.paid_amount,
+      },
+    ],
+    []
+  );
 
   return (
     <div className="">

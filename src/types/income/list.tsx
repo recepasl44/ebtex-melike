@@ -1,14 +1,9 @@
 export interface IncomeData {
-    service_id: number;
-    service_name: string;
-    total_income: number;
-    // Filtreye göre ek alanlar
-    payment_date?: string;      // daily
-    payment_month?: number;     // monthly
-    payment_year?: number;      // monthly
-    start_date?: string;        // period
-    end_date?: string;          // period
-  }
+  service_type: string;
+  receivable_amount: number;
+  paid_amount: number;
+  remaining_amount: number;
+}
   
   export interface IncomeMeta {
     current_page: number;
