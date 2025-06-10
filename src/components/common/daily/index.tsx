@@ -10,7 +10,7 @@ import PaymentTab from '../personel/financialSummary/PaymentTab';
 import CreditCardTable from '../creditcard/table';
 import DailyTransactionsPaymentsTable from '../dailyTransactionsPayments/table';
 import TransfersTable from '../transfers/table';
-import Tasks from './Tasks';
+import DailyOperationsAuthorized from '../dailyOperationsAuthorized';
 import Pageheader from '../../page-header/pageheader';
 
 const DailyModule: React.FC = () => {
@@ -84,7 +84,7 @@ const DailyModule: React.FC = () => {
     },
     {
       label: 'Yetkili',
-      content: <Tasks />,
+      content: <DailyOperationsAuthorized />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#5C67F726',
