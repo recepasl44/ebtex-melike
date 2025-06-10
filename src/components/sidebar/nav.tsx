@@ -255,7 +255,7 @@ export const MENUITEMS: any = [
         type: "sub",
         children: [
           { title: "Ödeme Detayı", path: "/studentpaymentdetails", type: "link" },
-          { title: "Taksitler", path: "/debts", type: "link" },
+          { title: "Öğrenci Taksitleri", path: "/studentinstallments", type: "link" },
           { title: "İndirimler", path: "/discountlist", type: "link" },
           { title: "Vadesi Geçenler", path: "/OverduePayments", type: "link" },
         ],
