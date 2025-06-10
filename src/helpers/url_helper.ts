@@ -1,5 +1,6 @@
 //AUTHENTICATION
 export const LOGIN_USER = "/auth/login";
+export const AUTHORIZED_OPERATIONS = "/auth/authorized-operations";
 
 export const DEFAULT_URL = "https://anlakogrenme.com/api/v1";
 export const BRANCHES = '/branches';
