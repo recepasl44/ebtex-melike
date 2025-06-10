@@ -4,8 +4,8 @@ import TabsContainer from './component/organisms/TabsContainer';
 
 import DailyTransactionsFinancialSummary from '../dailyTransactionsFinancialSummary';
 import StudentInstallmentsTable from '../studentInstallments';
-import OtherIncomeTable from '../otherIncome/table';
-import ExpenseListPage from '../expences/main/table';
+import DailyIncomeTable from '../dailyIncome/table';
+import DailyExpensesTable from '../dailyExpenses';
 import PaymentTab from '../personel/financialSummary/PaymentTab';
 import CreditCardTable from '../creditcard/table';
 import DailyTransactionsPaymentsTable from '../dailyTransactionsPayments/table';
@@ -27,7 +27,7 @@ const DailyModule: React.FC = () => {
       passiveTextColor: '#5C67F7',
     },
     {
-      label: 'Öğrenci Taksitleri',
+      label: 'Taksitler',
       content: <StudentInstallmentsTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
@@ -36,7 +36,7 @@ const DailyModule: React.FC = () => {
     },
     {
       label: 'Gelirler',
-      content: <OtherIncomeTable />,
+      content: <DailyIncomeTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#5C67F726',
@@ -44,7 +44,7 @@ const DailyModule: React.FC = () => {
     },
     {
       label: 'Giderler',
-      content: <ExpenseListPage />,
+      content: <DailyExpensesTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#5C67F726',

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import ReusableTable, { ColumnDefinition, FilterDefinition } from '../ReusableTable';
+import ReusableTable, { ColumnDefinition } from '../ReusableTable';
 import { useFinancialSummary } from '../../hooks/accounting/financial_summary/useFinancialSummary';
 
 interface RowData {
@@ -61,7 +61,7 @@ const DailyTransactionsFinancialSummary: React.FC = () => {
     return arr;
   }, [summary]);
 
-  const [search, setSearch] = useState('');
+  const [search] = useState('');
 
   const filteredRows = useMemo(() => {
     if (!search) return rows;
@@ -83,18 +83,7 @@ const DailyTransactionsFinancialSummary: React.FC = () => {
     []
   );
 
-  const filters: FilterDefinition[] = useMemo(
-    () => [
-      {
-        key: 'search',
-        label: 'Kategori Ara',
-        type: 'text',
-        value: search,
-        onChange: (val: string) => setSearch(val),
-      },
-    ],
-    [search]
-  );
+
 
   return (
     <div className="container mt-3">
@@ -109,9 +98,9 @@ const DailyTransactionsFinancialSummary: React.FC = () => {
         totalPages={1}
         totalItems={filteredRows.length}
         pageSize={filteredRows.length}
-        onPageChange={() => {}}
-        onPageSizeChange={() => {}}
-        filters={filters}
+        onPageChange={() => { }}
+        onPageSizeChange={() => { }}
+
         showModal={false}
         exportFileName="financial-summary"
       />
