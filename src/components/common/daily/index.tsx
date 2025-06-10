@@ -6,7 +6,7 @@ import DailyTransactionsFinancialSummary from '../dailyTransactionsFinancialSumm
 import StudentInstallmentsTable from '../studentInstallments';
 import DailyIncomeTable from '../dailyIncome/table';
 import DailyExpensesTable from '../dailyExpenses';
-import PaymentTab from '../personel/financialSummary/PaymentTab';
+import DailyStaffAppointmentsTable from "../dailyStaffAppointments";
 import CreditCardTable from '../creditcard/table';
 import DailyTransactionsPaymentsTable from '../dailyTransactionsPayments/table';
 import TransfersTable from '../transfers/table';
@@ -52,7 +52,7 @@ const DailyModule: React.FC = () => {
     },
     {
       label: 'Personel Ödemeleri',
-      content: <PaymentTab />,
+      content: <DailyStaffAppointmentsTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#5C67F726',
