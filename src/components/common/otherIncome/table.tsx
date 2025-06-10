@@ -1,14 +1,12 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ReusableTable, { ColumnDefinition, FilterDefinition } from '../ReusableTable';
+import ReusableTable, { ColumnDefinition } from '../ReusableTable';
 import { useOtherIncomeTable } from '../../hooks/otherIncome/useOtherIncomeList';
 import { OtherIncomeData } from '../../../types/otherIncome/list';
 import { useOtherIncomeDelete } from '../../hooks/otherIncome/useOtherIncomeDelete';
 
 export default function OtherIncomeTable() {
   const navigate = useNavigate();
-  const [search, setSearch] = useState('');
-
   const { remove } = useOtherIncomeDelete();
 
   const {
@@ -21,24 +19,39 @@ export default function OtherIncomeTable() {
     totalItems,
     setPage,
     setPaginate,
-  } = useOtherIncomeTable({ enabled: true, search });
+  } = useOtherIncomeTable({ enabled: true });
 
   const columns: ColumnDefinition<OtherIncomeData>[] = useMemo(
     () => [
-      { key: 'season', label: 'Season' },
-      { key: 'date', label: 'Date' },
       {
         key: 'customer',
-        label: 'Customer',
+        label: 'Müşteri Adı',
         render: (row) => row.customer?.name || '-',
       },
-      { key: 'income_item', label: 'Item' },
-      { key: 'payment_method', label: 'Method' },
-      { key: 'amount', label: 'Amount' },
-      { key: 'description', label: 'Description' },
+      { key: 'amount', label: 'Toplam' },
+      {
+        key: 'paid',
+        label: 'Ödenen',
+        render: () => '-',
+      },
+      {
+        key: 'remaining',
+        label: 'Kalan',
+        render: () => '-',
+      },
+      {
+        key: 'phone',
+        label: 'Telefon',
+        render: (row) => row.customer?.phone || '-',
+      },
+      {
+        key: 'address',
+        label: 'Adres',
+        render: (row) => (row.customer as any)?.address || '-',
+      },
       {
         key: 'actions',
-        label: 'Actions',
+        label: 'İşlemler',
         render: (row) => (
           <>
             <button
@@ -60,21 +73,6 @@ export default function OtherIncomeTable() {
     [navigate, remove]
   );
 
-  const filters: FilterDefinition[] = useMemo(
-    () => [
-      {
-        key: 'search',
-        label: 'Search',
-        type: 'text',
-        value: search,
-        onChange: (val: string) => {
-          setSearch(val);
-          setPage(1);
-        },
-      },
-    ],
-    [search, setPage]
-  );
 
   return (
     <div className="container-fluid mt-3">
@@ -95,7 +93,6 @@ export default function OtherIncomeTable() {
           setPaginate(newSize);
           setPage(1);
         }}
-        filters={filters}
         exportFileName="other-income"
       />
     </div>
