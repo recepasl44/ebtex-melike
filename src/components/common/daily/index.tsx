@@ -9,7 +9,7 @@ import DailyExpensesTable from '../dailyExpenses';
 import DailyStaffAppointmentsTable from "../dailyStaffAppointments";
 import DailyCardManagementTable from '../dailyCardManagement';
 import DailyTransactionsPaymentsTable from '../dailyTransactionsPayments/table';
-import TransfersTable from '../transfers/table';
+import DailyTransferTable from '../dailyTransfer';
 import DailyOperationsAuthorized from '../dailyOperationsAuthorized';
 import Pageheader from '../../page-header/pageheader';
 
@@ -76,7 +76,7 @@ const DailyModule: React.FC = () => {
     },
     {
       label: 'Transfer',
-      content: <TransfersTable />,
+      content: <DailyTransferTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#5C67F726',
