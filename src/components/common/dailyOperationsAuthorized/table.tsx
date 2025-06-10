@@ -34,7 +34,10 @@ const DailyOperationsAuthorizedTable: React.FC = () => {
 
   const filteredRows = useMemo(() => {
     if (!search) return rows;
-    return rows.filter(r => r.name.toLowerCase().includes(search.toLowerCase()));
+    const term = search.toLocaleLowerCase('tr-TR');
+    return rows.filter((r) =>
+      r.name.toLocaleLowerCase('tr-TR').includes(term)
+    );
   }, [rows, search]);
 
   const columns: ColumnDefinition<AuthorizedRow>[] = useMemo(() => [
