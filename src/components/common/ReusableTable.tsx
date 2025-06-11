@@ -99,6 +99,8 @@ interface ReusableTableProps<T> {
   onCloseModal?: () => void;
   pageTitle?: string; // Sayfa başlığı; ihtiyaç duyulursa tipi kullanılabilir
   customHeader?: React.ReactNode;
+  /** Tablonun altında görüntülenecek özel içerik */
+  customFooter?: React.ReactNode;
   period_paginate?: boolean;
   period_field?: boolean;
   period_date?: boolean;
@@ -145,6 +147,7 @@ function ReusableTable<T extends { [key: string]: any }>({
   onCloseModal,
   pageTitle,
   customHeader,
+  customFooter,
   period_paginate,
   period_field,
   period_date,
@@ -1080,20 +1083,21 @@ function ReusableTable<T extends { [key: string]: any }>({
                   </tr>
                 </thead>
                 <tbody>
-                  {(data?.length ?? 0) > 0 ? (
-                    renderRows()
-                  ) : (
-                    <tr>
-                      <td colSpan={columns.length} className="text-center">
-                        {loading ? "Yükleniyor..." : "Kayıt bulunamadı"}
-                      </td>
-                    </tr>
-                  )}
+                {(data?.length ?? 0) > 0 ? (
+                  renderRows()
+                ) : (
+                  <tr>
+                    <td colSpan={columns.length} className="text-center">
+                      {loading ? "Yükleniyor..." : "Kayıt bulunamadı"}
+                    </td>
+                  </tr>
+                )}
 
-                </tbody>
-              </Table>
-            </div>
-          </Card.Body>
+              </tbody>
+            </Table>
+            {customFooter}
+          </div>
+        </Card.Body>
           {period_paginate
             ? hasPagination && (
               <Card.Footer>
@@ -1357,6 +1361,7 @@ function ReusableTable<T extends { [key: string]: any }>({
                 )}
               </tbody>
             </Table>
+            {customFooter}
           </div>
           {hasPagination && (
             <div className="d-flex align-items-center mt-2">

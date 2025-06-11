@@ -29,6 +29,10 @@ export default function SupplierRefundTab({ supplierId, enabled }: SupplierRefun
 
   const { deleteExistingSupplierRefund, error: deleteError } = useSupplierRefundsDelete()
 
+  const totalAmount = useMemo(() => {
+    return (refunds || []).reduce((sum, r) => sum + Number(r.amount || 0), 0)
+  }, [refunds])
+
   const columns: ColumnDefinition<SupplierRefundData>[] = useMemo(() => {
     return [
       {
@@ -39,17 +43,17 @@ export default function SupplierRefundTab({ supplierId, enabled }: SupplierRefun
       {
         key: "refund_type",
         label: "Tür",
-        render: (row) => row.refund_type || "-", // "invoice" or "debt"
+        render: (row) => (row.refund_type === "invoice" ? "Fatura" : row.refund_type === "debt" ? "Borç" : row.refund_type) || "-",
+      },
+      {
+        key: "amount",
+        label: "Tutar",
+        render: (row) => (row.amount ? `${Number(row.amount).toLocaleString()} ₺` : "0,00 ₺"),
       },
       {
         key: "description",
         label: "Açıklama",
         render: (row) => row.description || "-",
-      },
-      {
-        key: "amount",
-        label: "Tutar",
-        render: (row) => row.amount ? `${Number(row.amount).toLocaleString()} ₺` : "0,00 ₺",
       },
       {
         key: "actions",
@@ -86,6 +90,12 @@ export default function SupplierRefundTab({ supplierId, enabled }: SupplierRefun
     })
   }
 
+  const footer = (
+    <div className="d-flex justify-content-end fw-bold me-3">
+      Toplam Tutar: {totalAmount.toLocaleString()} ₺
+    </div>
+  )
+
   return (
 
 
@@ -106,6 +116,7 @@ export default function SupplierRefundTab({ supplierId, enabled }: SupplierRefun
       exportFileName="refunds"
       showExportButtons
       onDeleteRow={handleDeleteRow}
+      customFooter={footer}
     />
 
   )
