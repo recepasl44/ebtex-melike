@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../../store/rootReducer'
 import { AppDispatch } from '../../../store'
@@ -17,17 +17,29 @@ export function useSupplierDebtsList(params: SupplierDebtsListArg) {
     (state: RootState) => state.supplierDebtsList
   )
 
-   const { enabled, ...otherParams } = params;
-   useEffect(() => {
-     if (!enabled) return;
-     dispatch(
+  const { enabled, ...otherParams } = params;
+  useEffect(() => {
+    if (!enabled) return;
+    dispatch(
       fetchSupplierDebts({
          ...otherParams,
          filter,
          enabled: false,
        })
-     );
-   }, [enabled, filter, dispatch]);
+    );
+  }, [enabled, filter, dispatch]);
+
+  const refetch = useCallback(() => {
+    dispatch(
+      fetchSupplierDebts({
+        ...otherParams,
+        page,
+        per_page: pageSize,
+        filter,
+        enabled: false,
+      })
+    );
+  }, [dispatch, otherParams, page, pageSize, filter]);
   const loading = status === SupplierDebtsListStatus.LOADING
   const supplierDebtsData: SupplierDebtData[] = data || []
   const totalPages = last_page || 1
@@ -44,5 +56,6 @@ export function useSupplierDebtsList(params: SupplierDebtsListArg) {
     current_page,
     totalPages,
     totalItems,
+    refetch,
   }
 }

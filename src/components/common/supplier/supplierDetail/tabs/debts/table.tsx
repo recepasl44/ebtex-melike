@@ -18,8 +18,15 @@ export default function SupplierDebtsTab({ supplierId, enabled }: SupplierDebtsT
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
 
-  const { supplierDebtsData: debtsData, loading, error, current_page, totalPages, totalItems } =
-    useSupplierDebtsList({
+  const {
+    supplierDebtsData: debtsData,
+    loading,
+    error,
+    current_page,
+    totalPages,
+    totalItems,
+    refetch,
+  } = useSupplierDebtsList({
       enabled,
       supplierId,
       search,
@@ -28,6 +35,18 @@ export default function SupplierDebtsTab({ supplierId, enabled }: SupplierDebtsT
     })
 
   const { deleteExistingSupplierDebt, error: deleteError } = useSupplierDebtsDelete()
+
+  const totals = useMemo(() => {
+    const totalAmount = (debtsData || []).reduce(
+      (sum, r) => sum + parseFloat(r.amount || '0'),
+      0
+    )
+    const totalPaid = (debtsData || []).reduce(
+      (sum, r) => sum + parseFloat(r.paid_amount || '0'),
+      0
+    )
+    return { totalAmount, totalPaid }
+  }, [debtsData])
 
   const columns: ColumnDefinition<SupplierDebtData>[] = useMemo(() => {
     return [
@@ -48,9 +67,20 @@ export default function SupplierDebtsTab({ supplierId, enabled }: SupplierDebtsT
       },
       {
         key: "amount",
-        label: "Tutar",
+        label: "Ödenecek Tutar",
         render: (row) =>
           row.amount ? `${Number(row.amount).toLocaleString()} ₺` : "0,00 ₺",
+      },
+      {
+        key: "paid_amount",
+        label: "Ödenen Tutar",
+        render: (row) =>
+          row.paid_amount ? `${Number(row.paid_amount).toLocaleString()} ₺` : "0,00 ₺",
+      },
+      {
+        key: "payment_method_name",
+        label: "Ödeme Şekli",
+        render: (row) => row.payment_method_name || "-",
       },
       {
         key: "actions",
@@ -81,12 +111,13 @@ export default function SupplierDebtsTab({ supplierId, enabled }: SupplierDebtsT
 
   function handleDeleteRow(row: SupplierDebtData) {
     if (!row.id) return
-    deleteExistingSupplierDebt({ supplierId, supplierDebtId: row.id })
+    deleteExistingSupplierDebt({ supplierId, supplierDebtId: row.id }).then(() => {
+      refetch()
+    })
   }
 
   return (
-
-
+    <>
     <ReusableTable<SupplierDebtData>
       pageTitle="Borç Listesi"
       onAdd={() => navigate(`/supplierDebtCrud`)}
@@ -109,5 +140,10 @@ export default function SupplierDebtsTab({ supplierId, enabled }: SupplierDebtsT
       onDeleteRow={handleDeleteRow}
     />
 
+    <div className="d-flex justify-content-end mt-2 fw-bold">
+      <span className="me-3">Toplam: {totals.totalAmount.toLocaleString()} ₺</span>
+      <span>Ödenen: {totals.totalPaid.toLocaleString()} ₺</span>
+    </div>
+    </>
   )
 }
