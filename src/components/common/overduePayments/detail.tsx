@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Row, Col, Table, Button, Form, Card, Modal } from "react-bootstrap";
+import { Row, Col, Button, Form, Card, Modal } from "react-bootstrap";
+import ReusableTable, { ColumnDefinition } from "../ReusableTable";
+import ReusableModalForm, { FieldDefinition } from "../ReusableModalForm";
+import { formatCurrency, formatDate } from "../../../utils/formatters";
 
 interface NoteEntry {
   date: string;
@@ -8,13 +11,22 @@ interface NoteEntry {
   promiseDate: string;
 }
 
+interface Installment {
+  vade: string;
+  alacak: number;
+  alinan: number;
+  kalan: number;
+}
+
 export default function OverduePaymentDetailPage() {
   const { soz_no } = useParams<{ soz_no: string }>();
   const navigate = useNavigate();
 
-  const [showAdd, setShowAdd] = useState(false);
-  const [newNote, setNewNote] = useState("");
-  const [newPromiseDate, setNewPromiseDate] = useState("");
+  const [showAddNote, setShowAddNote] = useState(false);
+  const [showSmsModal, setShowSmsModal] = useState(false);
+  const [smsMessage, setSmsMessage] = useState(
+    "Ödemenizi lütfen en kısa sürede yapınız."
+  );
   const [notes, setNotes] = useState<NoteEntry[]>([]);
 
   const installments = [
@@ -22,35 +34,87 @@ export default function OverduePaymentDetailPage() {
     { vade: "2025-07-01", alacak: 1000, alinan: 0, kalan: 1000 },
   ];
 
-  function handleAddNote() {
-    if (!newNote) return;
+  const installmentColumns: ColumnDefinition<Installment>[] = useMemo(
+    () => [
+      {
+        key: "vade",
+        label: "Vade",
+        render: (r) => (
+          <span className={new Date(r.vade) < new Date() ? "text-danger" : ""}>
+            {formatDate(r.vade)}
+          </span>
+        ),
+      },
+      {
+        key: "alacak",
+        label: "Alacak",
+        render: (r) => formatCurrency(r.alacak),
+      },
+      {
+        key: "alinan",
+        label: "Alınan",
+        render: (r) => formatCurrency(r.alinan),
+      },
+      { key: "kalan", label: "Kalan", render: (r) => formatCurrency(r.kalan) },
+    ],
+    []
+  );
+
+  const noteColumns: ColumnDefinition<NoteEntry>[] = useMemo(
+    () => [
+      {
+        key: "date",
+        label: "Tarih",
+        render: (r) => formatDate(r.date),
+      },
+      { key: "note", label: "Not", render: (r) => r.note },
+      {
+        key: "promiseDate",
+        label: "Söz Verme Tarihi",
+        render: (r) => (r.promiseDate ? formatDate(r.promiseDate) : "-"),
+      },
+    ],
+    []
+  );
+
+  const noteFields: FieldDefinition[] = [
+    { name: "note", label: "Not", type: "textarea", required: true },
+    { name: "promiseDate", label: "Söz Verme Tarihi", type: "date" },
+  ];
+
+  function handleAddNote(values: { note: string; promiseDate: string }) {
+    if (!values.note) return;
     setNotes([
       ...notes,
       {
         date: new Date().toISOString().split("T")[0],
-        note: newNote,
-        promiseDate: newPromiseDate,
+        note: values.note,
+        promiseDate: values.promiseDate,
       },
     ]);
-    setNewNote("");
-    setNewPromiseDate("");
-    setShowAdd(false);
+    setShowAddNote(false);
   }
 
   return (
-    <Modal show={true} onHide={() => navigate(-1)} size="lg" centered>
-      <Modal.Header closeButton>
-        <Modal.Title>Ödeme Detayı</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <div className="container-fluid mt-3">
-          <h3 className="mb-3">Sözleşme No: {soz_no}</h3>
-          <div className="mb-4">
-            <p className="mb-1">Ad Soyad: Örnek Öğrenci</p>
-            <p className="mb-1">Veli Adı & Tel: Örnek Veli - 0000 000 00 00</p>
-            <p className="mb-1">Anne Adı & Tel: Örnek Anne - 0000 000 00 00</p>
-            <p className="mb-1">Baba Adı & Tel: Örnek Baba - 0000 000 00 00</p>
-          </div>
+    <>
+      <Modal show={true} onHide={() => navigate(-1)} size="lg" centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Ödeme Detayı</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="container-fluid mt-3">
+            <div className="d-flex justify-content-end mb-2">
+              <Button size="sm" variant="warning" onClick={() => setShowSmsModal(true)}>
+                SMS/Bildirim
+              </Button>
+            </div>
+            <h3 className="mb-3">Sözleşme No: {soz_no}</h3>
+            <div className="mb-4">
+              <p className="mb-1">Ad Soyad: Örnek Öğrenci</p>
+              <p className="mb-1">Veli Adı & Tel: Örnek Veli - 0000 000 00 00</p>
+              <p className="mb-1">Anne Adı & Tel: Örnek Anne - 0000 000 00 00</p>
+              <p className="mb-1">Baba Adı & Tel: Örnek Baba - 0000 000 00 00</p>
+            </div>
       <Row>
         <Col md={8}>
           <Card>
@@ -58,26 +122,12 @@ export default function OverduePaymentDetailPage() {
               <Card.Title>Ödeme Durumu</Card.Title>
             </Card.Header>
             <Card.Body>
-              <Table bordered responsive>
-                <thead>
-                  <tr>
-                    <th>Vade</th>
-                    <th>Alacak</th>
-                    <th>Alınan</th>
-                    <th>Kalan</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {installments.map((inst, idx) => (
-                    <tr key={idx}>
-                      <td>{inst.vade}</td>
-                      <td>{inst.alacak}</td>
-                      <td>{inst.alinan}</td>
-                      <td>{inst.kalan}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
+              <ReusableTable<Installment>
+                tableMode="single"
+                showExportButtons={false}
+                data={installments}
+                columns={installmentColumns}
+              />
             </Card.Body>
           </Card>
         </Col>
@@ -85,71 +135,74 @@ export default function OverduePaymentDetailPage() {
           <Card>
             <Card.Header className="d-flex justify-content-between align-items-center">
               <Card.Title className="mb-0">Notlar</Card.Title>
-              <Button size="sm" onClick={() => setShowAdd(!showAdd)}>
+              <Button size="sm" onClick={() => setShowAddNote(true)}>
                 Ekle
               </Button>
             </Card.Header>
             <Card.Body>
-              {showAdd && (
-                <div className="mb-3">
-                  <Form.Group className="mb-2">
-                    <Form.Label>Not</Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      rows={3}
-                      value={newNote}
-                      onChange={(e) => setNewNote(e.target.value)}
-                    />
-                  </Form.Group>
-                  <Form.Group className="mb-2">
-                    <Form.Label>Söz Verme Tarihi</Form.Label>
-                    <Form.Control
-                      type="date"
-                      value={newPromiseDate}
-                      onChange={(e) => setNewPromiseDate(e.target.value)}
-                    />
-                  </Form.Group>
-                  <div className="d-flex justify-content-end">
-                    <Button size="sm" variant="secondary" className="me-2" onClick={() => setShowAdd(false)}>
-                      İptal
-                    </Button>
-                    <Button size="sm" onClick={handleAddNote}>
-                      Kaydet
-                    </Button>
-                  </div>
-                </div>
-              )}
-              <Table bordered size="sm" responsive>
-                <thead>
-                  <tr>
-                    <th>Tarih</th>
-                    <th>Not</th>
-                    <th>Söz Verme Tarihi</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {notes.map((note, idx) => (
-                    <tr key={idx}>
-                      <td>{note.date}</td>
-                      <td>{note.note}</td>
-                      <td>{note.promiseDate}</td>
-                    </tr>
-                  ))}
-                  {notes.length === 0 && (
-                    <tr>
-                      <td colSpan={3} className="text-center">
-                        Not bulunamadı
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </Table>
+              <ReusableTable<NoteEntry>
+                tableMode="single"
+                showExportButtons={false}
+                data={notes}
+                columns={noteColumns}
+                customFooter={notes.length === 0 && (
+                  <div className="text-center p-2">Not bulunamadı</div>
+                )}
+              />
             </Card.Body>
           </Card>
         </Col>
         </Row>
-        </div>
-      </Modal.Body>
-    </Modal>
+          </div>
+        </Modal.Body>
+      </Modal>
+
+      <ReusableModalForm
+        show={showAddNote}
+        title="Not Ekle"
+        fields={noteFields}
+        initialValues={{ note: "", promiseDate: "" }}
+        onSubmit={handleAddNote}
+        confirmButtonLabel="Kaydet"
+        cancelButtonLabel="Vazgeç"
+        onClose={() => setShowAddNote(false)}
+      />
+
+      <Modal show={showSmsModal} onHide={() => setShowSmsModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>SMS/Bildirim Gönder</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group className="mb-3">
+            <Form.Check type="checkbox" label="Anne" checked disabled />
+            <Form.Check type="checkbox" label="Baba" checked disabled />
+            <Form.Check type="checkbox" label="Veli" checked disabled />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Mesaj</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              value={smsMessage}
+              onChange={(e) => setSmsMessage(e.target.value)}
+            />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowSmsModal(false)}>
+            Kapat
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => {
+              console.log("send sms", smsMessage);
+              setShowSmsModal(false);
+            }}
+          >
+            Gönder
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 }
