@@ -4,6 +4,7 @@ import ReusableTable, { ColumnDefinition, FilterDefinition } from '../ReusableTa
 import { useIncomeTable } from '../../hooks/income/useList';
 import { IncomeData } from '../../../types/income/list';
 import { Button } from 'react-bootstrap';
+import Pageheader from '../../page-header/pageheader';
 
 export default function IncomeListPage() {
   const navigate = useNavigate();
@@ -69,11 +70,8 @@ export default function IncomeListPage() {
   );
 
   return (
-    <div className="">
-      <div className="">
-        <h4>Gelir Listesi</h4>
-
-      </div>
+    <div className="container-fluid mt-3">
+      <Pageheader title="Gelirler" currentpage="Gelir Kayıtları" />
       <ReusableTable<IncomeData>
         columns={columns}
         tableMode='single'

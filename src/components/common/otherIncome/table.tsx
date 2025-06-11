@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReusableTable, { ColumnDefinition } from '../ReusableTable';
+import Pageheader from '../../page-header/pageheader';
 import { useOtherIncomeTable } from '../../hooks/otherIncome/useOtherIncomeList';
 import { OtherIncomeData } from '../../../types/otherIncome/list';
 import { useOtherIncomeDelete } from '../../hooks/otherIncome/useOtherIncomeDelete';
@@ -76,6 +77,7 @@ export default function OtherIncomeTable() {
 
   return (
     <div className="container-fluid mt-3">
+      <Pageheader title="Gelirler" currentpage="Farklı Gelirler" />
       <ReusableTable<OtherIncomeData>
 
         onAdd={() => navigate('/other-income/crud')}
