@@ -77,7 +77,7 @@ export default function OtherIncomeTable() {
   return (
     <div className="container-fluid mt-3">
       <ReusableTable<OtherIncomeData>
-        pageTitle="Other Income List"
+
         onAdd={() => navigate('/other-income/crud')}
         columns={columns}
         data={otherIncomeData}
