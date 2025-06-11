@@ -7,17 +7,16 @@ import { useSupplierDebtsUpdate } from "../../../../../hooks/supplierDebts/useUp
 
 // import the categories list hook
 import { useCategoriesList } from "../../../../../hooks/expences/expenseCategories/useCategoriesList"
+import { useSeasonsList } from "../../../../../hooks/season/useSeasonsList"
+import { usePaymentMethodsList } from "../../../../../hooks/paymentMethods/useList"
 
 interface DebtFormValues {
   due_date: string
   amount: string
   description?: string
-
-  with_invoice: boolean
-  invoice_date?: string
-  invoice_pdf?: File | null
-
   expense_category_id?: number | null
+  payment_method_id?: number | null
+  seasson_id?: number | null
 }
 
 export default function SupplierDebtCrud() {
@@ -38,15 +37,16 @@ export default function SupplierDebtCrud() {
 
   // expense categories hook
   const { categoriesData } = useCategoriesList({ enabled: true })
+  const { seasonsData } = useSeasonsList({ enabled: true, page: 1, paginate: 999 })
+  const { paymentMethodsData } = usePaymentMethodsList({ enabled: true })
 
   const [initialValues, setInitialValues] = useState<DebtFormValues>({
     due_date: "",
     amount: "",
     description: "",
-    with_invoice: false,
-    invoice_date: "",
-    invoice_pdf: null,
     expense_category_id: null,
+    payment_method_id: null,
+    seasson_id: null,
   })
 
   // 1) get detail if update
@@ -63,10 +63,9 @@ export default function SupplierDebtCrud() {
         due_date: supplierDebt.due_date || "",
         amount: supplierDebt.amount || "",
         description: supplierDebt.description || "",
-        with_invoice: false,
-        invoice_date: "",
-        invoice_pdf: null,
         expense_category_id: supplierDebt.expense_category_id || null,
+        payment_method_id: supplierDebt.payment_method_id || null,
+        seasson_id: supplierDebt.seasson_id || null,
       })
     }
   }, [mode, supplierDebt])
@@ -77,6 +76,8 @@ export default function SupplierDebtCrud() {
     label: cat.name,
     value: cat.id,
   }))
+  const seasonsOptions = seasonsData.map((s) => ({ label: s.name, value: s.id }))
+  const paymentMethodOptions = paymentMethodsData.map((pm) => ({ label: pm.name, value: pm.id }))
 
   const fields: FieldDefinition[] = [
     {
@@ -104,20 +105,18 @@ export default function SupplierDebtCrud() {
       required: false,
     },
     {
-      name: "with_invoice",
-      label: "Fatura Oluştur",
-      type: "checkbox",
+      name: "payment_method_id",
+      label: "Ödeme Şekli",
+      type: "select",
+      options: paymentMethodOptions,
       required: false,
     },
     {
-      name: "invoice_date",
-      label: "Fatura Tarihi",
-      type: "date",
-    },
-    {
-      name: "invoice_pdf",
-      label: "Fatura PDF",
-      type: "file",
+      name: "seasson_id",
+      label: "Sezon",
+      type: "select",
+      options: seasonsOptions,
+      required: false,
     },
   ]
 
@@ -134,10 +133,9 @@ export default function SupplierDebtCrud() {
           amount: values.amount,
           due_date: values.due_date,
           description: values.description,
-          with_invoice: values.with_invoice,
-          invoice_date: values.invoice_date,
-          invoice_pdf: values.invoice_pdf,
           expense_category_id: values.expense_category_id,
+          payment_method_id: values.payment_method_id,
+          seasson_id: values.seasson_id,
         } as any)
       } else {
         if (!id) return
@@ -148,10 +146,9 @@ export default function SupplierDebtCrud() {
             amount: values.amount,
             due_date: values.due_date,
             description: values.description,
-            with_invoice: values.with_invoice,
-            invoice_date: values.invoice_date,
-            invoice_pdf: values.invoice_pdf,
             expense_category_id: values.expense_category_id,
+            payment_method_id: values.payment_method_id,
+            seasson_id: values.seasson_id,
           },
         } as any)
       }
@@ -180,7 +177,7 @@ export default function SupplierDebtCrud() {
       error={error || null}
       onClose={() => navigate(-1)}
       autoGoBackOnModalClose={true}
-      mode="single"
+      mode="double"
     />
   )
 }

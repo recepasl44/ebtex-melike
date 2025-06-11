@@ -10,6 +10,7 @@ export interface SupplierDebtData {
     payment_method_id: number | null
     payment_method_name:string | null
     amount: string
+    paid_amount?: string
     due_date: string
     description: string
     created_at: string
