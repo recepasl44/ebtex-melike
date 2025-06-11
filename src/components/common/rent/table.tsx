@@ -4,6 +4,7 @@ import ReusableTable, { ColumnDefinition } from "../ReusableTable";
 import { useRentList, RentItem } from "../../hooks/rent/useRentList";
 import { useRentDelete } from "../../hooks/rent/useRentDelete";
 import Spkcardscomponent from "../../../@spk-reusable-components/reusable-dashboards/spk-cards.tsx";
+import Pageheader from "../../page-header/pageheader";
 
 export default function RentTable() {
   const navigate = useNavigate();
@@ -113,6 +114,7 @@ export default function RentTable() {
 
   return (
     <div className="container mt-3">
+      <Pageheader title="Giderler" currentpage="Kira Giderleri" />
       <div className="row mb-3">
         {cards.map((card) => (
           <div className="col-md-4" key={card.id}>
