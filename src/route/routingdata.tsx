@@ -180,6 +180,9 @@ const StudentPaymentCrud = lazy(
 const StudentInstallments = lazy(
   () => import("../components/common/daily/studentInstallments")
 );
+const PayInstallments = lazy(
+  () => import("../components/common/payInstallments")
+);
 const StudentInvoices = lazy(
   () => import("../components/common/invoice/student_invoices")
 );
@@ -1258,6 +1261,11 @@ export const Routedata = [
     id: 335,
     path: `${import.meta.env.BASE_URL}studentinstallments`,
     element: <StudentInstallments />,
+  },
+  {
+    id: 336,
+    path: `${import.meta.env.BASE_URL}payinstallments`,
+    element: <PayInstallments />,
   },
   // Student Payment Detail Modal
   {
