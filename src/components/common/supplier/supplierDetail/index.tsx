@@ -89,7 +89,10 @@ export default function SupplierDetail() {
 
   return (
     <div className="px-4">
-      <Pageheader title="Tedarikçi" currentpage={fetchedSupplier?.name || ''} />
+      <Pageheader
+        title={fetchedSupplier?.name || ''}
+        currentpage={tabsConfig[activeTab]?.label || ''}
+      />
       <TabsContainer
         tabs={tabsConfig}
         onTabChange={(parentIndex) => setActiveTab(parentIndex)}
