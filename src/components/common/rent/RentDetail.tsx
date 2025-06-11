@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Card, Modal, Form, Button } from "react-bootstrap";
+import { Card, Modal } from "react-bootstrap";
+import ReusableModalForm from "../ReusableModalForm";
 import ReusableTable, { ColumnDefinition } from "../ReusableTable";
 import { useRentShow } from "../../hooks/rent/useRentShow";
 import { RentInstallment, RentPayment } from "../../../types/rent/detail";
@@ -20,51 +21,65 @@ const RentDetailPage: React.FC<RentDetailModalProps> = ({ show, onClose }) => {
   const [showAddInstallment, setShowAddInstallment] = useState(false);
   const [showAddPayment, setShowAddPayment] = useState(false);
 
-  const [newInstallment, setNewInstallment] = useState({
+  interface InstallmentForm {
+    due_date: string;
+    amount: string;
+  }
+
+  interface PaymentForm {
+    payment_no: number;
+    payment_date: string;
+    amount: string;
+  }
+
+  const [installmentInitial, setInstallmentInitial] = useState<InstallmentForm>({
     due_date: "",
     amount: "",
   });
 
-  const [newPayment, setNewPayment] = useState({
+  const [paymentInitial, setPaymentInitial] = useState<PaymentForm>({
     payment_no: 1,
     payment_date: "",
     amount: "",
   });
 
-  const handleAddInstallment = () => {
+  const handleAddInstallment = (
+    values: InstallmentForm,
+    _helpers: any
+  ) => {
     const totalAmount = installments.reduce(
       (sum, inst) => sum + Number(inst.amount),
       0
     );
 
-    if (totalAmount + Number(newInstallment.amount) > Number(rent?.total_rent)) {
+    if (totalAmount + Number(values.amount) > Number(rent?.total_rent)) {
       alert("Taksitlerin toplamı kira toplamını aşamaz.");
       return;
     }
 
     const newItem: RentInstallment = {
       installment_no: installments.length + 1,
-      due_date: newInstallment.due_date,
-      amount: newInstallment.amount,
-      remaining_amount: newInstallment.amount,
+      due_date: values.due_date,
+      amount: values.amount,
+      remaining_amount: values.amount,
       payments: [],
     };
 
     setInstallments([...installments, newItem]);
-    setNewInstallment({ due_date: "", amount: "" });
+    setInstallmentInitial({ due_date: "", amount: "" });
     setShowAddInstallment(false);
   };
 
-  const handleAddPayment = () => {
+  const handleAddPayment = (values: PaymentForm, _helpers: any) => {
     const newItem: RentPayment = {
-      payment_no: Number(newPayment.payment_no),
-      payment_date: newPayment.payment_date,
-      amount: newPayment.amount,
+      payment_no: Number(values.payment_no),
+      payment_date: values.payment_date,
+      amount: values.amount,
     };
 
     setPayments([...payments, newItem]);
-    setNewPayment({
-      payment_no: payments.length + 2,
+    setPaymentInitial({
+      payment_no: values.payment_no + 1,
       payment_date: "",
       amount: "",
     });
@@ -163,100 +178,37 @@ const RentDetailPage: React.FC<RentDetailModalProps> = ({ show, onClose }) => {
     </Modal>
 
     {/* Installment Modal */}
-    <Modal
+    <ReusableModalForm<InstallmentForm>
       show={showAddInstallment}
-      onHide={() => setShowAddInstallment(false)}
-      centered
-    >
-      <Modal.Header closeButton>
-        <Modal.Title>Taksit Ekle</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form>
-          <Form.Group className="mb-3">
-            <Form.Label>Tarih</Form.Label>
-            <Form.Control
-              type="date"
-              value={newInstallment.due_date}
-              onChange={(e) =>
-                setNewInstallment({ ...newInstallment, due_date: e.target.value })
-              }
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Tutar</Form.Label>
-            <Form.Control
-              type="number"
-              value={newInstallment.amount}
-              onChange={(e) =>
-                setNewInstallment({ ...newInstallment, amount: e.target.value })
-              }
-            />
-          </Form.Group>
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={() => setShowAddInstallment(false)}>
-          Vazgeç
-        </Button>
-        <Button variant="primary" onClick={handleAddInstallment}>
-          Ekle
-        </Button>
-      </Modal.Footer>
-    </Modal>
+      title="Taksit Ekle"
+      fields={[
+        { name: "due_date", label: "Tarih", type: "date", required: true },
+        { name: "amount", label: "Tutar", type: "currency", required: true },
+      ]}
+      initialValues={installmentInitial}
+      onSubmit={handleAddInstallment}
+      confirmButtonLabel="Ekle"
+      cancelButtonLabel="Vazgeç"
+      onClose={() => setShowAddInstallment(false)}
+      autoFocus
+    />
 
     {/* Payment Modal */}
-    <Modal
+    <ReusableModalForm<PaymentForm>
       show={showAddPayment}
-      onHide={() => setShowAddPayment(false)}
-      centered
-    >
-      <Modal.Header closeButton>
-        <Modal.Title>Ödeme Ekle</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form>
-          <Form.Group className="mb-3">
-            <Form.Label>Sıra No</Form.Label>
-            <Form.Control
-              type="number"
-              value={newPayment.payment_no}
-              onChange={(e) =>
-                setNewPayment({ ...newPayment, payment_no: Number(e.target.value) })
-              }
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Tarih</Form.Label>
-            <Form.Control
-              type="date"
-              value={newPayment.payment_date}
-              onChange={(e) =>
-                setNewPayment({ ...newPayment, payment_date: e.target.value })
-              }
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Tutar</Form.Label>
-            <Form.Control
-              type="number"
-              value={newPayment.amount}
-              onChange={(e) =>
-                setNewPayment({ ...newPayment, amount: e.target.value })
-              }
-            />
-          </Form.Group>
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={() => setShowAddPayment(false)}>
-          Vazgeç
-        </Button>
-        <Button variant="primary" onClick={handleAddPayment}>
-          Ekle
-        </Button>
-      </Modal.Footer>
-    </Modal>
+      title="Ödeme Ekle"
+      fields={[
+        { name: "payment_no", label: "Sıra No", type: "number", required: true },
+        { name: "payment_date", label: "Tarih", type: "date", required: true },
+        { name: "amount", label: "Tutar", type: "currency", required: true },
+      ]}
+      initialValues={paymentInitial}
+      onSubmit={handleAddPayment}
+      confirmButtonLabel="Ekle"
+      cancelButtonLabel="Vazgeç"
+      onClose={() => setShowAddPayment(false)}
+      autoFocus
+    />
     </>
   );
 };
