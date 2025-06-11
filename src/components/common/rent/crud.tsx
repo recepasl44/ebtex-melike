@@ -5,6 +5,7 @@ import ReusableModalForm, { FieldDefinition } from "../ReusableModalForm";
 import { useRentShow } from "../../hooks/rent/useRentShow";
 import { useRentAdd, RentAddPayload } from "../../hooks/rent/useRentAdd";
 import { useRentUpdate, RentUpdatePayload } from "../../hooks/rent/useRentUpdate";
+import { useSeasonsBranches } from "../../header/hooks/useSeasonsBranches";
 
 interface RentModalProps {
   show: boolean;
@@ -30,6 +31,7 @@ const RentModal: React.FC<RentModalProps> = ({ show, onClose, onRefresh }) => {
   const { rent, getRent } = useRentShow();
   const { status: addStatus, error: addError, addNewRent } = useRentAdd();
   const { status: updateStatus, error: updateError, updateRent } = useRentUpdate();
+  const { selectedSeason, selectedBranch } = useSeasonsBranches();
 
   useEffect(() => {
     if (mode === "update" && id) {
@@ -58,8 +60,8 @@ const RentModal: React.FC<RentModalProps> = ({ show, onClose, onRefresh }) => {
     const payloadBase = {
       rent_date: values.rent_date,
       total_rent: values.total_rent,
-      branch_id: 0,
-      season_id: 0,
+      branch_id: selectedBranch || 0,
+      season_id: selectedSeason || 0,
     };
     if (mode === "add") {
       await addNewRent(payloadBase as RentAddPayload);

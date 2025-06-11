@@ -1,11 +1,16 @@
 import React, { useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { Card } from "react-bootstrap";
+import { Card, Modal } from "react-bootstrap";
 import ReusableTable, { ColumnDefinition } from "../ReusableTable";
 import { useRentShow } from "../../hooks/rent/useRentShow";
 import { RentInstallment, RentPayment } from "../../../types/rent/detail";
 
-const RentDetailPage: React.FC = () => {
+interface RentDetailModalProps {
+  show: boolean;
+  onClose: () => void;
+}
+
+const RentDetailPage: React.FC<RentDetailModalProps> = ({ show, onClose }) => {
   const { id } = useParams<{ id: string }>();
   const { rent, getRent } = useRentShow();
 
@@ -53,40 +58,46 @@ const RentDetailPage: React.FC = () => {
   }, [rent, totalPaid]);
 
   if (!rent) {
-    return <div>Yükleniyor...</div>;
+    return null;
   }
 
   return (
-    <div className="container mt-3">
-      <h4>Kira Ödemeleri</h4>
-      <p>Kira Toplamı: {rent.total_rent}</p>
-      <p>Ödenen: {totalPaid}</p>
-      <p>Kalan: {remaining}</p>
-      <div className="row">
-        <div className="col-md-6 mb-3">
-          <Card>
-            <Card.Header as="h5">Taksitler</Card.Header>
-            <Card.Body className="p-3">
-              <ReusableTable<RentInstallment>
-                columns={installmentColumns}
-                data={rent.installments}
-              />
-            </Card.Body>
-          </Card>
+    <Modal show={show} onHide={onClose} centered size="lg">
+      <Modal.Header closeButton>
+        <Modal.Title>Kira Ödemeleri</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <div className="container-fluid">
+          <p>Kira Toplamı: {rent.total_rent}</p>
+          <p>Ödenen: {totalPaid}</p>
+          <p>Kalan: {remaining}</p>
+          <div className="row">
+            <div className="col-md-6 mb-3">
+              <Card>
+                <Card.Header as="h5">Taksitler</Card.Header>
+                <Card.Body className="p-3">
+                  <ReusableTable<RentInstallment>
+                    columns={installmentColumns}
+                    data={rent.installments}
+                  />
+                </Card.Body>
+              </Card>
+            </div>
+            <div className="col-md-6 mb-3">
+              <Card>
+                <Card.Header as="h5">Ödemeler</Card.Header>
+                <Card.Body className="p-3">
+                  <ReusableTable<RentPayment>
+                    columns={paymentColumns}
+                    data={payments}
+                  />
+                </Card.Body>
+              </Card>
+            </div>
+          </div>
         </div>
-        <div className="col-md-6 mb-3">
-          <Card>
-            <Card.Header as="h5">Ödemeler</Card.Header>
-            <Card.Body className="p-3">
-              <ReusableTable<RentPayment>
-                columns={paymentColumns}
-                data={payments}
-              />
-            </Card.Body>
-          </Card>
-        </div>
-      </div>
-    </div>
+      </Modal.Body>
+    </Modal>
   );
 };
 
