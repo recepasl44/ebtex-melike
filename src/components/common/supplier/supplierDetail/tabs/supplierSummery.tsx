@@ -46,7 +46,7 @@ export default function SupplierOverviewTab({
         pay_diger: otherMethods,
         total_payments: totalPayments,
         remaining_debt: totalDebts - totalPayments,
-      } as Supplier,
+      } as unknown as Supplier,
     ]
   }, [supplier])
 
