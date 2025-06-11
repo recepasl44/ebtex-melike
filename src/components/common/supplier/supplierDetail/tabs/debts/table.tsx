@@ -27,12 +27,12 @@ export default function SupplierDebtsTab({ supplierId, enabled }: SupplierDebtsT
     totalItems,
     refetch,
   } = useSupplierDebtsList({
-      enabled,
-      supplierId,
-      search,
-      page,
-      pageSize,
-    })
+    enabled,
+    supplierId,
+    search,
+    page,
+    pageSize,
+  })
 
   const { deleteExistingSupplierDebt, error: deleteError } = useSupplierDebtsDelete()
 
@@ -118,32 +118,32 @@ export default function SupplierDebtsTab({ supplierId, enabled }: SupplierDebtsT
 
   return (
     <>
-    <ReusableTable<SupplierDebtData>
-      pageTitle="Borç Listesi"
-      onAdd={() => navigate(`/supplierDebtCrud`)}
-      columns={columns}
-      data={debtsData}
-      loading={loading}
-      tableMode="single"
-      error={error || deleteError}
-      currentPage={current_page ?? 1}
-      totalPages={totalPages}
-      totalItems={totalItems}
-      pageSize={pageSize}
-      onPageChange={(newPage) => setPage(newPage)}
-      onPageSizeChange={(newSize) => {
-        setPageSize(newSize)
-        setPage(1)
-      }}
-      exportFileName="debts"
-      showExportButtons={true}
-      onDeleteRow={handleDeleteRow}
-    />
+      <ReusableTable<SupplierDebtData>
+        // pageTitle="Borç Listesi"
+        onAdd={() => navigate(`/supplierDebtCrud`)}
+        columns={columns}
+        data={debtsData}
+        loading={loading}
+        tableMode="single"
+        error={error || deleteError}
+        currentPage={current_page ?? 1}
+        totalPages={totalPages}
+        totalItems={totalItems}
+        pageSize={pageSize}
+        onPageChange={(newPage) => setPage(newPage)}
+        onPageSizeChange={(newSize) => {
+          setPageSize(newSize)
+          setPage(1)
+        }}
+        exportFileName="debts"
+        showExportButtons={true}
+        onDeleteRow={handleDeleteRow}
+      />
 
-    <div className="d-flex justify-content-end mt-2 fw-bold">
-      <span className="me-3">Toplam: {totals.totalAmount.toLocaleString()} ₺</span>
-      <span>Ödenen: {totals.totalPaid.toLocaleString()} ₺</span>
-    </div>
+      <div className="d-flex justify-content-end mt-2 fw-bold">
+        <span className="me-3">Toplam: {totals.totalAmount.toLocaleString()} ₺</span>
+        <span>Ödenen: {totals.totalPaid.toLocaleString()} ₺</span>
+      </div>
     </>
   )
 }

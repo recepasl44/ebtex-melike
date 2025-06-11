@@ -100,13 +100,13 @@ export default function SupplierRefundTab({ supplierId, enabled }: SupplierRefun
 
 
     <ReusableTable<SupplierRefundData>
-      pageTitle="İadeler"
+      // pageTitle="İadeler"
       onAdd={() => navigate("/supplierRefundCrud")}
       columns={columns}
       data={refunds || []}
       loading={loading}
       error={error || deleteError}
-
+      tableMode="single"
       pageSize={pageSize}
       onPageChange={(newPage) => setPage(newPage)}
       onPageSizeChange={(newSize) => {

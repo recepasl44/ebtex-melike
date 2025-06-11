@@ -124,7 +124,7 @@ export default function SupplierInvoiceTab({ supplierId, enabled }: SupplierInvo
 
 
     <ReusableTable<SupplierInvoiceData>
-      pageTitle="Fatura Listesi"
+      // pageTitle="Fatura Listesi"
       onAdd={() => navigate(`/supplierinvoicecrud/`)}
       columns={columns}
       data={supplierInvoicesData}

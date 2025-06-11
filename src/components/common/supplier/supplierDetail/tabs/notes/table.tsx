@@ -101,12 +101,13 @@ export default function SupplierNotesTab({ supplierId, enabled }: SupplierNotesT
 
     <ReusableTable<SupplierNoteData>
       onAdd={() => navigate("/supplierNoteCrud")}
-      pageTitle="Notlar"
+      // pageTitle="Notlar"
       columns={columns}
       data={supplierNotesData || []}
       loading={loading}
       error={error || deleteError}
       currentPage={current_page ?? 1}
+      tableMode="single"
       totalPages={totalPages}
       totalItems={totalItems}
       pageSize={pageSize}
