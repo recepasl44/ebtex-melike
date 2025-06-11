@@ -8,6 +8,8 @@ export interface RentItem {
   season_id: number;
   rent_date: string;
   total_rent: string;
+  paid_amount?: string;
+  remaining_amount?: string;
 }
 
 export interface RentListParams {
