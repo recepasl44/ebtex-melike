@@ -264,13 +264,9 @@ export const MENUITEMS: any = [
         title: "Tedarikçiler",
         type: "sub",
         children: [
-          { title: "Finansal Özet", path: "/supplier", type: "link" },
+          { title: "Tedarikçiler", path: "/supplier", type: "link" },
 
-          { title: "Borçlar", path: "/debts", type: "link" },
-          { title: "Ödemeler", path: "/supplier/payments", type: "link" },
-          { title: "Faturalar", path: "/invoice", type: "link" },
-          { title: "İadeler", path: "/supplier/refunds", type: "link" },
-          { title: "Not", path: "/supplier/notes", type: "link" },
+
 
         ],
       },
