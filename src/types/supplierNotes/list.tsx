@@ -1,10 +1,13 @@
 export interface SupplierNoteData {
     id: number
     supplier_id: number
+    branch_id?: number | null
+    branch_name?: string | null
     note: string
     created_at: string
     updated_at: string
     platform_id: number
+    user_name?: string | null
   }
   
   export interface SupplierNotesListLinks {
