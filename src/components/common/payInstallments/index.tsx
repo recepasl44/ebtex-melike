@@ -9,6 +9,8 @@ import { useClassroomList } from "../../hooks/classrooms/useList";
 import { IStudent } from "../../../types/student/list";
 import { formatCurrency, formatDate } from "../../../utils/formatters";
 
+
+
 interface InstallmentRow {
   id: number;
   student_id: number;
