@@ -246,8 +246,8 @@ export const MENUITEMS: any = [
         title: "Giderler",
         type: "sub",
         children: [
-          { title: "Expenses", path: "/expenses", type: "link" },
-          { title: "Rents", path: "/rents", type: "link" },
+          { title: "Gider Kayıtları", path: "/expenses", type: "link" },
+          { title: "Kira Giderleri", path: "/rents", type: "link" },
         ],
       },
       {

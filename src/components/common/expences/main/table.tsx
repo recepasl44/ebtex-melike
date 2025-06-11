@@ -15,6 +15,7 @@ import { useBranchTable } from "../../../hooks/branch/useBranchList";
 import { useCategoriesList } from "../../../hooks/expences/expenseCategories/useCategoriesList";
 import { useSuppliersTable } from "../../../hooks/suppliers/useSuppliersList";
 
+
 export default function ExpenseListPage() {
   const navigate = useNavigate();
   const { removeExpence } = useExpenseDelete();
@@ -133,7 +134,7 @@ export default function ExpenseListPage() {
         key: "actions",
         label: "İşlemler",
         render: (row, openDeleteModal) => (
-          <> 
+          <>
             <button
               onClick={() => navigate(`/supplierdetail/${row.supplier_id}`)}
               className="btn btn-icon btn-sm btn-primary-light rounded-pill"
