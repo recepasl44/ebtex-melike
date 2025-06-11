@@ -18,6 +18,8 @@ export default function PaymentDetailsTable() {
   const [classId, setClassId] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [page, setPage] = useState<number>(1);
+  const [paginate, setPaginate] = useState<number>(10);
 
   const [filtersEnabled, setFiltersEnabled] = useState({
     branch: false,
@@ -52,6 +54,8 @@ export default function PaymentDetailsTable() {
     classroom_id: classId ? Number(classId) : undefined,
     startDate: startDate || undefined,
     endDate: endDate || undefined,
+    page,
+    paginate,
   };
   const { branchData } = useBranchTable({ enabled: filtersEnabled.branch });
   const { programsData } = useProgramsTable({
@@ -128,17 +132,8 @@ export default function PaymentDetailsTable() {
     ]
   );
 
-  const {
-    data,
-    loading,
-    error,
-    totalPages,
-    totalItems,
-    page,
-    paginate,
-    setPage,
-    setPaginate,
-  } = useListStudents(paymentParams);
+  const { data, loading, error, totalPages, totalItems } =
+    useListStudents(paymentParams);
 
   const columns: ColumnDefinition<IStudent>[] = useMemo(
     () => [
@@ -411,6 +406,7 @@ export default function PaymentDetailsTable() {
 
   const onPageSizeChange = (newSize: number) => {
     setPaginate(newSize);
+    setPage(1);
   };
 
   return (
