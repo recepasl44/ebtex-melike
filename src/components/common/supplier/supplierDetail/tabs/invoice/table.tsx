@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable"
 import { useSupplierInvoicesList } from "../../../../../hooks/supplierInvoices/useList"
 import { SupplierInvoiceData } from "../../../../../../types/supplierInvoices/list"
+import { DEFAULT_URL } from "../../../../../../helpers/url_helper"
 
 import { useSupplierInvoicesDelete } from "../../../../../hooks/supplierInvoices/useDelete"
 
@@ -73,7 +74,11 @@ export default function SupplierInvoiceTab({ supplierId, enabled }: SupplierInvo
         label: "Doküman",
         render: (row) =>
           row.pdf_path ? (
-            <a href={row.pdf_path} target="_blank" rel="noopener noreferrer">
+            <a
+              href={`${DEFAULT_URL}/${row.pdf_path}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               PDF
             </a>
           ) : (

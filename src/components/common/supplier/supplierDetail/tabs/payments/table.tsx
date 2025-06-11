@@ -5,6 +5,7 @@ import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable"
 import { useSupplierPaymentsList } from "../../../../../hooks/supplierPayments/useList"
 import { useSupplierPaymentsDelete } from "../../../../../hooks/supplierPayments/useDelete"
 import { SupplierPaymentData } from "../../../../../../types/supplierPayments/list"
+import { DEFAULT_URL } from "../../../../../../helpers/url_helper"
 
 interface SupplierPaymentsTabProps {
   supplierId: number
@@ -36,20 +37,25 @@ export default function SupplierPaymentsTab({ supplierId, enabled }: SupplierPay
         render: (row) => row.payment_date || "-",
       },
       {
-        key: "is_paid",
-        label: "Ödeme Durumu",
-        render: (row) => row.is_paid ? "Ödeme Yapıldı" : "Vade Tarihi Var",
-      },
-      {
         key: "amount",
-        label: "Tutar",
+        label: "Ödenen Tutar",
         render: (row) =>
           row.amount ? `${Number(row.amount).toLocaleString()} ₺` : "0,00 ₺",
+      },
+      {
+        key: "payment_method",
+        label: "Ödeme Şekli",
+        render: (row) => (row.payment_method && row.payment_method.name) || "-",
       },
       {
         key: "description",
         label: "Açıklama",
         render: (row) => row.description || "-",
+      },
+      {
+        key: "id",
+        label: "Makbuz No",
+        render: (row) => String(row.id),
       },
       {
         key: "actions",
@@ -72,6 +78,16 @@ export default function SupplierPaymentsTab({ supplierId, enabled }: SupplierPay
             >
               <i className="ti ti-trash" />
             </button>
+            {row.pdf_path && (
+              <button
+                className="btn btn-icon btn-sm btn-primary-light rounded-pill"
+                onClick={() =>
+                  window.open(`${DEFAULT_URL}/${row.pdf_path}`, "_blank")
+                }
+              >
+                <i className="ti ti-printer" />
+              </button>
+            )}
           </>
         ),
       },
