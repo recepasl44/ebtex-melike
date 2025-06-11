@@ -110,7 +110,7 @@ export default function PaymentDetailsTable() {
         key: "date_range",
         label: "Kayıt Tarihi",
         type: "doubledate" as const,
-        value: [startDate, endDate],
+        value: { startDate, endDate },
         onChange: handleDateRangeChange,
       },
     ],
@@ -226,7 +226,7 @@ export default function PaymentDetailsTable() {
       },
       {
         key: "amount_paid",
-        label: "Ödenen",
+        label: "Ödenen Tutar",
         type: "currency",
         render: (row: any) => {
           if (
@@ -248,7 +248,7 @@ export default function PaymentDetailsTable() {
       },
       {
         key: "refund",
-        label: "İade",
+        label: "İade Tutar",
         type: "currency",
         render: () => {
           return formatCurrency(0);
@@ -256,7 +256,7 @@ export default function PaymentDetailsTable() {
       },
       {
         key: "remaining_amount",
-        label: "Kalan Miktar",
+        label: "Kalan Tutar",
         type: "currency",
         render: (row: any) => {
           try {
@@ -296,31 +296,112 @@ export default function PaymentDetailsTable() {
         },
       },
       {
+        key: "overdue_amount",
+        label: "Geciken Tutar",
+        type: "currency",
+        render: (row: any) => {
+          if (!row.enrollments || !Array.isArray(row.enrollments))
+            return formatCurrency(0);
+
+          const today = new Date();
+          const overdue = row.enrollments.reduce((sum: any, enrollment: any) => {
+            if (!enrollment.installments) return sum;
+            return (
+              sum +
+              enrollment.installments.reduce((acc: number, inst: any) => {
+                if (
+                  inst.is_paid !== 1 &&
+                  inst.due_date &&
+                  new Date(inst.due_date) < today
+                ) {
+                  return acc + parseFloat(inst.amount || "0");
+                }
+                return acc;
+              }, 0)
+            );
+          }, 0);
+          return formatCurrency(overdue);
+        },
+      },
+      {
         key: "actions",
         label: "İşlemler",
         render: (row, openDeleteModal) => (
-          <>
-            <Button
-              variant="primary-light"
-              size="sm"
-              className="btn-icon rounded-pill"
-              onClick={() => navigate(`/studentpaymentdetails/${row.id}`)}
-            >
-              <i className="ti ti-eye"></i>
-            </Button>{" "}
-            <Button
-              variant="danger-light"
-              size="sm"
-              className="btn-icon rounded-pill"
-              onClick={() => openDeleteModal && openDeleteModal(row)}
-            >
-              <i className="ti ti-trash"></i>
-            </Button>
-          </>
+          <Button
+            variant="primary-light"
+            size="sm"
+            className="btn-icon rounded-pill"
+            onClick={() => navigate(`/studentpaymentdetails/${row.id}`)}
+          >
+            <i className="ti ti-eye"></i>
+          </Button>
         ),
       },
     ],
     [navigate]
+  );
+
+  const totals = useMemo(() => {
+    if (!data) {
+      return { paid: 0, refund: 0, remaining: 0, overdue: 0 };
+    }
+    const today = new Date();
+    return data.reduce(
+      (acc, row) => {
+        const enrollments = Array.isArray(row.enrollments)
+          ? row.enrollments
+          : row.enrollments
+          ? [row.enrollments]
+          : [];
+
+        const totalFee = enrollments.reduce((sum, e: any) => {
+          return (
+            sum + parseFloat(e.final_fee || e.total_fee || "0")
+          );
+        }, 0);
+
+        const paid = row.payments && Array.isArray(row.payments)
+          ? row.payments.reduce(
+              (s: number, p: any) => s + parseFloat(p.amount_paid || "0"),
+              0
+            )
+          : 0;
+
+        const overdue = enrollments.reduce((sum: number, e: any) => {
+          if (!e.installments) return sum;
+          return (
+            sum +
+            e.installments.reduce((iSum: number, inst: any) => {
+              if (
+                inst.is_paid !== 1 &&
+                inst.due_date &&
+                new Date(inst.due_date) < today
+              ) {
+                return iSum + parseFloat(inst.amount || "0");
+              }
+              return iSum;
+            }, 0)
+          );
+        }, 0);
+
+        const remaining = totalFee - paid;
+
+        acc.paid += paid;
+        acc.remaining += remaining;
+        acc.overdue += overdue;
+        return acc;
+      },
+      { paid: 0, refund: 0, remaining: 0, overdue: 0 }
+    );
+  }, [data]);
+
+  const footer = (
+    <div className="d-flex justify-content-end fw-bold me-3">
+      <span className="me-3">Ödenen: {formatCurrency(totals.paid)}</span>
+      <span className="me-3">İade: {formatCurrency(totals.refund)}</span>
+      <span className="me-3">Kalan: {formatCurrency(totals.remaining)}</span>
+      <span>Geciken: {formatCurrency(totals.overdue)}</span>
+    </div>
   );
 
   // Pager options
@@ -351,6 +432,7 @@ export default function PaymentDetailsTable() {
       exportFileName="student_payment_details"
       onPageChange={onPageChange}
       onPageSizeChange={onPageSizeChange}
+      customFooter={footer}
     />
   );
 }
