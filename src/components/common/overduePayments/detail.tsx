@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
-import { Row, Col, Table, Button, Form, Card } from "react-bootstrap";
+import { useParams, useNavigate } from "react-router-dom";
+import { Row, Col, Table, Button, Form, Card, Modal } from "react-bootstrap";
 
 interface NoteEntry {
   date: string;
@@ -10,6 +10,7 @@ interface NoteEntry {
 
 export default function OverduePaymentDetailPage() {
   const { soz_no } = useParams<{ soz_no: string }>();
+  const navigate = useNavigate();
 
   const [showAdd, setShowAdd] = useState(false);
   const [newNote, setNewNote] = useState("");
@@ -37,14 +38,19 @@ export default function OverduePaymentDetailPage() {
   }
 
   return (
-    <div className="container-fluid mt-3">
-      <h3 className="mb-3">Sözleşme No: {soz_no}</h3>
-      <div className="mb-4">
-        <p className="mb-1">Ad Soyad: Örnek Öğrenci</p>
-        <p className="mb-1">Veli Adı & Tel: Örnek Veli - 0000 000 00 00</p>
-        <p className="mb-1">Anne Adı & Tel: Örnek Anne - 0000 000 00 00</p>
-        <p className="mb-1">Baba Adı & Tel: Örnek Baba - 0000 000 00 00</p>
-      </div>
+    <Modal show={true} onHide={() => navigate(-1)} size="lg" centered>
+      <Modal.Header closeButton>
+        <Modal.Title>Ödeme Detayı</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <div className="container-fluid mt-3">
+          <h3 className="mb-3">Sözleşme No: {soz_no}</h3>
+          <div className="mb-4">
+            <p className="mb-1">Ad Soyad: Örnek Öğrenci</p>
+            <p className="mb-1">Veli Adı & Tel: Örnek Veli - 0000 000 00 00</p>
+            <p className="mb-1">Anne Adı & Tel: Örnek Anne - 0000 000 00 00</p>
+            <p className="mb-1">Baba Adı & Tel: Örnek Baba - 0000 000 00 00</p>
+          </div>
       <Row>
         <Col md={8}>
           <Card>
@@ -141,7 +147,9 @@ export default function OverduePaymentDetailPage() {
             </Card.Body>
           </Card>
         </Col>
-      </Row>
-    </div>
+        </Row>
+        </div>
+      </Modal.Body>
+    </Modal>
   );
 }
