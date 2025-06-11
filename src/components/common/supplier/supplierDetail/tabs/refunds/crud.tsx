@@ -124,6 +124,7 @@ export default function SupplierRefundCrud() {
         name: "description",
         label: "Açıklama",
         type: "textarea",
+        required: true,
       },
     ]
 
@@ -145,6 +146,34 @@ export default function SupplierRefundCrud() {
         type: "select",
         required: true,
         options: invoiceOptions,
+      })
+
+      const selectedInvoice = (allInvoices || []).find(
+        (inv) => inv.id === values.invoice_id
+      )
+      commonFields.splice(2, 0, {
+        name: "invoice_date",
+        label: "Fatura Tarihi",
+        renderForm: () => (
+          <input
+            type="text"
+            readOnly
+            className="form-control"
+            value={selectedInvoice?.issue_date || ""}
+          />
+        ),
+      })
+      commonFields.splice(3, 0, {
+        name: "invoice_serial",
+        label: "Fatura Seri No",
+        renderForm: () => (
+          <input
+            type="text"
+            readOnly
+            className="form-control"
+            value={selectedInvoice?.fis_seri_no || ""}
+          />
+        ),
       })
     }
 
@@ -196,13 +225,13 @@ export default function SupplierRefundCrud() {
       fields={getFields}         // <--- function
       initialValues={initialValues}
       onSubmit={handleSubmit}
-      confirmButtonLabel={mode === "add" ? "Kaydet" : "Güncelle"}
-      cancelButtonLabel="İptal"
+      confirmButtonLabel={mode === "add" ? "Ekle" : "Güncelle"}
+      cancelButtonLabel="Vazgeç"
       isLoading={loading}
       error={error || null}
       onClose={() => navigate(-1)}
       autoGoBackOnModalClose
-      mode="single"
+      mode="double"
     />
   )
 }
