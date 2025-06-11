@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import ReusableTable, {
   ColumnDefinition,
 } from "../../ReusableTable";
+import FilterGroup, {
+  FilterDefinition,
+} from "./component/organisms/SearchFilters";
 import { useExpencesTable } from "../../../hooks/expences/main/useExpenseList";
 import { IExpense } from "../../../../types/expences/main/list";
 
@@ -130,9 +133,9 @@ export default function ExpenseListPage() {
         key: "actions",
         label: "İşlemler",
         render: (row, openDeleteModal) => (
-          <>
+          <> 
             <button
-              onClick={() => navigate(`/expensecrud/${row.id}`)}
+              onClick={() => navigate(`/supplierdetail/${row.supplier_id}`)}
               className="btn btn-icon btn-sm btn-primary-light rounded-pill"
             >
               <i className="ti ti-eye" />
@@ -156,12 +159,13 @@ export default function ExpenseListPage() {
     [navigate]
   );
 
-  const filters = useMemo(
+  const filters: FilterDefinition[] = useMemo(
     () => [
       {
         key: "season",
         label: "Sezon",
         type: "select" as const,
+        col: 1,
         value: season,
         options: (seasonsData || []).map((s) => ({
           value: String(s.id),
@@ -174,6 +178,7 @@ export default function ExpenseListPage() {
         key: "branch",
         label: "Şube",
         type: "select" as const,
+        col: 1,
         value: branch,
         options: (branchData || []).map((b) => ({
           value: String(b.id),
@@ -186,6 +191,7 @@ export default function ExpenseListPage() {
         key: "category",
         label: "Gider Kalemi",
         type: "select" as const,
+        col: 1,
         value: category,
         options: (categoriesData || []).map((c) => ({
           value: String(c.id),
@@ -198,6 +204,7 @@ export default function ExpenseListPage() {
         key: "supplier_id",
         label: "Tedarikçi",
         type: "autocomplete" as const,
+        col: 1,
         value: supplierId,
         options: (suppliersData || []).map((s) => ({
           value: String(s.id),
@@ -213,6 +220,7 @@ export default function ExpenseListPage() {
         key: "date_range",
         label: "Tarih Aralığı",
         type: "doubledate" as const,
+        col: 1,
         value: [dateRange.startDate, dateRange.endDate],
         onChange: (dates: any) => {
           if (!dates) {
@@ -239,32 +247,32 @@ export default function ExpenseListPage() {
   );
 
   return (
+    <>
+      <FilterGroup filters={filters} columnsPerRow={4} navigate={navigate} />
 
-
-    <ReusableTable<IExpense>
-      pageTitle="Gider Listesi"
-      onAdd={() => navigate("/expensecrud")}
-      columns={columns}
-      data={expensesData}
-      loading={loading}
-      error={error}
-      filters={filters}
-      currentPage={page}
-      totalPages={totalPages}
-      totalItems={totalItems}
-      pageSize={pageSize}
-      onPageChange={(newPage) => setPage(newPage)}
-      onPageSizeChange={(newSize: any) => {
-        setPageSize(newSize);
-        setPage(1);
-      }}
-      exportFileName="expences"
-      showExportButtons={true}
-      tableMode="multi"
-      onDeleteRow={(row) => {
-        removeExpence(Number(row.id));
-      }}
-    />
-
+      <ReusableTable<IExpense>
+        pageTitle="Gider Listesi"
+        onAdd={() => navigate("/expensecrud")}
+        columns={columns}
+        data={expensesData}
+        loading={loading}
+        error={error}
+        currentPage={page}
+        totalPages={totalPages}
+        totalItems={totalItems}
+        pageSize={pageSize}
+        onPageChange={(newPage) => setPage(newPage)}
+        onPageSizeChange={(newSize: any) => {
+          setPageSize(newSize);
+          setPage(1);
+        }}
+        exportFileName="expences"
+        showExportButtons={true}
+        tableMode="single"
+        onDeleteRow={(row) => {
+          removeExpence(Number(row.id));
+        }}
+      />
+    </>
   );
 }
