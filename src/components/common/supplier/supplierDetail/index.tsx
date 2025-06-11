@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import { Modal, Button } from "react-bootstrap"
 import { useParams } from "react-router-dom"
+import Pageheader from "../../page-header/pageheader"
 import SupplierOverviewTab from "./tabs/supplierSummery.tsx"
 import SupplierInvoiceTab from "./tabs/invoice/table.tsx"
 import SupplierDebtTab from "./tabs/debts/table.tsx"
@@ -9,24 +9,9 @@ import SupplierPaymentTab from "./tabs/payments/table.tsx"
 import SupplierNotesTab from "./tabs/notes/table.tsx"
 import TabsContainer from "../../guidance/components/organisms/TabsContainer.tsx"
 
-
-
 import { useSupplierShow } from "../../../hooks/suppliers/useSuppliersShow.tsx"
 
-interface ISupplierDetailModalProps {
-  show: boolean
-  supplier: {
-    id: number
-    name: string
-  }
-  onClose: () => void
-}
-
-export default function SupplierDetailModal({
-  show,
-  supplier,
-  onClose,
-}: ISupplierDetailModalProps) {
+export default function SupplierDetail() {
   const [activeTab, setActiveTab] = useState<number>(0)
   const { id } = useParams<{ id?: string }>()
   const { supplier: fetchedSupplier, getSupplier } = useSupplierShow()
@@ -36,7 +21,8 @@ export default function SupplierDetailModal({
       getSupplier(String(id))
     }
   }, [id, getSupplier])
-const tabsConfig = [
+
+  const tabsConfig = [
     {
       label: "Özet",
       content: <SupplierOverviewTab supplierId={Number(id)} />,
@@ -101,25 +87,13 @@ const tabsConfig = [
   ]
 
   return (
-    <Modal show={show} onHide={onClose} size="xl" centered>
-      <Modal.Header closeButton>
-        <Modal.Title>
-          <b>{supplier?.name || fetchedSupplier?.name}</b>
-        </Modal.Title>
-      </Modal.Header>
-
-      <Modal.Body>
-            <TabsContainer
-          tabs={tabsConfig}
-          onTabChange={(parentIndex) => setActiveTab(parentIndex)}
-        />
-      </Modal.Body>
-
-      <Modal.Footer>
-        <Button variant="outline-secondary" onClick={onClose}>
-          Kapat
-        </Button>
-      </Modal.Footer>
-    </Modal>
+    <div className="px-4">
+      <Pageheader title="Firma Yönetimi" currentpage="Firma Detay" />
+      <h5 className="mb-3">{fetchedSupplier?.name}</h5>
+      <TabsContainer
+        tabs={tabsConfig}
+        onTabChange={(parentIndex) => setActiveTab(parentIndex)}
+      />
+    </div>
   )
 }
