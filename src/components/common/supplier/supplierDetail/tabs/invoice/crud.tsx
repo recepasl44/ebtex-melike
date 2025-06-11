@@ -121,11 +121,11 @@ export default function InvoiceCrudPage() {
       label: "Gider Kalemi",
       type: "select",
       options: categoryOptions,
-      required: false,
+      required: true,
     },
     {
       name: "payable_amount",
-      label: "Miktar",
+      label: "Tutar",
       type: "text",
       required: true,
     },
@@ -133,7 +133,7 @@ export default function InvoiceCrudPage() {
       name: "description",
       label: "Açıklama",
       type: "textarea",
-      required: false,
+      required: true,
     },
     // Sadece update modunda removeOldPdf checkbox
     ...(mode === "update"
@@ -228,7 +228,7 @@ export default function InvoiceCrudPage() {
       error={error || null}
       onClose={() => navigate(-1)}
       autoGoBackOnModalClose={true}
-      mode="single" // or "double" 
+      mode="double" // 2 taraflı modal
     />
   )
 }

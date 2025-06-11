@@ -49,6 +49,11 @@ export default function SupplierInvoiceTab({ supplierId, enabled }: SupplierInvo
         render: (row) => row.issue_date || "-",
       },
       {
+        key: "fis_seri_no",
+        label: "Fatura Seri No",
+        render: (row) => row.fis_seri_no || "-",
+      },
+      {
         key: "invoice_type_code",
         label: "Fatura Tipi",
         render: (row) => row.invoice_type_code || "-",
@@ -59,14 +64,21 @@ export default function SupplierInvoiceTab({ supplierId, enabled }: SupplierInvo
         render: (row) => row.payable_amount || "0.00",
       },
       {
-        key: "fis_seri_no",
-        label: "Fiş Seri No",
-        render: (row) => row.fis_seri_no || "-",
+        key: "gider_kalemi",
+        label: "Gider Kalemi",
+        render: (row) => row.gider_kalemi || "-",
       },
       {
-        key: "fatura_adi",
-        label: "Fatura Adı",
-        render: (row) => row.fatura_adi || "-",
+        key: "dokuman",
+        label: "Doküman",
+        render: (row) =>
+          row.pdf_path ? (
+            <a href={row.pdf_path} target="_blank" rel="noopener noreferrer">
+              PDF
+            </a>
+          ) : (
+            "-"
+          ),
       },
       {
         key: "actions",
