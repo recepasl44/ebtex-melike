@@ -19,7 +19,15 @@ export default function PaymentDetailsTable() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
+  const [filtersEnabled, setFiltersEnabled] = useState({
+    branch: false,
+    program: false,
+    level: false,
+    class: false,
+  });
+
   const handleFilterChange = (key: string, value: string) => {
+    setFiltersEnabled((prev) => ({ ...prev, [key]: true }));
     if (key === "branch") setBranch(value);
     if (key === "program") setProgramId(value);
     if (key === "level") setLevelId(value);
@@ -45,7 +53,7 @@ export default function PaymentDetailsTable() {
     startDate: startDate || undefined,
     endDate: endDate || undefined,
   };
-  const { branchData } = useBranchTable({ enabled: true, page: 1, pageSize: 100 });
+  const { branchData } = useBranchTable({ enabled: filtersEnabled.branch });
   const { programsData } = useProgramsTable({
     enabled: !!branch,
     branch_id: branch ? Number(branch) : undefined,
@@ -63,69 +71,6 @@ export default function PaymentDetailsTable() {
     pageSize: 100,
   });
 
-  const getTotalPaid = (row: any) => {
-    if (!row.payments || !Array.isArray(row.payments) || row.payments.length === 0) {
-      return 0;
-    }
-    return row.payments.reduce(
-      (sum: number, payment: any) => sum + parseFloat(payment.amount_paid || "0"),
-      0
-    );
-  };
-
-  const getRemaining = (row: any) => {
-    if (!row.enrollments || !Array.isArray(row.enrollments) || row.enrollments.length === 0) {
-      return 0;
-    }
-    const totalFee = row.enrollments.reduce(
-      (sum: number, enrollment: any) =>
-        sum + parseFloat(enrollment.final_fee || enrollment.total_fee || "0"),
-      0
-    );
-
-    const totalPaid = getTotalPaid(row);
-    return totalFee - totalPaid;
-  };
-
-  const getDelayed = (row: any) => {
-    if (!row.enrollments) return 0;
-    const today = new Date();
-    let total = 0;
-    row.enrollments.forEach((enroll: any) => {
-      (enroll.installments || []).forEach((inst: any) => {
-        const due = new Date(inst.due_date);
-        const payments = (row.payments || []).filter(
-          (p: any) => p.installment_id === inst.id
-        );
-        const paid = payments.reduce(
-          (s: number, p: any) => s + parseFloat(p.amount_paid || "0"),
-          0
-        );
-        const amount = parseFloat(inst.amount || "0");
-        if (due < today && amount - paid > 0) {
-          total += amount - paid;
-        }
-      });
-    });
-    return total;
-  };
-
-  const totals = useMemo(() => {
-    if (!data || data.length === 0) {
-      return { paid: 0, refund: 0, remaining: 0, delayed: 0 };
-    }
-    return data.reduce(
-      (acc, row) => {
-        acc.paid += getTotalPaid(row);
-        acc.remaining += getRemaining(row);
-        acc.delayed += getDelayed(row);
-        // refund column currently returns 0 per row
-        return acc;
-      },
-      { paid: 0, refund: 0, remaining: 0, delayed: 0 }
-    );
-  }, [data]);
-
   const filters = useMemo(
     () => [
       {
@@ -134,6 +79,7 @@ export default function PaymentDetailsTable() {
         type: "select" as const,
         value: branch,
         options: (branchData || []).map((b) => ({ value: String(b.id), label: b.name })),
+        onClick: () => setFiltersEnabled((p) => ({ ...p, branch: true })),
         onChange: (val: string) => handleFilterChange("branch", val),
       },
       {
@@ -164,7 +110,7 @@ export default function PaymentDetailsTable() {
         key: "date_range",
         label: "Kayıt Tarihi",
         type: "doubledate" as const,
-        value: { startDate, endDate },
+        value: [startDate, endDate],
         onChange: handleDateRangeChange,
       },
     ],
@@ -188,7 +134,10 @@ export default function PaymentDetailsTable() {
     error,
     totalPages,
     totalItems,
-
+    page,
+    paginate,
+    setPage,
+    setPaginate,
   } = useListStudents(paymentParams);
 
   const columns: ColumnDefinition<IStudent>[] = useMemo(
@@ -277,7 +226,7 @@ export default function PaymentDetailsTable() {
       },
       {
         key: "amount_paid",
-        label: "Ödenen Tutar (Ödenen)",
+        label: "Ödenen",
         type: "currency",
         render: (row: any) => {
           if (
@@ -299,7 +248,7 @@ export default function PaymentDetailsTable() {
       },
       {
         key: "refund",
-        label: "İade Tutar (İade)",
+        label: "İade",
         type: "currency",
         render: () => {
           return formatCurrency(0);
@@ -307,7 +256,7 @@ export default function PaymentDetailsTable() {
       },
       {
         key: "remaining_amount",
-        label: "Kalan Tutar (Kalan Miktar)",
+        label: "Kalan Miktar",
         type: "currency",
         render: (row: any) => {
           try {
@@ -347,61 +296,41 @@ export default function PaymentDetailsTable() {
         },
       },
       {
-        key: "delayed_amount",
-        label: "Geciken Tutar",
-        type: "currency",
-        render: (row: any) => {
-          if (!row.enrollments) return formatCurrency(0);
-          const today = new Date();
-          let total = 0;
-          row.enrollments.forEach((enroll: any) => {
-            (enroll.installments || []).forEach((inst: any) => {
-              const due = new Date(inst.due_date);
-              const payments = (row.payments || []).filter(
-                (p: any) => p.installment_id === inst.id
-              );
-              const paid = payments.reduce(
-                (s: number, p: any) => s + parseFloat(p.amount_paid || "0"),
-                0
-              );
-              const amount = parseFloat(inst.amount || "0");
-              if (due < today && amount - paid > 0) {
-                total += amount - paid;
-              }
-            });
-          });
-          return formatCurrency(total);
-        },
-      },
-      {
         key: "actions",
         label: "İşlemler",
-        render: (row) => (
-          <Button
-            variant="primary-light"
-            size="sm"
-            className="btn-icon rounded-pill"
-            onClick={() => navigate(`/studentpaymentdetails/${row.id}`)}
-          >
-            <i className="ti ti-eye"></i>
-          </Button>
+        render: (row, openDeleteModal) => (
+          <>
+            <Button
+              variant="primary-light"
+              size="sm"
+              className="btn-icon rounded-pill"
+              onClick={() => navigate(`/studentpaymentdetails/${row.id}`)}
+            >
+              <i className="ti ti-eye"></i>
+            </Button>{" "}
+            <Button
+              variant="danger-light"
+              size="sm"
+              className="btn-icon rounded-pill"
+              onClick={() => openDeleteModal && openDeleteModal(row)}
+            >
+              <i className="ti ti-trash"></i>
+            </Button>
+          </>
         ),
       },
     ],
     [navigate]
   );
 
-  const footer = (
-    <div className="d-flex justify-content-end fw-bold me-3">
-      <span className="me-3">Toplam Ödenen: {formatCurrency(totals.paid)}</span>
-      <span className="me-3">Toplam İade: {formatCurrency(totals.refund)}</span>
-      <span className="me-3">Toplam Kalan: {formatCurrency(totals.remaining)}</span>
-      <span>Toplam Geciken: {formatCurrency(totals.delayed)}</span>
-    </div>
-  );
-
   // Pager options
+  const onPageChange = (newPage: number) => {
+    setPage(newPage);
+  };
 
+  const onPageSizeChange = (newSize: number) => {
+    setPaginate(newSize);
+  };
 
   return (
     <ReusableTable<IStudent>
@@ -417,10 +346,11 @@ export default function PaymentDetailsTable() {
       tableMode="single"
       totalPages={totalPages}
       totalItems={totalItems}
-
+      currentPage={page}
+      pageSize={paginate}
       exportFileName="student_payment_details"
-      customFooter={footer}
-
+      onPageChange={onPageChange}
+      onPageSizeChange={onPageSizeChange}
     />
   );
 }
