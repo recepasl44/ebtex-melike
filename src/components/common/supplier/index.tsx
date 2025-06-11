@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Button, Modal } from "react-bootstrap";
 import ReusableTable, { ColumnDefinition } from "../ReusableTable";
 import { useSuppliersTable } from "../../hooks/suppliers/useSuppliersList";
 import { Supplier } from "../../../types/suppliers/supplier/list";
@@ -8,9 +9,34 @@ import { useSupplierDelete } from "../../hooks/suppliers/useSuppliersDelete";
 
 export default function SupplierListPage() {
   const navigate = useNavigate();
-  const { } = useSupplierDelete();
+  const { removeSupplier, error: deleteError } = useSupplierDelete();
 
-  const [name, setName] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(null);
+  const [deleteWarning, setDeleteWarning] = useState<string | null>(null);
+
+  const handleDeleteOpen = (supplier: Supplier) => {
+    setSelectedSupplier(supplier);
+    setDeleteWarning(null);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!selectedSupplier) return;
+    if (Number(selectedSupplier.remaining_debt) === 0) {
+      await removeSupplier(selectedSupplier.id);
+      setShowDeleteModal(false);
+    } else {
+      setDeleteWarning(
+        "Ödenecek tutar 0 TL olmadığı için yönetici onayı olmadan silinemez."
+      );
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteModal(false);
+    setSelectedSupplier(null);
+  };
 
   const {
     suppliersData,
@@ -25,26 +51,7 @@ export default function SupplierListPage() {
     setPageSize,
   } = useSuppliersTable({
     enabled: true,
-    search: name,
   });
-
-  const filters = useMemo(() => {
-    return [
-      {
-        key: "search",
-        label: "İsim telefon yada mail giriniz",
-        value: name,
-        type: "autocomplete" as const,
-        onChange: (val: string) => {
-          setName(val);
-        },
-        options: (suppliersData || []).map((item) => ({
-          value: item.name,
-          label: item.name,
-        })),
-      },
-    ];
-  }, [name, suppliersData]);
 
   const columns: ColumnDefinition<Supplier>[] = useMemo(
     () => [
@@ -55,7 +62,7 @@ export default function SupplierListPage() {
       },
       {
         key: "phone",
-        label: "Şube",
+        label: "Telefon",
         render: (row) => row.phone || "-",
       },
       {
@@ -70,23 +77,23 @@ export default function SupplierListPage() {
       },
       {
         key: "total_debts",
-        label: "Toplam Borç",
+        label: "Ödenecek Tutar",
         type: "currency",
       },
       {
         key: "total_payments",
-        label: "Ödenen",
+        label: "Ödenen Tutar",
         type: "currency",
       },
       {
         key: "remaining_debt",
-        label: "Kalan Borç",
+        label: "Kalan Tutar",
         type: "currency",
       },
       {
         key: "actions",
         label: "İşlemler",
-        render: (row, openDeleteModal) => (
+        render: (row) => (
           <>
             <button
               onClick={() => navigate(`/supplierdetail/${row.id}`)}
@@ -102,7 +109,7 @@ export default function SupplierListPage() {
             </button>
             <button
               className="btn btn-icon btn-sm btn-danger-light rounded-pill"
-              onClick={() => openDeleteModal && openDeleteModal(row)}
+              onClick={() => handleDeleteOpen(row)}
             >
               <i className="ti ti-trash" />
             </button>
@@ -115,31 +122,52 @@ export default function SupplierListPage() {
 
   return (
 
-    <ReusableTable<Supplier>
-      pageTitle="Firma Listesi"
-      onAdd={() => navigate("/suppliercrud",)}
-      columns={columns}
-      tableMode="single"
-      showExportButtons={true}
-      data={suppliersData}
-      loading={loading}
-      error={errorMsg}
-      filters={filters}
-      currentPage={page}
-      totalPages={last_page}
-      totalItems={total}
-      pageSize={pageSize}
-      onPageChange={(newPage) => {
+    <>
+      <ReusableTable<Supplier>
+        pageTitle="Firma Listesi"
+        onAdd={() => navigate("/suppliercrud")}
+        columns={columns}
+        tableMode="single"
+        showExportButtons={true}
+        data={suppliersData}
+        loading={loading}
+        error={errorMsg}
+        currentPage={page}
+        totalPages={last_page}
+        totalItems={total}
+        pageSize={pageSize}
+        onPageChange={(newPage) => {
+          setPage(newPage);
+        }}
+        onPageSizeChange={(newSize) => {
+          setPageSize(newSize);
+          setPage(1);
+        }}
+        exportFileName="supplier"
+      />
 
-        setPage(newPage);
-      }}
-      onPageSizeChange={(newSize) => {
-
-        setPageSize(newSize);
-        setPage(1);
-      }}
-      exportFileName="supplier"
-    />
-
+      <Modal show={showDeleteModal} onHide={handleDeleteCancel} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Onay</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Silmek istediğinizden emin misiniz?
+          {deleteWarning && (
+            <div className="alert alert-warning mt-2">{deleteWarning}</div>
+          )}
+          {deleteError && (
+            <div className="alert alert-danger mt-2">{deleteError}</div>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="outline-secondary" onClick={handleDeleteCancel}>
+            Vazgeç
+          </Button>
+          <Button variant="danger" onClick={handleDeleteConfirm}>
+            Sil
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 }
