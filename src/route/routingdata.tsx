@@ -639,18 +639,7 @@ export const Routedata = [
   {
     id: 10,
     path: `${import.meta.env.BASE_URL}supplierdetail/:id?`,
-    element: (
-      <SupplierDetail
-        show={true}
-        onClose={function (): void {
-          throw new Error("Function not implemented.");
-        }}
-        supplier={{
-          id: 0,
-          name: "",
-        }}
-      />
-    ),
+    element: <SupplierDetail />, 
   },
 
   {
