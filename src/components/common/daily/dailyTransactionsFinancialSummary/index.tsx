@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import ReusableTable, { ColumnDefinition } from '../ReusableTable';
-import { useFinancialSummary } from '../../hooks/accounting/financial_summary/useFinancialSummary';
+import ReusableTable, { ColumnDefinition } from '../../ReusableTable';
+import { useFinancialSummary } from '../../../hooks/accounting/financial_summary/useFinancialSummary';
 
 interface RowData {
   category: string;
@@ -88,7 +88,7 @@ const DailyTransactionsFinancialSummary: React.FC = () => {
   return (
     <div className="container mt-3">
       <ReusableTable<RowData>
-        pageTitle="Finansal Özet"
+        // pageTitle="Finansal Özet"
         columns={columns}
         data={filteredRows}
         loading={loading}

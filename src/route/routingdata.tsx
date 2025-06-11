@@ -178,7 +178,7 @@ const StudentPaymentCrud = lazy(
   () => import("../components/common/payment_details/crud")
 );
 const StudentInstallments = lazy(
-  () => import("../components/common/studentInstallments")
+  () => import("../components/common/daily/studentInstallments")
 );
 const StudentInvoices = lazy(
   () => import("../components/common/invoice/student_invoices")

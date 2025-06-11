@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import ReusableTable, { ColumnDefinition, FilterDefinition } from '../ReusableTable';
-import { useDailySummary } from '../../hooks/accounting/useDailySummary';
+import ReusableTable, { ColumnDefinition, FilterDefinition } from '../../ReusableTable';
+import { useDailySummary } from '../../../hooks/accounting/useDailySummary';
 
 interface AuthorizedRow {
   name: string;
@@ -60,7 +60,7 @@ const DailyOperationsAuthorizedTable: React.FC = () => {
   return (
     <div className="container mt-3">
       <ReusableTable<AuthorizedRow>
-        pageTitle="Yetkili İşlemleri"
+        // pageTitle="Yetkili İşlemleri"
         columns={columns}
         data={filteredRows}
         loading={loading}
@@ -70,8 +70,8 @@ const DailyOperationsAuthorizedTable: React.FC = () => {
         totalPages={1}
         totalItems={filteredRows.length}
         pageSize={filteredRows.length}
-        onPageChange={() => {}}
-        onPageSizeChange={() => {}}
+        onPageChange={() => { }}
+        onPageSizeChange={() => { }}
         filters={filters}
         showModal={false}
         exportFileName="authorized-operations"

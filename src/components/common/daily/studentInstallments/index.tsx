@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import ReusableTable, { ColumnDefinition } from "../ReusableTable";
-import { useListStudents } from "../../hooks/student/useList";
-import { IStudent } from "../../../types/student/list";
-import { formatDate } from "../../../utils/formatters";
+import ReusableTable, { ColumnDefinition } from "../../ReusableTable";
+import { useListStudents } from "../../../hooks/student/useList";
+import { IStudent } from "../../../../types/student/list";
+import { formatDate } from "../../../../utils/formatters";
 
 export default function StudentInstallmentsTable() {
   const navigate = useNavigate();
@@ -69,7 +69,7 @@ export default function StudentInstallmentsTable() {
 
   return (
     <ReusableTable<IStudent>
-      pageTitle="Öğrenci Taksitleri"
+      // pageTitle="Öğrenci Taksitleri"
       columns={columns}
       data={data}
       loading={loading}

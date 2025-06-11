@@ -1,7 +1,7 @@
 import { useMemo } from "react";
-import ReusableTable, { ColumnDefinition } from "../ReusableTable";
-import { useExpencesTable } from "../../hooks/expences/main/useExpenseList";
-import { IExpense } from "../../../types/expences/main/list";
+import ReusableTable, { ColumnDefinition } from "../../ReusableTable";
+import { useExpencesTable } from "../../../hooks/expences/main/useExpenseList";
+import { IExpense } from "../../../../types/expences/main/list";
 
 interface DailyExpenseRow extends IExpense {
     remaining_amount?: number;
@@ -60,7 +60,7 @@ export default function DailyExpensesTable() {
 
     return (
         <ReusableTable<DailyExpenseRow>
-            pageTitle="Giderler"
+            // pageTitle="Giderler"
             columns={columns}
             data={expensesData as DailyExpenseRow[]}
             loading={loading}

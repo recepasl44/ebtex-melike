@@ -1,7 +1,7 @@
 import { useMemo } from "react";
-import ReusableTable, { ColumnDefinition } from "../ReusableTable";
-import { usePersonnelTable } from "../../hooks/employee/personel/useList";
-import type { Personel } from "../../../types/employee/personel/list";
+import ReusableTable, { ColumnDefinition } from "../../ReusableTable";
+import { usePersonnelTable } from "../../../hooks/employee/personel/useList";
+import type { Personel } from "../../../../types/employee/personel/list";
 
 interface StaffPaymentRow {
   odenecek: string;
@@ -60,7 +60,7 @@ export default function DailyStaffAppointmentsTable() {
   return (
     <div className="container-fluid mt-3">
       <ReusableTable<StaffPaymentRow>
-        pageTitle="Personel Ödemeleri"
+        // pageTitle="Personel Ödemeleri"
         columns={columns}
         data={rows}
         loading={loading}

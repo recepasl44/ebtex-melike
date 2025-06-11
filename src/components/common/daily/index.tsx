@@ -2,15 +2,15 @@
 import React, { useState } from 'react';
 import TabsContainer from './component/organisms/TabsContainer';
 
-import DailyTransactionsFinancialSummary from '../dailyTransactionsFinancialSummary';
-import StudentInstallmentsTable from '../studentInstallments';
-import DailyIncomeTable from '../dailyIncome/table';
-import DailyExpensesTable from '../dailyExpenses';
-import DailyStaffAppointmentsTable from "../dailyStaffAppointments";
-import DailyCardManagementTable from '../dailyCardManagement';
-import DailyTransactionsPaymentsTable from '../dailyTransactionsPayments/table';
-import DailyTransferTable from '../dailyTransfer';
-import DailyOperationsAuthorized from '../dailyOperationsAuthorized';
+import DailyTransactionsFinancialSummary from '../daily/dailyTransactionsFinancialSummary';
+import StudentInstallmentsTable from '../daily/studentInstallments';
+import DailyIncomeTable from '../daily/dailyIncome/table';
+import DailyExpensesTable from '../daily/dailyExpenses';
+import DailyStaffAppointmentsTable from "../daily/dailyStaffAppointments";
+import DailyCardManagementTable from '../daily/dailyCardManagement';
+import DailyTransactionsPaymentsTable from '../daily/dailyTransactionsPayments/table';
+import DailyTransferTable from './dailyTransfer';
+import DailyOperationsAuthorized from '../daily/dailyOperationsAuthorized';
 import Pageheader from '../../page-header/pageheader';
 
 const DailyModule: React.FC = () => {

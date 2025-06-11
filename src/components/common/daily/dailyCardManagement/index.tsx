@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import ReusableTable, { ColumnDefinition } from '../ReusableTable';
-import { useCreditCardTable } from '../../hooks/creditCard/useCreditCardList';
-import { ICreditCard } from '../../../types/creditCard/list';
+import ReusableTable, { ColumnDefinition } from '../../ReusableTable';
+import { useCreditCardTable } from '../../../hooks/creditCard/useCreditCardList';
+import { ICreditCard } from '../../../../types/creditCard/list';
 
 interface DailyCreditCardRow extends ICreditCard {
   seasson_name?: string | null;
@@ -44,7 +44,7 @@ export default function DailyCardManagementTable() {
 
   return (
     <ReusableTable<DailyCreditCardRow>
-      pageTitle="Kart Yönetimi"
+      // pageTitle="Kart Yönetimi"
       columns={columns}
       data={creditCardData as DailyCreditCardRow[]}
       loading={loading}

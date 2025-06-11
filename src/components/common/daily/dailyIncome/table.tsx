@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import ReusableTable, { ColumnDefinition } from '../ReusableTable';
-import { useOtherIncomeTable } from '../../hooks/otherIncome/useOtherIncomeList';
-import { OtherIncomeData } from '../../../types/otherIncome/list';
+import ReusableTable, { ColumnDefinition } from '../../ReusableTable';
+import { useOtherIncomeTable } from '../../../hooks/otherIncome/useOtherIncomeList';
+import { OtherIncomeData } from '../../../../types/otherIncome/list';
 
 interface DailyIncomeData extends OtherIncomeData {
     branch_name?: string | null;
@@ -61,7 +61,7 @@ export default function DailyIncomeTable() {
 
     return (
         <ReusableTable<DailyIncomeData>
-            pageTitle="Gelirler"
+            // pageTitle="Gelirler"
             columns={columns}
             data={otherIncomeData as DailyIncomeData[]}
             loading={loading}

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import ReusableTable, { ColumnDefinition } from '../ReusableTable';
-import { useTransfersTable } from '../../hooks/transfers/useList';
-import { TransferData } from '../../../types/transfers/list';
+import ReusableTable, { ColumnDefinition } from '../../ReusableTable';
+import { useTransfersTable } from '../../../hooks/transfers/useList';
+import { TransferData } from '../../../../types/transfers/list';
 
 interface DailyTransferRow extends TransferData {
   seasson_name?: string | null;
@@ -53,7 +53,7 @@ export default function DailyTransferTable() {
 
   return (
     <ReusableTable<DailyTransferRow>
-      pageTitle="Transfer"
+      // pageTitle="Transfer"
       columns={columns}
       data={transfersData as unknown as DailyTransferRow[]}
       loading={loading}

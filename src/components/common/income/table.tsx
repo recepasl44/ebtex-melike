@@ -72,9 +72,7 @@ export default function IncomeListPage() {
     <div className="">
       <div className="">
         <h4>Gelir Listesi</h4>
-        <Button variant="success" onClick={() => navigate('/income-create')}>
-          Gelir Ekle
-        </Button>
+
       </div>
       <ReusableTable<IncomeData>
         columns={columns}

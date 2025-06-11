@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import ReusableTable, { ColumnDefinition } from '../ReusableTable';
-import { useDebtsTable } from '../../hooks/debts/useList';
-import { DebtData } from '../../../types/suppliers/debt/list';
+import ReusableTable, { ColumnDefinition } from '../../ReusableTable';
+import { useDebtsTable } from '../../../hooks/debts/useList';
+import { DebtData } from '../../../../types/suppliers/debt/list';
 
 export default function DailyTransactionsPaymentsTable() {
   const {
@@ -40,7 +40,7 @@ export default function DailyTransactionsPaymentsTable() {
 
   return (
     <ReusableTable<DebtData>
-      pageTitle="Ödemeler"
+      // pageTitle="Ödemeler"
       columns={columns}
       data={debtsData}
       loading={loading}
