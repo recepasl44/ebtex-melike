@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import ReusableTable, { ColumnDefinition, FilterDefinition } from "../ReusableTable";
+import ReusableTable, { ColumnDefinition } from "../ReusableTable";
+import FilterGroup, { FilterDefinition } from "./component/organisms/SearchFilters";
 import { useListStudents } from "../../hooks/student/useList";
 import { useProgramsTable } from "../../hooks/program/useList";
 import { useLevelsTable } from "../../hooks/levels/useList";
@@ -182,26 +183,32 @@ export default function PayInstallments() {
   );
 
   return (
-    <ReusableTable<InstallmentRow>
-      columns={columns}
-      data={rows}
-      loading={loading}
-      error={error}
-      filters={filters}
-      showExportButtons={true}
-      tableMode="single"
-      pageTitle="Taksitler"
-      currentPage={page}
-      totalPages={totalPages}
-      totalItems={totalItems}
-      pageSize={pageSize}
-      onPageChange={(p) => setPage(p)}
-      onPageSizeChange={(s) => {
-        setPageSize(s);
-        setPage(1);
-      }}
-      exportFileName="pay_installments"
-      customFooter={footer}
-    />
+    <>
+      <FilterGroup
+        filters={filters}
+        navigate={navigate}
+        columnsPerRow={4}
+      />
+      <ReusableTable<InstallmentRow>
+        columns={columns}
+        data={rows}
+        loading={loading}
+        error={error}
+        showExportButtons={true}
+        tableMode="single"
+        pageTitle="Taksitler"
+        currentPage={page}
+        totalPages={totalPages}
+        totalItems={totalItems}
+        pageSize={pageSize}
+        onPageChange={(p) => setPage(p)}
+        onPageSizeChange={(s) => {
+          setPageSize(s);
+          setPage(1);
+        }}
+        exportFileName="pay_installments"
+        customFooter={footer}
+      />
+    </>
   );
 }
