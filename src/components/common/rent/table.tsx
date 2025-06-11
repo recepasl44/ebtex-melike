@@ -78,8 +78,8 @@ export default function RentTable() {
           r.remaining_amount
             ? r.remaining_amount
             : r.total_rent
-            ? String(Number(r.total_rent) - Number(r.paid_amount || 0))
-            : "-",
+              ? String(Number(r.total_rent) - Number(r.paid_amount || 0))
+              : "-",
       },
       {
         key: "actions",
