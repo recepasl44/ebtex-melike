@@ -262,13 +262,8 @@ export const MENUITEMS: any = [
       },
       {
         title: "Tedarikçiler",
-        type: "sub",
-        children: [
-          { title: "Tedarikçiler", path: "/supplier", type: "link" },
-
-
-
-        ],
+        path: "/supplier",
+        type: "link",
       },
       {
         title: "Çek Yönetimi",

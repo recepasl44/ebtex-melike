@@ -14,6 +14,7 @@ import { useSeasonsList } from "../../../hooks/season/useSeasonsList";
 import { useBranchTable } from "../../../hooks/branch/useBranchList";
 import { useCategoriesList } from "../../../hooks/expences/expenseCategories/useCategoriesList";
 import { useSuppliersTable } from "../../../hooks/suppliers/useSuppliersList";
+import Pageheader from "../../../page-header/pageheader";
 
 
 export default function ExpenseListPage() {
@@ -248,7 +249,8 @@ export default function ExpenseListPage() {
   );
 
   return (
-    <>
+    <div className="container-fluid mt-3">
+      <Pageheader title="Giderler" currentpage="Gider Kayıtları" />
       <FilterGroup filters={filters} columnsPerRow={4} navigate={navigate} />
 
       <ReusableTable<IExpense>
@@ -274,6 +276,6 @@ export default function ExpenseListPage() {
           removeExpence(Number(row.id));
         }}
       />
-    </>
+    </div>
   );
 }
