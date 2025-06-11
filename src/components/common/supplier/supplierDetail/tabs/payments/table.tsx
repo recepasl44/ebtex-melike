@@ -36,25 +36,20 @@ export default function SupplierPaymentsTab({ supplierId, enabled }: SupplierPay
         render: (row) => row.payment_date || "-",
       },
       {
-        key: "amount",
-        label: "Ödenen Tutar",
-        render: (row) =>
-          row.amount ? `${Number(row.amount).toLocaleString()} ₺` : "0,00 ₺",
+        key: "is_paid",
+        label: "Ödeme Durumu",
+        render: (row) => row.is_paid ? "Ödeme Yapıldı" : "Vade Tarihi Var",
       },
       {
-        key: "payment_method",
-        label: "Ödeme Şekli",
-        render: (row) => (row.payment_method && row.payment_method.name) || "-",
+        key: "amount",
+        label: "Tutar",
+        render: (row) =>
+          row.amount ? `${Number(row.amount).toLocaleString()} ₺` : "0,00 ₺",
       },
       {
         key: "description",
         label: "Açıklama",
         render: (row) => row.description || "-",
-      },
-      {
-        key: "id",
-        label: "Makbuz No",
-        render: (row) => String(row.id),
       },
       {
         key: "actions",
@@ -77,14 +72,6 @@ export default function SupplierPaymentsTab({ supplierId, enabled }: SupplierPay
             >
               <i className="ti ti-trash" />
             </button>
-            {row.pdf_path && (
-              <button
-                className="btn btn-icon btn-sm btn-primary-light rounded-pill"
-                onClick={() => window.open(row.pdf_path as string, "_blank")}
-              >
-                <i className="ti ti-printer" />
-              </button>
-            )}
           </>
         ),
       },
