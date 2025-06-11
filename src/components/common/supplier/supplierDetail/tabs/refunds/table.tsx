@@ -106,6 +106,7 @@ export default function SupplierRefundTab({ supplierId, enabled }: SupplierRefun
       data={refunds || []}
       loading={loading}
       error={error || deleteError}
+      tableMode="single"
 
       pageSize={pageSize}
       onPageChange={(newPage) => setPage(newPage)}

@@ -106,6 +106,7 @@ export default function SupplierNotesTab({ supplierId, enabled }: SupplierNotesT
       data={supplierNotesData || []}
       loading={loading}
       error={error || deleteError}
+      tableMode="single"
       currentPage={current_page ?? 1}
       totalPages={totalPages}
       totalItems={totalItems}

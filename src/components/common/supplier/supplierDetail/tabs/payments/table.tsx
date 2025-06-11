@@ -110,6 +110,7 @@ export default function SupplierPaymentsTab({ supplierId, enabled }: SupplierPay
       data={supplierPaymentsData || []}
       loading={loading}
       error={error || deleteError}
+      tableMode="single"
       pageSize={pageSize}
       onPageChange={(newPage) => setPage(newPage)}
       onPageSizeChange={(newSize) => {
