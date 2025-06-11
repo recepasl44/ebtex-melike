@@ -5,6 +5,9 @@ import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable"
 import { useSupplierNotesList } from "../../../../../hooks/supplierNotes/useList"
 import { useSupplierNotesDelete } from "../../../../../hooks/supplierNotes/useDelete"
 import { SupplierNoteData } from "../../../../../../types/supplierNotes/list"
+import { useDispatch } from "react-redux"
+import { AppDispatch } from "../../../../../../store"
+import { fetchSupplierNotes } from "../../../../../../slices/supplierNotes/list/thunk"
 
 interface SupplierNotesTabProps {
   supplierId: number
@@ -13,6 +16,7 @@ interface SupplierNotesTabProps {
 
 export default function SupplierNotesTab({ supplierId, enabled }: SupplierNotesTabProps) {
   const navigate = useNavigate()
+  const dispatch = useDispatch<AppDispatch>()
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
   const [search] = useState("")
@@ -31,14 +35,24 @@ export default function SupplierNotesTab({ supplierId, enabled }: SupplierNotesT
   const columns: ColumnDefinition<SupplierNoteData>[] = useMemo(() => {
     return [
       {
+        key: "branch_name",
+        label: "Şube",
+        render: (row) => row.branch_name || "-",
+      },
+      {
+        key: "created_at",
+        label: "Tarih",
+        render: (row) => row.created_at || "-",
+      },
+      {
         key: "note",
         label: "Not",
         render: (row) => row.note || "-",
       },
       {
-        key: "created_at",
-        label: "Oluşturulma Tarihi",
-        render: (row) => row.created_at || "-",
+        key: "user_name",
+        label: "Kullanıcı",
+        render: (row) => row.user_name || "-",
       },
       {
         key: "actions",
@@ -69,7 +83,17 @@ export default function SupplierNotesTab({ supplierId, enabled }: SupplierNotesT
 
   function handleDeleteRow(row: SupplierNoteData) {
     if (!row.id) return
-    deleteExistingSupplierNote({ supplierId, supplierNoteId: row.id })
+    deleteExistingSupplierNote({ supplierId, supplierNoteId: row.id }).then(() => {
+      dispatch(
+        fetchSupplierNotes({
+          supplierId,
+          page,
+          pageSize,
+          search,
+          enabled,
+        })
+      )
+    })
   }
 
   return (

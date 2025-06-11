@@ -92,8 +92,8 @@ export default function SupplierNoteCrud() {
       fields={fields}
       initialValues={initialValues}
       onSubmit={handleSubmit}
-      confirmButtonLabel={mode === "add" ? "Kaydet" : "Güncelle"}
-      cancelButtonLabel="İptal"
+      confirmButtonLabel={mode === "add" ? "Ekle" : "Güncelle"}
+      cancelButtonLabel="Vazgeç"
       isLoading={loading}
       error={error || null}
       onClose={() => navigate(-1)}
