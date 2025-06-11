@@ -9,7 +9,7 @@ import OverduePaymentsPage from '../overduePayments/Table';
 import Pageheader from '../../page-header/pageheader';
 
 const PayDetailModule: React.FC = () => {
-  const [, setActiveIdx] = useState<number>(0);
+  const [activeIdx, setActiveIdx] = useState<number>(0);
 
   const tabsConfig = [
     {
@@ -48,7 +48,10 @@ const PayDetailModule: React.FC = () => {
 
   return (
     <div className="px-4">
-      <Pageheader title="ok" currentpage="Ödeme Detayı" />
+      <Pageheader
+        title="Ödeme Detayları"
+        currentpage={tabsConfig[activeIdx]?.label}
+      />
       <TabsContainer
         tabs={tabsConfig}
         onTabChange={(idx: number) => setActiveIdx(idx)}
