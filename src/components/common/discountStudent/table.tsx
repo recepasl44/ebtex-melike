@@ -21,62 +21,49 @@ export default function DiscountStudentTable() {
         totalItems,
         setPage,
         setPageSize,
-        searchTerm,
-        setSearchTerm,
+        schoolLevel,
+        setSchoolLevel,
+        classLevel,
+        setClassLevel,
+        classBranch,
+        setClassBranch,
+        fullName,
+        setFullName,
     } = useDiscountStudentTable();
   const [selectedStudent, setSelectedStudent] = useState<DiscountStudentData | null>(null);
     const handleCloseDetails = () => setSelectedStudent(null);
 
     const columns: ColumnDefinition<DiscountStudentData>[] = useMemo(
         () => [
+            { key: "sube", label: "Şube" },
             { key: "sozlesme_no", label: "Sözleşme No" },
             { key: "okul_no", label: "Okul No" },
-            { key: "ad", label: "Ad" },
-            { key: "soyad", label: "Soyad" },
-            { key: "program", label: "Program" },
-            { key: "devre", label: "Devre" },
-            { key: "sinif", label: "Sınıf" },
+            {
+                key: "full_name",
+                label: "Adı Soyadı",
+                render: (row) => `${row.ad} ${row.soyad}`,
+            },
+            { key: "program", label: "Okul Seviyesi" },
+            { key: "devre", label: "Sınıf Seviyesi" },
+            { key: "sinif", label: "Sınıf/Şube" },
             { key: "indirim_adi", label: "İndirim Adı" },
-            { key: "enrollment_indirim", label: "Enrol. İndirim" },
+            { key: "kullanici", label: "Kullanıcı", render: (row) => row.kullanici ?? "" },
+            { key: "enrollment_indirim", label: "İndirim Tutarı" },
             {
                 key: "toplam",
-                label: "Toplam",
+                label: "Kayıt Ücreti",
                 render: (row) => `₺${row.toplam.toLocaleString()}`,
             },
             {
                 key: "actions",
-                label: "Actions",
+                label: "İşlemler",
                 render: (row) => (
-                    <>
-                        <button
-                            onClick={() => navigate(`/discount-students/${row.sozlesme_no}`)}
-                            className="btn btn-icon btn-sm btn-primary-light rounded-pill"
-                        >
-                            <i className="ti ti-eye" />
-                        </button>
-                               <button
-                            onClick={() => setSelectedStudent(row)}
-                            className="btn btn-icon btn-sm btn-secondary-light rounded-pill"
-                        >
-                            <i className="ti ti-info-circle" />
-                        </button>
-                        <button
-                            onClick={() =>
-                                navigate(`/discount-students/edit/${row.sozlesme_no}`)
-                            }
-                            className="btn btn-icon btn-sm btn-info-light rounded-pill"
-                        >
-                            <i className="ti ti-pencil" />
-                        </button>
-                        <button
-                            className="btn btn-icon btn-sm btn-danger-light rounded-pill"
-                            onClick={() => {
-                                /* delete action */
-                            }}
-                        >
-                            <i className="ti ti-trash" />
-                        </button>
-                    </>
+                    <button
+                        onClick={() => navigate(`/discount-students/${row.sozlesme_no}`)}
+                        className="btn btn-icon btn-sm btn-primary-light rounded-pill"
+                    >
+                        <i className="ti ti-eye" />
+                    </button>
                 ),
             },
         ],
@@ -86,17 +73,47 @@ export default function DiscountStudentTable() {
     const filters: FilterDefinition[] = useMemo(
         () => [
             {
-                key: "search",
-                label: "Search",
+                key: "school_level",
+                label: "Okul Seviyesi",
                 type: "text",
-                value: searchTerm,
+                value: schoolLevel,
                 onChange: (val: string) => {
-                    setSearchTerm(val);
+                    setSchoolLevel(val);
+                    setPage(1);
+                },
+            },
+            {
+                key: "class_level",
+                label: "Sınıf Seviyesi",
+                type: "text",
+                value: classLevel,
+                onChange: (val: string) => {
+                    setClassLevel(val);
+                    setPage(1);
+                },
+            },
+            {
+                key: "class_branch",
+                label: "Sınıf/Şube",
+                type: "text",
+                value: classBranch,
+                onChange: (val: string) => {
+                    setClassBranch(val);
+                    setPage(1);
+                },
+            },
+            {
+                key: "full_name",
+                label: "Adı Soyadı",
+                type: "text",
+                value: fullName,
+                onChange: (val: string) => {
+                    setFullName(val);
                     setPage(1);
                 },
             },
         ],
-        [searchTerm, setPage, setSearchTerm]
+        [schoolLevel, classLevel, classBranch, fullName, setPage]
     );
 
     return (

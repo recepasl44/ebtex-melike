@@ -11,15 +11,27 @@ export function useDiscountStudentTable() {
 
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(25);
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [schoolLevel, setSchoolLevel] = useState<string>("");
+  const [classLevel, setClassLevel] = useState<string>("");
+  const [classBranch, setClassBranch] = useState<string>("");
+  const [fullName, setFullName] = useState<string>("");
 
   const { data, meta, status, error } = useSelector(
     (state: RootState) => state.discountStudentList
   );
 
   useEffect(() => {
-    dispatch(fetchDiscountStudents({ searchTerm, page, paginate: pageSize }));
-  }, [dispatch, searchTerm, page, pageSize]);
+    dispatch(
+      fetchDiscountStudents({
+        page,
+        paginate: pageSize,
+        school_level: schoolLevel,
+        class_level: classLevel,
+        class_branch: classBranch,
+        full_name: fullName,
+      })
+    );
+  }, [dispatch, page, pageSize, schoolLevel, classLevel, classBranch, fullName]);
 
   const loading = status === DiscountStudentListStatus.LOADING;
   const discountStudentData: DiscountStudentData[] = data || [];
@@ -38,7 +50,13 @@ export function useDiscountStudentTable() {
     totalItems,
     setPage,
     setPageSize,
-    searchTerm,
-    setSearchTerm,
+    schoolLevel,
+    setSchoolLevel,
+    classLevel,
+    setClassLevel,
+    classBranch,
+    setClassBranch,
+    fullName,
+    setFullName,
   };
 }

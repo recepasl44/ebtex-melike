@@ -4,19 +4,30 @@ import { DISCOUNT_STUDENT } from '../../../helpers/url_helper'; // Örneğin: "h
 import { ListDiscountStudentResponse } from '../../../types/discountStudent/list';
 
 interface DiscountStudentListArgs {
-  searchTerm?: string;
   page?: number;
   paginate?: number;
+  school_level?: string;
+  class_level?: string;
+  class_branch?: string;
+  full_name?: string;
 }
 
 export const fetchDiscountStudents = createAsyncThunk<ListDiscountStudentResponse, DiscountStudentListArgs>(
   'discountStudent/fetchDiscountStudents',
-  async ({ searchTerm = "", page = 1, paginate = 25 }, { rejectWithValue }) => {
+  async (
+    { page = 1, paginate = 25, school_level, class_level, class_branch, full_name },
+    { rejectWithValue }
+  ) => {
     try {
-      let url = `${DISCOUNT_STUDENT}?page=${page}&paginate=${paginate}`;
-      if (searchTerm) {
-        url += `&search=${encodeURIComponent(searchTerm)}`;
-      }
+      const params = new URLSearchParams();
+      params.append('page', String(page));
+      params.append('paginate', String(paginate));
+      if (school_level) params.append('school_level', school_level);
+      if (class_level) params.append('class_level', class_level);
+      if (class_branch) params.append('class_branch', class_branch);
+      if (full_name) params.append('full_name', full_name);
+
+      const url = `${DISCOUNT_STUDENT}?${params.toString()}`;
       const resp = await axiosInstance.get(url);
       return resp.data as ListDiscountStudentResponse;
     } catch (err: any) {
