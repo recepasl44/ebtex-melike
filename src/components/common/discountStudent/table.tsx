@@ -24,7 +24,7 @@ export default function DiscountStudentTable() {
         searchTerm,
         setSearchTerm,
     } = useDiscountStudentTable();
-  const [selectedStudent, setSelectedStudent] = useState<DiscountStudentData | null>(null);
+    const [selectedStudent, setSelectedStudent] = useState<DiscountStudentData | null>(null);
     const handleCloseDetails = () => setSelectedStudent(null);
 
     const columns: ColumnDefinition<DiscountStudentData>[] = useMemo(
@@ -54,7 +54,7 @@ export default function DiscountStudentTable() {
                         >
                             <i className="ti ti-eye" />
                         </button>
-                               <button
+                        <button
                             onClick={() => setSelectedStudent(row)}
                             className="btn btn-icon btn-sm btn-secondary-light rounded-pill"
                         >
@@ -121,7 +121,7 @@ export default function DiscountStudentTable() {
                 filters={filters}
                 exportFileName="discount-students-report"
             />
-              {selectedStudent && (
+            {selectedStudent && (
                 <Modal show onHide={handleCloseDetails} centered>
                     <Modal.Header closeButton>
                         <Modal.Title>Detaylar</Modal.Title>

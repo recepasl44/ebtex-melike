@@ -30,7 +30,7 @@ export default function PayInstallments() {
   const [levelId, setLevelId] = useState("");
   const [classId, setClassId] = useState("");
   const [name, setName] = useState("");
-  const [dateRange, setDateRange] = useState<{ startDate?: string; endDate?: string }>({});
+  const [dateRange, setDateRange] = useState<{ startDate: string; endDate: string }>({ startDate: '', endDate: '' });
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
