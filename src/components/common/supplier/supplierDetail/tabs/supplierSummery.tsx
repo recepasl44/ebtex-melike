@@ -1,4 +1,4 @@
-import {  useMemo } from "react"
+import { useMemo } from "react"
 import ReusableTable, { ColumnDefinition } from "../../../ReusableTable"
 import { Supplier } from "../../../../../types/suppliers/supplier/list"
 import { useSupplierShow } from "../../../../hooks/suppliers/useSuppliersShow"

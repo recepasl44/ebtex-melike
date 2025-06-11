@@ -124,7 +124,7 @@ export default function SupplierListPage() {
 
     <>
       <ReusableTable<Supplier>
-        pageTitle="Firma Listesi"
+        pageTitle="Tedarikçiler"
         onAdd={() => navigate("/suppliercrud")}
         columns={columns}
         tableMode="single"

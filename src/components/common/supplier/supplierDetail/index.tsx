@@ -36,9 +36,9 @@ export default function SupplierDetailModal({
       getSupplier(String(id))
     }
   }, [id, getSupplier])
-const tabsConfig = [
+  const tabsConfig = [
     {
-      label: "Özet",
+      label: "Finansal Özet",
       content: <SupplierOverviewTab supplierId={Number(id)} />,
       activeBgColor: "#5C67F7",
       activeTextColor: "#FFFFFF",
@@ -109,7 +109,7 @@ const tabsConfig = [
       </Modal.Header>
 
       <Modal.Body>
-            <TabsContainer
+        <TabsContainer
           tabs={tabsConfig}
           onTabChange={(parentIndex) => setActiveTab(parentIndex)}
         />
