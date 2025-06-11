@@ -7,18 +7,12 @@ import { useRentAdd, RentAddPayload } from "../../hooks/rent/useRentAdd";
 import { useRentUpdate, RentUpdatePayload } from "../../hooks/rent/useRentUpdate";
 import { useSeasonsBranches } from "../../header/hooks/useSeasonsBranches";
 
-interface RentModalProps {
-  show: boolean;
-  onClose: () => void;
-  onRefresh: () => void;
-}
-
 interface RentFormData extends FormikValues {
   rent_date: string;
   total_rent: number;
 }
 
-const RentModal: React.FC<RentModalProps> = ({ show, onClose, onRefresh }) => {
+export default function RentCrud() {
   const { id } = useParams<{ id?: string }>();
   const navigate = useNavigate();
   const mode = id ? "update" : "add";
@@ -68,14 +62,12 @@ const RentModal: React.FC<RentModalProps> = ({ show, onClose, onRefresh }) => {
     } else if (mode === "update" && id) {
       await updateRent(Number(id), payloadBase as RentUpdatePayload);
     }
-    onRefresh();
-    onClose();
     navigate(-1);
   }
 
   return (
     <ReusableModalForm<RentFormData>
-      show={show}
+      show={true}
       title={mode === "add" ? "Kira Ekle" : "Kira Güncelle"}
       fields={getFields()}
       initialValues={initialValues}
@@ -85,9 +77,7 @@ const RentModal: React.FC<RentModalProps> = ({ show, onClose, onRefresh }) => {
       isLoading={loading}
       error={error || undefined}
       autoGoBackOnModalClose={true}
-      onClose={onClose}
+      onClose={() => navigate(-1)}
     />
   );
-};
-
-export default RentModal;
+}
