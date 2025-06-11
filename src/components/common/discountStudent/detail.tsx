@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ReusableTable, { ColumnDefinition } from "../ReusableTable";
 
 interface DiscountDetailRow {
@@ -13,23 +13,24 @@ interface DiscountDetailRow {
 
 export default function DiscountStudentDetail() {
   const { sozlesme_no } = useParams<{ sozlesme_no: string }>();
+  const navigate = useNavigate();
 
   const columns: ColumnDefinition<DiscountDetailRow>[] = useMemo(
     () => [
       {
         key: "price",
-        label: "Fiyat",
+        label: "Liste Fiyatı",
         render: (row) => `₺${row.price.toLocaleString()}`,
-      },
-      {
-        key: "general_discount",
-        label: "Genel İndirim",
-        render: (row) => `₺${row.general_discount.toLocaleString()}`,
       },
       {
         key: "seasonal_discount",
         label: "Dönemsel İndirim",
         render: (row) => `₺${row.seasonal_discount.toLocaleString()}`,
+      },
+      {
+        key: "general_discount",
+        label: "Genel İndirim",
+        render: (row) => `₺${row.general_discount.toLocaleString()}`,
       },
       {
         key: "total_discount",
@@ -38,7 +39,7 @@ export default function DiscountStudentDetail() {
       },
       {
         key: "discount_percent",
-        label: "İndirim %",
+        label: "İndirim Yüzdesi",
         render: (row) => `${row.discount_percent}%`,
       },
       {
@@ -72,7 +73,8 @@ export default function DiscountStudentDetail() {
         columns={columns}
         data={data}
         tableMode="single"
-        showModal={false}
+        showModal={true}
+        onCloseModal={() => navigate(-1)}
         exportFileName="discount-student-detail"
         modalTitle="İndirim Detayı"
         button={() => window.print()}
