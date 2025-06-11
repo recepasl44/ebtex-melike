@@ -90,6 +90,8 @@ interface ReusableTableProps<T> {
   pageSize?: number;
   onPageSizeChange?: (newSize: number) => void;
   onAdd?: () => void;
+  /** Add butonunun üzerindeki yazı */
+  addButtonText?: string;
   button?: () => void; // Buton özelliği eklendi
   buttonText?: string; // Buton metni özelliği eklendi
   // Ek: Satır silme işlemi için callback (silme onayı verildiğinde çağrılır)
@@ -139,6 +141,7 @@ function ReusableTable<T extends { [key: string]: any }>({
   pageSize,
   onPageSizeChange,
   onAdd,
+  addButtonText = "Ekle",
   modalTitle,
   button,
   buttonText,
@@ -1022,7 +1025,7 @@ function ReusableTable<T extends { [key: string]: any }>({
                 )}
                 {onAdd && (
                   <Button variant="outline-secondary" onClick={onAdd}>
-                    Ekle
+                    {addButtonText}
                   </Button>
                 )}
               </div>
@@ -1315,7 +1318,7 @@ function ReusableTable<T extends { [key: string]: any }>({
         {onAdd && (
           <div className="d-flex align-items-center mb-1 gap-2 ms-auto">
             <Button variant="outline-secondary" onClick={onAdd}>
-              Ekle
+              {addButtonText}
             </Button>
           </div>
         )}

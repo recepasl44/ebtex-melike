@@ -105,6 +105,7 @@ export default function SupplierPaymentsTab({ supplierId, enabled }: SupplierPay
     <ReusableTable<SupplierPaymentData>
       pageTitle="Ödemeler"
       onAdd={() => navigate("/supplierPaymentCrud")}
+      addButtonText="Ödeme Al"
       columns={columns}
       data={supplierPaymentsData || []}
       loading={loading}
