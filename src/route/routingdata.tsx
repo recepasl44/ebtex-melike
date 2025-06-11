@@ -183,6 +183,9 @@ const StudentInstallments = lazy(
 const PayInstallments = lazy(
   () => import("../components/common/payInstallments")
 );
+const PayDetailModule = lazy(
+  () => import("../components/common/payDetail")
+);
 const StudentInvoices = lazy(
   () => import("../components/common/invoice/student_invoices")
 );
@@ -1266,6 +1269,11 @@ export const Routedata = [
     id: 336,
     path: `${import.meta.env.BASE_URL}payinstallments`,
     element: <PayInstallments />,
+  },
+  {
+    id: 337,
+    path: `${import.meta.env.BASE_URL}paydetail`,
+    element: <PayDetailModule />,
   },
   // Student Payment Detail Modal
   {
