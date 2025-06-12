@@ -12,7 +12,6 @@ import { useBranchTable } from "../../hooks/branch/useBranchList";
 import { useBankTable } from "../../hooks/bank/useBankList";
 import { TransferType } from "../../../enums/transfers/list";
 import { TransferData } from "../../../types/transfers/list";
-import TransferModal from "./crud";
 
 export default function TransfersTable() {
   const navigate = useNavigate();
@@ -22,7 +21,6 @@ export default function TransfersTable() {
   const [bankAccount, setBankAccount] = useState("");
   const [dateRange, setDateRange] = useState({ startDate: "", endDate: "" });
   const [detailRow, setDetailRow] = useState<TransferData | null>(null);
-  const [showAddModal, setShowAddModal] = useState(false);
 
 
   const {
@@ -186,7 +184,7 @@ export default function TransfersTable() {
       <Pageheader title="Finans ve Muhasebe" currentpage="Transferler" />
       <ReusableTable<TransferData>
         pageTitle="Transfer Listesi"
-        onAdd={() => setShowAddModal(true)}
+        onAdd={() => navigate("/transfers/crud")}
         columns={columns}
         data={transfersData}
         loading={loading}
@@ -255,11 +253,6 @@ export default function TransfersTable() {
           </Modal.Footer>
         </Modal>
       )}
-      <TransferModal
-        show={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        onRefresh={() => setFilter((f: any) => ({ ...f }))}
-      />
     </div>
   );
 }
