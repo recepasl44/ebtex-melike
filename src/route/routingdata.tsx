@@ -419,6 +419,7 @@ const DailyModule = lazy(() => import("../components/common/daily"));
 
 const RentDetailPage = lazy(() => import("../components/common/rent/RentDetail"));
 const RentDetailTable = lazy(() => import("../components/common/rent/table"));
+const RentCrud = lazy(() => import("../components/common/rent/crud"));
 const EstimatedBudgetTable = lazy(() => import("../components/common/estimatedBudget/table"));
 //assignmentStudents
 
@@ -1778,8 +1779,9 @@ export const Routedata = [
     element: <RentDetailTable />,
   },
   {
-    id: 2001,
-    path: "rentcrud/:id?",
+    id: 2002,
+    path: `${import.meta.env.BASE_URL}rentcrud/:id?`,
+    element: <RentCrud />,
   },
 
   {
