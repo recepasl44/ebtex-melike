@@ -1,6 +1,7 @@
 import { FormikHelpers, FormikValues } from "formik";
 import { useEffect, useState, useMemo } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { Modal, Table } from "react-bootstrap";
 import ReusableModalForm, { FieldDefinition } from "../ReusableModalForm";
 import { useCreditCardAdd } from "../../hooks/creditCard/useCreditCardAdd";
 import { useCreditCardUpdate } from "../../hooks/creditCard/useCreditCardUpdate";
@@ -30,7 +31,8 @@ interface ICreditCardFormData extends FormikValues {
 const CreditCardModal: React.FC<CreditCardModalProps> = ({ show, onClose, onRefresh }) => {
   const { id } = useParams<{ id?: string }>();
   const navigate = useNavigate();
-  const mode = id ? "update" : "add";
+  const location = useLocation();
+  const mode = (location.state as any)?.mode ?? (id ? "update" : "add");
 
   const [initialValues, setInitialValues] = useState<ICreditCardFormData>({
     branch_id: 0,
@@ -85,7 +87,7 @@ const CreditCardModal: React.FC<CreditCardModalProps> = ({ show, onClose, onRefr
   const { creditCard, getCreditCard, status: showStatus, error: showError } = useCreditCardShow();
 
   useEffect(() => {
-    if (mode === "update" && id) {
+    if ((mode === "update" || mode === "detail") && id) {
       getCreditCard(Number(id));
     }
   }, [mode, id, getCreditCard]);
@@ -106,8 +108,21 @@ const CreditCardModal: React.FC<CreditCardModalProps> = ({ show, onClose, onRefr
     }
   }, [mode, creditCard]);
 
-  const loading = mode === "add" ? addStatus === "LOADING" : updateStatus === "LOADING" || showStatus === "LOADING";
-  const error = mode === "add" ? addError : mode === "update" ? updateError || showError : null;
+  const loading =
+    mode === "add"
+      ? addStatus === "LOADING"
+      : mode === "detail"
+      ? showStatus === "LOADING"
+      : updateStatus === "LOADING" || showStatus === "LOADING";
+
+  const error =
+    mode === "add"
+      ? addError
+      : mode === "update"
+      ? updateError || showError
+      : mode === "detail"
+      ? showError
+      : null;
 
   async function handleSubmit(values: ICreditCardFormData, _helpers: FormikHelpers<ICreditCardFormData>) {
     const userData = localStorage.getItem("userData") ? JSON.parse(localStorage.getItem("userData") || "{}") : {};
@@ -129,6 +144,54 @@ const CreditCardModal: React.FC<CreditCardModalProps> = ({ show, onClose, onRefr
       await updateExistingCreditCard({ creditCardId: Number(id), payload: payloadBase } as CreditCardUpdatePayload);
     }
     navigate(-1);
+  }
+
+  if (mode === "detail") {
+    return (
+      <Modal show={show} onHide={() => navigate(-1)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Kredi Kartı Detayı</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {loading ? (
+            <div>Yükleniyor...</div>
+          ) : creditCard ? (
+            <Table bordered>
+              <tbody>
+                <tr>
+                  <th>Şube ID</th>
+                  <td>{creditCard.branch_id}</td>
+                </tr>
+                <tr>
+                  <th>Kart Sahibi</th>
+                  <td>{creditCard.card_holder_name}</td>
+                </tr>
+                <tr>
+                  <th>Kart Adı</th>
+                  <td>{creditCard.description}</td>
+                </tr>
+                <tr>
+                  <th>Kart No</th>
+                  <td>{creditCard.card_number}</td>
+                </tr>
+                <tr>
+                  <th>Son Kullanma</th>
+                  <td>
+                    {creditCard.expire_month}/{creditCard.expire_year}
+                  </td>
+                </tr>
+                <tr>
+                  <th>Tutar</th>
+                  <td>{creditCard.amount}</td>
+                </tr>
+              </tbody>
+            </Table>
+          ) : (
+            <div>Veri bulunamadı</div>
+          )}
+        </Modal.Body>
+      </Modal>
+    );
   }
 
   return (
