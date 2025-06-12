@@ -1,10 +1,11 @@
 import { FormikHelpers, FormikValues } from "formik";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import ReusableModalForm, { FieldDefinition } from "../ReusableModalForm";
 import { useCreditCardAdd } from "../../hooks/creditCard/useCreditCardAdd";
 import { useCreditCardUpdate } from "../../hooks/creditCard/useCreditCardUpdate";
 import { useCreditCardShow } from "../../hooks/creditCard/useCreditCardShow";
+import { useBranchTable } from "../../hooks/branch/useBranchList";
 import { CreditCardAddPayload } from "../../../types/creditCard/add";
 import { CreditCardUpdatePayload } from "../../../types/creditCard/update";
 
@@ -15,7 +16,9 @@ interface CreditCardModalProps {
 }
 
 interface ICreditCardFormData extends FormikValues {
+  branch_id: number | string;
   card_holder_name: string;
+  card_name?: string;
   card_number: string;
   expire_month: number;
   expire_year: number;
@@ -29,7 +32,9 @@ const CreditCardModal: React.FC<CreditCardModalProps> = ({ show, onClose, onRefr
   const mode = id ? "update" : "add";
 
   const [initialValues, setInitialValues] = useState<ICreditCardFormData>({
+    branch_id: 0,
     card_holder_name: "",
+    card_name: "",
     card_number: "",
     expire_month: 1,
     expire_year: new Date().getFullYear(),
@@ -38,9 +43,35 @@ const CreditCardModal: React.FC<CreditCardModalProps> = ({ show, onClose, onRefr
     description: "",
   });
 
+  useEffect(() => {
+    if (mode === "add") {
+      const userData = localStorage.getItem("userData")
+        ? JSON.parse(localStorage.getItem("userData") || "{}")
+        : {};
+      setInitialValues((prev) => ({
+        ...prev,
+        branch_id: userData.default_branche?.id || 0,
+      }));
+    }
+  }, [mode]);
+
+  const { branchData } = useBranchTable({ enabled: true });
+  const branchOptions = useMemo(
+    () => branchData.map((b) => ({ value: b.id, label: b.name })),
+    [branchData]
+  );
+
   const getFields = (): FieldDefinition[] => [
+    {
+      name: "branch_id",
+      label: "Şube",
+      type: "select",
+      required: true,
+      options: branchOptions,
+    },
     { name: "card_holder_name", label: "Kart Sahibi", type: "text", required: true },
-    { name: "card_number", label: "Kart Numarası", type: "text", required: true },
+    { name: "card_name", label: "Kart Adı", type: "text", required: false },
+    { name: "card_number", label: "Kart Numarası", type: "creditcard", required: true },
     { name: "expire_month", label: "Ay", type: "number", required: true },
     { name: "expire_year", label: "Yıl", type: "number", required: true },
     { name: "cvv", label: "CVV", type: "text", required: true },
@@ -61,7 +92,9 @@ const CreditCardModal: React.FC<CreditCardModalProps> = ({ show, onClose, onRefr
   useEffect(() => {
     if (mode === "update" && creditCard) {
       setInitialValues({
+        branch_id: creditCard.branch_id || 0,
         card_holder_name: creditCard.card_holder_name || "",
+        card_name: creditCard.description || "",
         card_number: creditCard.card_number || "",
         expire_month: Number(creditCard.expire_month) || 1,
         expire_year: Number(creditCard.expire_year) || new Date().getFullYear(),
@@ -79,12 +112,12 @@ const CreditCardModal: React.FC<CreditCardModalProps> = ({ show, onClose, onRefr
     const userData = localStorage.getItem("userData") ? JSON.parse(localStorage.getItem("userData") || "{}") : {};
     const payloadBase = {
       card_holder_name: values.card_holder_name,
-      card_number: values.card_number,
+      card_number: values.card_number.replace(/\s/g, ""),
       expire_month: Number(values.expire_month),
       expire_year: Number(values.expire_year),
       cvv: values.cvv,
       amount: String(values.amount),
-      branch_id: userData.default_branche?.id || 0,
+      branch_id: Number(values.branch_id) || userData.default_branche?.id || 0,
       season_id: userData.default_season?.id || 0,
       description: values.description || "",
     };
