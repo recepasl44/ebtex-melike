@@ -1,6 +1,9 @@
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useSupplierPaymentsDetail } from "../../../../../hooks/supplierPayments/useDetail";
+import { Modal, Button } from "react-bootstrap";
+import {
+  useSupplierPaymentsDetail,
+} from "../../../../../hooks/supplierPayments/useDetail";
 import { useSupplierShow } from "../../../../../hooks/suppliers/useSuppliersShow";
 
 export default function SupplierPaymentReceipt() {
@@ -17,27 +20,46 @@ export default function SupplierPaymentReceipt() {
   }, [supplierId, paymentId, getSupplierPayment, getSupplier]);
 
   return (
-    <div className="container mt-4" style={{ maxWidth: "600px" }}>
-      <div className="d-flex justify-content-between mb-3">
-        <h4>\u00d6deme Makbuzu</h4>
-        <button className="btn btn-primary" onClick={() => window.print()}>Yazd\u0131r</button>
-      </div>
-      <hr />
-      {supplierPayment ? (
-        <div>
-          <p><strong>Makbuz No:</strong> {supplierPayment.id}</p>
-          <p><strong>Tedarik\u00e7i:</strong> {supplier?.name || supplierId}</p>
-          <p><strong>Tarih:</strong> {supplierPayment.payment_date}</p>
-          <p><strong>\u00d6deme \u015eekli:</strong> {supplierPayment.payment_method?.name ?? "-"}</p>
-          <p><strong>Tutar:</strong> {Number(supplierPayment.amount).toLocaleString()} \u20ba</p>
-          {supplierPayment.description && (
-            <p><strong>A\u00e7\u0131klama:</strong> {supplierPayment.description}</p>
-          )}
-        </div>
-      ) : (
-        <p>Y\u00fckleniyor...</p>
-      )}
-      <button className="btn btn-secondary mt-3" onClick={() => navigate(-1)}>Geri D\u00f6n</button>
-    </div>
+    <Modal show onHide={() => navigate(-1)} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>\u00d6deme Makbuzu</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {supplierPayment ? (
+          <div>
+            <p>
+              <strong>Makbuz No:</strong> {supplierPayment.id}
+            </p>
+            <p>
+              <strong>Tedarik\u00e7i:</strong> {supplier?.name || supplierId}
+            </p>
+            <p>
+              <strong>Tarih:</strong> {supplierPayment.payment_date}
+            </p>
+            <p>
+              <strong>\u00d6deme \u015eekli:</strong> {supplierPayment.payment_method?.name ?? "-"}
+            </p>
+            <p>
+              <strong>Tutar:</strong> {Number(supplierPayment.amount).toLocaleString()} \u20ba
+            </p>
+            {supplierPayment.description && (
+              <p>
+                <strong>A\u00e7\u0131klama:</strong> {supplierPayment.description}
+              </p>
+            )}
+          </div>
+        ) : (
+          <p>Y\u00fckleniyor...</p>
+        )}
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="outline-secondary" onClick={() => window.print()}>
+          Yazd\u0131r
+        </Button>
+        <Button variant="outline-secondary" onClick={() => navigate(-1)}>
+          Kapat
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 }
