@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
-import { Row, Col } from "react-bootstrap";
-import ReusableTable, {
-  ColumnDefinition,
-  FilterDefinition,
-} from "../../ReusableTable";
+import { Row, Col, Card, Form } from "react-bootstrap";
+import ReusableTable, { ColumnDefinition } from "../../ReusableTable";
+import Pageheader from "../../../page-header/pageheader";
+import SpkFlatpickr from "../../../../@spk-reusable-components/reusable-plugins/spk-flatpicker";
+import darkcontrol from "../../../../utils/darkmodecontroller";
 import { useFinancialSummary } from "../../../hooks/accounting/financial_summary/useFinancialSummary";
 import { useSeasonsList } from "../../../hooks/season/useSeasonsList";
 import { formatCurrency } from "../../../../utils/formatters";
@@ -23,6 +23,13 @@ const FinancialSummary = () => {
     season_id: seasonId ? Number(seasonId) : undefined,
     date: date || undefined,
   });
+
+  const formatLocalDate = (d: Date) => {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
 
   const liquidTotal =
     (summary?.liquid_assets.cash || 0) +
@@ -69,44 +76,65 @@ const FinancialSummary = () => {
     []
   );
 
-  const filters: FilterDefinition[] = useMemo(
-    () => [
-      {
-        key: "season",
-        label: "Sezon",
-        type: "select",
-        value: seasonId,
-        onChange: setSeasonId,
-        options: (seasonsData || []).map((s: any) => ({
-          value: String(s.id),
-          label: s.name,
-        })),
-      },
-      {
-        key: "date",
-        label: "Tarih",
-        type: "date",
-        value: date,
-        onChange: setDate,
-      },
-    ],
-    [seasonId, date, seasonsData]
-  );
 
   const liquidFooter = (
-    <div className="d-flex justify-content-end fw-bold me-3">
+    <div
+      className="d-flex justify-content-end fw-bold me-3"
+      style={{ color: darkcontrol.dataThemeMode === "dark" ? "#fff" : "#000" }}
+    >
       Toplam: {formatCurrency(liquidTotal)}
     </div>
   );
 
   const liabilitiesFooter = (
-    <div className="d-flex justify-content-end fw-bold me-3">
+    <div
+      className="d-flex justify-content-end fw-bold me-3"
+      style={{ color: darkcontrol.dataThemeMode === "dark" ? "#fff" : "#000" }}
+    >
       Toplam: {formatCurrency(liabilitiesTotal)}
     </div>
   );
 
   return (
-    <div className="container mt-3">
+    <div className="container-fluid mt-3">
+      <Pageheader title="Muhasebe" currentpage="Finansal Özet" />
+      <Card className="mb-4">
+        <Card.Body>
+          <Row className="g-3">
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>Sezon</Form.Label>
+                <Form.Select value={seasonId} onChange={(e) => setSeasonId(e.target.value)}>
+                  <option value="">Seçiniz</option>
+                  {(seasonsData || []).map((s: any) => (
+                    <option key={s.id} value={s.id}>
+                      {s.name}
+                    </option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>Tarih</Form.Label>
+                <SpkFlatpickr
+                  value={date ? new Date(date) : undefined}
+                  onfunChange={(dates: Date[]) => {
+                    if (!dates || !dates.length) {
+                      setDate("");
+                      return;
+                    }
+                    setDate(formatLocalDate(dates[0]));
+                  }}
+                  options={{ dateFormat: "Y-m-d", allowInput: false }}
+                  inputClass="form-control"
+                  placeholder="Tarih seçiniz"
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+        </Card.Body>
+      </Card>
       <Row className="g-4">
         <Col xs={12} lg={6}>
           <ReusableTable<RowData>
@@ -116,7 +144,6 @@ const FinancialSummary = () => {
             data={liquidRows}
             loading={loading}
             showExportButtons={false}
-            filters={filters}
             customFooter={liquidFooter}
             exportFileName="liquid-assets-summary"
           />
