@@ -29,6 +29,7 @@ export interface FieldDefinition {
   | "togglebar"
   | "email"
   | "phone"
+  | "creditcard"
   | "multiselect"
   | "textarea"
   | "iban"
@@ -81,6 +82,11 @@ function buildYupSchemaFromFields(fields: FieldDefinition[]) {
       if (!f.pattern) f.pattern = /^0\d{10}$/;
       schema = Yup.string().transform((_, originalValue) =>
         originalValue.replace(/\D/g, "")
+      );
+    } else if (f.type === "creditcard") {
+      if (!f.pattern) f.pattern = /^\d{16}$/;
+      schema = Yup.string().transform((_, originalValue) =>
+        (originalValue || "").replace(/\s/g, "")
       );
     } else if (f.type === "iban") {
       if (!f.pattern) f.pattern = /^[A-Z]{2}[0-9]{24}$/;
@@ -1169,7 +1175,46 @@ export function renderField(
     );
   }
 
-  // 13) iban
+  // 13) creditcard
+  if (f.type === "creditcard") {
+    return (
+      <BsForm.Group
+        key={f.name}
+        className={groupClasses}
+        style={{ minHeight: 50 }}
+      >
+        <BsForm.Label style={labelStyle}>
+          {f.label}
+          {f.required && <span style={{ color: "red" }}>*</span>}:
+          {hasError && (
+            <div className="text-danger" style={{ fontSize: 12 }}>
+              {String(formik.errors[f.name])}
+            </div>
+          )}
+        </BsForm.Label>
+        <div style={inputWrapperStyle}>
+          <Field name={f.name}>
+            {({ field, form }: { field: any; form: any }) => (
+              <PatternFormat
+                className="form-control"
+                format="#### #### #### ####"
+                mask="_"
+                allowEmptyFormatting
+                value={field.value || ""}
+                onValueChange={(vals: any) => {
+                  form.setFieldValue(f.name, vals.formattedValue);
+                }}
+                onBlur={formik.handleBlur}
+                name={f.name}
+              />
+            )}
+          </Field>
+        </div>
+      </BsForm.Group>
+    );
+  }
+
+  // 14) iban
   if (f.type === "iban") {
     return (
       <BsForm.Group
