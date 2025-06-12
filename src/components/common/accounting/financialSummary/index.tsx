@@ -18,8 +18,10 @@ const FinancialSummary = () => {
   const [seasonId, setSeasonId] = useState("");
   const [date, setDate] = useState("");
 
+  const [seasonsEnabled, setSeasonsEnabled] = useState(false);
+
   const { seasonsData = [] } = useSeasonsList({
-    enabled: true,
+    enabled: seasonsEnabled,
     page: 1,
     paginate: 100,
   });
@@ -98,7 +100,11 @@ const FinancialSummary = () => {
             <Col md={6}>
               <Form.Group>
                 <Form.Label>Sezon</Form.Label>
-                <Form.Select value={seasonId} onChange={e => setSeasonId(e.target.value)}>
+                <Form.Select
+                  value={seasonId}
+                  onChange={e => setSeasonId(e.target.value)}
+                  onFocus={() => !seasonsEnabled && setSeasonsEnabled(true)}
+                >
                   <option value="">Seçiniz</option>
                   {seasonsData.map(s => (
                     <option key={s.id} value={s.id}>{s.name}</option>
