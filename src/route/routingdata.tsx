@@ -316,6 +316,9 @@ const BudgetEstimate = lazy(
 const FinancialSummary = lazy(
   () => import("../components/common/accounting/financialSummary")
 );
+const FinanceNotesTable = lazy(
+  () => import("../components/common/financeNotes/table")
+);
 
 const InvoiceTable = lazy(() => import("../components/common/invoice/table"));
 const Invoicedetail = lazy(() => import("../components/common/invoice/detail"));
@@ -926,6 +929,12 @@ export const Routedata = [
     id: 24,
     path: `${import.meta.env.BASE_URL}financial-summary`,
     element: <FinancialSummary />,
+  },
+
+  {
+    id: 24,
+    path: `${import.meta.env.BASE_URL}financial-notes`,
+    element: <FinanceNotesTable />,
   },
 
   {
