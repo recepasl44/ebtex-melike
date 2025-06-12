@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Row, Col } from "react-bootstrap";
 import ReusableTable, {
   ColumnDefinition,
   FilterDefinition,
@@ -32,7 +33,7 @@ const FinancialSummary = () => {
     (summary?.liabilities.personnel_payables || 0) +
     (summary?.liabilities.supplier_debts || 0);
 
-  const rows: RowData[] = useMemo(() => {
+  const liquidRows: RowData[] = useMemo(() => {
     if (!summary) return [];
     const arr: RowData[] = [];
     arr.push({ category: "Kasa Nakit", amount: summary.liquid_assets.cash ?? "-" });
@@ -43,15 +44,21 @@ const FinancialSummary = () => {
     summary.liquid_assets.banks.forEach((b) => {
       arr.push({ category: b.bank_name, amount: b.amount ?? "-" });
     });
-    arr.push({
-      category: "Maaş Ödemeleri",
-      amount: summary.liabilities.personnel_payables ?? "-",
-    });
-    arr.push({
-      category: "Tedarikçi Borçları",
-      amount: summary.liabilities.supplier_debts ?? "-",
-    });
     return arr;
+  }, [summary]);
+
+  const liabilityRows: RowData[] = useMemo(() => {
+    if (!summary) return [];
+    return [
+      {
+        category: "Maaş Ödemeleri",
+        amount: summary.liabilities.personnel_payables ?? "-",
+      },
+      {
+        category: "Tedarikçi Borçları",
+        amount: summary.liabilities.supplier_debts ?? "-",
+      },
+    ];
   }, [summary]);
 
   const columns: ColumnDefinition<RowData>[] = useMemo(
@@ -86,25 +93,47 @@ const FinancialSummary = () => {
     [seasonId, date, seasonsData]
   );
 
-  const footer = (
-    <div className="d-flex justify-content-end fw-bold me-3 gap-4">
-      <div>Likid Varlıklar Toplam: {formatCurrency(liquidTotal)}</div>
-      <div>Borçlar Toplam: {formatCurrency(liabilitiesTotal)}</div>
+  const liquidFooter = (
+    <div className="d-flex justify-content-end fw-bold me-3">
+      Toplam: {formatCurrency(liquidTotal)}
+    </div>
+  );
+
+  const liabilitiesFooter = (
+    <div className="d-flex justify-content-end fw-bold me-3">
+      Toplam: {formatCurrency(liabilitiesTotal)}
     </div>
   );
 
   return (
     <div className="container mt-3">
-      <ReusableTable<RowData>
-        tableMode="single"
-        columns={columns}
-        data={rows}
-        loading={loading}
-        showExportButtons={false}
-        filters={filters}
-        customFooter={footer}
-        exportFileName="financial-summary"
-      />
+      <Row className="g-4">
+        <Col xs={12} lg={6}>
+          <ReusableTable<RowData>
+            tableMode="single"
+            pageTitle="Likid Varlıklar"
+            columns={columns}
+            data={liquidRows}
+            loading={loading}
+            showExportButtons={false}
+            filters={filters}
+            customFooter={liquidFooter}
+            exportFileName="liquid-assets-summary"
+          />
+        </Col>
+        <Col xs={12} lg={6}>
+          <ReusableTable<RowData>
+            tableMode="single"
+            pageTitle="Borçlar"
+            columns={columns}
+            data={liabilityRows}
+            loading={loading}
+            showExportButtons={false}
+            customFooter={liabilitiesFooter}
+            exportFileName="liabilities-summary"
+          />
+        </Col>
+      </Row>
     </div>
   );
 };
