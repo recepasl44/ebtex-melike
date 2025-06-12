@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react"
-import { DEFAULT_URL } from "../../../../../../helpers/url_helper"
 import { useNavigate } from "react-router-dom"
 import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable"
 
@@ -79,11 +78,11 @@ export default function SupplierPaymentsTab({ supplierId, enabled }: SupplierPay
             >
               <i className="ti ti-trash" />
             </button>
-            {row.pdf_path && (
+            {row.id && (
               <button
                 className="btn btn-icon btn-sm btn-primary-light rounded-pill"
                 onClick={() =>
-                  window.open(`${DEFAULT_URL}/${row.pdf_path}`, "_blank")
+                  navigate(`/supplierPaymentReceipt/${supplierId}/${row.id}`)
                 }
               >
                 <i className="ti ti-printer" />
