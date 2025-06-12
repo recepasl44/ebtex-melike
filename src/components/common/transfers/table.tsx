@@ -75,7 +75,11 @@ export default function TransfersTable() {
         label: "Tarih",
         render: (row) => new Date(row.created_at).toLocaleDateString(),
       },
-      { key: "description", label: "Açıklama" },
+      {
+        key: "description",
+        label: "Açıklama",
+        style: { wordBreak: "break-word" },
+      },
       {
         key: "actions",
         label: "İşlemler",
@@ -241,7 +245,7 @@ export default function TransfersTable() {
                   </td>
                   <td>{(detailRow as any).bank_name || detailRow.bank_account}</td>
                   <td>{new Date(detailRow.created_at).toLocaleDateString()}</td>
-                  <td>{detailRow.description}</td>
+                  <td className="text-break">{detailRow.description}</td>
                 </tr>
               </tbody>
             </BTable>
