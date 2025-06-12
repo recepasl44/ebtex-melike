@@ -5,6 +5,7 @@ import ReusableTable, {
   ColumnDefinition,
   FilterDefinition,
 } from "../ReusableTable";
+import Pageheader from "../../page-header/pageheader";
 import { useTransfersTable } from "../../hooks/transfers/useList";
 import { useTransferDelete } from "../../hooks/transfers/useDelete";
 import { useBranchTable } from "../../hooks/branch/useBranchList";
@@ -180,6 +181,7 @@ export default function TransfersTable() {
 
   return (
     <div className="container mt-3">
+      <Pageheader title="Finans ve Muhasebe" currentpage="Transferler" />
       <ReusableTable<TransferData>
         pageTitle="Transfer Listesi"
         onAdd={() => navigate("/transfers/crud")}
