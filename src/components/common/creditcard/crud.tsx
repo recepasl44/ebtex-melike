@@ -138,7 +138,7 @@ const CreditCardModal: React.FC<CreditCardModalProps> = ({ show, onClose, onRefr
       fields={getFields()}
       initialValues={initialValues}
       onSubmit={handleSubmit}
-      confirmButtonLabel={mode === "add" ? "Ekle" : "Güncelle"}
+      confirmButtonLabel="Güncelle"
       cancelButtonLabel="Vazgeç"
       isLoading={loading}
       error={error || undefined}
