@@ -143,6 +143,10 @@ const SupplierPaymentCrud = lazy(
   () =>
     import("../components/common/supplier/supplierDetail/tabs/payments/crud")
 );
+const SupplierPaymentReceipt = lazy(
+  () =>
+    import("../components/common/supplier/supplierDetail/tabs/payments/receipt")
+);
 const SupplierNoteCrud = lazy(
   () => import("../components/common/supplier/supplierDetail/tabs/notes/crud")
 );
@@ -669,6 +673,11 @@ export const Routedata = [
     id: 10,
     path: `${import.meta.env.BASE_URL}supplierPaymentCrud/:id?`,
     element: <SupplierPaymentCrud />,
+  },
+  {
+    id: 10,
+    path: `${import.meta.env.BASE_URL}supplierPaymentReceipt/:supplierId/:paymentId`,
+    element: <SupplierPaymentReceipt />,
   },
   {
     id: 10,
