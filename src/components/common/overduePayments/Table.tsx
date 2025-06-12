@@ -228,7 +228,7 @@ export default function OverduePaymentsPage() {
   return (
     <div className="container-fluid mt-3">
       <ReusableTable<OverduePayment>
-        pageTitle="Geciken Ödemeler"
+        // pageTitle="Geciken Ödemeler"
         tableMode="single"
         showExportButtons={true}
         columns={columns}

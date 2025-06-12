@@ -196,7 +196,7 @@ export default function PayInstallments() {
         error={error}
         showExportButtons={true}
         tableMode="single"
-        pageTitle="Taksitler"
+        // pageTitle="Taksitler"
         currentPage={page}
         totalPages={totalPages}
         totalItems={totalItems}

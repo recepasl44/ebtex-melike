@@ -114,7 +114,7 @@ export default function DiscountStudentTable() {
     return (
         <div className="container-fluid mt-3">
             <ReusableTable<DiscountStudentData>
-                pageTitle="İndirimli Öğrenciler"
+                // pageTitle="İndirimli Öğrenciler"
                 onAdd={() => navigate("/discount-students/create")}
                 columns={columns}
                 data={filteredData}

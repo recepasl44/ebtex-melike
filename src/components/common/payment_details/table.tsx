@@ -346,8 +346,8 @@ export default function PaymentDetailsTable() {
         const enrollments = Array.isArray(row.enrollments)
           ? row.enrollments
           : row.enrollments
-          ? [row.enrollments]
-          : [];
+            ? [row.enrollments]
+            : [];
 
         const totalFee = enrollments.reduce((sum, e: any) => {
           return (
@@ -357,9 +357,9 @@ export default function PaymentDetailsTable() {
 
         const paid = row.payments && Array.isArray(row.payments)
           ? row.payments.reduce(
-              (s: number, p: any) => s + parseFloat(p.amount_paid || "0"),
-              0
-            )
+            (s: number, p: any) => s + parseFloat(p.amount_paid || "0"),
+            0
+          )
           : 0;
 
         const overdue = enrollments.reduce((sum: number, e: any) => {
@@ -412,7 +412,7 @@ export default function PaymentDetailsTable() {
   return (
     <ReusableTable<IStudent>
       columns={columns}
-      pageTitle="Öğrenci Ödeme Detayları"
+      // pageTitle="Öğrenci Ödeme Detayları"
       data={data}
       loading={loading}
       error={error}
