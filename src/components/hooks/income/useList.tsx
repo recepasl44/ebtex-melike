@@ -20,8 +20,8 @@ export function useIncomeTable(params: IncomeListArgs) {
     params.filter || "period"
   );
 
-  const [startDate, setStartDate] = useState<string>(params.startDate || "");
-  const [endDate, setEndDate] = useState<string>(params.endDate || "");
+  const [start_date, setStartDate] = useState<string>(params.start_date || "");
+  const [end_date, setEndDate] = useState<string>(params.end_date || "");
 
   const { data, meta, status, error } = useSelector(
     (state: RootState) => state.incomeList
@@ -33,15 +33,15 @@ export function useIncomeTable(params: IncomeListArgs) {
     const query = {
       filter,
       per_page: pageSize,
-      start_date: startDate,
-      end_date: endDate,
+      start_date: start_date,
+      end_date: end_date,
       ...restParams,
     };
 
     // API çağrısını dispatch ediyoruz
 
     dispatch(fetchIncomes(query));
-  }, [dispatch, params, filter, pageSize, startDate, endDate]);
+  }, [dispatch, params, filter, pageSize, start_date, end_date]);
 
   const loading = status === IncomeListStatus.LOADING;
   const incomesData: IncomeData[] = data || [];
@@ -62,9 +62,9 @@ export function useIncomeTable(params: IncomeListArgs) {
     setPageSize,
     filter,
     setFilter,
-    startDate,
+    start_date,
     setStartDate,
-    endDate,
+    end_date,
     setEndDate,
   };
 }
