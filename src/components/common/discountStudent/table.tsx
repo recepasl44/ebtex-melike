@@ -60,6 +60,14 @@ export default function DiscountStudentTable() {
                             <i className="ti ti-pencil" />
                         </button>
                         <button
+                            className="btn btn-icon btn-sm btn-warning-light rounded-pill"
+                            onClick={() =>
+                                navigate(`/discountlist/receipt`, { state: { data: row } })
+                            }
+                        >
+                            <i className="ti ti-printer" />
+                        </button>
+                        <button
                             className="btn btn-icon btn-sm btn-danger-light rounded-pill"
                             onClick={() => {
                                 /* delete action */

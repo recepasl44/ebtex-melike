@@ -75,6 +75,9 @@ const Debts = lazy(() => import("../components/common/debts/table"));
 const DiscountStudent = lazy(
   () => import("../components/common/discountStudent/table")
 );
+const DiscountStudentReceipt = lazy(
+  () => import("../components/common/discountStudent/receipt")
+);
 const EducationalStructure = lazy(
   () => import("../components/common/academic/educational_structure/index")
 );
@@ -478,6 +481,11 @@ export const Routedata = [
     id: 13,
     path: `${import.meta.env.BASE_URL}discountlist`,
     element: <DiscountStudent />,
+  },
+  {
+    id: 13,
+    path: `${import.meta.env.BASE_URL}discountlist/receipt`,
+    element: <DiscountStudentReceipt />,
   },
   {
     id: 14,
