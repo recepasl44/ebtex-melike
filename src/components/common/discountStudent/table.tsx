@@ -43,12 +43,24 @@ export default function DiscountStudentTable() {
                 key: "actions",
                 label: "İşlemler",
                 render: (row) => (
-                    <button
-                        onClick={() => navigate(`/discount-students/${row.sozlesme_no}`)}
-                        className="btn btn-icon btn-sm btn-primary-light rounded-pill"
-                    >
-                        <i className="ti ti-eye" />
-                    </button>
+                    <>
+                        <button
+                            onClick={() => navigate(`/discount-students/${row.sozlesme_no}`)}
+                            className="btn btn-icon btn-sm btn-primary-light rounded-pill"
+                        >
+                            <i className="ti ti-eye" />
+                        </button>
+                        <button
+                            className="btn btn-icon btn-sm btn-primary-light rounded-pill"
+                            onClick={() =>
+                                navigate(`/discountStudentReceipt/${row.sozlesme_no}`, {
+                                    state: { student: row },
+                                })
+                            }
+                        >
+                            <i className="ti ti-printer" />
+                        </button>
+                    </>
                 ),
             },
         ],

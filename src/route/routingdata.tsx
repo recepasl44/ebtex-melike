@@ -92,6 +92,9 @@ const AddressStructurePage = lazy(
 const DiscountStudentDetail = lazy(
   () => import("../components/common/discountStudent/detail")
 );
+const DiscountStudentReceipt = lazy(
+  () => import("../components/common/discountStudent/receipt")
+);
 const PreRegisterIndex = lazy(
   () => import("../components/common/student/pre-register/index")
 );
@@ -1383,6 +1386,11 @@ export const Routedata = [
     id: 13,
     path: `${import.meta.env.BASE_URL}discount-students/:sozlesme_no`,
     element: <DiscountStudentDetail />,
+  },
+  {
+    id: 13,
+    path: `${import.meta.env.BASE_URL}discountStudentReceipt/:sozlesme_no`,
+    element: <DiscountStudentReceipt />,
   },
   {
     id: 49,
