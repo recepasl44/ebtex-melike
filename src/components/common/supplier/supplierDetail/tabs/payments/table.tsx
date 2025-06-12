@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react"
+import jsPDF from "jspdf"
 import { useNavigate } from "react-router-dom"
 import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable"
 
 import { useSupplierPaymentsList } from "../../../../../hooks/supplierPayments/useList"
 import { useSupplierPaymentsDelete } from "../../../../../hooks/supplierPayments/useDelete"
 import { SupplierPaymentData } from "../../../../../../types/supplierPayments/list"
-import { DEFAULT_URL } from "../../../../../../helpers/url_helper"
 
 interface SupplierPaymentsTabProps {
   supplierId: number
@@ -28,6 +28,22 @@ export default function SupplierPaymentsTab({ supplierId, enabled }: SupplierPay
     })
 
   const { deleteExistingSupplierPayment, error: deleteError } = useSupplierPaymentsDelete()
+
+  function handlePrintReceipt(row: SupplierPaymentData) {
+    const doc = new jsPDF()
+    doc.text("\u00d6deme Makbuzu", 10, 10)
+    doc.text(`Makbuz No: ${row.id}`, 10, 20)
+    doc.text(`Tarih: ${row.payment_date}`, 10, 30)
+    doc.text(
+      `\u00d6denen Tutar: ${row.amount ? `${Number(row.amount).toLocaleString()} \u20BA` : "0,00 \u20BA"}`,
+      10,
+      40
+    )
+    const paymentMethod = row.payment_method && (row.payment_method as any).name
+    if (paymentMethod) doc.text(`\u00d6deme \u015eekli: ${paymentMethod}`, 10, 50)
+    if (row.description) doc.text(`A\u00e7\u0131klama: ${row.description}`, 10, 60)
+    doc.save(`payment_${row.id}.pdf`)
+  }
 
   const columns: ColumnDefinition<SupplierPaymentData>[] = useMemo(() => {
     return [
@@ -78,16 +94,12 @@ export default function SupplierPaymentsTab({ supplierId, enabled }: SupplierPay
             >
               <i className="ti ti-trash" />
             </button>
-            {row.pdf_path && (
-              <button
-                className="btn btn-icon btn-sm btn-primary-light rounded-pill"
-                onClick={() =>
-                  window.open(`${DEFAULT_URL}/${row.pdf_path}`, "_blank")
-                }
-              >
-                <i className="ti ti-printer" />
-              </button>
-            )}
+            <button
+              className="btn btn-icon btn-sm btn-primary-light rounded-pill"
+              onClick={() => handlePrintReceipt(row)}
+            >
+              <i className="ti ti-printer" />
+            </button>
           </>
         ),
       },
