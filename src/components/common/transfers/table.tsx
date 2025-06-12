@@ -183,7 +183,7 @@ export default function TransfersTable() {
     <div className="container mt-3">
       <Pageheader title="Finans ve Muhasebe" currentpage="Transferler" />
       <ReusableTable<TransferData>
-        pageTitle="Transfer Listesi"
+        // pageTitle="Transfer Listesi"
         onAdd={() => navigate("/transfers/crud")}
         columns={columns}
         data={transfersData}

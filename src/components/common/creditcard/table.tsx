@@ -4,6 +4,7 @@ import ReusableTable, { ColumnDefinition } from "../ReusableTable";
 import { useCreditCardTable } from "../../hooks/creditCard/useCreditCardList";
 import { useCreditCardDelete } from "../../hooks/creditCard/useCreditCardDelete";
 import { ICreditCard } from "../../../types/creditCard/list";
+import Pageheader from "../../page-header/pageheader";
 
 export default function CreditCardTable() {
   const navigate = useNavigate();
@@ -66,8 +67,9 @@ export default function CreditCardTable() {
 
   return (
     <div className="container mt-3">
+      <Pageheader title="Finans ve Muhasebe" currentpage="Kart Yönetimi" />
       <ReusableTable<CreditCardRow>
-        pageTitle="Kredi Kartları"
+        // pageTitle="Kredi Kartları"
         onAdd={() => navigate("/creditcardcrud")}
         columns={columns}
         data={creditCardData as CreditCardRow[]}
