@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
+import "./receipt.css";
 import {
   useSupplierPaymentsDetail,
 } from "../../../../../hooks/supplierPayments/useDetail";
@@ -24,7 +25,7 @@ export default function SupplierPaymentReceipt() {
       <Modal.Header closeButton>
         <Modal.Title>\u00d6deme Makbuzu</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body className="receipt-modal-body">
         {supplierPayment ? (
           <div>
             <p>
@@ -52,12 +53,12 @@ export default function SupplierPaymentReceipt() {
           <p>Y\u00fckleniyor...</p>
         )}
       </Modal.Body>
-      <Modal.Footer>
+      <Modal.Footer className="receipt-modal-footer">
         <Button variant="outline-secondary" onClick={() => window.print()}>
-          Yazd\u0131r
+          YAZDIR
         </Button>
         <Button variant="outline-secondary" onClick={() => navigate(-1)}>
-          Kapat
+          gerı dön
         </Button>
       </Modal.Footer>
     </Modal>

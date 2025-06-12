@@ -1,0 +1,21 @@
+.receipt-modal-body {
+  background-color: #f9f9f9;
+  border: 1px solid #e3e3e3;
+  border-radius: 6px;
+  padding: 1rem 1.5rem;
+  font-size: 0.95rem;
+}
+
+.receipt-modal-body p {
+  margin-bottom: 0.25rem;
+}
+
+.receipt-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.receipt-modal-footer .btn {
+  min-width: 90px;
+}
