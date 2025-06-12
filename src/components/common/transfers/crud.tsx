@@ -18,38 +18,38 @@ function getFields(values: ITransferForm): FieldDefinition[] {
   const baseFields: FieldDefinition[] = [
     {
       name: "transaction_type",
-      label: "Transaction Type",
+      label: "İşlem Türü",
       type: "select",
       required: true,
       options: [
-        { label: "Sube I Bankadan Nakite", value: "sube_ici_bankadan_nakite" },
+        { label: "Şube İçi Bankadan Nakite", value: "sube_ici_bankadan_nakite" },
         {
-          label: "Sube I Nakitsasadan Bankaya",
+          label: "Şube İçi Nakitkasadan Bankaya",
           value: "sube_ici_nakitsasadan_bankaya",
         },
         {
-          label: "Sube I Kredi Kartindan Bankaya",
+          label: "Şube İçi Kredi Kartından Bankaya",
           value: "sube_ici_kredikartindan_bankaya",
         },
         {
-          label: "Sube I Bankadan Bankaya",
+          label: "Şube İçi Bankadan Bankaya",
           value: "sube_ici_bankadan_bankaya",
         },
-        { label: "Subeler Arasi Nakit", value: "subeler_arasi_nakit" },
+        { label: "Şubeler Arası Nakit", value: "subeler_arasi_nakit" },
         {
-          label: "Subeler Arasi Bankadan Bankaya",
+          label: "Şubeler Arası Bankadan Bankaya",
           value: "subeler_arasi_bankadan_bankaya",
         },
         {
-          label: "Subeler Arasi Nakitsasadan Bankaya",
+          label: "Şubeler Arası Nakitkasadan Bankaya",
           value: "subeler_arasi_nakitsasadan_bankaya",
         },
         {
-          label: "Subeler Arasi Bankadan Nakitkasaya",
+          label: "Şubeler Arası Bankadan Nakitkasaya",
           value: "subeler_arasi_bankadan_nakitkasaya",
         },
-        { label: "Subeler Arasi Cek", value: "subeler_arasi_cek" },
-        { label: "Subeler Arasi Senet", value: "subeler_arasi_senet" },
+        { label: "Şubeler Arası Çek", value: "subeler_arasi_cek" },
+        { label: "Şubeler Arası Senet", value: "subeler_arasi_senet" },
       ],
     },
   ];
@@ -69,17 +69,17 @@ function getFields(values: ITransferForm): FieldDefinition[] {
         type: "number",
         required: true,
       },
-      { name: "amount", label: "Amount", type: "currency", required: true },
+      { name: "amount", label: "Tutar", type: "currency", required: true },
       {
         name: "bank_account",
-        label: "Bank Account",
+        label: "Banka Hesabı",
         type: "text",
         required: true,
       },
-      { name: "description", label: "Description", type: "text" },
+      { name: "description", label: "Açıklama", type: "text" },
       {
         name: "seassion_id",
-        label: "Seassion ID",
+        label: "Seans ID",
         type: "number",
         required: true,
       },
@@ -92,164 +92,164 @@ function getFields(values: ITransferForm): FieldDefinition[] {
         type: "number",
         required: true,
       },
-      { name: "amount", label: "Amount", type: "currency", required: true },
+      { name: "amount", label: "Tutar", type: "currency", required: true },
       {
         name: "description",
-        label: "Description",
+        label: "Açıklama",
         type: "text",
         required: true,
       },
       {
         name: "bank_account",
-        label: "Sender Bank Account",
+        label: "Gönderen Banka Hesabı",
         type: "text",
         required: true,
       },
       {
         name: "receiver_bank_account",
-        label: "Receiver Bank Account",
+        label: "Alıcı Banka Hesabı",
         type: "text",
         required: true,
       },
       {
         name: "seassion_id",
-        label: "Seassion ID",
+        label: "Seans ID",
         type: "number",
         required: true,
       },
     ];
   } else if (type === "subeler_arasi_nakit") {
     conditionalFields = [
-      { name: "amount", label: "Amount", type: "currency", required: true },
+      { name: "amount", label: "Tutar", type: "currency", required: true },
       {
         name: "description",
-        label: "Description",
+        label: "Açıklama",
         type: "text",
         required: true,
       },
       {
         name: "sender_branch_id",
-        label: "Sender Branch",
+        label: "Gönderen Şube",
         type: "number",
         required: true,
       },
       {
         name: "receiver_branch_id",
-        label: "Receiver Branch",
+        label: "Alıcı Şube",
         type: "number",
         required: true,
       },
       {
         name: "seassion_id",
-        label: "Seassion ID",
+        label: "Seans ID",
         type: "number",
         required: true,
       },
     ];
   } else if (type === "subeler_arasi_bankadan_bankaya") {
     conditionalFields = [
-      { name: "amount", label: "Amount", type: "currency", required: true },
+      { name: "amount", label: "Tutar", type: "currency", required: true },
       {
         name: "description",
-        label: "Description",
+        label: "Açıklama",
         type: "text",
         required: true,
       },
       {
         name: "sender_branch_id",
-        label: "Sender Branch",
+        label: "Gönderen Şube",
         type: "number",
         required: true,
       },
       {
         name: "sender_bank_account",
-        label: "Sender Bank Account",
+        label: "Gönderen Banka Hesabı",
         type: "text",
         required: true,
       },
       {
         name: "receiver_bank_account",
-        label: "Receiver Bank Account",
+        label: "Alıcı Banka Hesabı",
         type: "text",
         required: true,
       },
       {
         name: "receiver_branch_id",
-        label: "Receiver Branch",
+        label: "Alıcı Şube",
         type: "number",
         required: true,
       },
       {
         name: "seassion_id",
-        label: "Seassion ID",
+        label: "Seans ID",
         type: "number",
         required: true,
       },
     ];
   } else if (type === "subeler_arasi_nakitsasadan_bankaya") {
     conditionalFields = [
-      { name: "amount", label: "Amount", type: "currency", required: true },
+      { name: "amount", label: "Tutar", type: "currency", required: true },
       {
         name: "description",
-        label: "Description",
+        label: "Açıklama",
         type: "text",
         required: true,
       },
       {
         name: "sender_branch_id",
-        label: "Sender Branch",
+        label: "Gönderen Şube",
         type: "number",
         required: true,
       },
       {
         name: "receiver_branch_id",
-        label: "Receiver Branch",
+        label: "Alıcı Şube",
         type: "number",
         required: true,
       },
       {
         name: "seassion_id",
-        label: "Seassion ID",
+        label: "Seans ID",
         type: "number",
         required: true,
       },
     ];
   } else if (type === "subeler_arasi_bankadan_nakitkasaya") {
     conditionalFields = [
-      { name: "amount", label: "Amount", type: "currency", required: true },
+      { name: "amount", label: "Tutar", type: "currency", required: true },
       {
         name: "description",
-        label: "Description",
+        label: "Açıklama",
         type: "text",
         required: true,
       },
       {
         name: "sender_branch_id",
-        label: "Sender Branch",
+        label: "Gönderen Şube",
         type: "number",
         required: true,
       },
       {
         name: "sender_bank_account",
-        label: "Sender Bank Account",
+        label: "Gönderen Banka Hesabı",
         type: "text",
         required: true,
       },
       {
         name: "receiver_branch_id",
-        label: "Receiver Branch",
+        label: "Alıcı Şube",
         type: "number",
         required: true,
       },
       {
         name: "receiver_bank_account",
-        label: "Receiver Bank Account",
+        label: "Alıcı Banka Hesabı",
         type: "text",
         required: true,
       },
       {
         name: "seassion_id",
-        label: "Seassion ID",
+        label: "Seans ID",
         type: "number",
         required: true,
       },
@@ -258,37 +258,37 @@ function getFields(values: ITransferForm): FieldDefinition[] {
     conditionalFields = [
       {
         name: "description",
-        label: "Description",
+        label: "Açıklama",
         type: "text",
         required: true,
       },
       {
         name: "sender_branch_id",
-        label: "Sender Branch",
+        label: "Gönderen Şube",
         type: "number",
         required: true,
       },
       {
         name: "sender_instrument_id",
-        label: "Sender Cheque ID",
+        label: "Gönderen Çek ID",
         type: "number",
         required: true,
       },
       {
         name: "receiver_branch_id",
-        label: "Receiver Branch",
+        label: "Alıcı Şube",
         type: "number",
         required: true,
       },
       {
         name: "receiver_instrument_id",
-        label: "Receiver Cheque ID",
+        label: "Alıcı Çek ID",
         type: "number",
         required: true,
       },
       {
         name: "seassion_id",
-        label: "Seassion ID",
+        label: "Seans ID",
         type: "number",
         required: true,
       },
@@ -297,37 +297,37 @@ function getFields(values: ITransferForm): FieldDefinition[] {
     conditionalFields = [
       {
         name: "description",
-        label: "Description",
+        label: "Açıklama",
         type: "text",
         required: true,
       },
       {
         name: "sender_branch_id",
-        label: "Sender Branch",
+        label: "Gönderen Şube",
         type: "number",
         required: true,
       },
       {
         name: "sender_instrument_id",
-        label: "Sender Promissory Note ID",
+        label: "Gönderen Senet ID",
         type: "number",
         required: true,
       },
       {
         name: "receiver_branch_id",
-        label: "Receiver Branch",
+        label: "Alıcı Şube",
         type: "number",
         required: true,
       },
       {
         name: "receiver_instrument_id",
-        label: "Receiver Promissory Note ID",
+        label: "Alıcı Senet ID",
         type: "number",
         required: true,
       },
       {
         name: "seassion_id",
-        label: "Seassion ID",
+        label: "Seans ID",
         type: "number",
         required: true,
       },
@@ -337,21 +337,21 @@ function getFields(values: ITransferForm): FieldDefinition[] {
     conditionalFields = [
       {
         name: "sender_branch_id",
-        label: "Sender Branch ID",
+        label: "Gönderen Şube ID",
         type: "number",
         required: true,
       },
-      { name: "amount", label: "Amount", type: "currency", required: true },
+      { name: "amount", label: "Tutar", type: "currency", required: true },
       {
         name: "bank_account",
-        label: "Bank Account",
+        label: "Banka Hesabı",
         type: "text",
         required: true,
       },
-      { name: "description", label: "Description", type: "text" },
+      { name: "description", label: "Açıklama", type: "text" },
       {
         name: "seassion_id",
-        label: "Seassion ID",
+        label: "Seans ID",
         type: "number",
         required: true,
       },
@@ -450,12 +450,12 @@ const TransferModal: React.FC<TransferModalProps> = ({
   return (
     <ReusableModalForm<ITransferForm>
       show={show}
-      title={mode === "add" ? "Add Transfer" : "Update Transfer"}
+      title={mode === "add" ? "Transfer Ekle" : "Transfer Güncelle"}
       fields={getFields}
       initialValues={initialValues}
       onSubmit={handleSubmit}
-      confirmButtonLabel={mode === "add" ? "Add" : "Update"}
-      cancelButtonLabel="Cancel"
+      confirmButtonLabel={mode === "add" ? "Ekle" : "Güncelle"}
+      cancelButtonLabel="Vazgeç"
       isLoading={isLoading}
       error={combinedError || null}
       onClose={onClose}
