@@ -1,0 +1,31 @@
+.test-selector-wrapper {
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 0; 
+  padding-bottom: 0; 
+}
+
+.test-row {
+  padding: 6px 12px; 
+    background-color: #e3dede;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 0;
+}
+
+.test-row.active {
+  background-color: #de5aa4;
+}
+
+.test-name {
+  font-weight: 600;
+  color: #b23b7a;
+}
+
+.test-name.active {
+  color: white;
+}
+
+.table {
+  margin-top: 0 !important;
+}
