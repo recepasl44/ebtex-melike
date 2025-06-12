@@ -6,15 +6,25 @@ import { fetchFinancialSummary } from "../../../../slices/accounting/financial_s
 import FinancialSummaryStatus from "../../../../enums/accounting/financial_summary/status";
 import { FinancialSummaryData } from "../../../../types/accounting/financial_summary";
 
-export function useFinancialSummary() {
+interface UseFinancialSummaryArgs {
+  season_id?: number;
+  date?: string;
+}
+
+export function useFinancialSummary(args?: UseFinancialSummaryArgs) {
   const dispatch = useDispatch<AppDispatch>();
   const { data, status, error } = useSelector(
     (state: RootState) => state.financialSummary
   );
 
   useEffect(() => {
-    dispatch(fetchFinancialSummary());
-  }, [dispatch]);
+    dispatch(
+      fetchFinancialSummary({
+        season_id: args?.season_id,
+        date: args?.date,
+      })
+    );
+  }, [dispatch, args?.season_id, args?.date]);
 
   const loading = status === FinancialSummaryStatus.LOADING;
   const summary: FinancialSummaryData | null = data;
