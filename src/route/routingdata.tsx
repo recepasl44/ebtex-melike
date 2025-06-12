@@ -128,6 +128,9 @@ const CreditCardTable = lazy(
 const CreditCardCrud = lazy(
   () => import("../components/common/creditcard/crud")
 );
+const CreditCardDetail = lazy(
+  () => import("../components/common/creditcard/detail")
+);
 const SupplierList = lazy(() => import("../components/common/supplier/index"));
 const SupplierCrud = lazy(() => import("../components/common/supplier/crud"));
 const SupplierDetail = lazy(
@@ -631,6 +634,11 @@ export const Routedata = [
         }}
       />
     ),
+  },
+  {
+    id: 18,
+    path: `${import.meta.env.BASE_URL}creditcarddetail/:id?`,
+    element: <CreditCardDetail />,
   },
   {
     id: 2,

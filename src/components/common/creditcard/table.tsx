@@ -47,8 +47,14 @@ export default function CreditCardTable() {
         render: (row, openDeleteModal) => (
           <>
             <button
+              onClick={() => navigate(`/creditcarddetail/${row.id}`)}
+              className="btn btn-icon btn-sm btn-primary-light rounded-pill"
+            >
+              <i className="ti ti-eye" />
+            </button>
+            <button
               onClick={() => navigate(`/creditcardcrud/${row.id}`)}
-              className="btn btn-icon btn-sm btn-info-light rounded-pill"
+              className="btn btn-icon btn-sm btn-info-light rounded-pill ms-1"
             >
               <i className="ti ti-pencil" />
             </button>
