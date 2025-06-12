@@ -1,6 +1,6 @@
 import { FormikHelpers, FormikValues } from "formik";
 import { useEffect, useState, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import ReusableModalForm, { FieldDefinition } from "../ReusableModalForm";
 import { useCreditCardAdd } from "../../hooks/creditCard/useCreditCardAdd";
 import { useCreditCardUpdate } from "../../hooks/creditCard/useCreditCardUpdate";
@@ -29,6 +29,7 @@ interface ICreditCardFormData extends FormikValues {
 
 const CreditCardModal: React.FC<CreditCardModalProps> = ({ show, onClose, onRefresh }) => {
   const { id } = useParams<{ id?: string }>();
+  const navigate = useNavigate();
   const mode = id ? "update" : "add";
 
   const [initialValues, setInitialValues] = useState<ICreditCardFormData>({
@@ -127,8 +128,7 @@ const CreditCardModal: React.FC<CreditCardModalProps> = ({ show, onClose, onRefr
     } else if (mode === "update" && id) {
       await updateExistingCreditCard({ creditCardId: Number(id), payload: payloadBase } as CreditCardUpdatePayload);
     }
-    onRefresh();
-    onClose();
+    navigate(-1);
   }
 
   return (
