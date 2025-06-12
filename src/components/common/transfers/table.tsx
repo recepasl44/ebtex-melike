@@ -212,7 +212,7 @@ export default function TransfersTable() {
       />
 
       {detailRow && (
-        <Modal show={true} onHide={() => setDetailRow(null)} centered>
+        <Modal show={true} onHide={() => setDetailRow(null)} centered size="lg">
           <Modal.Header closeButton>
             <Modal.Title>Transfer Detayı</Modal.Title>
           </Modal.Header>
