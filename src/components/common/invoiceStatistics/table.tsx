@@ -1,11 +1,25 @@
 import { useMemo, useState } from "react";
-import { Button, Modal, Table } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import ReusableTable, { ColumnDefinition, FilterDefinition } from "../ReusableTable";
 import { useInvoiceStatistics } from "../../hooks/invoice/useInvoiceStatistics";
 import { useBranchTable } from "../../hooks/branch/useBranchList";
 import { useSeasonsList } from "../../hooks/season/useSeasonsList";
 import { formatCurrency, formatDate } from "../../../utils/formatters";
-import { MONTH_OPTIONS } from "../../../constants/months";
+
+const MONTH_OPTIONS = [
+  { value: 1, label: "Ocak" },
+  { value: 2, label: "Şubat" },
+  { value: 3, label: "Mart" },
+  { value: 4, label: "Nisan" },
+  { value: 5, label: "Mayıs" },
+  { value: 6, label: "Haziran" },
+  { value: 7, label: "Temmuz" },
+  { value: 8, label: "Ağustos" },
+  { value: 9, label: "Eylül" },
+  { value: 10, label: "Ekim" },
+  { value: 11, label: "Kasım" },
+  { value: 12, label: "Aralık" },
+];
 import Pageheader from "../../page-header/pageheader";
 
 export default function InvoiceStatisticsTable() {
@@ -72,87 +86,78 @@ export default function InvoiceStatisticsTable() {
         key: "actions",
         label: "İşlemler",
         render: (row) => (
-          <Button
-            size="sm"
-            variant="primary"
+          <button
+            className="btn btn-icon btn-sm btn-primary-light rounded-pill"
             onClick={() => {
               setDetailStudents(row.students || []);
               setShowDetail(true);
             }}
           >
-            Detay
-          </Button>
+            <i className="ti ti-eye" />
+          </button>
         ),
       },
     ],
     []
   );
 
-  const studentColumns = [
-    "Şube",
-    "T.C. Kimlik No",
-    "Adı Soyadı",
-    "Sınıf Seviyesi",
-    "Sınıf/Şube",
-    "Veli Adı Soyadı",
-    "Veli Yakınlığı",
-    "Veli Telefon",
-    "Fatura Tutarı",
-    "İşlemler",
+  const studentColumns: ColumnDefinition<any>[] = [
+    { key: "branch_name", label: "Şube" },
+    { key: "identification_no", label: "T.C. Kimlik No" },
+    { key: "full_name", label: "Adı Soyadı" },
+    { key: "level_name", label: "Sınıf Seviyesi" },
+    { key: "class_name", label: "Sınıf/Şube" },
+    { key: "parent_name", label: "Veli Adı Soyadı" },
+    { key: "parent_relation", label: "Veli Yakınlığı" },
+    { key: "parent_phone", label: "Veli Telefon" },
+    {
+      key: "total_amount",
+      label: "Fatura Tutarı",
+      render: (r) => formatCurrency(r.total_amount),
+    },
+    {
+      key: "actions",
+      label: "İşlemler",
+      render: (st) => (
+        <button
+          className="btn btn-icon btn-sm btn-info-light rounded-pill"
+          onClick={() => {
+            setStudentInvoices(st);
+            setShowStudent(true);
+          }}
+        >
+          <i className="ti ti-eye" />
+        </button>
+      ),
+    },
   ];
-
-  const renderStudentRows = () =>
-    detailStudents.map((st, idx) => (
-      <tr key={idx}>
-        <td>{st.branch_name}</td>
-        <td>{st.identification_no}</td>
-        <td>{st.full_name}</td>
-        <td>{st.level_name}</td>
-        <td>{st.class_name}</td>
-        <td>{st.parent_name}</td>
-        <td>{st.parent_relation}</td>
-        <td>{st.parent_phone}</td>
-        <td>{formatCurrency(st.total_amount)}</td>
-        <td>
-          <Button
-            size="sm"
-            variant="info"
-            onClick={() => {
-              setStudentInvoices(st);
-              setShowStudent(true);
-            }}
-          >
-            Detay
-          </Button>
-        </td>
-      </tr>
-    ));
 
   const renderInvoiceTable = (student: any) => {
     const services = Array.from(
       new Set((student.invoices || []).map((inv: any) => inv.service_name))
     );
+
+    const columns: ColumnDefinition<any>[] = [
+      { key: "date", label: "Tarih", render: (r) => formatDate(r.date) },
+      ...services.map((s) => ({
+        key: s,
+        label: s,
+        render: (r) => (r[s] ? formatCurrency(r[s]) : ""),
+      })),
+    ];
+
+    const rows = (student.invoices || []).map((inv: any) => ({
+      date: inv.date,
+      [inv.service_name]: inv.amount,
+    }));
+
     return (
-      <Table bordered size="sm" className="mt-2">
-        <thead>
-          <tr>
-            <th>Tarih</th>
-            {services.map((s) => (
-              <th key={s}>{s}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {(student.invoices || []).map((inv: any, idx: number) => (
-            <tr key={idx}>
-              <td>{formatDate(inv.date)}</td>
-              {services.map((s) => (
-                <td key={s}>{s === inv.service_name ? formatCurrency(inv.amount) : ""}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      <ReusableTable
+        data={rows}
+        columns={columns}
+        tableMode="single"
+        showExportButtons={false}
+      />
     );
   };
 
@@ -174,16 +179,12 @@ export default function InvoiceStatisticsTable() {
           <Modal.Title>Fatura Detayı</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Table bordered size="sm">
-            <thead>
-              <tr>
-                {studentColumns.map((c) => (
-                  <th key={c}>{c}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>{renderStudentRows()}</tbody>
-          </Table>
+          <ReusableTable
+            data={detailStudents}
+            columns={studentColumns}
+            tableMode="single"
+            showExportButtons={false}
+          />
         </Modal.Body>
       </Modal>
 
