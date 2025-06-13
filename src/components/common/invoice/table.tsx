@@ -3,6 +3,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 import ReusableTable, { ColumnDefinition } from "../ReusableTable";
 import { useInvoiceSummaryList } from "../../hooks/invoice/useInvoiceSummary";
 import { InvoiceSummary } from "../../../types/invoice/invoiceSummary";
+import invoiceIcon from "../../../assets/images/media/fatura.svg";
+import invoiceHoverIcon from "../../../assets/images/media/fatura-hover.svg";
+import batchIcon from "../../../assets/images/media/toplu-fatura.svg";
+import batchHoverIcon from "../../../assets/images/media/toplu-fatura-hover.svg";
 
 import { useBranchTable } from "../../hooks/branch/useBranchList";
 import { useLevelsTable } from "../../hooks/levels/useList";
@@ -201,16 +205,36 @@ export default function InvoiceSummaryTable() {
                         <button
                             onClick={() => navigate(`/invoicedetail/${r.id}`)}
                             className="btn btn-icon btn-sm btn-info-light rounded-pill"
-                            title="Düzenle"
+                            title="Fatura Oluştur"
                         >
-                            <i className="ti ti-pencil" />
+                            <img
+                                src={invoiceIcon}
+                                alt="Fatura"
+                                style={{ width: 24, height: 24 }}
+                                onMouseEnter={(e) =>
+                                    (e.currentTarget.src = invoiceHoverIcon)
+                                }
+                                onMouseLeave={(e) =>
+                                    (e.currentTarget.src = invoiceIcon)
+                                }
+                            />
                         </button>
                         <button
                             onClick={() => navigate(`/createinvoice/${r.id}`)}
                             className="btn btn-icon btn-sm btn-success-light rounded-pill"
-                            title="Fatura Oluştur"
+                            title="Toplu Fatura Oluştur"
                         >
-                            <i className="ti ti-plus" />
+                            <img
+                                src={batchIcon}
+                                alt="Toplu Fatura"
+                                style={{ width: 24, height: 24 }}
+                                onMouseEnter={(e) =>
+                                    (e.currentTarget.src = batchHoverIcon)
+                                }
+                                onMouseLeave={(e) =>
+                                    (e.currentTarget.src = batchIcon)
+                                }
+                            />
                         </button>
                     </>
 
