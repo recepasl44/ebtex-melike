@@ -2,9 +2,13 @@ import { useMemo, useState } from "react";
 import { Row, Col, Card, Form, Button, Modal } from "react-bootstrap";
 import ReusableTable, { ColumnDefinition } from "../ReusableTable";
 import Pageheader from "../page-header/pageheader";
-import { useInvoiceStatistics, InvoiceStatisticsItem } from "../../hooks/invoice/useInvoiceStatistics";
+import {
+  useInvoiceStatistics,
+  InvoiceStatisticsItem,
+} from "../../hooks/invoice/useInvoiceStatistics";
 import { useBranchTable } from "../../hooks/branch/useBranchList";
 import { useSeasonsList } from "../../hooks/season/useSeasonsList";
+import { formatCurrency } from "../../../utils/formatters";
 
 interface StudentDetail {
   branch_name: string;
@@ -16,6 +20,11 @@ interface StudentDetail {
   parent_relation: string;
   parent_phone: string;
   amount: number;
+  invoices?: any[];
+}
+
+interface StudentInvoice {
+  [key: string]: any;
 }
 
 const monthsOptions = Array.from({ length: 12 }, (_, i) => ({
@@ -43,6 +52,8 @@ const InvoiceStatisticsTable = () => {
 
   const [selectedRow, setSelectedRow] = useState<InvoiceStatisticsItem | null>(null);
   const [showDetail, setShowDetail] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState<StudentDetail | null>(null);
+  const [showStudentInvoices, setShowStudentInvoices] = useState(false);
 
   const columns: ColumnDefinition<InvoiceStatisticsItem>[] = useMemo(
     () => [
@@ -88,8 +99,67 @@ const InvoiceStatisticsTable = () => {
         label: "Fatura Tutarı",
         render: (r) => `${r.amount.toLocaleString()} ₺`,
       },
+      {
+        key: "student_actions",
+        label: "İşlemler",
+        render: (r) => (
+          <Button
+            size="sm"
+            onClick={() => {
+              setSelectedStudent(r);
+              setShowStudentInvoices(true);
+            }}
+          >
+            Detay
+          </Button>
+        ),
+      },
     ],
     []
+  );
+
+  const studentTotal = (selectedRow?.students || []).reduce(
+    (sum: number, s: any) => sum + (s.amount || 0),
+    0
+  );
+
+  const studentFooter = (
+    <div className="d-flex justify-content-end fw-bold me-3">
+      Toplam: {formatCurrency(studentTotal)}
+    </div>
+  );
+
+  const invoiceColumns: ColumnDefinition<StudentInvoice>[] = useMemo(() => {
+    if (!selectedStudent?.invoices || selectedStudent.invoices.length === 0) {
+      return [
+        { key: "issue_date", label: "Tarih", render: (r) => r.issue_date || r.date },
+      ];
+    }
+    const first = selectedStudent.invoices[0] as Record<string, any>;
+    const keys = Object.keys(first).filter((k) => k !== "issue_date" && k !== "date");
+    const cols: ColumnDefinition<StudentInvoice>[] = [
+      { key: "issue_date", label: "Tarih", render: (r) => r.issue_date || r.date },
+    ];
+    keys.forEach((k) => {
+      cols.push({
+        key: k,
+        label: k,
+        render: (r) => formatCurrency(r[k]),
+      });
+    });
+    return cols;
+  }, [selectedStudent]);
+
+  const invoiceTotal = (selectedStudent?.invoices || []).reduce((sum, inv: any) => {
+    const keys = Object.keys(inv).filter((k) => k !== "issue_date" && k !== "date");
+    const total = keys.reduce((s, k) => s + (Number(inv[k]) || 0), 0);
+    return sum + total;
+  }, 0);
+
+  const invoiceFooter = (
+    <div className="d-flex justify-content-end fw-bold me-3">
+      Toplam: {formatCurrency(invoiceTotal)}
+    </div>
   );
 
   return (
@@ -170,7 +240,22 @@ const InvoiceStatisticsTable = () => {
             tableMode="single"
             columns={studentColumns}
             data={(selectedRow?.students as StudentDetail[]) || []}
-            showExportButtons={false}
+            showExportButtons
+            customFooter={studentFooter}
+          />
+        </Modal.Body>
+      </Modal>
+      <Modal size="lg" show={showStudentInvoices} onHide={() => setShowStudentInvoices(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Fatura Detayı</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ReusableTable<StudentInvoice>
+            tableMode="single"
+            columns={invoiceColumns}
+            data={(selectedStudent?.invoices as StudentInvoice[]) || []}
+            showExportButtons
+            customFooter={invoiceFooter}
           />
         </Modal.Body>
       </Modal>
