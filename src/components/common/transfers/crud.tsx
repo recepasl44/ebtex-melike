@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { FormikHelpers } from "formik";
 
 import ReusableModalForm, { FieldDefinition } from "../ReusableModalForm";
+import ReusableTable, { ColumnDefinition } from "../ReusableTable";
 import { ITransferForm } from "../../../types/transfers/add";
 import { useTransferAdd } from "../../hooks/transfers/useAdd";
 import { useTransferShow } from "../../hooks/transfers/useShow";
@@ -367,7 +368,9 @@ const TransferModal: React.FC<TransferModalProps> = ({
   onRefresh,
 }) => {
   const { id } = useParams<{ id?: string }>();
-  const mode = id ? "update" : "add";
+  const navigate = useNavigate();
+  const location = useLocation();
+  const mode = (location.state as any)?.mode ?? (id ? "update" : "add");
 
   // Initial form values
   const [initialValues, setInitialValues] = useState<ITransferForm>({
@@ -395,7 +398,7 @@ const TransferModal: React.FC<TransferModalProps> = ({
   } = useTransferShow();
 
   useEffect(() => {
-    if (mode === "update" && id) {
+    if ((mode === "update" || mode === "detail") && id) {
       getTransfer(Number(id));
     }
   }, [mode, id, getTransfer]);
@@ -417,9 +420,16 @@ const TransferModal: React.FC<TransferModalProps> = ({
   const isLoading =
     mode === "update"
       ? updateStatus === "LOADING" || showStatus === "LOADING"
-      : false;
+      : mode === "detail"
+        ? showStatus === "LOADING"
+        : false;
 
-  const combinedError = mode === "update" ? updateError || showError : null;
+  const combinedError =
+    mode === "update"
+      ? updateError || showError
+      : mode === "detail"
+        ? showError
+        : null;
 
   async function handleSubmit(
     values: ITransferForm,
@@ -445,6 +455,54 @@ const TransferModal: React.FC<TransferModalProps> = ({
     } finally {
       helpers.setSubmitting(false);
     }
+  }
+
+  if (mode === "detail") {
+    const columns: ColumnDefinition<any>[] = [
+      { key: "branch", label: "Şube" },
+      { key: "transaction_type", label: "İşlem Türü" },
+      { key: "received_amount", label: "Alınan" },
+      { key: "given_amount", label: "Verilen" },
+      { key: "bank_name", label: "Banka Hesap Adı" },
+      { key: "created_at", label: "Tarih" },
+      { key: "description", label: "Açıklama" },
+    ];
+
+    const data = fetchedTransfer
+      ? [
+          {
+            branch:
+              (fetchedTransfer as any).branch_name ||
+              fetchedTransfer.sender_branch_id ||
+              "-",
+            transaction_type: fetchedTransfer.transaction_type,
+            received_amount: (fetchedTransfer as any).received_amount
+              ? `₺${Number((fetchedTransfer as any).received_amount).toLocaleString()}`
+              : "-",
+            given_amount: (fetchedTransfer as any).given_amount
+              ? `₺${Number((fetchedTransfer as any).given_amount).toLocaleString()}`
+              : "-",
+            bank_name:
+              (fetchedTransfer as any).bank_name || fetchedTransfer.bank_account,
+            created_at: new Date(fetchedTransfer.created_at).toLocaleDateString(),
+            description: fetchedTransfer.description,
+          },
+        ]
+      : [];
+
+    return (
+      <ReusableTable
+        showModal={show}
+        onCloseModal={() => navigate(-1)}
+        modalTitle="Transfer Detayı"
+        columns={columns}
+        data={data}
+        tableMode="single"
+        loading={isLoading}
+        error={combinedError as any}
+        showExportButtons={false}
+      />
+    );
   }
 
   return (
