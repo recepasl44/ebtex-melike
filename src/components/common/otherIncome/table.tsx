@@ -9,15 +9,15 @@ import { useOtherIncomeDelete } from '../../hooks/otherIncome/useOtherIncomeDele
 import odemeAl from '../../../assets/images/media/ödeme-al.svg';
 import odemeAlHover from '../../../assets/images/media/ödeme-al-hover.svg';
 import { Button } from 'react-bootstrap';
-import { OtherIncomePaymentModal } from './crud';
-import OtherIncomeCrud from './crud';
+import GetPaidModal from './getPaid'; // ya da OtherIncomePaymentModal
+import AddOtherIncomeModal from './AddOtherIncomeModal'; // seçtiğin modal buysa bunu kullan
 
 export default function OtherIncomeTable() {
   const navigate = useNavigate();
   const { remove } = useOtherIncomeDelete();
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
 
   const {
     otherIncomeData,
@@ -38,16 +38,21 @@ export default function OtherIncomeTable() {
         label: 'Müşteri Adı',
         render: (row) => row.customer?.name || '-',
       },
-      { key: 'amount', label: 'Toplam' },
+      {
+        key: 'amount',
+        label: 'Toplam',
+        render: (row) => `${Number(row.amount).toLocaleString()} ₺`,
+      },
       {
         key: 'paid',
         label: 'Ödenen',
-        render: () => '-', // Dinamik değilse backend'e göre güncellenebilir
+        render: (row) => `${Number(row.paid ?? 0).toLocaleString()} ₺`,
       },
       {
         key: 'remaining',
         label: 'Kalan',
-        render: () => '-', // Aynı şekilde
+        render: (row) =>
+          `${(Number(row.amount) - Number(row.paid ?? 0)).toLocaleString()} ₺`,
       },
       {
         key: 'phone',
@@ -115,7 +120,7 @@ export default function OtherIncomeTable() {
     <div className="container-fluid mt-3">
       <Pageheader title="Gelirler" currentpage="Farklı Gelirler" />
       <ReusableTable<OtherIncomeData>
-        onAdd={() => setShowCreateModal(true)} // ✅ Ekle butonu tetikleme
+        onAdd={() => setShowAddModal(true)}
         columns={columns}
         data={otherIncomeData}
         loading={loading}
@@ -131,23 +136,20 @@ export default function OtherIncomeTable() {
           setPage(1);
         }}
         exportFileName="other-income"
+        showExportButtons
       />
 
-      {/* Modal: Yeni kayıt ekleme */}
-      {showCreateModal && (
-        <OtherIncomeCrud
-          show={showCreateModal}
-          onClose={() => setShowCreateModal(false)}
-          onRefresh={() => {
-            setShowCreateModal(false);
-            // refresh için query trigger gerekirse eklenebilir
-          }}
+      {/* Modal: Ekle */}
+      {showAddModal && (
+        <AddOtherIncomeModal
+          show={showAddModal}
+          onClose={() => setShowAddModal(false)}
         />
       )}
 
-      {/* Modal: Ödeme alma */}
+      {/* Modal: Ödeme Al */}
       {showPaymentModal && (
-        <OtherIncomePaymentModal
+        <GetPaidModal
           show={showPaymentModal}
           onClose={() => setShowPaymentModal(false)}
         />

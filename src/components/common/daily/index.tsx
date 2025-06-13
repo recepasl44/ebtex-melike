@@ -1,3 +1,4 @@
+
 import React from 'react';
 import TabsContainer from './component/organisms/TabsContainer';
 
@@ -13,7 +14,7 @@ import DailyOperationsAuthorized from '../daily/dailyOperationsAuthorized';
 import Pageheader from '../../page-header/pageheader';
 
 const DailyModule: React.FC = () => {
-  /* aktif sekme index’i */
+
   const handleTabChange = (
     parentTabIndex: number,
     childTabIndex: number | null
@@ -97,7 +98,9 @@ const DailyModule: React.FC = () => {
   ];
 
   return (
-    <div >
+
+    <div>
+
       <Pageheader title="Finans ve Muhasebe" currentpage="Günlük İşlemler" />
       <TabsContainer tabs={tabsConfig} onTabChange={handleTabChange} />
     </div>
