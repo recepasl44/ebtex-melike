@@ -9,7 +9,6 @@ import { useOtherIncomeDelete } from '../../hooks/otherIncome/useOtherIncomeDele
 import odemeAl from '../../../assets/images/media/ödeme-al.svg';
 import odemeAlHover from '../../../assets/images/media/ödeme-al-hover.svg';
 import { Button } from 'react-bootstrap';
-import { OtherIncomePaymentModal } from './crud';
 
 export default function OtherIncomeTable() {
   const navigate = useNavigate();
@@ -62,7 +61,6 @@ export default function OtherIncomeTable() {
         label: 'İşlemler',
         render: (row) => (
           <>
-            {/* Düzenle Butonu */}
             <Button
               variant="primary-light"
               onClick={() => navigate(`/other-income/crud/${row.id}`)}
@@ -72,7 +70,6 @@ export default function OtherIncomeTable() {
               <i className="ti ti-pencil" />
             </Button>
 
-            {/* Ödeme Al Butonu (img ile) */}
             <Button
               onClick={() => setShowPaymentModal(true)}
               style={{ padding: 0, marginRight: '6px' }}
@@ -93,7 +90,6 @@ export default function OtherIncomeTable() {
               />
             </Button>
 
-            {/* Sil Butonu */}
             <Button
               variant="danger-light"
               onClick={() => remove(Number(row.id))}
@@ -113,7 +109,7 @@ export default function OtherIncomeTable() {
     <div className="container-fluid mt-3">
       <Pageheader title="Gelirler" currentpage="Farklı Gelirler" />
       <ReusableTable<OtherIncomeData>
-        onAdd={() => navigate('/other-income/crud')}
+        // ⛔ "onAdd" butonu kaldırıldı (ekle butonu)
         columns={columns}
         data={otherIncomeData}
         loading={loading}
@@ -130,10 +126,8 @@ export default function OtherIncomeTable() {
         }}
         exportFileName="other-income"
       />
-      <OtherIncomePaymentModal
-        show={showPaymentModal}
-        onClose={() => setShowPaymentModal(false)}
-      />
+
+      {/* ⛔ Modal komple kaldırıldı */}
     </div>
   );
 }

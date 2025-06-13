@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchFinanceNotes } from '../../../slices/financeNotes/list/thunk';
 import { RootState, AppDispatch } from '../../../store';
@@ -12,9 +12,13 @@ export function useFinanceNotes(initialPage: number = 1, initialPaginate: number
 
     const financeNotesState = useSelector((state: RootState) => state.financeNotes);
 
+
+    const queryKey = useMemo(() => JSON.stringify(query), [query]);
+
     useEffect(() => {
-        dispatch(fetchFinanceNotes({ ...query, page, paginate }));
-    }, [dispatch, query, page, paginate]);
+        const parsedQuery = JSON.parse(queryKey);
+        dispatch(fetchFinanceNotes({ ...parsedQuery, page, paginate }));
+    }, [dispatch, queryKey, page, paginate]);
 
     return {
         ...financeNotesState,
@@ -26,4 +30,5 @@ export function useFinanceNotes(initialPage: number = 1, initialPaginate: number
         setQuery,
     };
 }
+
 export default useFinanceNotes;

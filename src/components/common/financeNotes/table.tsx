@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReusableTable, { ColumnDefinition } from '../ReusableTable';
 import FilterGroup, { FilterDefinition } from './component/organisms/SearchFilters';
@@ -22,8 +22,14 @@ export default function FinanceNotesTable() {
 
     const { seasonsData } = useSeasonsList({ enabled: true, page: 1, paginate: 100 });
     const { branchData } = useBranchTable({ enabled: true });
-    const { programsData } = useProgramsTable({ enabled: !!branch, branch_id: branch ? Number(branch) : undefined });
-    const { levelsData } = useLevelsTable({ enabled: !!programId, program_id: programId ? Number(programId) : undefined });
+    const { programsData } = useProgramsTable({
+        enabled: !!branch,
+        branch_id: branch ? Number(branch) : undefined,
+    });
+    const { levelsData } = useLevelsTable({
+        enabled: !!programId,
+        program_id: programId ? Number(programId) : undefined,
+    });
     const { classroomData } = useClassroomList({
         enabled: !!levelId,
         branchId: branch ? Number(branch) : undefined,
@@ -44,105 +50,105 @@ export default function FinanceNotesTable() {
         setQuery,
     } = useFinanceNotes();
 
+    // 🔐 query objesini memoize et → referans değişmesin
+    const queryObject = useMemo(() => ({
+        season_id: season,
+        branch_id: branch,
+        program_id: programId,
+        level_id: levelId,
+        classroom_id: classId,
+        search: student,
+    }), [season, branch, programId, levelId, classId, student]);
+
     useEffect(() => {
-        setQuery({
-            season_id: season,
-            branch_id: branch,
-            program_id: programId,
-            level_id: levelId,
-            classroom_id: classId,
-            search: student,
-        });
-    }, [season, branch, programId, levelId, classId, student, setQuery]);
+        setQuery(queryObject);
+    }, [queryObject, setQuery]);
 
     const totalPages = Math.ceil(total / per_page);
 
-    const columns: ColumnDefinition<FinanceNote>[] = useMemo(
-        () => [
-            { key: 'sube', label: 'Şube', render: (r) => r.sube },
-            { key: 'okul_no', label: 'Okul No', render: (r) => r.okul_no || '-' },
-            { key: 'tc_kimlik_no', label: 'T.C. Kimlik No', render: (r) => r.tc_kimlik_no || '-' },
-            { key: 'adi_soyadi', label: 'Adı Soyadı', render: (r) => `${r.adi} ${r.soyadi}`.trim() },
-            { key: 'sinif_seviyesi', label: 'Sınıf Seviyesi', render: (r) => r.sinif_seviyesi || '-' },
-            { key: 'sinif_sube', label: 'Sınıf/Şube', render: (r) => r.sinif_sube || '-' },
-            { key: 'tarih', label: 'Tarih', render: (r) => r.tarih },
-            { key: 'note', label: 'Not', render: (r) => r.note },
-            { key: 'soz_verme_tarihi', label: 'Söz Verme Tarihi', render: (r) => r.soz_verme_tarihi || '-' },
-            { key: 'kullanici', label: 'Kullanıcı', render: (r) => r.kullanici },
-        ],
-        []
-    );
+    const columns: ColumnDefinition<FinanceNote>[] = useMemo(() => [
+        { key: 'sube', label: 'Şube', render: (r) => r.sube },
+        { key: 'okul_no', label: 'Okul No', render: (r) => r.okul_no || '-' },
+        { key: 'tc_kimlik_no', label: 'T.C. Kimlik No', render: (r) => r.tc_kimlik_no || '-' },
+        { key: 'adi_soyadi', label: 'Adı Soyadı', render: (r) => `${r.adi} ${r.soyadi}`.trim() },
+        { key: 'sinif_seviyesi', label: 'Sınıf Seviyesi', render: (r) => r.sinif_seviyesi || '-' },
+        { key: 'sinif_sube', label: 'Sınıf/Şube', render: (r) => r.sinif_sube || '-' },
+        { key: 'tarih', label: 'Tarih', render: (r) => r.tarih },
+        { key: 'note', label: 'Not', render: (r) => r.note },
+        { key: 'soz_verme_tarihi', label: 'Söz Verme Tarihi', render: (r) => r.soz_verme_tarihi || '-' },
+        { key: 'kullanici', label: 'Kullanıcı', render: (r) => r.kullanici },
+    ], []);
 
-    const filters: FilterDefinition[] = useMemo(
-        () => [
-            {
-                key: 'season',
-                label: 'Sezon',
-                type: 'select',
-                value: season,
-                options: (seasonsData || []).map((s: any) => ({ value: String(s.id), label: s.name })),
-                onChange: (val: string) => {
-                    setSeason(val);
-                    setPage(1);
-                },
+    const filters: FilterDefinition[] = useMemo(() => [
+        {
+            key: 'season',
+            label: 'Sezon',
+            type: 'select',
+            value: season,
+            options: (seasonsData || []).map((s: any) => ({ value: String(s.id), label: s.name })),
+            onChange: (val: string) => {
+                setSeason(val);
+                setPage(1);
             },
-            {
-                key: 'branch',
-                label: 'Şube',
-                type: 'select',
-                value: branch,
-                options: (branchData || []).map((b: any) => ({ value: String(b.id), label: b.name })),
-                onChange: (val: string) => {
-                    setBranch(val);
-                    setPage(1);
-                },
+        },
+        {
+            key: 'branch',
+            label: 'Şube',
+            type: 'select',
+            value: branch,
+            options: (branchData || []).map((b: any) => ({ value: String(b.id), label: b.name })),
+            onChange: (val: string) => {
+                setBranch(val);
+                setPage(1);
             },
-            {
-                key: 'program_id',
-                label: 'Okul Seviyesi',
-                type: 'select',
-                value: programId,
-                options: (programsData || []).map((p: any) => ({ value: String(p.id), label: p.name })),
-                onChange: (val: string) => {
-                    setProgramId(val);
-                    setPage(1);
-                },
+        },
+        {
+            key: 'program_id',
+            label: 'Okul Seviyesi',
+            type: 'select',
+            value: programId,
+            options: (programsData || []).map((p: any) => ({ value: String(p.id), label: p.name })),
+            onChange: (val: string) => {
+                setProgramId(val);
+                setPage(1);
             },
-            {
-                key: 'level_id',
-                label: 'Sınıf Seviyesi',
-                type: 'select',
-                value: levelId,
-                options: (levelsData || []).map((l: any) => ({ value: String(l.id), label: l.name })),
-                onChange: (val: string) => {
-                    setLevelId(val);
-                    setPage(1);
-                },
+        },
+        {
+            key: 'level_id',
+            label: 'Sınıf Seviyesi',
+            type: 'select',
+            value: levelId,
+            options: (levelsData || []).map((l: any) => ({ value: String(l.id), label: l.name })),
+            onChange: (val: string) => {
+                setLevelId(val);
+                setPage(1);
             },
-            {
-                key: 'classroom_id',
-                label: 'Sınıf/Şube',
-                type: 'select',
-                value: classId,
-                options: (classroomData || []).map((c: any) => ({ value: String(c.id), label: c.name })),
-                onChange: (val: string) => {
-                    setClassId(val);
-                    setPage(1);
-                },
+        },
+        {
+            key: 'classroom_id',
+            label: 'Sınıf/Şube',
+            type: 'select',
+            value: classId,
+            options: (classroomData || []).map((c: any) => ({ value: String(c.id), label: c.name })),
+            onChange: (val: string) => {
+                setClassId(val);
+                setPage(1);
             },
-            {
-                key: 'search',
-                label: 'Öğrenci',
-                type: 'text',
-                value: student,
-                onChange: (val: string) => {
-                    setStudent(val);
-                    setPage(1);
-                },
+        },
+        {
+            key: 'search',
+            label: 'Öğrenci',
+            type: 'text',
+            value: student,
+            onChange: (val: string) => {
+                setStudent(val);
+                setPage(1);
             },
-        ],
-        [season, branch, programId, levelId, classId, student, seasonsData, branchData, programsData, levelsData, classroomData, setPage]
-    );
+        },
+    ], [
+        season, branch, programId, levelId, classId, student,
+        seasonsData, branchData, programsData, levelsData, classroomData, setPage
+    ]);
 
     return (
         <div className="container-fluid mt-3">
