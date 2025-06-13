@@ -6,6 +6,10 @@ import { useOtherIncomeTable } from '../../hooks/otherIncome/useOtherIncomeList'
 import { OtherIncomeData } from '../../../types/otherIncome/list';
 import { useOtherIncomeDelete } from '../../hooks/otherIncome/useOtherIncomeDelete';
 
+import odemeAl from '../../../assets/images/media/ödeme-al.svg';
+import odemeAlHover from '../../../assets/images/media/ödeme-al-hover.svg';
+import { Button } from 'react-bootstrap';
+
 export default function OtherIncomeTable() {
   const navigate = useNavigate();
   const { remove } = useOtherIncomeDelete();
@@ -55,18 +59,46 @@ export default function OtherIncomeTable() {
         label: 'İşlemler',
         render: (row) => (
           <>
-            <button
+            {/* Düzenle Butonu */}
+            <Button
+              variant="primary-light"
               onClick={() => navigate(`/other-income/crud/${row.id}`)}
-              className="btn btn-icon btn-sm btn-info-light rounded-pill"
+              className="btn btn-icon btn-sm rounded-pill me-1"
+              title="Düzenle"
             >
               <i className="ti ti-pencil" />
-            </button>
-            <button
-              className="btn btn-icon btn-sm btn-danger-light rounded-pill"
+            </Button>
+
+            {/* Ödeme Al Butonu (img ile) */}
+            <Button
+              onClick={() => alert(`Ödeme alınacak: ID ${row.id}`)}
+              style={{ padding: 0, marginRight: '6px' }}
+              variant=""
+              title="Ödeme Al"
+            >
+              <img
+                src={odemeAl}
+                alt="Ödeme Al"
+                width={24}
+                height={24}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = odemeAlHover;
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = odemeAl;
+                }}
+              />
+            </Button>
+
+            {/* Sil Butonu */}
+            <Button
+              variant="danger-light"
               onClick={() => remove(Number(row.id))}
+              className="btn btn-icon btn-sm rounded-pill"
+              title="Sil"
             >
               <i className="ti ti-trash" />
-            </button>
+            </Button>
           </>
         ),
       },
@@ -74,12 +106,10 @@ export default function OtherIncomeTable() {
     [navigate, remove]
   );
 
-
   return (
     <div className="container-fluid mt-3">
       <Pageheader title="Gelirler" currentpage="Farklı Gelirler" />
       <ReusableTable<OtherIncomeData>
-
         onAdd={() => navigate('/other-income/crud')}
         columns={columns}
         data={otherIncomeData}

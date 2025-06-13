@@ -40,14 +40,14 @@ export default function OtherIncomeCrud({ show, onClose, onRefresh }: ModalProps
   };
 
   const fields: FieldDefinition[] = [
-    { name: 'season', label: 'Season', type: 'text', required: true },
-    { name: 'date', label: 'Date', type: 'date', required: true },
-    { name: 'customer_id', label: 'Customer', type: 'number', required: true },
-    { name: 'income_item', label: 'Item', type: 'text', required: true },
-    { name: 'payment_method', label: 'Method', type: 'text', required: true },
-    { name: 'amount', label: 'Amount', type: 'currency', required: true },
-    { name: 'description', label: 'Description', type: 'text' },
-    { name: 'other_income_category_id', label: 'Category', type: 'number' },
+    { name: 'season', label: 'Sezon', type: 'text', required: true },
+    { name: 'date', label: 'Tarih', type: 'date', required: true },
+    { name: 'customer_id', label: 'Müşteri', type: 'number', required: true },
+    { name: 'income_item', label: 'Gelir Kalemi', type: 'text', required: true },
+    { name: 'payment_method', label: 'Ödeme Yöntemi', type: 'text', required: true },
+    { name: 'amount', label: 'Tutar', type: 'currency', required: true },
+    { name: 'description', label: 'Açıklama', type: 'text' },
+    { name: 'other_income_category_id', label: 'Gelir Kategorisi', type: 'number' },
   ];
 
   const handleSubmit = async (
