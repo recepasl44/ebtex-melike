@@ -322,6 +322,9 @@ const Invoicedetail = lazy(() => import("../components/common/invoice/detail"));
 const Createinvoice = lazy(
   () => import("../components/common/invoice/auto_create_invoice")
 );
+const InvoiceStatisticsTable = lazy(
+  () => import("../components/common/invoiceStatistics/table")
+);
 const RegisterIndex = lazy(
   () => import("../components/common/student/register")
 );
@@ -938,6 +941,11 @@ export const Routedata = [
     id: 23,
     path: `${import.meta.env.BASE_URL}invoice`,
     element: <InvoiceTable />,
+  },
+  {
+    id: 23,
+    path: `${import.meta.env.BASE_URL}invoice/stat`,
+    element: <InvoiceStatisticsTable />,
   },
   {
     id: 23,
