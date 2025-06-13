@@ -190,7 +190,7 @@ export default function InvoiceSummaryTable() {
                 key: "actions",
                 label: "İşlemler",
                 render: (r) => (
-                        <>
+                    <>
                         <button
                             onClick={() => navigate(`/studentinvoices/${r.id}`)}
                             className="btn btn-icon btn-sm btn-primary-light rounded-pill"

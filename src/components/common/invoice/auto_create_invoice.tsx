@@ -33,7 +33,7 @@ export default function AutoCreateInvoiceModal({
     const navigate = useNavigate();
 
     // load student + their enrollments
-    const { student, status,  fetchStudent } = useShowStudent();
+    const { student, status, fetchStudent } = useShowStudent();
 
     // next-serial hook
     const { getNextSerial, serial, isLoading: serialLoading } = useNextSerial();
