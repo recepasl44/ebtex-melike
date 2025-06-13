@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
-import { Modal } from "react-bootstrap";
-import ReusableTable, { ColumnDefinition, FilterDefinition } from "../ReusableTable";
+import ReusableTable, {
+  ColumnDefinition,
+  FilterDefinition,
+} from "../ReusableTable";
 import { useInvoiceStatistics } from "../../hooks/invoice/useInvoiceStatistics";
 import { useBranchTable } from "../../hooks/branch/useBranchList";
 import { useSeasonsList } from "../../hooks/season/useSeasonsList";
@@ -157,6 +159,12 @@ export default function InvoiceStatisticsTable() {
         columns={columns}
         tableMode="single"
         showExportButtons={false}
+        showModal={showStudent}
+        onCloseModal={() => {
+          setShowStudent(false);
+          setStudentInvoices(null);
+        }}
+        modalTitle={student.full_name}
       />
     );
   };
@@ -174,33 +182,17 @@ export default function InvoiceStatisticsTable() {
         showExportButtons
       />
 
-      <Modal show={showDetail} onHide={() => setShowDetail(false)} size="xl" centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Fatura Detayı</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <ReusableTable
-            data={detailStudents}
-            columns={studentColumns}
-            tableMode="single"
-            showExportButtons={false}
-          />
-        </Modal.Body>
-      </Modal>
+      <ReusableTable
+        data={detailStudents}
+        columns={studentColumns}
+        tableMode="single"
+        showExportButtons={false}
+        showModal={showDetail}
+        onCloseModal={() => setShowDetail(false)}
+        modalTitle="Fatura Detayı"
+      />
 
-      <Modal
-        show={showStudent}
-        onHide={() => setShowStudent(false)}
-        size="lg"
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>{studentInvoices?.full_name}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {studentInvoices && renderInvoiceTable(studentInvoices)}
-        </Modal.Body>
-      </Modal>
+      {studentInvoices && renderInvoiceTable(studentInvoices)}
     </>
   );
 }
