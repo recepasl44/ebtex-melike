@@ -9,6 +9,9 @@ import { useBranchTable } from "../../hooks/branch/useBranchList";
 import { useProgramsTable } from "../../hooks/program/useList";
 import { useLevelsTable } from "../../hooks/levels/useList";
 import { useClassroomList } from "../../hooks/classrooms/useList";
+import FilterGroup, {
+  FilterDefinition,
+} from "./component/organisms/SearchFilters";
 export default function PaymentDetailsTable() {
   const navigate = useNavigate();
 
@@ -75,7 +78,7 @@ export default function PaymentDetailsTable() {
     pageSize: 100,
   });
 
-  const filters = useMemo(
+  const filters: FilterDefinition[] = useMemo(
     () => [
       {
         key: "branch",
@@ -410,25 +413,27 @@ export default function PaymentDetailsTable() {
   };
 
   return (
-    <ReusableTable<IStudent>
-      columns={columns}
-      // pageTitle="Öğrenci Ödeme Detayları"
-      data={data}
-      loading={loading}
-      error={error}
-      filters={filters}
+    <>
+      <FilterGroup filters={filters} navigate={navigate} columnsPerRow={4} />
+      <ReusableTable<IStudent>
+        columns={columns}
+        // pageTitle="Öğrenci Ödeme Detayları"
+        data={data}
+        loading={loading}
+        error={error}
 
-      showModal={false}
-      showExportButtons={true}
-      tableMode="single"
-      totalPages={totalPages}
-      totalItems={totalItems}
-      currentPage={page}
-      pageSize={paginate}
-      exportFileName="student_payment_details"
-      onPageChange={onPageChange}
-      onPageSizeChange={onPageSizeChange}
-      customFooter={footer}
-    />
+        showModal={false}
+        showExportButtons={true}
+        tableMode="single"
+        totalPages={totalPages}
+        totalItems={totalItems}
+        currentPage={page}
+        pageSize={paginate}
+        exportFileName="student_payment_details"
+        onPageChange={onPageChange}
+        onPageSizeChange={onPageSizeChange}
+        customFooter={footer}
+      />
+    </>
   );
 }
