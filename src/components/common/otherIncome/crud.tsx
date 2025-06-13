@@ -6,6 +6,7 @@ import { useOtherIncomeAdd } from '../../hooks/otherIncome/useOtherIncomeAdd';
 import { useOtherIncomeUpdate } from '../../hooks/otherIncome/useOtherIncomeUpdate';
 import { useOtherIncomeShow } from '../../hooks/otherIncome/useOtherIncomeShow';
 import { OtherIncomeAddPayload } from '../../../types/otherIncome/add';
+import { OTHER_INCOME } from '../../../helpers/url_helper';
 
 interface ModalProps {
   show: boolean;
@@ -24,7 +25,7 @@ export default function OtherIncomeCrud({ show, onClose, onRefresh }: ModalProps
   const { detail } = useOtherIncomeShow(Number(id));
 
   useEffect(() => {
-    if (!show) navigate(-1);
+    if (!show) navigate(OTHER_INCOME);
   }, [show, navigate]);
 
   const initialValues: OtherIncomeAddPayload = {
@@ -61,7 +62,7 @@ export default function OtherIncomeCrud({ show, onClose, onRefresh }: ModalProps
     setSubmitting(false);
     onRefresh();
     onClose();
-    navigate(-1);
+    navigate(OTHER_INCOME);
   };
 
   return (
@@ -69,7 +70,7 @@ export default function OtherIncomeCrud({ show, onClose, onRefresh }: ModalProps
       show={show}
       onClose={() => {
         onClose();
-        navigate(-1);
+        navigate(OTHER_INCOME);
       }}
       initialValues={initialValues}
       title={isEditMode ? 'Farklı Gelir Düzenle' : 'Farklı Gelir Ekle'}
