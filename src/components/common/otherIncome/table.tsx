@@ -9,13 +9,15 @@ import { useOtherIncomeDelete } from '../../hooks/otherIncome/useOtherIncomeDele
 import odemeAl from '../../../assets/images/media/ödeme-al.svg';
 import odemeAlHover from '../../../assets/images/media/ödeme-al-hover.svg';
 import { Button } from 'react-bootstrap';
-import GetPaidModal from './getPaid';
+import { OtherIncomePaymentModal } from './crud';
+import OtherIncomeCrud from './crud';
 
 export default function OtherIncomeTable() {
   const navigate = useNavigate();
   const { remove } = useOtherIncomeDelete();
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const {
     otherIncomeData,
@@ -40,12 +42,12 @@ export default function OtherIncomeTable() {
       {
         key: 'paid',
         label: 'Ödenen',
-        render: () => '-',
+        render: () => '-', // Dinamik değilse backend'e göre güncellenebilir
       },
       {
         key: 'remaining',
         label: 'Kalan',
-        render: () => '-',
+        render: () => '-', // Aynı şekilde
       },
       {
         key: 'phone',
@@ -55,13 +57,14 @@ export default function OtherIncomeTable() {
       {
         key: 'address',
         label: 'Adres',
-        render: (row) => (row.customer as any)?.address || '-',
+        render: (row) => row.customer?.address || '-',
       },
       {
         key: 'actions',
         label: 'İşlemler',
         render: (row) => (
           <>
+            {/* Detay */}
             <Button
               variant="primary-light"
               onClick={() => navigate(`/other-income/detail/${row.id}`)}
@@ -71,6 +74,7 @@ export default function OtherIncomeTable() {
               <i className="ti ti-eye" />
             </Button>
 
+            {/* Ödeme Al */}
             <Button
               onClick={() => setShowPaymentModal(true)}
               style={{ padding: 0, marginRight: '6px' }}
@@ -91,6 +95,7 @@ export default function OtherIncomeTable() {
               />
             </Button>
 
+            {/* Sil */}
             <Button
               variant="danger-light"
               onClick={() => remove(Number(row.id))}
@@ -110,7 +115,7 @@ export default function OtherIncomeTable() {
     <div className="container-fluid mt-3">
       <Pageheader title="Gelirler" currentpage="Farklı Gelirler" />
       <ReusableTable<OtherIncomeData>
-        // ⛔ "onAdd" butonu kaldırıldı (ekle butonu)
+        onAdd={() => setShowCreateModal(true)} // ✅ Ekle butonu tetikleme
         columns={columns}
         data={otherIncomeData}
         loading={loading}
@@ -128,8 +133,21 @@ export default function OtherIncomeTable() {
         exportFileName="other-income"
       />
 
+      {/* Modal: Yeni kayıt ekleme */}
+      {showCreateModal && (
+        <OtherIncomeCrud
+          show={showCreateModal}
+          onClose={() => setShowCreateModal(false)}
+          onRefresh={() => {
+            setShowCreateModal(false);
+            // refresh için query trigger gerekirse eklenebilir
+          }}
+        />
+      )}
+
+      {/* Modal: Ödeme alma */}
       {showPaymentModal && (
-        <GetPaidModal
+        <OtherIncomePaymentModal
           show={showPaymentModal}
           onClose={() => setShowPaymentModal(false)}
         />
