@@ -1,4 +1,4 @@
-import ReusableTable, { ColumnDefinition } from "../../ReusableTable";
+import ReusableTable, { ColumnDefinition } from "../../../ReusableTable";
 
 export interface Debt {
   id: number;

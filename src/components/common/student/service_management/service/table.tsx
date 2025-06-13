@@ -114,7 +114,7 @@ export default function ServiceManagementListPage({
     page: 1,
     pageSize: 100,
   });
-  const {} = useServiceTypesList({
+  const { } = useServiceTypesList({
     enabled: filtersEnabled.service_id,
   });
 

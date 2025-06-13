@@ -124,8 +124,8 @@ const DiscountModal: React.FC<DiscountModalProps> = ({
     mode === "add"
       ? addError
       : mode === "update"
-      ? updateError || showError
-      : null;
+        ? updateError || showError
+        : null;
 
   async function handleSubmit(
     values: IDiscountFormData,

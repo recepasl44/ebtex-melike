@@ -320,7 +320,7 @@ export const MENUITEMS: any = [
       { title: "Kart Yönetimi", path: "/creditcards", type: "link" },
       { title: "Transferler", path: "/transfer", type: "link" },
       { title: "Finansal Özet", path: "/financial-summary", type: "link" },
-      { title: "Finans Notları", path: "/financial-notes", type: "link" },
+      { title: "Finans Notları", path: "/finance-notes", type: "link" },
     ],
   },
 

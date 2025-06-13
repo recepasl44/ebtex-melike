@@ -490,7 +490,9 @@ import ClassListTable from "../components/common/listManagement/students/pages/c
 import StudentListCrud from "../components/common/listManagement/students/pages/classList/crud";
 import PlanCalenderCrud from "../components/common/guidance/workSchedule/Tab5/crud";
 
-
+const FinanceNotesTable = lazy(
+  () => import("../components/common/financeNotes/table")
+);
 
 export const Routedata = [
   //**** Dashboards ****//
@@ -2168,7 +2170,11 @@ export const Routedata = [
     element: <StudentListCrud />,
   },
 
-
+  {
+    id: 432,
+    path: `${import.meta.env.BASE_URL}finance-notes`,
+    element: <FinanceNotesTable />,
+  },
 
 
 

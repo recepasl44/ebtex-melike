@@ -1,5 +1,5 @@
 import { FormikHelpers, FormikValues } from "formik";
-import ReusableModalForm, { FieldDefinition } from "../../ReusableModalForm";
+import ReusableModalForm, { FieldDefinition } from "../../../ReusableModalForm";
 
 export interface PaymentFormValues extends FormikValues {
   tip: string;
@@ -54,14 +54,14 @@ export default function PaymentCrud({
     },
     ...(values.turu === "banka"
       ? [
-          {
-            name: "banka",
-            label: "Banka Hesabı",
-            type: "select",
-            required: true,
-            options: bankOptions,
-          },
-        ]
+        {
+          name: "banka",
+          label: "Banka Hesabı",
+          type: "select" as const,
+          required: true,
+          options: bankOptions,
+        },
+      ]
       : []),
     { name: "tarih", label: "Tarih", type: "date", required: true },
   ];

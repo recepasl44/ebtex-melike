@@ -581,6 +581,8 @@ import userAddReducer from '../slices/user/add/reducer'
 import userUpdateReducer from '../slices/user/update/reducer'
 import userDeleteReducer from '../slices/user/delete/reducer'
 
+import financeNotesSlice from '../slices/financeNotes/list/reducer';
+
 
 const combinedReducer = combineReducers({
   login: loginReducer,
@@ -1159,6 +1161,8 @@ const combinedReducer = combineReducers({
   userUpdate: userUpdateReducer,
   userDelete: userDeleteReducer,
 
+
+  financeNotes: financeNotesSlice,
 });
 
 export default combinedReducer;
