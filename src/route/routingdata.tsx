@@ -12,7 +12,12 @@ const StudentImport = lazy(
 const Calculate = lazy(
   () => import("../components/common/student/calculate/index")
 );
-
+const OtherIncomeDetail = lazy(
+  () => import("../components/common/otherIncome/detail")
+);
+const RevenuesReceipt = lazy(
+  () => import("../components/common/otherIncome/revenuesReceipt")
+);
 // exams
 const ExamsResult = lazy(() => import("../components/common/exams/examResult"));
 const ExamAnalysis = lazy(
@@ -2191,7 +2196,21 @@ export const Routedata = [
 
 
 
-
+  {
+    id: 61,
+    path: `${import.meta.env.BASE_URL}other-income/detail/:id`,
+    element: (
+      <OtherIncomeDetail
+        show={true}
+        onClose={() => window.history.back()}
+      />
+    ),
+  },
+  {
+    id: 61,
+    path: `${import.meta.env.BASE_URL}revenuesReceipt/:id`,
+    element: <RevenuesReceipt />,
+  },
 
 
 
