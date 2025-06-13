@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import TabsContainer from './component/organisms/TabsContainer';
 
 import DailyTransactionsFinancialSummary from '../daily/dailyTransactionsFinancialSummary';
@@ -14,8 +14,12 @@ import DailyOperationsAuthorized from '../daily/dailyOperationsAuthorized';
 import Pageheader from '../../page-header/pageheader';
 
 const DailyModule: React.FC = () => {
-  /* aktif sekme index’i */
-  const [, setActiveIdx] = useState<number>(0);
+  const handleTabChange = (
+    parentTabIndex: number,
+    childTabIndex: number | null
+  ) => {
+    console.log(`Parent Tab: ${parentTabIndex}, Child Tab: ${childTabIndex}`);
+  };
 
   const tabsConfig = [
     {
@@ -93,12 +97,9 @@ const DailyModule: React.FC = () => {
   ];
 
   return (
-    <div className="px-4">
+    <div>
       <Pageheader title="Finans ve Muhasebe" currentpage="Günlük İşlemler" />
-      <TabsContainer
-        tabs={tabsConfig}
-        onTabChange={(idx: number) => setActiveIdx(idx)}
-      />
+      <TabsContainer tabs={tabsConfig} onTabChange={handleTabChange} />
     </div>
   );
 };
