@@ -8,6 +8,11 @@ import { useBranchTable } from "../../hooks/branch/useBranchList";
 import { useLevelsTable } from "../../hooks/levels/useList";
 import { useListStudents } from "../../hooks/student/useList";
 
+import fatura from "../../../assets/images/media/fatura.svg";
+import faturaHover from "../../../assets/images/media/fatura-hover.svg";
+import topluFatura from "../../../assets/images/media/toplu-fatura.svg";
+import topluFaturaHover from "../../../assets/images/media/toplu-fatura-hover.svg";
+
 
 type QueryParams = {
     enabled?: boolean;
@@ -203,14 +208,36 @@ export default function InvoiceSummaryTable() {
                             className="btn btn-icon btn-sm btn-info-light rounded-pill"
                             title="Düzenle"
                         >
-                            <i className="ti ti-pencil" />
+                            <img
+                                src={fatura}
+                                alt="Fatura"
+                                width={24}
+                                height={24}
+                                onMouseEnter={(e) => {
+                                    (e.currentTarget as HTMLImageElement).src = faturaHover;
+                                }}
+                                onMouseLeave={(e) => {
+                                    (e.currentTarget as HTMLImageElement).src = fatura;
+                                }}
+                            />
                         </button>
                         <button
                             onClick={() => navigate(`/createinvoice/${r.id}`)}
                             className="btn btn-icon btn-sm btn-success-light rounded-pill"
                             title="Fatura Oluştur"
                         >
-                            <i className="ti ti-plus" />
+                            <img
+                                src={topluFatura}
+                                alt="Toplu Fatura"
+                                width={24}
+                                height={24}
+                                onMouseEnter={(e) => {
+                                    (e.currentTarget as HTMLImageElement).src = topluFaturaHover;
+                                }}
+                                onMouseLeave={(e) => {
+                                    (e.currentTarget as HTMLImageElement).src = topluFatura;
+                                }}
+                            />
                         </button>
                     </>
 
