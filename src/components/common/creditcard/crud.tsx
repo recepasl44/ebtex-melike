@@ -1,8 +1,7 @@
 import { FormikHelpers, FormikValues } from "formik";
 import { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { Modal, Row, Col, Card, Button } from "react-bootstrap";
-import ReusableTable, { ColumnDefinition } from "../ReusableTable";
+import { Modal } from "react-bootstrap";
 import ReusableModalForm, { FieldDefinition } from "../ReusableModalForm";
 import { useCreditCardAdd } from "../../hooks/creditCard/useCreditCardAdd";
 import { useCreditCardUpdate } from "../../hooks/creditCard/useCreditCardUpdate";
@@ -10,6 +9,7 @@ import { useCreditCardShow } from "../../hooks/creditCard/useCreditCardShow";
 import { useBranchTable } from "../../hooks/branch/useBranchList";
 import { CreditCardAddPayload } from "../../../types/creditCard/add";
 import { CreditCardUpdatePayload } from "../../../types/creditCard/update";
+import CreditCardDetailTables from "./service_management";
 
 interface CreditCardModalProps {
   show: boolean;
@@ -146,139 +146,14 @@ const CreditCardModal: React.FC<CreditCardModalProps> = ({ show, onClose, onRefr
     }
     navigate(-1);
   }
-  const [debts, setDebts] = useState<any[]>([
-      {
-        id: 1,
-        borc_tutari: 1000,
-        askeri_borc: 200,
-        due_date: "2025-06-01",
-        odenen: 300,
-        kalan: 700,
-        kullanici: "Admin",
-      },
-    ]);
-  const [payments, setPayments] = useState<Record<number, any[]>>({
-      1: [
-        {
-          id: 1,
-          tip: "Kısmi Ödeme",
-          tutar: 300,
-          turu: "Nakit",
-          banka: "-",
-          tarih: "2024-01-01",
-          kullanici: "Admin",
-        },
-      ],
-    });
-  const [selectedDebtId, setSelectedDebtId] = useState<number | null>(null);
-
   if (mode === "detail") {
-    const selectedPayments =
-      (selectedDebtId && payments[selectedDebtId]) || [];
-
-    const debtColumns: ColumnDefinition<any>[] = [
-      { key: "borc_tutari", label: "Borç Tutarı" },
-      { key: "askeri_borc", label: "Askeri Borç Tutarı" },
-      { key: "due_date", label: "Son Ödeme Tarihi" },
-      { key: "odenen", label: "Ödenen Tutar" },
-      { key: "kalan", label: "Kalan Tutar" },
-      { key: "kullanici", label: "Kullanıcı" },
-      {
-        key: "actions",
-        label: "İşlemler",
-        render: (row) => (
-          <>
-            <button
-              className="btn btn-icon btn-sm btn-primary-light rounded-pill"
-              onClick={() => setSelectedDebtId(row.id)}
-            >
-              <i className="ti ti-check" />
-            </button>
-            <button
-              className="btn btn-icon btn-sm btn-info-light rounded-pill ms-1"
-              onClick={() => alert("edit")}
-            >
-              <i className="ti ti-pencil" />
-            </button>
-            <button
-              className="btn btn-icon btn-sm btn-danger-light rounded-pill ms-1"
-              onClick={() =>
-                setDebts((d) => d.filter((item) => item.id !== row.id))
-              }
-            >
-              <i className="ti ti-trash" />
-            </button>
-          </>
-        ),
-      },
-    ];
-
-    const paymentColumns: ColumnDefinition<any>[] = [
-      { key: "tip", label: "Ödeme Tipi" },
-      { key: "tutar", label: "Ödenen Tutar" },
-      { key: "turu", label: "Ödeme Türü" },
-      { key: "banka", label: "Banka Hesabı" },
-      { key: "tarih", label: "Tarih" },
-      { key: "kullanici", label: "Kullanıcı" },
-      {
-        key: "actions",
-        label: "İşlemler",
-        render: () => (
-          <button
-            className="btn btn-icon btn-sm btn-info-light rounded-pill"
-            onClick={() => alert("edit")}
-          >
-            <i className="ti ti-pencil" />
-          </button>
-        ),
-      },
-    ];
-
     return (
       <Modal show={show} onHide={() => navigate(-1)} centered size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Kredi Kartı Detayı</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Row>
-            <Col md={6}>
-              <Card>
-                <Card.Header className="d-flex justify-content-between align-items-center">
-                  <Card.Title className="mb-0">Kredi Kartı Borçları</Card.Title>
-                  <Button size="sm" onClick={() => alert("add")}>Ekle</Button>
-                </Card.Header>
-                <Card.Body>
-                  <ReusableTable
-                    tableMode="single"
-                    showExportButtons={false}
-                    data={debts}
-                    columns={debtColumns}
-                  />
-                </Card.Body>
-              </Card>
-            </Col>
-            <Col md={6}>
-              <Card>
-                <Card.Header className="d-flex justify-content-between align-items-center">
-                  <Card.Title className="mb-0">Ödemeler</Card.Title>
-                  <Button size="sm" onClick={() => alert("add")}>Ekle</Button>
-                </Card.Header>
-                <Card.Body>
-                  <ReusableTable
-                    tableMode="single"
-                    showExportButtons={false}
-                    data={selectedPayments}
-                    columns={paymentColumns}
-                    customFooter={
-                      selectedDebtId === null && (
-                        <div className="text-center p-2">Borç seçiniz</div>
-                      )
-                    }
-                  />
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
+          <CreditCardDetailTables />
         </Modal.Body>
       </Modal>
     );
