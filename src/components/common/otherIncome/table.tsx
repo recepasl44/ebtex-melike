@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReusableTable, { ColumnDefinition } from '../ReusableTable';
 import Pageheader from '../../page-header/pageheader';
@@ -9,10 +9,13 @@ import { useOtherIncomeDelete } from '../../hooks/otherIncome/useOtherIncomeDele
 import odemeAl from '../../../assets/images/media/ödeme-al.svg';
 import odemeAlHover from '../../../assets/images/media/ödeme-al-hover.svg';
 import { Button } from 'react-bootstrap';
+import { OtherIncomePaymentModal } from './crud';
 
 export default function OtherIncomeTable() {
   const navigate = useNavigate();
   const { remove } = useOtherIncomeDelete();
+
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const {
     otherIncomeData,
@@ -71,7 +74,7 @@ export default function OtherIncomeTable() {
 
             {/* Ödeme Al Butonu (img ile) */}
             <Button
-              onClick={() => alert(`Ödeme alınacak: ID ${row.id}`)}
+              onClick={() => setShowPaymentModal(true)}
               style={{ padding: 0, marginRight: '6px' }}
               variant=""
               title="Ödeme Al"
@@ -126,6 +129,10 @@ export default function OtherIncomeTable() {
           setPage(1);
         }}
         exportFileName="other-income"
+      />
+      <OtherIncomePaymentModal
+        show={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
       />
     </div>
   );
