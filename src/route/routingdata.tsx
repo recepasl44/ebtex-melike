@@ -163,6 +163,12 @@ const OtherIncomeTable = lazy(
 const OtherIncomeCrud = lazy(
   () => import("../components/common/otherIncome/crud")
 );
+const OtherIncomeDetail = lazy(
+  () => import("../components/common/otherIncome/detail")
+);
+const RevenuesReceipt = lazy(
+  () => import("../components/common/otherIncome/revenuesReceipt")
+);
 // Meeting Crud Modal
 const MeetingCrud = lazy(
   () => import("../components/common/student/meetings/crud")
@@ -1772,6 +1778,21 @@ export const Routedata = [
         onRefresh={() => { }}
       />
     ),
+  },
+  {
+    id: 61,
+    path: `${import.meta.env.BASE_URL}other-income/detail/:id`,
+    element: (
+      <OtherIncomeDetail
+        show={true}
+        onClose={() => window.history.back()}
+      />
+    ),
+  },
+  {
+    id: 61,
+    path: `${import.meta.env.BASE_URL}revenuesReceipt/:id`,
+    element: <RevenuesReceipt />,
   },
   {
     id: 2000,

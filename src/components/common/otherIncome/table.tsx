@@ -64,11 +64,11 @@ export default function OtherIncomeTable() {
           <>
             <Button
               variant="primary-light"
-              onClick={() => navigate(`/other-income/crud/${row.id}`)}
+              onClick={() => navigate(`/other-income/detail/${row.id}`)}
               className="btn btn-icon btn-sm rounded-pill me-1"
-              title="Düzenle"
+              title="Detay"
             >
-              <i className="ti ti-pencil" />
+              <i className="ti ti-eye" />
             </Button>
 
             <Button
