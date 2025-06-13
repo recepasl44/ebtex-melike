@@ -72,7 +72,8 @@ export default function OtherIncomeCrud({ show, onClose, onRefresh }: ModalProps
         navigate(-1);
       }}
       initialValues={initialValues}
-      title="Farklı Gelir Ekle"
+      title={isEditMode ? 'Farklı Gelir Düzenle' : 'Farklı Gelir Ekle'}
+      confirmButtonLabel={isEditMode ? 'Güncelle' : 'Kaydet'}
       fields={fields}
       onSubmit={handleSubmit}
     />
