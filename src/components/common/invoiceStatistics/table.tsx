@@ -1,10 +1,25 @@
 import { useMemo, useState } from "react";
-import { Button, Modal, Table } from "react-bootstrap";
+import { Modal, Table } from "react-bootstrap";
 import ReusableTable, { ColumnDefinition, FilterDefinition } from "../ReusableTable";
 import { useInvoiceStatistics } from "../../hooks/invoice/useInvoiceStatistics";
 import { useBranchTable } from "../../hooks/branch/useBranchList";
 import { useSeasonsList } from "../../hooks/season/useSeasonsList";
 import { formatCurrency, formatDate } from "../../../utils/formatters";
+
+const monthOptions = [
+    { value: 1, label: "Ocak" },
+    { value: 2, label: "Şubat" },
+    { value: 3, label: "Mart" },
+    { value: 4, label: "Nisan" },
+    { value: 5, label: "Mayıs" },
+    { value: 6, label: "Haziran" },
+    { value: 7, label: "Temmuz" },
+    { value: 8, label: "Ağustos" },
+    { value: 9, label: "Eylül" },
+    { value: 10, label: "Ekim" },
+    { value: 11, label: "Kasım" },
+    { value: 12, label: "Aralık" },
+];
 
 import Pageheader from "../../page-header/pageheader";
 
@@ -51,7 +66,7 @@ export default function InvoiceStatisticsTable() {
                 label: "Ay",
                 type: "multiselect" as const,
                 value: months,
-
+                options: monthOptions,
                 onChange: (vals: number[]) => setMonths(vals),
             },
         ],
@@ -72,61 +87,50 @@ export default function InvoiceStatisticsTable() {
                 key: "actions",
                 label: "İşlemler",
                 render: (row) => (
-                    <Button
-                        size="sm"
-                        variant="primary"
+                    <button
+                        className="btn btn-icon btn-sm btn-primary-light rounded-pill"
                         onClick={() => {
                             setDetailStudents(row.students || []);
                             setShowDetail(true);
                         }}
                     >
-                        Detay
-                    </Button>
+                        <i className="ti ti-eye" />
+                    </button>
                 ),
             },
         ],
         []
     );
 
-    const studentColumns = [
-        "Şube",
-        "T.C. Kimlik No",
-        "Adı Soyadı",
-        "Sınıf Seviyesi",
-        "Sınıf/Şube",
-        "Veli Adı Soyadı",
-        "Veli Yakınlığı",
-        "Veli Telefon",
-        "Fatura Tutarı",
-        "İşlemler",
-    ];
-
-    const renderStudentRows = () =>
-        detailStudents.map((st, idx) => (
-            <tr key={idx}>
-                <td>{st.branch_name}</td>
-                <td>{st.identification_no}</td>
-                <td>{st.full_name}</td>
-                <td>{st.level_name}</td>
-                <td>{st.class_name}</td>
-                <td>{st.parent_name}</td>
-                <td>{st.parent_relation}</td>
-                <td>{st.parent_phone}</td>
-                <td>{formatCurrency(st.total_amount)}</td>
-                <td>
-                    <Button
-                        size="sm"
-                        variant="info"
+    const studentColumns: ColumnDefinition<any>[] = useMemo(
+        () => [
+            { key: "branch_name", label: "Şube", render: (r) => r.branch_name },
+            { key: "identification_no", label: "T.C. Kimlik No", render: (r) => r.identification_no },
+            { key: "full_name", label: "Adı Soyadı", render: (r) => r.full_name },
+            { key: "level_name", label: "Sınıf Seviyesi", render: (r) => r.level_name },
+            { key: "class_name", label: "Sınıf/Şube", render: (r) => r.class_name },
+            { key: "parent_name", label: "Veli Adı Soyadı", render: (r) => r.parent_name },
+            { key: "parent_relation", label: "Veli Yakınlığı", render: (r) => r.parent_relation },
+            { key: "parent_phone", label: "Veli Telefon", render: (r) => r.parent_phone },
+            { key: "total_amount", label: "Fatura Tutarı", render: (r) => formatCurrency(r.total_amount) },
+            {
+                key: "actions",
+                label: "İşlemler",
+                render: (row) => (
+                    <button
+                        className="btn btn-icon btn-sm btn-primary-light rounded-pill"
                         onClick={() => {
-                            setStudentInvoices(st);
+                            setStudentInvoices(row);
                             setShowStudent(true);
                         }}
                     >
-                        Detay
-                    </Button>
-                </td>
-            </tr>
-        ));
+                        <i className="ti ti-eye" />
+                    </button>
+                ),
+            },
+        ],
+        []
+    );
 
     const renderInvoiceTable = (student: any) => {
         const services = Array.from(
@@ -169,23 +173,14 @@ export default function InvoiceStatisticsTable() {
                 showExportButtons
             />
 
-            <Modal show={showDetail} onHide={() => setShowDetail(false)} size="xl" centered>
-                <Modal.Header closeButton>
-                    <Modal.Title>Fatura Detayı</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Table bordered size="sm">
-                        <thead>
-                            <tr>
-                                {studentColumns.map((c) => (
-                                    <th key={c}>{c}</th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody>{renderStudentRows()}</tbody>
-                    </Table>
-                </Modal.Body>
-            </Modal>
+            <ReusableTable
+                columns={studentColumns}
+                data={detailStudents}
+                tableMode="single"
+                showModal={showDetail}
+                modalTitle="Fatura Detayı"
+                onCloseModal={() => setShowDetail(false)}
+            />
 
             <Modal
                 show={showStudent}
