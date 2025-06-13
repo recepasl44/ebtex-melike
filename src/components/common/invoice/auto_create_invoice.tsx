@@ -110,7 +110,7 @@ export default function AutoCreateInvoiceModal({
                 payable_amount: 0
             }).unwrap();
             onHide();
-            navigate(-1);
+            navigate("/invoice");
         } catch (e) {
             console.error(e);
             // TODO: toast.error("Batch invoice failed")
@@ -124,7 +124,7 @@ export default function AutoCreateInvoiceModal({
             show={show}
             onHide={() => {
                 onHide();
-                navigate(-1);
+                navigate("/invoice");
             }}
             size="lg"
             centered
@@ -227,7 +227,7 @@ export default function AutoCreateInvoiceModal({
                     variant="outline-secondary"
                     onClick={() => {
                         onHide();
-                        navigate(-1);
+                        navigate("/invoice");
                     }}
                 >
                     Kapat

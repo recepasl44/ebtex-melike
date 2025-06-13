@@ -127,7 +127,7 @@ export default function InvoiceDetailModal({
                 }).unwrap();
             }
             onHide();
-            navigate(-1);
+            navigate("/invoice");
         } catch (e) {
             console.error(e);
             // TODO: toast.error(...)
@@ -140,8 +140,8 @@ export default function InvoiceDetailModal({
         <Modal
             show={show}
             onHide={() => {
-                onHide();
-                navigate(-1);
+            onHide();
+            navigate("/invoice");
             }}
             size="lg"
             centered
@@ -257,7 +257,7 @@ export default function InvoiceDetailModal({
                     variant="outline-secondary"
                     onClick={() => {
                         onHide();
-                        navigate(-1);
+                        navigate("/invoice");
                     }}
                 >
                     Kapat

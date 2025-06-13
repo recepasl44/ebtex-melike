@@ -52,7 +52,7 @@ export default function StudentInvoiceTable() {
       loading={loading}
       error={error}
       showModal={true}
-      onCloseModal={() => navigate(-1)}
+      onCloseModal={() => navigate("/invoice")}
       modalTitle="Faturalar"
       showExportButtons={true}
       tableMode="single"
