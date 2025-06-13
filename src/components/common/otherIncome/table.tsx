@@ -9,6 +9,7 @@ import { useOtherIncomeDelete } from '../../hooks/otherIncome/useOtherIncomeDele
 import odemeAl from '../../../assets/images/media/ödeme-al.svg';
 import odemeAlHover from '../../../assets/images/media/ödeme-al-hover.svg';
 import { Button } from 'react-bootstrap';
+import GetPaidModal from './getPaid';
 
 export default function OtherIncomeTable() {
   const navigate = useNavigate();
@@ -127,7 +128,12 @@ export default function OtherIncomeTable() {
         exportFileName="other-income"
       />
 
-      {/* ⛔ Modal komple kaldırıldı */}
+      {showPaymentModal && (
+        <GetPaidModal
+          show={showPaymentModal}
+          onClose={() => setShowPaymentModal(false)}
+        />
+      )}
     </div>
   );
 }
