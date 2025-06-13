@@ -43,6 +43,28 @@ export default function InvoiceStatisticsTable() {
     const [studentInvoices, setStudentInvoices] = useState<any | null>(null);
     const [showStudent, setShowStudent] = useState(false);
 
+    const summaryTotal = useMemo(
+        () => (data || []).reduce((s, r) => s + (r.total_amount || 0), 0),
+        [data]
+    );
+
+    const summaryFooter = (
+        <div className="d-flex justify-content-end fw-bold me-3">
+            Toplam: {formatCurrency(summaryTotal)}
+        </div>
+    );
+
+    const studentTotal = useMemo(
+        () => detailStudents.reduce((s, r) => s + (r.total_amount || 0), 0),
+        [detailStudents]
+    );
+
+    const studentFooter = (
+        <div className="d-flex justify-content-end fw-bold me-3">
+            Toplam: {formatCurrency(studentTotal)}
+        </div>
+    );
+
     const filters: FilterDefinition[] = useMemo(
         () => [
             {
@@ -136,6 +158,14 @@ export default function InvoiceStatisticsTable() {
         const services = Array.from(
             new Set((student.invoices || []).map((inv: any) => inv.service_name))
         ) as string[];
+        const totals: Record<string, number> = {};
+        services.forEach((s) => {
+            totals[s] = 0;
+        });
+        (student.invoices || []).forEach((inv: any) => {
+            totals[inv.service_name] = (totals[inv.service_name] || 0) +
+                (inv.amount || 0);
+        });
         return (
             <Table bordered size="sm" className="mt-2">
                 <thead>
@@ -156,6 +186,14 @@ export default function InvoiceStatisticsTable() {
                         </tr>
                     ))}
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td>Toplam</td>
+                        {services.map((s) => (
+                            <td key={s}>{formatCurrency(totals[s] || 0)}</td>
+                        ))}
+                    </tr>
+                </tfoot>
             </Table>
         );
     };
@@ -171,15 +209,18 @@ export default function InvoiceStatisticsTable() {
                 filters={filters}
                 tableMode="single"
                 showExportButtons
+                customFooter={summaryFooter}
             />
 
             <ReusableTable
                 columns={studentColumns}
                 data={detailStudents}
                 tableMode="single"
+                showExportButtons
                 showModal={showDetail}
                 modalTitle="Fatura Detayı"
                 onCloseModal={() => setShowDetail(false)}
+                customFooter={studentFooter}
             />
 
             <Modal
