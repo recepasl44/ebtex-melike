@@ -322,12 +322,7 @@ const Invoicedetail = lazy(() => import("../components/common/invoice/detail"));
 const Createinvoice = lazy(
   () => import("../components/common/invoice/auto_create_invoice")
 );
-const InvoiceStatisticsTable = lazy(
-  () => import("../components/common/invoiceStatistics/table")
-);
-const InvoiceStatisticsCrud = lazy(
-  () => import("../components/common/invoiceStatistics/crud")
-);
+
 const RegisterIndex = lazy(
   () => import("../components/common/student/register")
 );
@@ -945,23 +940,7 @@ export const Routedata = [
     path: `${import.meta.env.BASE_URL}invoice`,
     element: <InvoiceTable />,
   },
-  {
-    id: 23,
-    path: `${import.meta.env.BASE_URL}invoice/stat`,
-    element: <InvoiceStatisticsTable />,
-  },
-  {
-    id: 23,
-    path: `${import.meta.env.BASE_URL}invoice/stat/detail`,
-    element: (
-      <InvoiceStatisticsCrud
-        show={true}
-        onHide={() => {
-          window.history.back();
-        }}
-      />
-    ),
-  },
+
   {
     id: 23,
     path: `${import.meta.env.BASE_URL}invoicedetail/:studentId`,
