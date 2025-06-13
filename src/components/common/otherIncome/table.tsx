@@ -127,6 +127,7 @@ export default function OtherIncomeTable() {
           setPaginate(newSize);
           setPage(1);
         }}
+        showExportButtons
         exportFileName="other-income"
       />
 
