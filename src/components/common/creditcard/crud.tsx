@@ -1,8 +1,8 @@
 import { FormikHelpers, FormikValues } from "formik";
 import { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { Modal, Table } from "react-bootstrap";
 import ReusableModalForm, { FieldDefinition } from "../ReusableModalForm";
+import ReusableTable, { ColumnDefinition } from "../ReusableTable";
 import { useCreditCardAdd } from "../../hooks/creditCard/useCreditCardAdd";
 import { useCreditCardUpdate } from "../../hooks/creditCard/useCreditCardUpdate";
 import { useCreditCardShow } from "../../hooks/creditCard/useCreditCardShow";
@@ -147,50 +147,40 @@ const CreditCardModal: React.FC<CreditCardModalProps> = ({ show, onClose, onRefr
   }
 
   if (mode === "detail") {
+    const columns: ColumnDefinition<any>[] = [
+      { key: "branch_id", label: "Şube ID" },
+      { key: "card_holder_name", label: "Kart Sahibi" },
+      { key: "card_name", label: "Kart Adı" },
+      { key: "card_number", label: "Kart No" },
+      { key: "expire", label: "Son Kullanma" },
+      { key: "amount", label: "Tutar" },
+    ];
+
+    const data = creditCard
+      ? [
+          {
+            branch_id: creditCard.branch_id,
+            card_holder_name: creditCard.card_holder_name,
+            card_name: creditCard.description,
+            card_number: creditCard.card_number,
+            expire: `${creditCard.expire_month}/${creditCard.expire_year}`,
+            amount: creditCard.amount,
+          },
+        ]
+      : [];
+
     return (
-      <Modal show={show} onHide={() => navigate(-1)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Kredi Kartı Detayı</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {loading ? (
-            <div>Yükleniyor...</div>
-          ) : creditCard ? (
-            <Table bordered>
-              <tbody>
-                <tr>
-                  <th>Şube ID</th>
-                  <td>{creditCard.branch_id}</td>
-                </tr>
-                <tr>
-                  <th>Kart Sahibi</th>
-                  <td>{creditCard.card_holder_name}</td>
-                </tr>
-                <tr>
-                  <th>Kart Adı</th>
-                  <td>{creditCard.description}</td>
-                </tr>
-                <tr>
-                  <th>Kart No</th>
-                  <td>{creditCard.card_number}</td>
-                </tr>
-                <tr>
-                  <th>Son Kullanma</th>
-                  <td>
-                    {creditCard.expire_month}/{creditCard.expire_year}
-                  </td>
-                </tr>
-                <tr>
-                  <th>Tutar</th>
-                  <td>{creditCard.amount}</td>
-                </tr>
-              </tbody>
-            </Table>
-          ) : (
-            <div>Veri bulunamadı</div>
-          )}
-        </Modal.Body>
-      </Modal>
+      <ReusableTable
+        showModal={show}
+        onCloseModal={() => navigate(-1)}
+        modalTitle="Kredi Kartı Detayı"
+        columns={columns}
+        data={data}
+        tableMode="single"
+        loading={loading}
+        error={error as any}
+        showExportButtons={false}
+      />
     );
   }
 
