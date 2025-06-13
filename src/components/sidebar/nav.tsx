@@ -313,8 +313,16 @@ export const MENUITEMS: any = [
         title: "Fatura Yönetimi",
         type: "sub",
         children: [
-          { title: "Fatura İşleme", path: "/invoice", type: "link" },
-          { title: "Fatura İstatistiği", path: "/invoice/stat", type: "link" },
+          {
+            title: "Fatura İşleme",
+            path: `${import.meta.env.BASE_URL}invoice`,
+            type: "link",
+          },
+          {
+            title: "Fatura İstatistiği",
+            path: `${import.meta.env.BASE_URL}invoice/stat`,
+            type: "link",
+          },
         ],
       },
       { title: "Kart Yönetimi", path: "/creditcards", type: "link" },
