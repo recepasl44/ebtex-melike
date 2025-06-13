@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FormikHelpers } from 'formik';
 import ReusableModalForm, { FieldDefinition } from '../ReusableModalForm';
@@ -9,6 +9,9 @@ import { useSeasonsList } from '../../hooks/season/useSeasonsList';
 import { usePaymentMethodsList } from '../../hooks/paymentMethods/useList';
 import { OtherIncomeAddPayload } from '../../../types/otherIncome/add';
 import { OTHER_INCOME } from '../../../helpers/url_helper';
+import AddCustomerModal from '../customers/AddCustomerModal';
+import AddIncomeItemModal from '../incomeItems/AddIncomeItemModal';
+import { Button } from 'react-bootstrap';
 
 interface ModalProps {
   show: boolean;
@@ -25,6 +28,14 @@ export default function OtherIncomeCrud({ show, onClose, onRefresh }: ModalProps
   const { addNew } = useOtherIncomeAdd();
   const { update } = useOtherIncomeUpdate();
   const { detail } = useOtherIncomeShow(Number(id));
+  const { seasonsData } = useSeasonsList({ enabled: true, page: 1, paginate: 999 });
+  const { paymentMethodsData } = usePaymentMethodsList({ enabled: true });
+
+  const [customers, setCustomers] = useState<{ id: number; name: string }[]>([]);
+  const [incomeItems, setIncomeItems] = useState<{ id: number; name: string }[]>([]);
+
+  const [showCustomerModal, setShowCustomerModal] = useState(false);
+  const [showIncomeItemModal, setShowIncomeItemModal] = useState(false);
 
   useEffect(() => {
     if (!show) navigate(OTHER_INCOME);
@@ -42,14 +53,80 @@ export default function OtherIncomeCrud({ show, onClose, onRefresh }: ModalProps
   };
 
   const fields: FieldDefinition[] = [
-    { name: 'season', label: 'Sezon', type: 'text', required: true },
+    {
+      name: 'season',
+      label: 'Sezon',
+      type: 'select',
+      options: seasonsData.map((s) => ({ label: s.name, value: s.name })),
+      required: true,
+    },
     { name: 'date', label: 'Tarih', type: 'date', required: true },
-    { name: 'customer_id', label: 'Müşteri', type: 'number', required: true },
-    { name: 'income_item', label: 'Gelir Kalemi', type: 'text', required: true },
-    { name: 'payment_method', label: 'Ödeme Yöntemi', type: 'text', required: true },
+    {
+      name: 'customer_id',
+      label: 'Müşteri',
+      required: true,
+      renderForm: (formik) => (
+        <div style={{ display: 'flex' }}>
+          <select
+            className="form-select"
+            value={formik.values.customer_id}
+            onChange={(e) => formik.setFieldValue('customer_id', Number(e.target.value))}
+            style={{ flex: 1 }}
+          >
+            <option value="">Seçiniz</option>
+            {customers.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+          <Button
+            variant="outline-secondary"
+            onClick={() => setShowCustomerModal(true)}
+            style={{ marginLeft: 8 }}
+          >
+            <i className="ti ti-plus" />
+          </Button>
+        </div>
+      ),
+    },
+    {
+      name: 'income_item',
+      label: 'Gelir Kalemi',
+      required: true,
+      renderForm: (formik) => (
+        <div style={{ display: 'flex' }}>
+          <select
+            className="form-select"
+            value={formik.values.income_item}
+            onChange={(e) => formik.setFieldValue('income_item', e.target.value)}
+            style={{ flex: 1 }}
+          >
+            <option value="">Seçiniz</option>
+            {incomeItems.map((i) => (
+              <option key={i.id} value={i.name}>
+                {i.name}
+              </option>
+            ))}
+          </select>
+          <Button
+            variant="outline-secondary"
+            onClick={() => setShowIncomeItemModal(true)}
+            style={{ marginLeft: 8 }}
+          >
+            <i className="ti ti-plus" />
+          </Button>
+        </div>
+      ),
+    },
+    {
+      name: 'payment_method',
+      label: 'Ödeme Şekli',
+      type: 'select',
+      options: paymentMethodsData.map((pm) => ({ label: pm.name, value: pm.name })),
+    },
     { name: 'amount', label: 'Tutar', type: 'currency', required: true },
-    { name: 'description', label: 'Açıklama', type: 'text' },
-    { name: 'other_income_category_id', label: 'Gelir Kategorisi', type: 'number' },
+    { name: 'description', label: 'Açıklama', type: 'textarea' },
   ];
 
   const handleSubmit = async (
@@ -68,18 +145,36 @@ export default function OtherIncomeCrud({ show, onClose, onRefresh }: ModalProps
   };
 
   return (
-    <ReusableModalForm
-      show={show}
-      onClose={() => {
-        onClose();
-        navigate(OTHER_INCOME);
-      }}
-      initialValues={initialValues}
-      title={isEditMode ? 'Farklı Gelir Düzenle' : 'Farklı Gelir Ekle'}
-      confirmButtonLabel={isEditMode ? 'Güncelle' : 'Kaydet'}
-      fields={fields}
-      onSubmit={handleSubmit}
-    />
+    <>
+      <ReusableModalForm
+        show={show}
+        onClose={() => {
+          onClose();
+          navigate(OTHER_INCOME);
+        }}
+        initialValues={initialValues}
+        title={isEditMode ? 'Farklı Gelir Düzenle' : 'Farklı Gelir Ekle'}
+        confirmButtonLabel={isEditMode ? 'Güncelle' : 'Kaydet'}
+        fields={fields}
+        onSubmit={handleSubmit}
+      />
+
+      {showCustomerModal && (
+        <AddCustomerModal
+          show={showCustomerModal}
+          onClose={() => setShowCustomerModal(false)}
+          onAdd={(c) => setCustomers((prev) => [...prev, c])}
+        />
+      )}
+
+      {showIncomeItemModal && (
+        <AddIncomeItemModal
+          show={showIncomeItemModal}
+          onClose={() => setShowIncomeItemModal(false)}
+          onAdd={(i) => setIncomeItems((prev) => [...prev, i])}
+        />
+      )}
+    </>
   );
 }
 
