@@ -942,8 +942,8 @@ export const Routedata = [
     element: (
       <Invoicedetail
         show={true}
-        onHide={function (): void {
-          throw new Error("Function not implemented.");
+        onHide={() => {
+          window.history.back();
         }}
       />
     ),
@@ -954,8 +954,8 @@ export const Routedata = [
     element: (
       <Createinvoice
         show={true}
-        onHide={function (): void {
-          throw new Error("Function not implemented.");
+        onHide={() => {
+          window.history.back();
         }}
       />
     ),
