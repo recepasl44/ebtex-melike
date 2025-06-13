@@ -10,12 +10,14 @@ import odemeAl from '../../../assets/images/media/ödeme-al.svg';
 import odemeAlHover from '../../../assets/images/media/ödeme-al-hover.svg';
 import { Button } from 'react-bootstrap';
 import GetPaidModal from './getPaid';
+import AddOtherIncomeModal from './AddOtherIncomeModal';
 
 export default function OtherIncomeTable() {
   const navigate = useNavigate();
   const { remove } = useOtherIncomeDelete();
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
 
   const {
     otherIncomeData,
@@ -110,7 +112,7 @@ export default function OtherIncomeTable() {
     <div className="container-fluid mt-3">
       <Pageheader title="Gelirler" currentpage="Farklı Gelirler" />
       <ReusableTable<OtherIncomeData>
-        // ⛔ "onAdd" butonu kaldırıldı (ekle butonu)
+        onAdd={() => setShowAddModal(true)}
         columns={columns}
         data={otherIncomeData}
         loading={loading}
@@ -132,6 +134,13 @@ export default function OtherIncomeTable() {
         <GetPaidModal
           show={showPaymentModal}
           onClose={() => setShowPaymentModal(false)}
+        />
+      )}
+
+      {showAddModal && (
+        <AddOtherIncomeModal
+          show={showAddModal}
+          onClose={() => setShowAddModal(false)}
         />
       )}
     </div>
