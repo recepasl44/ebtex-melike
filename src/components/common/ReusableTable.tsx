@@ -442,6 +442,31 @@ function ReusableTable<T extends { [key: string]: any }>({
                           </Form.Group>
                         </Col>
                       );
+                    } else if (filter.type === "multiselect") {
+                      return (
+                        <Col key={filter.key} md={colSize}>
+                          <Form.Group>
+                            <Form.Label>{filter.label}</Form.Label>
+                            <Form.Select
+                              multiple
+                              value={Array.isArray(filter.value) ? filter.value : []}
+                              onChange={(e) => {
+                                const selected = Array.from(
+                                  e.target.selectedOptions,
+                                  (opt) => opt.value
+                                );
+                                if (filter.onChange) filter.onChange(selected);
+                              }}
+                            >
+                              {filter.options?.map((opt) => (
+                                <option key={opt.value} value={opt.value}>
+                                  {opt.label}
+                                </option>
+                              ))}
+                            </Form.Select>
+                          </Form.Group>
+                        </Col>
+                      );
                     } // renderFiltersSingle fonksiyonu içindeki if-else bloklarına eklenecek
 
                     return (
@@ -781,6 +806,31 @@ function ReusableTable<T extends { [key: string]: any }>({
                           inputClass="form-control"
                         />
                       )}
+                    </Form.Group>
+                  </Col>
+                );
+              } else if (filter.type === "multiselect") {
+                return (
+                  <Col key={filter.key} md={6}>
+                    <Form.Group>
+                      <Form.Label>{filter.label}</Form.Label>
+                      <Form.Select
+                        multiple
+                        value={Array.isArray(filter.value) ? filter.value : []}
+                        onChange={(e) => {
+                          const selected = Array.from(
+                            e.target.selectedOptions,
+                            (opt) => opt.value
+                          );
+                          if (filter.onChange) filter.onChange(selected);
+                        }}
+                      >
+                        {filter.options?.map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ))}
+                      </Form.Select>
                     </Form.Group>
                   </Col>
                 );
