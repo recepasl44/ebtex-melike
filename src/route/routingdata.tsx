@@ -372,6 +372,9 @@ const Questionlabeling = lazy(
 );
 
 import OverduePaymentsPage from "../components/common/overduePayments/Table";
+const FinanceNotesTable = lazy(
+  () => import("../components/common/financeNotes/table")
+);
 import { IQuizTime } from "../types/quizTimes/list";
 import WorkSchedule from "../components/common/guidance/workSchedule";
 import AnnualPlanCrud from "../components/common/guidance/workSchedule/Tab1/annual-plan-List-filter/crud";
@@ -638,6 +641,11 @@ export const Routedata = [
     id: 2,
     path: `${import.meta.env.BASE_URL}OverduePayments`,
     element: <OverduePaymentsPage />,
+  },
+  {
+    id: 2,
+    path: `${import.meta.env.BASE_URL}finance-notes`,
+    element: <FinanceNotesTable />,
   },
   {
     id: 2,
