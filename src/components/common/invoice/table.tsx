@@ -12,6 +12,8 @@ import fatura from "../../../assets/images/media/fatura.svg";
 import faturaHover from "../../../assets/images/media/fatura-hover.svg";
 import topluFatura from "../../../assets/images/media/toplu-fatura.svg";
 import topluFaturaHover from "../../../assets/images/media/toplu-fatura-hover.svg";
+import Pageheader from '../../page-header/pageheader';
+import { Button } from "react-bootstrap";
 
 
 type QueryParams = {
@@ -196,23 +198,25 @@ export default function InvoiceSummaryTable() {
                 label: "İşlemler",
                 render: (r) => (
                     <>
-                        <button
+                        <Button
+                            variant=""
                             onClick={() => navigate(`/studentinvoices/${r.id}`)}
-                            className="btn btn-icon btn-sm btn-primary-light rounded-pill"
+                            className="btn btn-icon btn-m btn-primary-light rounded-pill"
                             title="Faturalar"
                         >
                             <i className="ti ti-eye" />
-                        </button>
-                        <button
+                        </Button>
+                        {" "}
+                        <Button
                             onClick={() => navigate(`/invoicedetail/${r.id}`)}
-                            className="btn btn-icon btn-sm btn-info-light rounded-pill"
-                            title="Düzenle"
+                            style={{ padding: 0, margin: 0 }}
+
+                            variant=""
                         >
                             <img
                                 src={fatura}
                                 alt="Fatura"
-                                width={24}
-                                height={24}
+
                                 onMouseEnter={(e) => {
                                     (e.currentTarget as HTMLImageElement).src = faturaHover;
                                 }}
@@ -220,17 +224,18 @@ export default function InvoiceSummaryTable() {
                                     (e.currentTarget as HTMLImageElement).src = fatura;
                                 }}
                             />
-                        </button>
-                        <button
+                        </Button>
+                        {" "}
+                        <Button
                             onClick={() => navigate(`/createinvoice/${r.id}`)}
-                            className="btn btn-icon btn-sm btn-success-light rounded-pill"
                             title="Fatura Oluştur"
+                            variant=""
+                            style={{ padding: 0, margin: 0 }}
                         >
                             <img
                                 src={topluFatura}
                                 alt="Toplu Fatura"
-                                width={24}
-                                height={24}
+
                                 onMouseEnter={(e) => {
                                     (e.currentTarget as HTMLImageElement).src = topluFaturaHover;
                                 }}
@@ -238,7 +243,7 @@ export default function InvoiceSummaryTable() {
                                     (e.currentTarget as HTMLImageElement).src = topluFatura;
                                 }}
                             />
-                        </button>
+                        </Button>
                     </>
 
                 ),
@@ -248,7 +253,7 @@ export default function InvoiceSummaryTable() {
     );
 
     return (
-        <ReusableTable<InvoiceSummary>
+        <><Pageheader title="Fatura Yönetimi" currentpage="Fatura İşleme" /><ReusableTable<InvoiceSummary>
             columns={columns}
             data={summaryData}
             loading={loading}
@@ -262,7 +267,6 @@ export default function InvoiceSummaryTable() {
             pageSize={perPage}
             currentPage={page}
             onPageChange={setPage}
-            onPageSizeChange={setPerPage}
-        />
+            onPageSizeChange={setPerPage} /></>
     );
 }
