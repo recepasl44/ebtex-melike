@@ -1,5 +1,6 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Modal, Table as BTable, Button } from "react-bootstrap";
 import ReusableTable, { ColumnDefinition } from "../ReusableTable";
 import { useCreditCardTable } from "../../hooks/creditCard/useCreditCardList";
 import { useCreditCardDelete } from "../../hooks/creditCard/useCreditCardDelete";
@@ -9,6 +10,7 @@ import Pageheader from "../../page-header/pageheader";
 export default function CreditCardTable() {
   const navigate = useNavigate();
   const { removeCreditCard } = useCreditCardDelete();
+  const [detailRow, setDetailRow] = useState<CreditCardRow | null>(null);
 
   interface CreditCardRow extends ICreditCard {
     branch_name?: string;
@@ -47,9 +49,7 @@ export default function CreditCardTable() {
         render: (row, openDeleteModal) => (
           <>
             <button
-              onClick={() =>
-                navigate(`/creditcardcrud/${row.id}`, { state: { mode: "detail" } })
-              }
+              onClick={() => setDetailRow(row)}
               className="btn btn-icon btn-sm btn-primary-light rounded-pill"
             >
               <i className="ti ti-eye" />
@@ -97,6 +97,45 @@ export default function CreditCardTable() {
         exportFileName="creditcards"
         onDeleteRow={(row) => removeCreditCard(Number(row.id))}
       />
+
+      {detailRow && (
+        <Modal show={true} onHide={() => setDetailRow(null)} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Kredi Kartı Detayı</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <BTable bordered size="sm">
+              <thead>
+                <tr>
+                  <th>Şube</th>
+                  <th>Kart Sahibi</th>
+                  <th>Kart Adı</th>
+                  <th>Kart No</th>
+                  <th>Son Kullanma</th>
+                  <th>Tutar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{(detailRow as any).branch_name || detailRow.branch_id}</td>
+                  <td>{detailRow.card_holder_name}</td>
+                  <td>{detailRow.description || '-'}</td>
+                  <td>{detailRow.card_number}</td>
+                  <td>
+                    {detailRow.expire_month}/{detailRow.expire_year}
+                  </td>
+                  <td>{detailRow.amount}</td>
+                </tr>
+              </tbody>
+            </BTable>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setDetailRow(null)}>
+              Kapat
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
     </div>
   );
 }
