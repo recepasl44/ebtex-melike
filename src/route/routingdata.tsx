@@ -1751,11 +1751,10 @@ export const Routedata = [
     id: 61,
     path: `${import.meta.env.BASE_URL}other-income/crud/:id?`,
     element: (
-      <OtherIncomeCrud show={true} onClose={function (): void {
-        throw new Error("Function not implemented.");
-      }} onRefresh={function (): void {
-        throw new Error("Function not implemented.");
-      }}
+      <OtherIncomeCrud
+        show={true}
+        onClose={() => window.history.back()}
+        onRefresh={() => { }}
       />
     ),
   },

@@ -4,6 +4,9 @@ import { useMemo, useState } from "react";
 import { useListStudents } from "../../hooks/student/useList";
 import { IStudent } from "../../../types/student/list";
 import { Button } from "react-bootstrap";
+import FilterGroup, {
+  FilterDefinition,
+} from "./component/organisms/SearchFilters";
 import { formatCurrency, formatDate } from "../../../utils/formatters";
 import { useBranchTable } from "../../hooks/branch/useBranchList";
 import { useProgramsTable } from "../../hooks/program/useList";
@@ -75,7 +78,7 @@ export default function PaymentDetailsTable() {
     pageSize: 100,
   });
 
-  const filters = useMemo(
+  const filters: FilterDefinition[] = useMemo(
     () => [
       {
         key: "branch",
@@ -410,25 +413,31 @@ export default function PaymentDetailsTable() {
   };
 
   return (
-    <ReusableTable<IStudent>
-      columns={columns}
-      // pageTitle="Öğrenci Ödeme Detayları"
-      data={data}
-      loading={loading}
-      error={error}
-      filters={filters}
+    <>
+      <FilterGroup
+        filters={filters}
+        navigate={navigate}
+        columnsPerRow={4}
+      />
+      <ReusableTable<IStudent>
+        columns={columns}
+        // pageTitle="Öğrenci Ödeme Detayları"
+        data={data}
+        loading={loading}
+        error={error}
 
-      showModal={false}
-      showExportButtons={true}
-      tableMode="single"
-      totalPages={totalPages}
-      totalItems={totalItems}
-      currentPage={page}
-      pageSize={paginate}
-      exportFileName="student_payment_details"
-      onPageChange={onPageChange}
-      onPageSizeChange={onPageSizeChange}
-      customFooter={footer}
-    />
+        showModal={false}
+        showExportButtons={true}
+        tableMode="single"
+        totalPages={totalPages}
+        totalItems={totalItems}
+        currentPage={page}
+        pageSize={paginate}
+        exportFileName="student_payment_details"
+        onPageChange={onPageChange}
+        onPageSizeChange={onPageSizeChange}
+        customFooter={footer}
+      />
+    </>
   );
 }
