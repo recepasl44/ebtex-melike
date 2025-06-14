@@ -9,8 +9,8 @@ import { useOtherIncomeDelete } from '../../hooks/otherIncome/useOtherIncomeDele
 import odemeAl from '../../../assets/images/media/ödeme-al.svg';
 import odemeAlHover from '../../../assets/images/media/ödeme-al-hover.svg';
 import { Button } from 'react-bootstrap';
-import GetPaidModal from './getPaid'; // ya da OtherIncomePaymentModal
-import AddOtherIncomeModal from './AddOtherIncomeModal'; // seçtiğin modal buysa bunu kullan
+import GetPaidModal from './getPaid';
+import AddOtherIncomeModal from './AddOtherIncomeModal';
 
 export default function OtherIncomeTable() {
   const navigate = useNavigate();
@@ -77,6 +77,15 @@ export default function OtherIncomeTable() {
               title="Detay"
             >
               <i className="ti ti-eye" />
+            </Button>
+            {/* Düzenle */}
+            <Button
+              variant="info-light"
+              className="btn btn-icon btn-sm rounded-pill me-1"
+              onClick={() => navigate(`/other-income/crud/${row.id}`)}
+              title="Düzenle"
+            >
+              <i className="ti ti-pencil" />
             </Button>
 
             {/* Ödeme Al */}

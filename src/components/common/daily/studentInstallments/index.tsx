@@ -4,7 +4,7 @@ import ReusableTable, { ColumnDefinition } from "../../ReusableTable";
 import { useListStudents } from "../../../hooks/student/useList";
 import { IStudent } from "../../../../types/student/list";
 import { formatDate } from "../../../../utils/formatters";
-import StudentDetailModal from "../payment_details";
+import StudentDetailModal from "../../payment_details";
 
 export default function StudentInstallmentsTable() {
   const [page, setPage] = useState(1);
@@ -95,18 +95,18 @@ export default function StudentInstallmentsTable() {
             showExportButtons={true}
             exportFileName="student-installments"
           />
-      </Card.Body>
-    </Card>
-    {selectedStudent && (
-      <StudentDetailModal
-        show={showModal}
-        student={{
-          id: selectedStudent.id,
-          name: `${selectedStudent.first_name} ${selectedStudent.last_name}`,
-        }}
-        onClose={() => setShowModal(false)}
-      />
-    )}
+        </Card.Body>
+      </Card>
+      {selectedStudent && (
+        <StudentDetailModal
+          show={showModal}
+          student={{
+            id: selectedStudent.id,
+            name: `${selectedStudent.first_name} ${selectedStudent.last_name}`,
+          }}
+          onClose={() => setShowModal(false)}
+        />
+      )}
     </div>
   );
 }
