@@ -6,39 +6,45 @@ import axiosInstance from "../../../services/axiosClient";
 import type { Instrument } from "../../../types/instruments/list";
 
 interface OutgoingCheck {
-id: number;
-type: "Şirket Çeki" | "Ciro Edilen";
-owner: string;
-company: string;
-creditor: string; // verecekli
-debtor: string; // alacaklı
-debtorPhone: string;
+  id: number;
+  type: "Şirket Çeki" | "Ciro Edilen";
+  documentType: "Çek" | "Senet";
+  documentNo: string;
+  owner: string;
+  company: string;
+  creditor: string; // verecekli
+  debtor: string; // alacaklı
+  debtorPhone: string;
 date: string;
 bank: string;
 amountDue: number;
 amountPaid: number;
 remaining: number;
-description: string;
-status: "Ödendi" | "Ödenmedi" | "Beklemede";
+  description: string;
+  status: "Ödendi" | "Ödenmedi" | "Beklemede";
+  image?: File | null;
 }
 
 const dummyData: OutgoingCheck[] = [
-{
-id: 1,
-type: "Şirket Çeki",
-owner: "Ahmet Yılmaz",
-company: "ABC Ltd",
-creditor: "Veli Kaya",
-debtor: "Ali Demir",
-debtorPhone: "05551112233",
+  {
+    id: 1,
+    type: "Şirket Çeki",
+    documentType: "Çek",
+    documentNo: "",
+    owner: "Ahmet Yılmaz",
+    company: "ABC Ltd",
+    creditor: "Veli Kaya",
+    debtor: "Ali Demir",
+    debtorPhone: "05551112233",
 date: "2024-01-01",
 bank: "Ziraat",
 amountDue: 1000,
 amountPaid: 200,
-remaining: 800,
-description: "",
-status: "Beklemede",
-},
+    remaining: 800,
+    description: "",
+    status: "Beklemede",
+    image: undefined,
+  },
 ];
 
 interface PaymentRecord {
@@ -79,6 +85,8 @@ const fetchData = () => {
       const mapped = instruments.map((i) => ({
         id: i.id,
         type: i.document_type === 1 ? 'Şirket Çeki' : 'Ciro Edilen',
+        documentType: i.document_type === 1 ? 'Çek' : 'Senet',
+        documentNo: i.check_no || '',
         owner: i.owner_name,
         company: i.document_owner_name,
         creditor: '',
@@ -91,6 +99,7 @@ const fetchData = () => {
         remaining: 0,
         description: '',
         status: i.status as any || 'Beklemede',
+        image: undefined,
       }));
       setData(mapped);
     })
@@ -283,19 +292,22 @@ Sil
 }
 
 interface FormValues {
-type: "Şirket Çeki" | "Ciro Edilen";
-owner: string;
-company: string;
-creditor: string;
-debtor: string;
-debtorPhone: string;
-date: string;
-bank: string;
-amountDue: number | string;
-amountPaid: number | string;
-remaining: number | string;
-description: string;
-status: "Ödendi" | "Ödenmedi" | "Beklemede";
+  type: "Şirket Çeki" | "Ciro Edilen";
+  documentType: "Çek" | "Senet";
+  documentNo: string;
+  owner: string;
+  company: string;
+  creditor: string;
+  debtor: string;
+  debtorPhone: string;
+  date: string;
+  bank: string;
+  image?: File | null;
+  amountDue: number | string;
+  amountPaid: number | string;
+  remaining: number | string;
+  description: string;
+  status: "Ödendi" | "Ödenmedi" | "Beklemede";
 }
 
 function CheckFormModal({
@@ -310,20 +322,23 @@ onSubmit: (val: OutgoingCheck) => void;
 initialValues?: OutgoingCheck;
 }) {
 const defaults: FormValues = {
-type: "Şirket Çeki",
-owner: "",
-company: "",
-creditor: "",
-debtor: "",
-debtorPhone: "",
-date: new Date().toISOString().split("T")[0],
-bank: "",
-amountDue: "",
-amountPaid: "",
-remaining: "",
-description: "",
-status: "Beklemede",
-...(initialValues || {}),
+  type: "Şirket Çeki",
+  documentType: "Çek",
+  documentNo: "",
+  owner: "",
+  company: "",
+  creditor: "",
+  debtor: "",
+  debtorPhone: "",
+  date: new Date().toISOString().split("T")[0],
+  bank: "",
+  image: undefined,
+  amountDue: "",
+  amountPaid: "",
+  remaining: "",
+  description: "",
+  status: "Beklemede",
+  ...(initialValues || {}),
 } as any;
 
 const fields: FieldDefinition[] = [
@@ -337,46 +352,61 @@ options: [
 ],
 required: true,
 },
-{ name: "owner", label: "Çek Sahibi", type: "text", required: true },
-{ name: "company", label: "Firma", type: "text" },
-{ name: "creditor", label: "Verecekli", type: "text" },
-{ name: "debtor", label: "Alacaklı", type: "text" },
-{ name: "debtorPhone", label: "Alacaklı Tel", type: "text" },
-{ name: "date", label: "Tarih", type: "date", required: true },
-{ name: "bank", label: "Alıcı Banka", type: "text" },
-{ name: "amountDue", label: "Ödenecek", type: "currency", required: true },
-{ name: "amountPaid", label: "Ödenen", type: "currency" },
-{ name: "remaining", label: "Kalan", type: "currency" },
-{ name: "description", label: "Açıklama", type: "textarea" },
-{
-name: "status",
-label: "Durum",
-type: "select",
-options: [
-{ value: "Ödendi", label: "Ödendi" },
-{ value: "Ödenmedi", label: "Ödenmedi" },
-{ value: "Beklemede", label: "Beklemede" },
-],
-},
+  { name: "owner", label: "Çek Sahibi", type: "text", required: true },
+  { name: "company", label: "Firma", type: "text" },
+  { name: "creditor", label: "Verecekli", type: "text" },
+  { name: "debtor", label: "Alacaklı", type: "text" },
+  { name: "debtorPhone", label: "Alacaklı Tel", type: "text" },
+  {
+    name: "documentType",
+    label: "Türü",
+    type: "select",
+    options: [
+      { value: "Çek", label: "Çek" },
+      { value: "Senet", label: "Senet" },
+    ],
+    required: true,
+  },
+  { name: "date", label: "Tarih", type: "date", required: true },
+  { name: "bank", label: "Alıcı Banka", type: "text" },
+  { name: "documentNo", label: "Belge No", type: "text" },
+  { name: "amountDue", label: "Ödenecek", type: "currency", required: true },
+  { name: "amountPaid", label: "Ödenen", type: "currency" },
+  { name: "remaining", label: "Kalan", type: "currency" },
+  { name: "description", label: "Açıklama", type: "textarea" },
+  {
+    name: "status",
+    label: "Durum",
+    type: "select",
+    options: [
+      { value: "Ödendi", label: "Ödendi" },
+      { value: "Ödenmedi", label: "Ödenmedi" },
+      { value: "Beklemede", label: "Beklemede" },
+    ],
+  },
+  { name: "image", label: "Görüntü", type: "file" },
 ];
 
 const handleSubmit = (vals: FormValues) => {
-const val: OutgoingCheck = {
-id: initialValues?.id || Date.now(),
-type: vals.type,
-owner: vals.owner,
-company: vals.company,
-creditor: vals.creditor,
-debtor: vals.debtor,
-debtorPhone: vals.debtorPhone,
-date: vals.date,
-bank: vals.bank,
-amountDue: Number(vals.amountDue) || 0,
-amountPaid: Number(vals.amountPaid) || 0,
-remaining: Number(vals.remaining) || 0,
-description: vals.description,
-status: vals.status,
-};
+  const val: OutgoingCheck = {
+    id: initialValues?.id || Date.now(),
+    type: vals.type,
+    documentType: vals.documentType,
+    documentNo: vals.documentNo,
+    owner: vals.owner,
+    company: vals.company,
+    creditor: vals.creditor,
+    debtor: vals.debtor,
+    debtorPhone: vals.debtorPhone,
+    date: vals.date,
+    bank: vals.bank,
+    image: vals.image || undefined,
+    amountDue: Number(vals.amountDue) || 0,
+    amountPaid: Number(vals.amountPaid) || 0,
+    remaining: Number(vals.remaining) || 0,
+    description: vals.description,
+    status: vals.status,
+  };
 onSubmit(val);
 };
 
@@ -408,13 +438,23 @@ return (
 <tr><th>Verecekli</th><td>{check.creditor}</td></tr>
 <tr><th>Alacaklı</th><td>{check.debtor}</td></tr>
 <tr><th>Alacaklı Tel</th><td>{check.debtorPhone}</td></tr>
+<tr><th>Türü</th><td>{check.documentType}</td></tr>
 <tr><th>Tarih</th><td>{check.date}</td></tr>
 <tr><th>Alıcı Banka</th><td>{check.bank}</td></tr>
+<tr><th>Belge No</th><td>{check.documentNo}</td></tr>
 <tr><th>Ödenecek</th><td>{check.amountDue}</td></tr>
 <tr><th>Ödenen</th><td>{check.amountPaid}</td></tr>
 <tr><th>Kalan</th><td>{check.remaining}</td></tr>
 <tr><th>Açıklama</th><td>{check.description}</td></tr>
 <tr><th>Durum</th><td>{check.status}</td></tr>
+{check.image && (
+  <tr>
+    <th>Görüntü</th>
+    <td>
+      <a href={URL.createObjectURL(check.image)} target="_blank" rel="noopener noreferrer">Görüntü</a>
+    </td>
+  </tr>
+)}
 </tbody>
 </Table>
 </Modal.Body>
