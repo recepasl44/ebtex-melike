@@ -314,6 +314,9 @@ const SeasonsListPage = lazy(
   () => import("../components/common/seasons/table")
 );
 const SeasonModal = lazy(() => import("../components/common/seasons/crud"));
+const ChecksPromissoryTable = lazy(
+  () => import("../components/common/checksandpromissory/table")
+);
 
 //assignmentStudents 
 
@@ -511,6 +514,11 @@ export const Routedata = [
     id: 2,
     path: `${import.meta.env.BASE_URL}OverduePayments`,
     element: <OverduePaymentsPage />,
+  },
+  {
+    id: 16,
+    path: `${import.meta.env.BASE_URL}checks-promissory`,
+    element: <ChecksPromissoryTable />,
   },
   {
     id: 2,
