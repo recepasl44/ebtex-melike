@@ -1,15 +1,16 @@
 import { useMemo, useState } from "react";
 import { Button, Card } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
 import ReusableTable, { ColumnDefinition } from "../../ReusableTable";
 import { useListStudents } from "../../../hooks/student/useList";
 import { IStudent } from "../../../../types/student/list";
 import { formatDate } from "../../../../utils/formatters";
+import StudentDetailModal from "../payment_details";
 
 export default function StudentInstallmentsTable() {
-  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [selectedStudent, setSelectedStudent] = useState<IStudent | null>(null);
+  const [showModal, setShowModal] = useState(false);
 
   const { data, loading, error, totalPages, totalItems } = useListStudents({
     enabled: true,
@@ -57,14 +58,17 @@ export default function StudentInstallmentsTable() {
             variant="primary-light"
             size="sm"
             className="btn-icon rounded-pill"
-            onClick={() => navigate(`/studentpaymentdetails/${row.id}`)}
+            onClick={() => {
+              setSelectedStudent(row);
+              setShowModal(true);
+            }}
           >
             <i className="ti ti-eye"></i>
           </Button>
         ),
       },
     ],
-    [navigate]
+    []
   );
 
   return (
@@ -91,8 +95,18 @@ export default function StudentInstallmentsTable() {
             showExportButtons={true}
             exportFileName="student-installments"
           />
-        </Card.Body>
-      </Card>
+      </Card.Body>
+    </Card>
+    {selectedStudent && (
+      <StudentDetailModal
+        show={showModal}
+        student={{
+          id: selectedStudent.id,
+          name: `${selectedStudent.first_name} ${selectedStudent.last_name}`,
+        }}
+        onClose={() => setShowModal(false)}
+      />
+    )}
     </div>
   );
 }
