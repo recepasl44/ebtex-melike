@@ -6,7 +6,7 @@ import ReusableTable, {
 } from "../../ReusableTable";
 import { useCategoriesList } from "../../../hooks/expences/expenseCategories/useCategoriesList";
 import { IExpenseCategories } from "../../../../types/expences/expenseCategories/list";
-import { Button } from "react-bootstrap";
+import Pageheader from "../../../page-header/pageheader";
 import ReusableModalForm, {
   FieldDefinition,
 } from "../../ReusableModalForm";
@@ -80,23 +80,22 @@ export default function ExpencesCategories() {
         label: "İşlemler",
         render: (row, openDeleteModal) => (
           <>
-            <Button
-              variant="primary"
-              size="sm"
-              className="me-1"
+            <button
               onClick={() => navigate(`/expensecrud/categories/${row.id}`)}
+              className="btn btn-icon btn-sm btn-info-light rounded-pill me-1"
+              title="Düzenle"
             >
-              Düzenle
-            </Button>
-            <Button
-              variant="danger"
-              size="sm"
+              <i className="ti ti-pencil" />
+            </button>
+            <button
+              className="btn btn-icon btn-sm btn-danger-light rounded-pill"
               onClick={() => {
                 openDeleteModal && openDeleteModal(row);
               }}
+              title="Sil"
             >
-              Sil
-            </Button>
+              <i className="ti ti-trash" />
+            </button>
           </>
         ),
       },
@@ -115,6 +114,7 @@ export default function ExpencesCategories() {
     setPageSize(newSize);
     setPage(1); // Reset to first page when changing page size
     updatePageSize(newSize);
+    updatePage(1);
   };
 
   // Initial values for add form
@@ -156,15 +156,8 @@ export default function ExpencesCategories() {
   };
 
   return (
-    <div className="container mt-3">
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h4>Gider Kalemleri Listesi</h4>
-        <div>
-          <Button variant="success" onClick={() => setShowAddModal(true)}>
-            Gider Kalemi Ekle
-          </Button>
-        </div>
-      </div>
+    <div className="container-fluid mt-3">
+      <Pageheader title="Giderler" currentpage="Gider Kalemleri" />
 
       <ReusableTable<IExpenseCategories>
         columns={columns}
@@ -182,6 +175,7 @@ export default function ExpencesCategories() {
         tableMode="single"
         filters={filters}
         onAdd={() => setShowAddModal(true)}
+        addButtonText="Gider Kalemi Ekle"
         onCloseModal={() => navigate(-1)}
         showExportButtons={true}
         onDeleteRow={(row) => {
