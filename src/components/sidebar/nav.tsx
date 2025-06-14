@@ -264,7 +264,7 @@ export const MENUITEMS: any = [
         title: "Çek Yönetimi",
         type: "sub",
         children: [
-          { title: "Gelen", path: "/checksandpromissory", type: "link" },
+          { title: "Gelen", path: "/incomingChecks", type: "link" },
           { title: "Giden", path: "/checksandpromissory", type: "link" },
         ],
       },

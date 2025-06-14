@@ -79,6 +79,10 @@ const SchoolTypeModal = lazy(
 const Checksandpromissory = lazy(
   () => import("../components/common/checksandpromissory/crud")
 );
+import IncomingChecksTable from "../components/common/incomingChecks/table";
+const IncomingChecksCrud = lazy(
+  () => import("../components/common/incomingChecks/crud")
+);
 
 const OverduePaymentDetailPage = lazy(
   () => import("../components/common/overduePayments/detail")
@@ -1747,6 +1751,24 @@ export const Routedata = [
     id: 67,
     path: `${import.meta.env.BASE_URL}checksandpromissory`,
     element: <ChecksAndPromissoryTable />,
+  },
+
+  {
+    id: 67,
+    path: `${import.meta.env.BASE_URL}incomingChecks`,
+    element: <IncomingChecksTable />,
+  },
+
+  {
+    id: 61,
+    path: `${import.meta.env.BASE_URL}incomingChecksCrud/:id?`,
+    element: (
+      <IncomingChecksCrud
+        show={true}
+        onClose={() => window.history.back()}
+        onRefresh={() => {}}
+      />
+    ),
   },
 
   {
