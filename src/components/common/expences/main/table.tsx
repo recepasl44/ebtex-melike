@@ -1,5 +1,6 @@
 import { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import SupplierDetailModal from "../../supplier/supplierDetail/DetailModal";
 import ReusableTable, {
   ColumnDefinition,
 } from "../../ReusableTable";
@@ -37,6 +38,9 @@ export default function ExpenseListPage() {
     category: false,
     supplier: false,
   });
+
+  const [showSupplierModal, setShowSupplierModal] = useState(false);
+  const [selectedSupplier, setSelectedSupplier] = useState<number | null>(null);
 
   const { seasonsData } = useSeasonsList({ enabled: filtersEnabled.season, page: 1, paginate: 100 });
   const { branchData } = useBranchTable({ enabled: filtersEnabled.branch });
@@ -137,7 +141,10 @@ export default function ExpenseListPage() {
         render: (row, openDeleteModal) => (
           <>
             <button
-              onClick={() => navigate(`/supplierdetail/${row.supplier_id}`)}
+              onClick={() => {
+                setSelectedSupplier(row.supplier_id);
+                setShowSupplierModal(true);
+              }}
               className="btn btn-icon btn-sm btn-primary-light rounded-pill"
             >
               <i className="ti ti-eye" />
@@ -275,6 +282,11 @@ export default function ExpenseListPage() {
         onDeleteRow={(row) => {
           removeExpence(Number(row.id));
         }}
+      />
+      <SupplierDetailModal
+        show={showSupplierModal}
+        supplierId={selectedSupplier || undefined}
+        onClose={() => setShowSupplierModal(false)}
       />
     </div>
   );
