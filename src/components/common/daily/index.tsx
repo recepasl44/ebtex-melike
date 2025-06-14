@@ -102,7 +102,9 @@ const DailyModule: React.FC = () => {
     <div>
 
       <Pageheader title="Finans ve Muhasebe" currentpage="Günlük İşlemler" />
-      <TabsContainer tabs={tabsConfig} onTabChange={handleTabChange} />
+      <div className="container mt-3">
+        <TabsContainer tabs={tabsConfig} onTabChange={handleTabChange} />
+      </div>
     </div>
   );
 };
