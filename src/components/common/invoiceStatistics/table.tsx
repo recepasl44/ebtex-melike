@@ -29,17 +29,17 @@ const MONTH_OPTIONS = [
 export default function InvoiceStatisticsTable() {
     const [season, setSeason] = useState("");
     const [branch, setBranch] = useState("");
-    const [months, setMonths] = useState<string[]>([]);
+    const [month, setMonth] = useState("");
     const [detailItem, setDetailItem] = useState<InvoiceStatisticsItem | null>(null);
 
     const { seasonsData } = useSeasonsList({ enabled: true, page: 1, paginate: 100 });
     const { branchData } = useBranchTable({ enabled: true });
 
     const { data, loading, error } = useInvoiceStatistics({
-        enabled: !!season && !!branch && months.length > 0,
+        enabled: !!season && !!branch && !!month,
         season_id: season ? Number(season) : undefined,
         branch_id: branch ? Number(branch) : undefined,
-        months: months.map((m) => Number(m)),
+        months: month ? [Number(month)] : undefined,
     });
 
     const filters: FilterDefinition[] = useMemo(() => [
@@ -66,14 +66,14 @@ export default function InvoiceStatisticsTable() {
             onChange: setBranch,
         },
         {
-            key: "months",
+            key: "month",
             label: "Ay",
-            type: "multiselect", // Multiselect dropdown
-            value: months,
+            type: "select",
+            value: month,
             options: MONTH_OPTIONS,
-            onChange: (vals: string[]) => setMonths(vals),
+            onChange: setMonth,
         },
-    ], [season, branch, months, seasonsData, branchData]);
+    ], [season, branch, month, seasonsData, branchData]);
 
     const columns: ColumnDefinition<InvoiceStatisticsItem>[] = useMemo(() => [
         {
