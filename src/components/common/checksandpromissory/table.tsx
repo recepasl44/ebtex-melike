@@ -1,7 +1,9 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Button, Modal, Table } from "react-bootstrap";
 import ReusableTable, { ColumnDefinition, FilterDefinition } from "../ReusableTable";
 import ReusableModalForm, { FieldDefinition } from "../ReusableModalForm";
+import axiosInstance from "../../../services/axiosClient";
+import type { Instrument } from "../../../types/instruments/list";
 
 interface OutgoingCheck {
 id: number;
@@ -51,6 +53,7 @@ description: string;
 
 export default function ChecksAndPromissoryTable() {
 const [data, setData] = useState<OutgoingCheck[]>(dummyData);
+const [loading, setLoading] = useState(false);
 const [selected, setSelected] = useState<OutgoingCheck | null>(null);
 const [showForm, setShowForm] = useState(false);
 const [showDetail, setShowDetail] = useState(false);
@@ -61,6 +64,41 @@ const [filterType, setFilterType] = useState("");
 const [filterOwner, setFilterOwner] = useState("");
 const [filterCompany, setFilterCompany] = useState("");
 const [filterBuyer, setFilterBuyer] = useState("");
+
+const fetchData = () => {
+  setLoading(true);
+  const params: any = { paginate: 999 };
+  if (filterType) params.document_type = filterType === 'Şirket Çeki' ? 1 : 2;
+  if (filterOwner) params.owner_name = filterOwner;
+  if (filterCompany) params.document_owner_name = filterCompany;
+  if (filterBuyer) params.debtor = filterBuyer;
+  axiosInstance
+    .get('/instruments', { params })
+    .then((resp) => {
+      const instruments: Instrument[] = resp.data?.data || [];
+      const mapped = instruments.map((i) => ({
+        id: i.id,
+        type: i.document_type === 1 ? 'Şirket Çeki' : 'Ciro Edilen',
+        owner: i.owner_name,
+        company: i.document_owner_name,
+        creditor: '',
+        debtor: '',
+        debtorPhone: '',
+        date: i.due_date,
+        bank: i.bank,
+        amountDue: Number(i.amount) || 0,
+        amountPaid: 0,
+        remaining: 0,
+        description: '',
+        status: i.status as any || 'Beklemede',
+      }));
+      setData(mapped);
+    })
+    .catch(() => {
+      // ignore errors
+    })
+    .finally(() => setLoading(false));
+};
 
 const typeOptions = useMemo(
 () => Array.from(new Set(data.map((d) => d.type))).map((v) => ({ value: v, label: v })),
@@ -78,6 +116,10 @@ const buyerOptions = useMemo(
 () => Array.from(new Set(data.map((d) => d.debtor))).map((v) => ({ value: v, label: v })),
 [data]
 );
+
+useEffect(() => {
+  fetchData();
+}, [filterType, filterOwner, filterCompany, filterBuyer]);
 
 const filteredData = useMemo(() => {
 return data.filter(
@@ -186,6 +228,7 @@ return (
 <ReusableTable<OutgoingCheck>
 columns={columns}
 data={filteredData}
+loading={loading}
 filters={filters}
 onAdd={() => {
 setSelected(null);

@@ -46,6 +46,7 @@ const dummyData: IncomingCheck[] = [
 
 export default function IncomingChecksTable() {
     const [data, setData] = useState<IncomingCheck[]>(dummyData);
+    const [loading, setLoading] = useState(false);
     const [selected, setSelected] = useState<IncomingCheck | null>(null);
     const [showForm, setShowForm] = useState(false);
     const [showDetail, setShowDetail] = useState(false);
@@ -61,6 +62,38 @@ export default function IncomingChecksTable() {
     const [creditorOptions, setCreditorOptions] = useState<{ label: string; value: string }[]>([]);
     const [typeOptions, setTypeOptions] = useState<{ label: string; value: string }[]>([]);
     const [bankOptions, setBankOptions] = useState<{ label: string; value: string }[]>([]);
+
+    const fetchData = () => {
+        setLoading(true);
+        const params: any = { paginate: 999 };
+        if (filterCompany) params.document_owner_name = filterCompany;
+        if (filterCreditor) params.owner_name = filterCreditor;
+        if (filterType) params.document_type = filterType === 'Çek' ? 1 : 2;
+        if (filterBank) params.bank = filterBank;
+        axiosInstance
+            .get('/instruments', { params })
+            .then((resp) => {
+                const instruments: Instrument[] = resp.data?.data || [];
+                const mapped = instruments.map((i) => ({
+                    id: i.id,
+                    company: i.document_owner_name,
+                    creditor: i.owner_name,
+                    type: i.document_type === 1 ? 'Çek' : 'Senet',
+                    date: i.due_date,
+                    bank: i.bank,
+                    amountDue: Number(i.amount) || 0,
+                    amountPaid: 0,
+                    remaining: 0,
+                    description: '',
+                    status: i.status || '',
+                }));
+                setData(mapped);
+            })
+            .catch(() => {
+                // ignore errors
+            })
+            .finally(() => setLoading(false));
+    };
 
     useEffect(() => {
         axiosInstance.get("/instruments", { params: { paginate: 999 } })
@@ -87,6 +120,10 @@ export default function IncomingChecksTable() {
                 // ignore errors
             });
     }, []);
+
+    useEffect(() => {
+        fetchData();
+    }, [filterCompany, filterCreditor, filterType, filterBank]);
 
     const filteredData = useMemo(() => {
         return data.filter(
@@ -221,6 +258,7 @@ export default function IncomingChecksTable() {
             <ReusableTable<IncomingCheck>
                 columns={columns}
                 data={filteredData}
+                loading={loading}
                 filters={filters}
                 onAdd={() => {
                     setSelected(null);
