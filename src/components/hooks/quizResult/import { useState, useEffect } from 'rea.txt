@@ -1,0 +1,52 @@
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../store/rootReducer';
+import { AppDispatch } from '../../../store';
+import { fetchQuizResults } from '../../../slices/quizresults/list/thunk';
+import { QuizResultsListArg } from '../../../types/quizresults/list';
+import QuizResultsListStatus from '../../../enums/quizresults/list';
+
+export function useQuizResultsList(params: QuizResultsListArg) {
+  const dispatch = useDispatch<AppDispatch>();
+  const { data, links, meta, status, error } = useSelector(
+    (state: RootState) => state.quizResultsList
+  );
+
+  const [page, setPage] = useState<number>(params.page || 1);
+  const [pageSize, setPageSize] = useState<number>(params.pageSize || 25);
+  const [filter, setFilter] = useState<any>(null);
+
+  useEffect(() => {
+    if (params?.enabled === false) return;
+    const { enabled, ...restParams } = params;
+    const query: QuizResultsListArg = {
+      ...restParams,
+      page,
+      pageSize,
+      filter,
+    };
+    dispatch(fetchQuizResults(query));
+  }, [dispatch, filter, page, pageSize, params]);
+
+  const loading = status === QuizResultsListStatus.LOADING;
+  const quizResultsData = data || [];
+  const paginationMeta = meta;
+  const totalPages = paginationMeta ? paginationMeta.last_page : 1;
+  const totalItems = paginationMeta ? paginationMeta.total : 0;
+
+  return {
+    quizResultsData,
+    links,
+    meta,
+    loading,
+    error,
+    page,
+    setPage,
+    pageSize,
+    setPageSize,
+    filter,
+    setFilter,
+    totalPages,
+    totalItems,
+  };
+}

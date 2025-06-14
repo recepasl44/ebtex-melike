@@ -1,0 +1,46 @@
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.custom-table th,
+.custom-table td {
+  border: 1px solid white;
+  padding: 8px;
+  color: white;
+  text-align: center;
+}
+
+.custom-table thead th {
+  background-color: #61748F; /* Başlık arka plan rengi */
+}
+
+.custom-table .score-type {
+  background-color: #727BF8; /* Puan türü hücresi */
+  font-weight: bold;
+}
+
+.custom-table .score {
+  background-color: #727BF8; /* Puan hücresi */
+  font-weight: bold;
+}
+
+.custom-table .label-cell {
+  background-color: #A76BF8; /* Başarı sırası hücresi */
+  font-weight: bold;
+}
+
+.custom-table .data-cell-success {
+  background-color: #A76BF8; /* Başarı sırası sağındaki hücreler */
+}
+
+.custom-table .label-cell-participation {
+  background-color: #A76BF899; /* Katılım sayısı hücresi */
+  font-weight: bold;
+}
+
+.custom-table .data-cell-participation {
+  background-color: #A76BF899; /* Katılım sayısı sağındaki hücreler */
+}
