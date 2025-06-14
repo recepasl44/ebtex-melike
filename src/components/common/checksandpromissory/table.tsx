@@ -90,7 +90,7 @@ export default function ChecksAndPromissoryTable() {
                     creditor: '',
                     debtor: '',
                     debtorPhone: '',
-                    instrumentType: i.document_type === 1 ? 'Çek' : 'Senet',
+                    instrumentType: (i.document_type === 1 ? 'Çek' : 'Senet') as 'Çek' | 'Senet',
                     documentNo: i.check_no || i.instrument_no,
                     date: i.due_date,
                     bank: i.bank,
