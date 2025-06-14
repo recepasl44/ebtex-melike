@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ReusableTable, { ColumnDefinition, FilterDefinition } from '../ReusableTable';
+import ReusableTable, { ColumnDefinition } from '../ReusableTable';
+import FilterGroup, { FilterDefinition } from './component/organisms/SearchFilters';
 import Pageheader from '../../page-header/pageheader';
 import { useFinanceNotes } from '../../hooks/financeNotes/useFinanceNotes';
 import { FinanceNote } from '../../../types/financeNotes/list';
@@ -152,8 +153,9 @@ export default function FinanceNotesTable() {
     return (
         <div className="container-fluid mt-3">
             <Pageheader title="Finans ve Muhasebe" currentpage="Finans Notları" />
+            <FilterGroup filters={filters} navigate={navigate} columnsPerRow={4} />
             <ReusableTable<FinanceNote>
-                filters={filters}
+
                 tableMode="single"
                 showExportButtons={true}
                 columns={columns}
