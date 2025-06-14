@@ -1,9 +1,8 @@
 import { useMemo, useState } from "react";
+import { Button, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import ReusableTable, {
-    ColumnDefinition,
-    FilterDefinition,
-} from "../ReusableTable";
+import ReusableTable, { ColumnDefinition } from "../ReusableTable";
+import FilterGroup, { FilterDefinition } from "./component/organisms/SearchFilters";
 import { useDiscountStudentTable } from "../../hooks/discountStudent/useList";
 import { DiscountStudentData } from "../../../types/discountStudent/list";
 
@@ -22,51 +21,6 @@ export default function DiscountStudentTable() {
         setPageSize,
     } = useDiscountStudentTable();
 
-    const columns: ColumnDefinition<DiscountStudentData>[] = useMemo(
-        () => [
-            { key: "sube", label: "Şube" },
-            { key: "sozlesme_no", label: "Sözleşme No" },
-            { key: "okul_no", label: "Okul No" },
-            { key: "ad_soyad", label: "Adı Soyadı", render: (r) => `${r.ad} ${r.soyad}` },
-            { key: "program", label: "Okul Seviyesi" },
-            { key: "devre", label: "Sınıf Seviyesi" },
-            { key: "sinif", label: "Sınıf/Şube" },
-            { key: "indirim_adi", label: "İndirim Adı" },
-            { key: "kullanici", label: "Kullanıcı", render: () => "-" },
-            { key: "enrollment_indirim", label: "İndirim Tutarı" },
-            {
-                key: "toplam",
-                label: "Kayıt Ücreti",
-                render: (row) => `₺${row.toplam.toLocaleString()}`,
-            },
-            {
-                key: "actions",
-                label: "İşlemler",
-                render: (row) => (
-                    <>
-                        <button
-                            onClick={() => navigate(`/discount-students/${row.sozlesme_no}`)}
-                            className="btn btn-icon btn-sm btn-primary-light rounded-pill"
-                        >
-                            <i className="ti ti-eye" />
-                        </button>
-                        <button
-                            className="btn btn-icon btn-sm btn-primary-light rounded-pill"
-                            onClick={() =>
-                                navigate(`/discountStudentReceipt/${row.sozlesme_no}`, {
-                                    state: { student: row },
-                                })
-                            }
-                        >
-                            <i className="ti ti-printer" />
-                        </button>
-                    </>
-                ),
-            },
-        ],
-        [navigate]
-    );
-
     const [filtersState, setFiltersState] = useState({
         okulSeviyesi: "",
         sinifSeviyesi: "",
@@ -80,7 +34,10 @@ export default function DiscountStudentTable() {
                 key: "okulSeviyesi",
                 label: "Okul Seviyesi",
                 type: "select",
-                options: Array.from(new Set(discountStudentData.map((d) => d.program))).map((o) => ({ value: o, label: o })),
+                options: Array.from(new Set(discountStudentData.map((d) => d.program))).map((o) => ({
+                    value: o,
+                    label: o,
+                })),
                 value: filtersState.okulSeviyesi,
                 onChange: (val: string) => setFiltersState((p) => ({ ...p, okulSeviyesi: val })),
             },
@@ -88,7 +45,10 @@ export default function DiscountStudentTable() {
                 key: "sinifSeviyesi",
                 label: "Sınıf Seviyesi",
                 type: "select",
-                options: Array.from(new Set(discountStudentData.map((d) => d.devre))).map((o) => ({ value: o, label: o })),
+                options: Array.from(new Set(discountStudentData.map((d) => d.devre))).map((o) => ({
+                    value: o,
+                    label: o,
+                })),
                 value: filtersState.sinifSeviyesi,
                 onChange: (val: string) => setFiltersState((p) => ({ ...p, sinifSeviyesi: val })),
             },
@@ -96,7 +56,10 @@ export default function DiscountStudentTable() {
                 key: "sinifSube",
                 label: "Sınıf/Şube",
                 type: "select",
-                options: Array.from(new Set(discountStudentData.map((d) => d.sinif))).map((o) => ({ value: o, label: o })),
+                options: Array.from(new Set(discountStudentData.map((d) => d.sinif))).map((o) => ({
+                    value: o,
+                    label: o,
+                })),
                 value: filtersState.sinifSube,
                 onChange: (val: string) => setFiltersState((p) => ({ ...p, sinifSube: val })),
             },
@@ -123,28 +86,84 @@ export default function DiscountStudentTable() {
         });
     }, [filtersState, discountStudentData]);
 
+    const columns: ColumnDefinition<DiscountStudentData>[] = useMemo(
+        () => [
+            { key: "sube", label: "Şube" },
+            { key: "sozlesme_no", label: "Sözleşme No" },
+            { key: "okul_no", label: "Okul No" },
+            { key: "ad_soyad", label: "Adı Soyadı", render: (r) => `${r.ad} ${r.soyad}` },
+            { key: "program", label: "Okul Seviyesi" },
+            { key: "devre", label: "Sınıf Seviyesi" },
+            { key: "sinif", label: "Sınıf/Şube" },
+            { key: "indirim_adi", label: "İndirim Adı" },
+            { key: "kullanici", label: "Kullanıcı", render: () => "-" },
+            { key: "enrollment_indirim", label: "İndirim Tutarı" },
+            {
+                key: "toplam",
+                label: "Kayıt Ücreti",
+                render: (row) => `₺${row.toplam.toLocaleString()}`,
+            },
+            {
+                key: "actions",
+                label: "İşlemler",
+                render: (row) => (
+                    <>
+                        <button
+                            onClick={() => navigate(`/discount-students/${row.sozlesme_no}`)}
+                            className="btn btn-icon btn-sm btn-primary-light rounded-pill"
+                            title="Detay"
+                        >
+                            <i className="ti ti-eye" />
+                        </button>
+                        <button
+                            className="btn btn-icon btn-sm btn-primary-light rounded-pill"
+                            title="Makbuz Yazdır"
+                            onClick={() =>
+                                navigate(`/discountStudentReceipt/${row.sozlesme_no}`, {
+                                    state: { student: row },
+                                })
+                            }
+                        >
+                            <i className="ti ti-printer" />
+                        </button>
+                    </>
+                ),
+            },
+        ],
+        [navigate]
+    );
+
     return (
         <div className="container-fluid mt-3">
-            <ReusableTable<DiscountStudentData>
-                // pageTitle="İndirimli Öğrenciler"
-                onAdd={() => navigate("/discount-students/create")}
-                columns={columns}
-                data={filteredData}
-                loading={loading}
-                tableMode="single"
-                error={error}
-                currentPage={page}
-                totalPages={totalPages}
-                totalItems={totalItems}
-                pageSize={pageSize}
-                onPageChange={(newPage) => setPage(newPage)}
-                onPageSizeChange={(newSize) => {
-                    setPageSize(newSize);
-                    setPage(1);
-                }}
-                filters={filters}
-                exportFileName="discount-students-report"
-            />
+            <Card className="glass-card mb-4">
+                <Card.Body>
+                    <FilterGroup filters={filters} columnsPerRow={4} navigate={navigate} />
+                </Card.Body>
+            </Card>
+
+            <Card className="glass-card">
+                <Card.Body className="p-0">
+                    <ReusableTable<DiscountStudentData>
+                        onAdd={() => navigate("/discount-students/create")}
+                        columns={columns}
+                        data={filteredData}
+                        loading={loading}
+                        error={error}
+                        tableMode="single"
+                        currentPage={page}
+                        totalPages={totalPages}
+                        totalItems={totalItems}
+                        pageSize={pageSize}
+                        onPageChange={(newPage) => setPage(newPage)}
+                        onPageSizeChange={(newSize) => {
+                            setPageSize(newSize);
+                            setPage(1);
+                        }}
+                        exportFileName="discount-students-report"
+                        showExportButtons
+                    />
+                </Card.Body>
+            </Card>
         </div>
     );
 }
