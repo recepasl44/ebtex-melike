@@ -171,7 +171,7 @@ export default function ExpencesCategories() {
         pageSize={pageSize}
         onPageChange={handlePageChange}
         onPageSizeChange={handlePageSizeChange}
-        exportFileName="gider_kalemleri"
+        exportFileName="Gider Kalemleri"
         tableMode="single"
         filters={filters}
         onAdd={() => setShowAddModal(true)}
