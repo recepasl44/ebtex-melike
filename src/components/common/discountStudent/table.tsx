@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import { Button, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import ReusableTable, { ColumnDefinition } from "../ReusableTable";
 import FilterGroup, { FilterDefinition } from "./component/organisms/SearchFilters";
@@ -135,35 +134,27 @@ export default function DiscountStudentTable() {
 
     return (
         <div className="container-fluid mt-3">
-            <Card className="glass-card mb-4">
-                <Card.Body>
-                    <FilterGroup filters={filters} columnsPerRow={4} navigate={navigate} />
-                </Card.Body>
-            </Card>
+            <FilterGroup filters={filters} columnsPerRow={4} navigate={navigate} />
 
-            <Card className="glass-card">
-                <Card.Body className="p-0">
-                    <ReusableTable<DiscountStudentData>
-                        onAdd={() => navigate("/discount-students/create")}
-                        columns={columns}
-                        data={filteredData}
-                        loading={loading}
-                        error={error}
-                        tableMode="single"
-                        currentPage={page}
-                        totalPages={totalPages}
-                        totalItems={totalItems}
-                        pageSize={pageSize}
-                        onPageChange={(newPage) => setPage(newPage)}
-                        onPageSizeChange={(newSize) => {
-                            setPageSize(newSize);
-                            setPage(1);
-                        }}
-                        exportFileName="discount-students-report"
-                        showExportButtons
-                    />
-                </Card.Body>
-            </Card>
+            <ReusableTable<DiscountStudentData>
+                onAdd={() => navigate("/discount-students/create")}
+                columns={columns}
+                data={filteredData}
+                loading={loading}
+                error={error}
+                tableMode="single"
+                currentPage={page}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                pageSize={pageSize}
+                onPageChange={(newPage) => setPage(newPage)}
+                onPageSizeChange={(newSize) => {
+                    setPageSize(newSize);
+                    setPage(1);
+                }}
+                exportFileName="discount-students-report"
+                showExportButtons
+            />
         </div>
     );
 }
