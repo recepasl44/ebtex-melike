@@ -47,16 +47,13 @@ const PayDetailModule: React.FC = () => {
   ];
 
   return (
-    <div className="px-4">
-      <Pageheader
-        title="Ödeme Detayları"
-        currentpage={tabsConfig[activeIdx]?.label}
-      />
-      <TabsContainer
+
+    <><Pageheader
+      title="Ödeme Detayları"
+      currentpage={tabsConfig[activeIdx]?.label} /><TabsContainer
         tabs={tabsConfig}
-        onTabChange={(idx: number) => setActiveIdx(idx)}
-      />
-    </div>
+        onTabChange={(idx: number) => setActiveIdx(idx)} /></>
+
   );
 };
 

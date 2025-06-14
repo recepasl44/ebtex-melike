@@ -58,25 +58,25 @@ const DailyOperationsAuthorizedTable: React.FC = () => {
   ], [search]);
 
   return (
-    <div className="container mt-3">
-      <ReusableTable<AuthorizedRow>
-        // pageTitle="Yetkili İşlemleri"
-        columns={columns}
-        data={filteredRows}
-        loading={loading}
-        error={null}
-        tableMode="single"
-        currentPage={1}
-        totalPages={1}
-        totalItems={filteredRows.length}
-        pageSize={filteredRows.length}
-        onPageChange={() => { }}
-        onPageSizeChange={() => { }}
-        filters={filters}
-        showModal={false}
-        exportFileName="authorized-operations"
-      />
-    </div>
+
+    <ReusableTable<AuthorizedRow>
+      // pageTitle="Yetkili İşlemleri"
+      columns={columns}
+      data={filteredRows}
+      loading={loading}
+      error={null}
+      tableMode="single"
+      currentPage={1}
+      totalPages={1}
+      totalItems={filteredRows.length}
+      pageSize={filteredRows.length}
+      onPageChange={() => { }}
+      onPageSizeChange={() => { }}
+      filters={filters}
+      showModal={false}
+      exportFileName="authorized-operations"
+    />
+
   );
 };
 

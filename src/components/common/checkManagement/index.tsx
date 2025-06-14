@@ -27,10 +27,9 @@ const CheckManagementIndex: React.FC = () => {
     ];
 
     return (
-        <div className="container-fluid mt-3">
-            <Pageheader title="Çek Yönetimi" currentpage={tabs[activeIdx].label} />
-            <TabsContainer tabs={tabs} onTabChange={(idx) => setActiveIdx(idx)} />
-        </div>
+
+        <><Pageheader title="Çek Yönetimi" currentpage={tabs[activeIdx].label} /><TabsContainer tabs={tabs} onTabChange={(idx) => setActiveIdx(idx)} /></>
+
     );
 };
 

@@ -254,7 +254,7 @@ export default function IncomingChecksTable() {
     ];
 
     return (
-        <div className="container-fluid mt-3">
+        <>
             <ReusableTable<IncomingCheck>
                 columns={columns}
                 data={filteredData}
@@ -307,6 +307,6 @@ export default function IncomingChecksTable() {
                     onClose={() => setShowPayment(false)}
                 />
             )}
-        </div>
+        </>
     );
 }

@@ -92,16 +92,13 @@ const DailyModule: React.FC = () => {
   ];
 
   return (
-    <div className="px-4">
+    <>
       <Pageheader title="Finans ve Muhasebe" currentpage="Günlük İşlemler" />
-
-      <div className="mt-3">
-        <TabsContainer
-          tabs={tabsConfig}
-          onTabChange={(idx: number) => setActiveIdx(idx)}
-        />
-      </div>
-    </div>
+      <TabsContainer
+        tabs={tabsConfig}
+        onTabChange={(idx: number) => setActiveIdx(idx)}
+      />
+    </>
   );
 };
 

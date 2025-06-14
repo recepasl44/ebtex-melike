@@ -1,7 +1,10 @@
 import { useState, useMemo } from "react";
 import { Button } from "react-bootstrap";
 import Pageheader from "../../page-header/pageheader";
-import ReusableTable, { ColumnDefinition, FilterDefinition } from "../ReusableTable";
+import ReusableTable, {
+    ColumnDefinition,
+    FilterDefinition,
+} from "../ReusableTable";
 import { useInvoiceStatistics, InvoiceStatisticsItem } from "../../hooks/invoice/useInvoiceStatistics";
 import { useSeasonsList } from "../../hooks/season/useSeasonsList";
 import { useBranchTable } from "../../hooks/branch/useBranchList";
@@ -31,6 +34,7 @@ export default function InvoiceStatisticsTable() {
 
     const { seasonsData } = useSeasonsList({ enabled: true, page: 1, paginate: 100 });
     const { branchData } = useBranchTable({ enabled: true });
+
     const { data, loading, error } = useInvoiceStatistics({
         enabled: !!season && !!branch && months.length > 0,
         season_id: season ? Number(season) : undefined,
@@ -38,65 +42,88 @@ export default function InvoiceStatisticsTable() {
         months: months.map((m) => Number(m)),
     });
 
+    const filters: FilterDefinition[] = useMemo(() => [
+        {
+            key: "season",
+            label: "Sezon",
+            type: "select",
+            value: season,
+            options: (seasonsData || []).map((s: any) => ({
+                value: String(s.id),
+                label: s.name,
+            })),
+            onChange: setSeason,
+        },
+        {
+            key: "branch",
+            label: "Şube",
+            type: "select",
+            value: branch,
+            options: (branchData || []).map((b: any) => ({
+                value: String(b.id),
+                label: b.name,
+            })),
+            onChange: setBranch,
+        },
+        {
+            key: "months",
+            label: "Ay",
+            type: "multiselect", // Multiselect dropdown
+            value: months,
+            options: MONTH_OPTIONS,
+            onChange: (vals: string[]) => setMonths(vals),
+        },
+    ], [season, branch, months, seasonsData, branchData]);
 
-    const filters: FilterDefinition[] = useMemo(
-        () => [
-            {
-                key: "season",
-                label: "Sezon",
-                type: "select",
-                value: season,
-                options: (seasonsData || []).map((s: any) => ({ value: String(s.id), label: s.name })),
-                onChange: setSeason,
+    const columns: ColumnDefinition<InvoiceStatisticsItem>[] = useMemo(() => [
+        {
+            key: "season_name",
+            label: "Sezon",
+            render: (r) => r.season_name,
+        },
+        {
+            key: "branch_name",
+            label: "Şube",
+            render: (r) => r.branch_name,
+        },
+        {
+            key: "month",
+            label: "Tarih",
+            render: (r) => {
+                const month = MONTH_OPTIONS.find((m) => m.value === String(r.month));
+                return month ? month.label : r.month;
             },
-            {
-                key: "branch",
-                label: "Şube",
-                type: "select",
-                value: branch,
-                options: (branchData || []).map((b: any) => ({ value: String(b.id), label: b.name })),
-                onChange: setBranch,
-            },
-            {
-                key: "months",
-                label: "Ay",
-                type: "multiselect",
-                value: months,
-                options: MONTH_OPTIONS,
-                onChange: (vals: string[]) => setMonths(vals),
-            },
-        ],
-        [season, branch, months, seasonsData, branchData]
+        },
+        {
+            key: "total_amount",
+            label: "Fatura Tutarı",
+            render: (r) => formatCurrency(r.total_amount),
+        },
+        {
+            key: "actions",
+            label: "İşlemler",
+            render: (r) => (
+                <Button
+                    variant="primary-light"
+                    size="sm"
+                    className="btn-icon rounded-pill"
+                    onClick={() => setDetailItem(r)}
+                >
+                    <i className="ti ti-eye" />
+                </Button>
+            ),
+        },
+    ], []);
+
+    const total = useMemo(
+        () => data.reduce((sum, d) => sum + (d.total_amount || 0), 0),
+        [data]
     );
-
-    const columns: ColumnDefinition<InvoiceStatisticsItem>[] = useMemo(
-        () => [
-            { key: "season_name", label: "Sezon", render: (r) => r.season_name },
-            { key: "branch_name", label: "Şube", render: (r) => r.branch_name },
-            { key: "month", label: "Tarih", render: (r) => r.month },
-            { key: "total_amount", label: "Fatura Tutarı", render: (r) => formatCurrency(r.total_amount) },
-            {
-                key: "actions",
-                label: "İşlemler",
-                render: (r) => (
-                    <Button
-                        variant="primary-light"
-                        size="sm"
-                        className="btn-icon rounded-pill"
-                        onClick={() => setDetailItem(r)}
-                    >
-                        <i className="ti ti-eye" />
-                    </Button>
-                ),
-            },
-        ],
-        []
-    );
-
-    const total = useMemo(() => data.reduce((sum, d) => sum + (d.total_amount || 0), 0), [data]);
 
     const footer = (
-        <div className="d-flex justify-content-end fw-bold me-3">Toplam: {formatCurrency(total)}</div>
+        <div className="d-flex justify-content-end fw-bold me-3">
+            Toplam: {formatCurrency(total)}
+        </div>
     );
 
     return (

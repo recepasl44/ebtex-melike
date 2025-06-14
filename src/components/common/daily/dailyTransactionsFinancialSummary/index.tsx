@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Row, Col, Card, Form, Button } from 'react-bootstrap';
+import { Row, Col, Card, Form } from 'react-bootstrap';
 import ReusableTable, { ColumnDefinition } from '../../ReusableTable';
 import SpkFlatpickr from '../../../../@spk-reusable-components/reusable-plugins/spk-flatpicker';
 import darkcontrol from '../../../../utils/darkmodecontroller';
@@ -17,8 +17,6 @@ const DailyTransactionsFinancialSummary: React.FC = () => {
   const [seasonId, setSeasonId] = useState('');
   const [date, setDate] = useState('');
   const [seasonsEnabled, setSeasonsEnabled] = useState(false);
-  const [showLiquidModal, setShowLiquidModal] = useState(false);
-  const [showLiabilityModal, setShowLiabilityModal] = useState(false);
 
   const { seasonsData = [] } = useSeasonsList({
     enabled: seasonsEnabled,
@@ -127,49 +125,44 @@ const DailyTransactionsFinancialSummary: React.FC = () => {
         </Card.Body>
       </Card>
 
-      {/* Buttons to open tables in modals */}
+      {/* Tables */}
       <Row className="g-4">
         <Col xs={12} lg={6}>
-          <Button
-            variant="outline-secondary"
-            onClick={() => setShowLiquidModal(true)}
-          >
-            Likit Varlıklar
-          </Button>
+          <Card className="glass-card h-100">
+            <Card.Header as="h5" className="fw-semibold">
+              Likit Varlıklar
+            </Card.Header>
+            <Card.Body className="p-0">
+              <ReusableTable<RowData>
+                tableMode="single"
+                columns={columns}
+                data={liquidRows}
+                loading={loading}
+                showExportButtons={false}
+                customFooter={liquidFooter}
+              />
+            </Card.Body>
+          </Card>
         </Col>
+
         <Col xs={12} lg={6}>
-          <Button
-            variant="outline-secondary"
-            onClick={() => setShowLiabilityModal(true)}
-          >
-            Borçlar
-          </Button>
+          <Card className="glass-card h-100">
+            <Card.Header as="h5" className="fw-semibold">
+              Borçlar
+            </Card.Header>
+            <Card.Body className="p-0">
+              <ReusableTable<RowData>
+                tableMode="single"
+                columns={columns}
+                data={liabilityRows}
+                loading={loading}
+                showExportButtons={false}
+                customFooter={liabilitiesFooter}
+              />
+            </Card.Body>
+          </Card>
         </Col>
       </Row>
-
-      <ReusableTable<RowData>
-        tableMode="single"
-        columns={columns}
-        data={liquidRows}
-        loading={loading}
-        showExportButtons={false}
-        customFooter={liquidFooter}
-        modalTitle="Likit Varlıklar"
-        showModal={showLiquidModal}
-        onCloseModal={() => setShowLiquidModal(false)}
-      />
-
-      <ReusableTable<RowData>
-        tableMode="single"
-        columns={columns}
-        data={liabilityRows}
-        loading={loading}
-        showExportButtons={false}
-        customFooter={liabilitiesFooter}
-        modalTitle="Borçlar"
-        showModal={showLiabilityModal}
-        onCloseModal={() => setShowLiabilityModal(false)}
-      />
     </div>
   );
 };

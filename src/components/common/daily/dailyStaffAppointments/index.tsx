@@ -58,23 +58,23 @@ export default function DailyStaffAppointmentsTable() {
   );
 
   return (
-    <div className="container-fluid mt-3">
-      <ReusableTable<StaffPaymentRow>
-        // pageTitle="Personel Ödemeleri"
-        columns={columns}
-        data={rows}
-        loading={loading}
-        error={null}
-        tableMode="single"
-        currentPage={1}
-        totalPages={1}
-        totalItems={rows.length}
-        pageSize={rows.length}
-        onPageChange={() => { }}
-        onPageSizeChange={() => { }}
-        showExportButtons
-        exportFileName="daily-staff-payments"
-      />
-    </div>
+
+    <ReusableTable<StaffPaymentRow>
+      // pageTitle="Personel Ödemeleri"
+      columns={columns}
+      data={rows}
+      loading={loading}
+      error={null}
+      tableMode="single"
+      currentPage={1}
+      totalPages={1}
+      totalItems={rows.length}
+      pageSize={rows.length}
+      onPageChange={() => { }}
+      onPageSizeChange={() => { }}
+      showExportButtons
+      exportFileName="daily-staff-payments"
+    />
+
   );
 }

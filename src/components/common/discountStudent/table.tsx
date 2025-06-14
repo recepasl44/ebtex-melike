@@ -133,7 +133,7 @@ export default function DiscountStudentTable() {
     );
 
     return (
-        <div className="container-fluid mt-3">
+        <>
             <FilterGroup filters={filters} columnsPerRow={4} navigate={navigate} />
 
             <ReusableTable<DiscountStudentData>
@@ -155,6 +155,6 @@ export default function DiscountStudentTable() {
                 exportFileName="discount-students-report"
                 showExportButtons
             />
-        </div>
+        </>
     );
 }

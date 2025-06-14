@@ -16,7 +16,7 @@ import { useSupplierShow } from "../../../hooks/suppliers/useSuppliersShow.tsx"
 export default function SupplierDetail() {
   const [activeTab, setActiveTab] = useState<number>(0)
   const { id } = useParams<{ id?: string }>()
-  const { supplier: fetchedSupplier, getSupplier } = useSupplierShow()
+  const { supplier: fetchedSupplier, getSupplier } = useSupplierShow(Number(id))
 
   useEffect(() => {
     if (id) {
@@ -88,15 +88,12 @@ export default function SupplierDetail() {
   ]
 
   return (
-    <div className="px-4">
-      <Pageheader
-        title={fetchedSupplier?.name || ''}
-        currentpage={tabsConfig[activeTab]?.label || ''}
-      />
-      <TabsContainer
+
+    <><Pageheader
+      title={fetchedSupplier?.name || ''}
+      currentpage={tabsConfig[activeTab]?.label || ''} /><TabsContainer
         tabs={tabsConfig}
-        onTabChange={(parentIndex) => setActiveTab(parentIndex)}
-      />
-    </div>
+        onTabChange={(parentIndex) => setActiveTab(parentIndex)} /></>
+
   )
 }

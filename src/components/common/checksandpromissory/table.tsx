@@ -233,7 +233,7 @@ export default function ChecksAndPromissoryTable() {
     };
 
     return (
-        <div className="container-fluid mt-3">
+        <>
             <ReusableTable<OutgoingCheck>
                 columns={columns}
                 data={filteredData}
@@ -287,7 +287,7 @@ export default function ChecksAndPromissoryTable() {
                     </Modal.Footer>
                 </Modal>
             )}
-        </div>
+        </>
     );
 }
 
