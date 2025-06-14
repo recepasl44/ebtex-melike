@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import ReusableTable, {
     ColumnDefinition,
@@ -11,6 +11,8 @@ import {
     IncomingCheckPaymentModal,
 } from "./crud";
 import Pageheader from '../../page-header/pageheader';
+import axiosInstance from '../../../services/axiosClient';
+import type { Instrument } from '../../../types/instruments/list';
 
 export interface IncomingCheck {
     id: number;
@@ -55,13 +57,44 @@ export default function IncomingChecksTable() {
     const [filterType, setFilterType] = useState("");
     const [filterBank, setFilterBank] = useState("");
 
+    const [companyOptions, setCompanyOptions] = useState<{ label: string; value: string }[]>([]);
+    const [creditorOptions, setCreditorOptions] = useState<{ label: string; value: string }[]>([]);
+    const [typeOptions, setTypeOptions] = useState<{ label: string; value: string }[]>([]);
+    const [bankOptions, setBankOptions] = useState<{ label: string; value: string }[]>([]);
+
+    useEffect(() => {
+        axiosInstance.get("/instruments", { params: { paginate: 999 } })
+            .then((resp) => {
+                const instruments: Instrument[] = resp.data?.data || [];
+                const companies = new Set<string>();
+                const creditors = new Set<string>();
+                const types = new Set<string>();
+                const banks = new Set<string>();
+                instruments.forEach((i) => {
+                    if (i.document_owner_name) companies.add(i.document_owner_name);
+                    if (i.owner_name) creditors.add(i.owner_name);
+                    if (i.document_type !== undefined && i.document_type !== null) {
+                        types.add(i.document_type === 1 ? "Çek" : "Senet");
+                    }
+                    if (i.bank) banks.add(i.bank);
+                });
+                setCompanyOptions(Array.from(companies).map((v) => ({ value: v, label: v })));
+                setCreditorOptions(Array.from(creditors).map((v) => ({ value: v, label: v })));
+                setTypeOptions(Array.from(types).map((v) => ({ value: v, label: v })));
+                setBankOptions(Array.from(banks).map((v) => ({ value: v, label: v })));
+            })
+            .catch(() => {
+                // ignore errors
+            });
+    }, []);
+
     const filteredData = useMemo(() => {
         return data.filter(
             (row) =>
-                (!filterCompany || row.company.includes(filterCompany)) &&
-                (!filterCreditor || row.creditor.includes(filterCreditor)) &&
+                (!filterCompany || row.company === filterCompany) &&
+                (!filterCreditor || row.creditor === filterCreditor) &&
                 (!filterType || row.type === filterType) &&
-                (!filterBank || row.bank.includes(filterBank))
+                (!filterBank || row.bank === filterBank)
         );
     }, [data, filterCompany, filterCreditor, filterType, filterBank]);
 
@@ -152,16 +185,18 @@ export default function IncomingChecksTable() {
         {
             key: "company",
             label: "Firma",
-            type: "text",
+            type: "select",
             value: filterCompany,
             onChange: setFilterCompany,
+            options: companyOptions,
         },
         {
             key: "creditor",
             label: "Verecekli",
-            type: "text",
+            type: "select",
             value: filterCreditor,
             onChange: setFilterCreditor,
+            options: creditorOptions,
         },
         {
             key: "type",
@@ -169,17 +204,15 @@ export default function IncomingChecksTable() {
             type: "select",
             value: filterType,
             onChange: setFilterType,
-            options: [
-                { value: "Çek", label: "Çek" },
-                { value: "Senet", label: "Senet" },
-            ],
+            options: typeOptions,
         },
         {
             key: "bank",
             label: "Alıcı Banka",
-            type: "text",
+            type: "select",
             value: filterBank,
             onChange: setFilterBank,
+            options: bankOptions,
         },
     ];
 
