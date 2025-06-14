@@ -28,6 +28,9 @@ const ExamAnalysis = lazy(
 const Guidance = lazy(
   () => import("../components/common/guidance/studentMonitoring/index")
 );
+const CheckManagementIndex = lazy(
+  () => import("../components/common/checkManagement")
+);
 
 const CourseList = lazy(() => import("../components/common/course/list"));
 const CourseModal = lazy(() => import("../components/common/course/crud"));
@@ -1766,7 +1769,7 @@ export const Routedata = [
       <IncomingChecksCrud
         show={true}
         onClose={() => window.history.back()}
-        onRefresh={() => {}}
+        onRefresh={() => { }}
       />
     ),
   },
@@ -2233,7 +2236,11 @@ export const Routedata = [
     path: `${import.meta.env.BASE_URL}revenuesReceipt/:id`,
     element: <RevenuesReceipt />,
   },
-
+  {
+    id: 67,
+    path: `${import.meta.env.BASE_URL}checkManagement`,
+    element: <CheckManagementIndex />,
+  },
 
 
 

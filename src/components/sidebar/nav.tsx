@@ -262,11 +262,8 @@ export const MENUITEMS: any = [
       },
       {
         title: "Çek Yönetimi",
-        type: "sub",
-        children: [
-          { title: "Gelen", path: "/incomingChecks", type: "link" },
-          { title: "Giden", path: "/checksandpromissory", type: "link" },
-        ],
+        path: "/checkManagement",
+        type: "link",
       },
       {
         title: "Personel Yönetimi",
