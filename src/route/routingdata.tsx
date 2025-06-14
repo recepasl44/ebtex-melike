@@ -84,6 +84,10 @@ const IncomingChecksCrud = lazy(
   () => import("../components/common/incomingChecks/crud")
 );
 
+const CheckManagementIndex = lazy(
+  () => import("../components/common/checkManagement")
+);
+
 const OverduePaymentDetailPage = lazy(
   () => import("../components/common/overduePayments/detail")
 );
@@ -1746,6 +1750,11 @@ export const Routedata = [
     id: 67,
     path: `${import.meta.env.BASE_URL}assignmentsCount/index`,
     element: <AssignmentsCountPage />,
+  },
+  {
+    id: 67,
+    path: `${import.meta.env.BASE_URL}checkManagement`,
+    element: <CheckManagementIndex />,
   },
   {
     id: 67,
