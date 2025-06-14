@@ -100,6 +100,16 @@ export default function OtherIncomeTable() {
               />
             </Button>
 
+            {/* Düzenle */}
+            <Button
+              variant="info-light"
+              className="btn btn-icon btn-sm rounded-pill me-1"
+              onClick={() => navigate(`/other-income/crud/${row.id}`)}
+              title="Düzenle"
+            >
+              <i className="ti ti-pencil" />
+            </Button>
+
             {/* Sil */}
             <Button
               variant="danger-light"
