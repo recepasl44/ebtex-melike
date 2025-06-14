@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Http\Responses\Backend\QuizCategories;
+
+use Illuminate\Contracts\Support\Responsable;
+use App\Models\QuizTypes\QuizType;
+
+
+class EditResponse implements Responsable
+{
+    /**
+     * @var App\Models\QuizCategories\QuizCategory
+     */
+    protected $quizcategories;
+
+    /**
+     * @param App\Models\QuizCategories\QuizCategory $quizcategories
+     */
+    public function __construct($quizcategories)
+    {
+        $this->quizcategories = $quizcategories;
+    }
+
+    /**
+     * To Response
+     *
+     * @param \App\Http\Requests\Request $request
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function toResponse($request)
+    {
+        $quiztypes= collect(QuizType::all()->toArray())->mapWithKeys(function ($item) {
+                    return [$item['id'] => $item['name']];
+                });
+        return view('backend.quizcategories.edit',compact('quiztypes', ))->with([
+            'quizcategories' => $this->quizcategories
+        ]);
+    }
+}
