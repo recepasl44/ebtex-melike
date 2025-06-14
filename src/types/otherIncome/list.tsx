@@ -8,6 +8,8 @@ export interface OtherIncomeCustomer {
 }
 
 export interface OtherIncomeData {
+  paid: number;
+
   id: number;
   season: string;
   date: string;

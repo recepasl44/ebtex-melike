@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Button } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import ReusableTable, { ColumnDefinition } from "../../ReusableTable";
 import { useListStudents } from "../../../hooks/student/useList";
@@ -68,22 +68,31 @@ export default function StudentInstallmentsTable() {
   );
 
   return (
-    <ReusableTable<IStudent>
-      // pageTitle="Öğrenci Taksitleri"
-      columns={columns}
-      data={data}
-      loading={loading}
-      error={error}
-      currentPage={page}
-      totalPages={totalPages}
-      totalItems={totalItems}
-      pageSize={pageSize}
-      onPageChange={(newPage) => setPage(newPage)}
-      onPageSizeChange={(newSize) => {
-        setPageSize(newSize);
-        setPage(1);
-      }}
-      showExportButtons={true}
-    />
+    <div className="container-fluid mt-3">
+      <Card className="shadow-sm border-0">
+        <Card.Header className="bg-white border-bottom-0 pb-0">
+          <h5 className="mb-0 fw-semibold">Öğrenci Taksitleri</h5>
+        </Card.Header>
+        <Card.Body>
+          <ReusableTable<IStudent>
+            columns={columns}
+            data={data}
+            loading={loading}
+            error={error}
+            currentPage={page}
+            totalPages={totalPages}
+            totalItems={totalItems}
+            pageSize={pageSize}
+            onPageChange={(newPage) => setPage(newPage)}
+            onPageSizeChange={(newSize) => {
+              setPageSize(newSize);
+              setPage(1);
+            }}
+            showExportButtons={true}
+            exportFileName="student-installments"
+          />
+        </Card.Body>
+      </Card>
+    </div>
   );
 }

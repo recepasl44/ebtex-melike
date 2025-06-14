@@ -77,7 +77,7 @@ export default function ChecksAndPromissoryTable() {
                         </button>
                         <button
                             className="btn btn-icon btn-sm btn-danger-light rounded-pill"
-                            onClick={() => {}}
+                            onClick={() => { }}
                         >
                             <i className="ti ti-trash" />
                         </button>
@@ -126,7 +126,7 @@ export default function ChecksAndPromissoryTable() {
     );
 
     return (
-         <div className="container-fluid mt-3">
+        <div className="container-fluid mt-3">
 
             <ReusableTable<Instrument>
                 pageTitle="Çek & Senetler"
