@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Modal, Button, Table } from "react-bootstrap";
 import { FormikHelpers, FormikValues } from "formik";
 import ReusableModalForm, { FieldDefinition } from "../ReusableModalForm";
+import ReusableTable, { ColumnDefinition } from "../ReusableTable";
 import { IncomingCheck } from "./table";
 
 interface FormValues extends FormikValues {
@@ -23,6 +24,22 @@ interface FormValues extends FormikValues {
   image: string;
 }
 
+interface PaymentRecord {
+  id: number;
+  date: string;
+  amount: number;
+  payer: string;
+  receiptNo: string;
+  user: string;
+  description: string;
+}
+
+interface Buyer {
+  id: number;
+  name: string;
+  phone: string;
+}
+
 export function IncomingCheckFormModal({
   show,
   onClose,
@@ -34,6 +51,11 @@ export function IncomingCheckFormModal({
   onSubmit: (val: IncomingCheck) => void;
   initialValues?: IncomingCheck;
 }) {
+  const [buyers, setBuyers] = useState<Buyer[]>([
+    { id: 1, name: "Tedarikçi 1", phone: "" },
+  ]);
+  const [showBuyerModal, setShowBuyerModal] = useState(false);
+
   const defaults: FormValues = {
     paymentTarget: "student",
     branch: "",
@@ -59,11 +81,26 @@ export function IncomingCheckFormModal({
       {
         name: "paymentTarget",
         label: "Ödeme Tipi",
-        type: "select",
-        options: [
-          { value: "student", label: "Öğrenci Ödeme" },
-          { value: "customer", label: "Müşteri" },
-        ],
+        renderForm: (formik) => (
+          <div className="d-flex gap-3">
+            <label>
+              <input
+                type="radio"
+                checked={formik.values.paymentTarget === "student"}
+                onChange={() => formik.setFieldValue("paymentTarget", "student")}
+              />{" "}
+              Öğrenci Ödeme
+            </label>
+            <label>
+              <input
+                type="radio"
+                checked={formik.values.paymentTarget === "customer"}
+                onChange={() => formik.setFieldValue("paymentTarget", "customer")}
+              />{" "}
+              Müşteri
+            </label>
+          </div>
+        ),
       },
       { name: "branch", label: "Şube", type: "text", required: true },
     ];
@@ -95,7 +132,32 @@ export function IncomingCheckFormModal({
     if (values.status === "swapped") {
       fields.push(
         { name: "swapCheckType", label: "Çek Türü", type: "text" },
-        { name: "swapBuyer", label: "Alıcı", type: "text" },
+        {
+          name: "swapBuyer",
+          label: "Alıcı",
+          renderForm: (formik) => (
+            <div className="d-flex" style={{ gap: 8 }}>
+              <select
+                className="form-select"
+                value={formik.values.swapBuyer || ""}
+                onChange={(e) => formik.setFieldValue("swapBuyer", e.target.value)}
+              >
+                <option value="">Seçiniz</option>
+                {buyers.map((b) => (
+                  <option key={b.id} value={b.name}>
+                    {b.name}
+                  </option>
+                ))}
+              </select>
+              <Button
+                variant="outline-secondary"
+                onClick={() => setShowBuyerModal(true)}
+              >
+                <i className="bi bi-plus" />
+              </Button>
+            </div>
+          ),
+        },
       );
     }
     fields.push({ name: "description", label: "Açıklama", type: "textarea" });
@@ -122,15 +184,24 @@ export function IncomingCheckFormModal({
   };
 
   return (
-    <ReusableModalForm<FormValues>
-      show={show}
-      title={initialValues ? "Düzenle" : "Ekle"}
-      fields={getFields}
-      initialValues={defaults}
-      onSubmit={handleSubmit}
-      onClose={onClose}
-      confirmButtonLabel="Kaydet"
-    />
+    <>
+      <ReusableModalForm<FormValues>
+        show={show}
+        title={initialValues ? "Düzenle" : "Ekle"}
+        fields={getFields}
+        initialValues={defaults}
+        onSubmit={handleSubmit}
+        onClose={onClose}
+        confirmButtonLabel="Kaydet"
+      />
+      {showBuyerModal && (
+        <BuyerFormModal
+          show={showBuyerModal}
+          onClose={() => setShowBuyerModal(false)}
+          onAdd={(b) => setBuyers((prev) => [...prev, b])}
+        />
+      )}
+    </>
   );
 }
 
@@ -215,9 +286,51 @@ export function IncomingCheckCashModal({ show, onClose }: { show: boolean; onClo
 }
 
 export function IncomingCheckPaymentModal({ show, onClose }: { show: boolean; onClose: () => void }) {
-  const [payments, setPayments] = useState<any[]>([]);
+  const [payments, setPayments] = useState<PaymentRecord[]>([]);
+  const [selected, setSelected] = useState<PaymentRecord | null>(null);
+  const [showForm, setShowForm] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
 
-  const addPayment = (p: any) => setPayments((prev) => [...prev, p]);
+  const columns: ColumnDefinition<PaymentRecord>[] = [
+    { key: "date", label: "Tarih" },
+    { key: "amount", label: "Ödenen Tutar", render: (r) => r.amount.toLocaleString() },
+    { key: "payer", label: "Ödeme Yapan" },
+    { key: "receiptNo", label: "Makbuz No" },
+    { key: "user", label: "Kullanıcı" },
+    { key: "description", label: "Açıklama" },
+    {
+      key: "actions",
+      label: "İşlemler",
+      render: (row) => (
+        <>
+          <Button size="sm" variant="info" onClick={() => { setSelected(row); setShowForm(true); }}>
+            Düzenle
+          </Button>{" "}
+          <Button size="sm" variant="danger" onClick={() => { setSelected(row); setShowDelete(true); }}>
+            Sil
+          </Button>
+        </>
+      ),
+    },
+  ];
+
+  const handleSubmit = (vals: PaymentRecord) => {
+    if (selected) {
+      setPayments((p) => p.map((i) => (i.id === selected.id ? { ...vals, id: selected.id } : i)));
+    } else {
+      setPayments((p) => [...p, { ...vals, id: Date.now() }]);
+    }
+    setShowForm(false);
+    setSelected(null);
+  };
+
+  const handleDelete = () => {
+    if (selected) {
+      setPayments((p) => p.filter((i) => i.id !== selected.id));
+    }
+    setShowDelete(false);
+    setSelected(null);
+  };
 
   return (
     <Modal show={show} onHide={onClose} centered size="lg">
@@ -225,35 +338,142 @@ export function IncomingCheckPaymentModal({ show, onClose }: { show: boolean; on
         <Modal.Title>Ödeme</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Button className="mb-2" onClick={() => addPayment({ id: Date.now(), date: new Date().toISOString().split("T")[0], amount: 0 })}>Ekle</Button>
-        <Table bordered size="sm">
-          <thead>
-            <tr>
-              <th>Tarih</th>
-              <th>Ödenen Tutar</th>
-              <th>Ödeme Yapan</th>
-              <th>Makbuz No</th>
-              <th>Kullanıcı</th>
-              <th>Açıklama</th>
-            </tr>
-          </thead>
-          <tbody>
-            {payments.map((p) => (
-              <tr key={p.id}>
-                <td>{p.date}</td>
-                <td>{p.amount}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+        <ReusableTable<PaymentRecord>
+          columns={columns}
+          data={payments}
+          onAdd={() => { setSelected(null); setShowForm(true); }}
+          addButtonText="Ekle"
+          tableMode="single"
+          showExportButtons={false}
+        />
+        {showForm && (
+          <PaymentFormModal
+            show={showForm}
+            onClose={() => { setShowForm(false); setSelected(null); }}
+            onSubmit={handleSubmit}
+            initialValues={selected || undefined}
+          />
+        )}
+        {showDelete && (
+          <Modal show={showDelete} onHide={() => setShowDelete(false)} centered>
+            <Modal.Header closeButton>
+              <Modal.Title>Sil</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Silmek istediğinize emin misiniz?</Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={() => setShowDelete(false)}>
+                Vazgeç
+              </Button>
+              <Button variant="danger" onClick={handleDelete}>
+                Sil
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        )}
       </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={onClose}>Kapat</Button>
-      </Modal.Footer>
     </Modal>
+  );
+}
+
+interface PaymentFormValues extends FormikValues {
+  date: string;
+  amount: number | string;
+  payer: string;
+  receiptNo: string;
+  user: string;
+  description: string;
+}
+
+function PaymentFormModal({
+  show,
+  onClose,
+  onSubmit,
+  initialValues,
+}: {
+  show: boolean;
+  onClose: () => void;
+  onSubmit: (val: PaymentRecord) => void;
+  initialValues?: PaymentRecord;
+}) {
+  const defaults: PaymentFormValues = {
+    date: new Date().toISOString().split("T")[0],
+    amount: "",
+    payer: "",
+    receiptNo: "",
+    user: "",
+    description: "",
+    ...(initialValues || {}),
+  } as any;
+
+  const fields: FieldDefinition[] = [
+    { name: "date", label: "Tarih", type: "date", required: true },
+    { name: "amount", label: "Ödenen Tutar", type: "currency", required: true },
+    { name: "payer", label: "Ödeme Yapan", type: "text" },
+    { name: "receiptNo", label: "Makbuz No", type: "text" },
+    { name: "user", label: "Kullanıcı", type: "text" },
+    { name: "description", label: "Açıklama", type: "textarea" },
+  ];
+
+  const handleSubmit = (vals: PaymentFormValues, helpers: FormikHelpers<PaymentFormValues>) => {
+    const val: PaymentRecord = {
+      id: initialValues?.id || Date.now(),
+      date: vals.date,
+      amount: Number(vals.amount) || 0,
+      payer: vals.payer,
+      receiptNo: vals.receiptNo,
+      user: vals.user,
+      description: vals.description,
+    };
+    onSubmit(val);
+    helpers.setSubmitting(false);
+  };
+
+  return (
+    <ReusableModalForm<PaymentFormValues>
+      show={show}
+      title="Ödeme"
+      fields={fields}
+      initialValues={defaults}
+      onSubmit={handleSubmit}
+      onClose={onClose}
+      confirmButtonLabel="Kaydet"
+    />
+  );
+}
+
+interface BuyerFormValues extends FormikValues {
+  name: string;
+  phone: string;
+}
+
+function BuyerFormModal({
+  show,
+  onClose,
+  onAdd,
+}: {
+  show: boolean;
+  onClose: () => void;
+  onAdd: (b: Buyer) => void;
+}) {
+  const fields: FieldDefinition[] = [
+    { name: "name", label: "Ad Soyad", type: "text", required: true },
+    { name: "phone", label: "Telefon", type: "text" },
+  ];
+
+  const handleSubmit = (vals: BuyerFormValues) => {
+    onAdd({ id: Date.now(), name: vals.name, phone: vals.phone });
+    onClose();
+  };
+
+  return (
+    <ReusableModalForm<BuyerFormValues>
+      show={show}
+      title="Yeni Alıcı"
+      fields={fields}
+      initialValues={{ name: "", phone: "" }}
+      onSubmit={handleSubmit}
+      onClose={onClose}
+      confirmButtonLabel="Kaydet"
+    />
   );
 }
