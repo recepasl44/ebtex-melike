@@ -13,6 +13,8 @@ interface OutgoingCheck {
     creditor: string; // verecekli
     debtor: string; // alacaklı
     debtorPhone: string;
+    instrumentType: "Çek" | "Senet"; // türü
+    documentNo: string; // belge no
     date: string;
     bank: string;
     amountDue: number;
@@ -20,6 +22,7 @@ interface OutgoingCheck {
     remaining: number;
     description: string;
     status: "Ödendi" | "Ödenmedi" | "Beklemede";
+    image?: string;
 }
 
 const dummyData: OutgoingCheck[] = [
@@ -31,6 +34,8 @@ const dummyData: OutgoingCheck[] = [
         creditor: "Veli Kaya",
         debtor: "Ali Demir",
         debtorPhone: "05551112233",
+        instrumentType: "Çek",
+        documentNo: "CHK123",
         date: "2024-01-01",
         bank: "Ziraat",
         amountDue: 1000,
@@ -38,6 +43,7 @@ const dummyData: OutgoingCheck[] = [
         remaining: 800,
         description: "",
         status: "Beklemede",
+        image: "",
     },
 ];
 
@@ -84,13 +90,16 @@ export default function ChecksAndPromissoryTable() {
                     creditor: '',
                     debtor: '',
                     debtorPhone: '',
+                    instrumentType: i.document_type === 1 ? 'Çek' : 'Senet',
+                    documentNo: i.check_no || i.instrument_no,
                     date: i.due_date,
                     bank: i.bank,
                     amountDue: Number(i.amount) || 0,
                     amountPaid: 0,
                     remaining: 0,
                     description: '',
-                    status: i.status as any || 'Beklemede',
+                    status: (i.status as any) || 'Beklemede',
+                    image: i.image_path || '',
                 }));
                 setData(mapped);
             })
@@ -289,6 +298,8 @@ interface FormValues {
     creditor: string;
     debtor: string;
     debtorPhone: string;
+    instrumentType: "Çek" | "Senet";
+    documentNo: string;
     date: string;
     bank: string;
     amountDue: number | string;
@@ -296,6 +307,7 @@ interface FormValues {
     remaining: number | string;
     description: string;
     status: "Ödendi" | "Ödenmedi" | "Beklemede";
+    image?: string;
 }
 
 function CheckFormModal({
@@ -316,6 +328,8 @@ function CheckFormModal({
         creditor: "",
         debtor: "",
         debtorPhone: "",
+        instrumentType: "Çek",
+        documentNo: "",
         date: new Date().toISOString().split("T")[0],
         bank: "",
         amountDue: "",
@@ -323,6 +337,7 @@ function CheckFormModal({
         remaining: "",
         description: "",
         status: "Beklemede",
+        image: "",
         ...(initialValues || {}),
     } as any;
 
@@ -342,12 +357,24 @@ function CheckFormModal({
         { name: "creditor", label: "Verecekli", type: "text" },
         { name: "debtor", label: "Alacaklı", type: "text" },
         { name: "debtorPhone", label: "Alacaklı Tel", type: "text" },
+        {
+            name: "instrumentType",
+            label: "Türü",
+            type: "select",
+            options: [
+                { value: "Çek", label: "Çek" },
+                { value: "Senet", label: "Senet" },
+            ],
+            required: true,
+        },
+        { name: "documentNo", label: "Belge No", type: "text" },
         { name: "date", label: "Tarih", type: "date", required: true },
         { name: "bank", label: "Alıcı Banka", type: "text" },
         { name: "amountDue", label: "Ödenecek", type: "currency", required: true },
         { name: "amountPaid", label: "Ödenen", type: "currency" },
         { name: "remaining", label: "Kalan", type: "currency" },
         { name: "description", label: "Açıklama", type: "textarea" },
+        { name: "image", label: "Görüntü", type: "file" },
         {
             name: "status",
             label: "Durum",
@@ -369,6 +396,8 @@ function CheckFormModal({
             creditor: vals.creditor,
             debtor: vals.debtor,
             debtorPhone: vals.debtorPhone,
+            instrumentType: vals.instrumentType,
+            documentNo: vals.documentNo,
             date: vals.date,
             bank: vals.bank,
             amountDue: Number(vals.amountDue) || 0,
@@ -376,6 +405,7 @@ function CheckFormModal({
             remaining: Number(vals.remaining) || 0,
             description: vals.description,
             status: vals.status,
+            image: vals.image,
         };
         onSubmit(val);
     };
@@ -408,6 +438,8 @@ function CheckDetailModal({ show, onClose, check }: { show: boolean; onClose: ()
                         <tr><th>Verecekli</th><td>{check.creditor}</td></tr>
                         <tr><th>Alacaklı</th><td>{check.debtor}</td></tr>
                         <tr><th>Alacaklı Tel</th><td>{check.debtorPhone}</td></tr>
+                        <tr><th>Türü</th><td>{check.instrumentType}</td></tr>
+                        <tr><th>Belge No</th><td>{check.documentNo}</td></tr>
                         <tr><th>Tarih</th><td>{check.date}</td></tr>
                         <tr><th>Alıcı Banka</th><td>{check.bank}</td></tr>
                         <tr><th>Ödenecek</th><td>{check.amountDue}</td></tr>
@@ -415,6 +447,9 @@ function CheckDetailModal({ show, onClose, check }: { show: boolean; onClose: ()
                         <tr><th>Kalan</th><td>{check.remaining}</td></tr>
                         <tr><th>Açıklama</th><td>{check.description}</td></tr>
                         <tr><th>Durum</th><td>{check.status}</td></tr>
+                        {check.image && (
+                            <tr><th>Görüntü</th><td><img src={check.image} alt="belge" style={{ maxWidth: '100%' }} /></td></tr>
+                        )}
                     </tbody>
                 </Table>
             </Modal.Body>
