@@ -1,5 +1,4 @@
 import { useState, useMemo, useEffect } from "react";
-import { Button } from "react-bootstrap";
 import ReusableTable, {
     ColumnDefinition,
     FilterDefinition,
@@ -28,21 +27,7 @@ export interface IncomingCheck {
     status: string;
 }
 
-const dummyData: IncomingCheck[] = [
-    {
-        id: 1,
-        company: "ABC Ltd",
-        creditor: "John Doe",
-        type: "Çek",
-        date: "2024-01-01",
-        bank: "Ziraat",
-        amountDue: 1000,
-        amountPaid: 300,
-        remaining: 700,
-        description: "",
-        status: "Beklemede",
-    },
-];
+const dummyData: IncomingCheck[] = [];
 
 export default function IncomingChecksTable() {
     const [data, setData] = useState<IncomingCheck[]>(dummyData);
@@ -61,32 +46,59 @@ export default function IncomingChecksTable() {
     const [creditorOptions, setCreditorOptions] = useState<{ label: string; value: string }[]>([]);
     const [typeOptions, setTypeOptions] = useState<{ label: string; value: string }[]>([]);
     const [bankOptions, setBankOptions] = useState<{ label: string; value: string }[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        axiosInstance.get("/instruments", { params: { paginate: 999 } })
+        const params: any = { paginate: 999 };
+        if (filterCompany) params.document_owner_name = filterCompany;
+        if (filterCreditor) params.owner_name = filterCreditor;
+        if (filterType) params.document_type = filterType === "Çek" ? 1 : 2;
+        if (filterBank) params.bank = filterBank;
+
+        setLoading(true);
+        axiosInstance
+            .get("/instruments", { params })
             .then((resp) => {
                 const instruments: Instrument[] = resp.data?.data || [];
                 const companies = new Set<string>();
                 const creditors = new Set<string>();
                 const types = new Set<string>();
                 const banks = new Set<string>();
-                instruments.forEach((i) => {
+                const rows: IncomingCheck[] = instruments.map((i) => {
                     if (i.document_owner_name) companies.add(i.document_owner_name);
                     if (i.owner_name) creditors.add(i.owner_name);
                     if (i.document_type !== undefined && i.document_type !== null) {
                         types.add(i.document_type === 1 ? "Çek" : "Senet");
                     }
                     if (i.bank) banks.add(i.bank);
+
+                    return {
+                        id: i.id,
+                        company: i.document_owner_name || "",
+                        creditor: i.owner_name || "",
+                        type: i.document_type === 1 ? "Çek" : "Senet",
+                        date: i.due_date,
+                        bank: i.bank || "",
+                        amountDue: Number(i.amount) || 0,
+                        amountPaid: 0,
+                        remaining: 0,
+                        description: "",
+                        status: i.status || "",
+                    };
                 });
+                setData(rows);
                 setCompanyOptions(Array.from(companies).map((v) => ({ value: v, label: v })));
                 setCreditorOptions(Array.from(creditors).map((v) => ({ value: v, label: v })));
                 setTypeOptions(Array.from(types).map((v) => ({ value: v, label: v })));
                 setBankOptions(Array.from(banks).map((v) => ({ value: v, label: v })));
+                setError(null);
             })
             .catch(() => {
-                // ignore errors
-            });
-    }, []);
+                setError("Veri alınamadı");
+            })
+            .finally(() => setLoading(false));
+    }, [filterCompany, filterCreditor, filterType, filterBank]);
 
     const filteredData = useMemo(() => {
         return data.filter(
@@ -221,6 +233,8 @@ export default function IncomingChecksTable() {
             <ReusableTable<IncomingCheck>
                 columns={columns}
                 data={filteredData}
+                loading={loading}
+                error={error}
                 filters={filters}
                 onAdd={() => {
                     setSelected(null);
