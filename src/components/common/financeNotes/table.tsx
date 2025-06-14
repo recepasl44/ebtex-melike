@@ -10,6 +10,7 @@ import { useBranchTable } from '../../hooks/branch/useBranchList';
 import { useProgramsTable } from '../../hooks/program/useList';
 import { useLevelsTable } from '../../hooks/levels/useList';
 import { useClassroomList } from '../../hooks/classrooms/useList';
+import { useListStudents } from '../../hooks/student/useList';
 
 export default function FinanceNotesTable() {
     const navigate = useNavigate();
@@ -37,6 +38,17 @@ export default function FinanceNotesTable() {
         level_id: levelId ? Number(levelId) : undefined,
         page: 1,
         pageSize: 100,
+    });
+
+    const { data: studentsData = [] } = useListStudents({
+        enabled: true,
+        branch_id: branch ? Number(branch) : undefined,
+        program_id: programId ? Number(programId) : undefined,
+        level_id: levelId ? Number(levelId) : undefined,
+        classroom_id: classId ? Number(classId) : undefined,
+        first_name: student,
+        page: 1,
+        paginate: 100,
     });
 
     const {
@@ -138,8 +150,12 @@ export default function FinanceNotesTable() {
         {
             key: 'search',
             label: 'Öğrenci',
-            type: 'text',
+            type: 'autocomplete',
             value: student,
+            options: studentsData.map((s: any) => ({
+                value: `${s.first_name} ${s.last_name}`.trim(),
+                label: `${s.first_name} ${s.last_name}`.trim(),
+            })),
             onChange: (val: string) => {
                 setStudent(val);
                 setPage(1);
@@ -147,7 +163,8 @@ export default function FinanceNotesTable() {
         },
     ], [
         season, branch, programId, levelId, classId, student,
-        seasonsData, branchData, programsData, levelsData, classroomData, setPage
+        seasonsData, branchData, programsData, levelsData, classroomData,
+        studentsData, setPage
     ]);
 
     return (
