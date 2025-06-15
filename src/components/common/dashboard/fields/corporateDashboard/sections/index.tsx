@@ -35,6 +35,10 @@ const Row2Component: React.FC<Row1Props> = (props) => {
   const localVariable = useSelector((state: RootState) => state.ui);
   const isDark = localVariable.dataThemeMode === "dark";
 
+  const firstItem = props.data?.data?.[0];
+
+  const firstItem = props.data?.data?.[0];
+
   const images = {
     teacher: teacher,
     staff: person,
@@ -52,44 +56,43 @@ const Row2Component: React.FC<Row1Props> = (props) => {
 
   // Günlük devam verisi
   const attendanceData = generateAttendanceData(
-    convertToAttendanceStatus(props.data.data[0].daily_attendance_status),
+    convertToAttendanceStatus(firstItem?.daily_attendance_status),
     images
   );
 
-  const weeklyFoodsMenu = props.data.data[0].weekly_foods_menu[0];
+  const weeklyFoodsMenu = firstItem?.weekly_foods_menu?.[0];
 
   // Ödemeler (supplier) verisi
-  const supplierPayments = props.data.data[0].payments?.suppliers || [];
+  const supplierPayments = firstItem?.payments?.suppliers || [];
   // dönemsel Karsılastırma verisi
-  const periodicalComparisionData = props.data.data[0].periodic_comparison;
+  const periodicalComparisionData = firstItem?.periodic_comparison;
   // İç ve dış kayıtların aylık dağılımı
   const Number_of_internal_and_external_records_by_month =
-    props.data.data[0].Number_of_internal_and_external_records_by_month;
+    firstItem?.Number_of_internal_and_external_records_by_month;
   // Günlük bülten verisi
-  const daily_bulletins = props.data.data[0].daily_bulletins;
+  const daily_bulletins = firstItem?.daily_bulletins;
   // Personel izin takip tablosu verisi
-  const staffLeaveTracking = props.data.data[0].staff_leave_tracking_table;
+  const staffLeaveTracking = firstItem?.staff_leave_tracking_table;
   // Personel görev dağılımı verisi
-  const staffTaskDistribution =
-    props.data.data[0].staff_task_distribution_table;
+  const staffTaskDistribution = firstItem?.staff_task_distribution_table;
   // Kurs Basarı Analizi verisi
-  const courseSuccessAnalysis = props.data.data[0].course_success_analysis;
+  const courseSuccessAnalysis = firstItem?.course_success_analysis;
   // Yaklaşan Görevler ve Hatırlatmalar
   const upcomingTasksAndReminders =
-    props.data.data[0].upcoming_tasks_and_reminders;
+    firstItem?.upcoming_tasks_and_reminders;
   //kız ve erkek öğrenci sayıları
   const maleandfemaleStudentsCount =
-    props.data.data[0].number_of_male_and_female_students;
+    firstItem?.number_of_male_and_female_students;
   // Ödev durumu analizi
-  const homeworkStatusAnalysis = props.data.data[0].homework_status_analysis;
+  const homeworkStatusAnalysis = firstItem?.homework_status_analysis;
   // Veli geri bildirim Paneli
-  const parentFeedbackPanel = props.data.data[0].parent_feedback_panel;
+  const parentFeedbackPanel = firstItem?.parent_feedback_panel;
   //Sınav Geri Sayımı
-  const examCountdown = props.data.data[0].exam_countdown;
+  const examCountdown = firstItem?.exam_countdown;
   // Günlük ders programı
-  const dailyCourseSchedule = props.data.data[0].daily_class_schedule;
+  const dailyCourseSchedule = firstItem?.daily_class_schedule;
   // Haftalık nöbet çizelgesi
-  const weeklyDutySchedule = props.data.data[0].weekly_duty_schedule;
+  const weeklyDutySchedule = firstItem?.weekly_duty_schedule;
   return (
     <Row>
       {/* Sol Sütun - Col 9 */}

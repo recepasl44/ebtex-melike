@@ -17,7 +17,8 @@ class DashboardController extends APIController
             $this->getHrSummary()
         );
 
-        return $this->respond(['data' => $data]);
+        return $this->respond(['data' => [$data]]);
+
     }
 
     /**
