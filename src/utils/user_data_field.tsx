@@ -41,6 +41,7 @@ function getUserDataField() {
     ? {
       value: parsedData.me.id,
       label: parsedData.me.first_name,
+      role_id: parsedData.me.role_id,
     }
     : null;
   return {

@@ -38,6 +38,8 @@ class AuthController extends APIController
             }
 
             $user = $request->user();
+            // Also append the first role id for frontend usage
+            $user->setAttribute('role_id', optional($user->roles()->first())->id);
 
             $passportToken = $user->createToken('API Access Token');
 
@@ -70,7 +72,9 @@ class AuthController extends APIController
      */
     public function me()
     {
-        return response()->json($this->guard()->user());
+        $user = $this->guard()->user();
+        $user->setAttribute('role_id', optional($user->roles()->first())->id);
+        return response()->json($user);
     }
 
     /**

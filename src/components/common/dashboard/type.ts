@@ -26,7 +26,7 @@ export interface Daum {
   general_information: GeneralInformation;
   number_of_parent_meetings: NumberOfParentMeetings;
   daily_attendance_monitoring: DailyAttendanceMonitoring;
-  mounty_installment_status: MountyInstallmentStatus;
+  monthly_installment_status: MonthlyInstallmentStatus;
   weekly_foods_menu: WeeklyFoodsMenu[];
   daily_attendance_status: DailyAttendanceStatus;
   payments: Payments;
@@ -221,7 +221,7 @@ export interface DailyAttendanceMonitoring {
   lesson_not_learned: number;
 }
 
-export interface MountyInstallmentStatus {
+export interface MonthlyInstallmentStatus {
   january: January;
   february: February;
   march: March;

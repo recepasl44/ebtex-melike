@@ -499,7 +499,7 @@ export const Routedata = [
     element: <Dashboard />,
   },
   {
-    id: 1,
+    id: 13,
     path: `${import.meta.env.BASE_URL}dashboard/sales`,
     element: <Analytics />,
   },

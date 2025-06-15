@@ -170,7 +170,7 @@ export const dummyDataDashboar = {
         lesson_learned: 22,
         lesson_not_learned: 11,
       },
-      mounty_installment_status: {
+      monthly_installment_status: {
         january: {
           paid: "131",
           un_paid: "334",
