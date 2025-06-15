@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
 
 interface PeriodicComparisonProps {
-  periodicComprassion: PeriodicComparison;
+  periodicComprassion: PeriodicComparison | any;
 }
 
 const PeriodicComparisonTable: React.FC<PeriodicComparisonProps> = ({
@@ -17,18 +17,20 @@ const PeriodicComparisonTable: React.FC<PeriodicComparisonProps> = ({
 
   console.log("isDark", isDark);
 
-  const renderTableData = (data: any[]) => {
+  const renderTableData = (data: any[] = []) => {
     const tableData = [...data];
 
-    const percentageRow = {
-      seasson: "Değişim",
-      number: periodicComprassion.totalChange.numberChange,
-      endorsement: periodicComprassion.totalChange.endorsementChange,
-      avarage: periodicComprassion.totalChange.avarageChange,
-      isPercentageRow: true,
-    };
+    if (periodicComprassion?.totalChange) {
+      const percentageRow = {
+        seasson: "Değişim",
+        number: periodicComprassion.totalChange.numberChange,
+        endorsement: periodicComprassion.totalChange.endorsementChange,
+        avarage: periodicComprassion.totalChange.avarageChange,
+        isPercentageRow: true,
+      };
 
-    tableData.push(percentageRow);
+      tableData.push(percentageRow);
+    }
 
     // If less than 5 rows, add empty rows to maintain height
     if (tableData.length < 5) {
@@ -152,7 +154,7 @@ const PeriodicComparisonTable: React.FC<PeriodicComparisonProps> = ({
                         { title: "Ortalama" },
                       ]}
                     >
-                      {renderTableData(periodicComprassion.total)}
+                      {renderTableData(periodicComprassion?.total || [])}
                     </SpkTablescomponent>
                   </div>
                 </div>
@@ -170,7 +172,7 @@ const PeriodicComparisonTable: React.FC<PeriodicComparisonProps> = ({
                         { title: "Ortalama" },
                       ]}
                     >
-                      {renderTableData(periodicComprassion.Anaokulu)}
+                      {renderTableData(periodicComprassion?.Anaokulu || [])}
                     </SpkTablescomponent>
                   </div>
                 </div>
@@ -188,7 +190,7 @@ const PeriodicComparisonTable: React.FC<PeriodicComparisonProps> = ({
                         { title: "Ortalama" },
                       ]}
                     >
-                      {renderTableData(periodicComprassion.ilkokul)}
+                      {renderTableData(periodicComprassion?.ilkokul || [])}
                     </SpkTablescomponent>
                   </div>
                 </div>
@@ -206,7 +208,7 @@ const PeriodicComparisonTable: React.FC<PeriodicComparisonProps> = ({
                         { title: "Ortalama" },
                       ]}
                     >
-                      {renderTableData(periodicComprassion.ortaokul)}
+                      {renderTableData(periodicComprassion?.ortaokul || [])}
                     </SpkTablescomponent>
                   </div>
                 </div>
@@ -224,7 +226,7 @@ const PeriodicComparisonTable: React.FC<PeriodicComparisonProps> = ({
                         { title: "Ortalama" },
                       ]}
                     >
-                      {renderTableData(periodicComprassion.anadolu_lisesi)}
+                      {renderTableData(periodicComprassion?.anadolu_lisesi || [])}
                     </SpkTablescomponent>
                   </div>
                 </div>
@@ -242,7 +244,7 @@ const PeriodicComparisonTable: React.FC<PeriodicComparisonProps> = ({
                         { title: "Ortalama" },
                       ]}
                     >
-                      {renderTableData(periodicComprassion.fen_lisesi)}
+                      {renderTableData(periodicComprassion?.fen_lisesi || [])}
                     </SpkTablescomponent>
                   </div>
                 </div>

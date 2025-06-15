@@ -7,7 +7,7 @@ interface CurrentBulletinProps {
 }
 
 const CurrentBulletin: React.FC<CurrentBulletinProps> = ({
-  daily_bulletins,
+  daily_bulletins = [],
 }) => {
   // Card style with fixed height
   const cardStyle = {

@@ -4,7 +4,7 @@ import { NumberOfInternalAndExternalRecordsByMonth } from "../type.ts";
 import Spkapexcharts from "../../../../@spk-reusable-components/reusable-plugins/spk-apexcharts.tsx";
 
 interface InternalExternalRecordByMonthProps {
-  Number_of_internal_and_external_records_by_monthData: NumberOfInternalAndExternalRecordsByMonth;
+  Number_of_internal_and_external_records_by_monthData: NumberOfInternalAndExternalRecordsByMonth | any;
 }
 
 const InternalExternalRecordByMonth: React.FC<
@@ -29,28 +29,25 @@ const InternalExternalRecordByMonth: React.FC<
     (month) => months[month as keyof typeof months]
   );
 
+  let monthlyData: any = {};
+  if (Array.isArray(Number_of_internal_and_external_records_by_monthData)) {
+    Number_of_internal_and_external_records_by_monthData.forEach((item: any) => {
+      if (item.month) {
+        const date = new Date(item.month + '-01');
+        const name = date.toLocaleString('en', { month: 'long' }).toLowerCase();
+        monthlyData[name] = { internal: item.internal, external: item.external };
+      }
+    });
+  } else {
+    monthlyData = Number_of_internal_and_external_records_by_monthData || {};
+  }
+
   const internalData = Object.keys(months).map((month) =>
-    Number_of_internal_and_external_records_by_monthData[
-      month as keyof NumberOfInternalAndExternalRecordsByMonth
-    ]?.internal
-      ? parseInt(
-          Number_of_internal_and_external_records_by_monthData[
-            month as keyof NumberOfInternalAndExternalRecordsByMonth
-          ].internal
-        )
-      : 0
+    monthlyData[month]?.internal ? parseInt(monthlyData[month].internal) : 0
   );
 
   const externalData = Object.keys(months).map((month) =>
-    Number_of_internal_and_external_records_by_monthData[
-      month as keyof NumberOfInternalAndExternalRecordsByMonth
-    ]?.external
-      ? parseInt(
-          Number_of_internal_and_external_records_by_monthData[
-            month as keyof NumberOfInternalAndExternalRecordsByMonth
-          ].external
-        )
-      : 0
+    monthlyData[month]?.external ? parseInt(monthlyData[month].external) : 0
   );
 
   const chartOptions = {

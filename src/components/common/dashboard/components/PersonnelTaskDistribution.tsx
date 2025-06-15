@@ -8,7 +8,7 @@ interface PresonelTaskDistributionProps {
 }
 
 const PersonnelTaskDistribution: React.FC<PresonelTaskDistributionProps> = ({
-  personnelTaskDistribution,
+  personnelTaskDistribution = [],
 }) => {
   // Fixed height table container style
   const tableContainerStyle = {
@@ -42,7 +42,9 @@ const PersonnelTaskDistribution: React.FC<PresonelTaskDistributionProps> = ({
   
   // Prepare table data with empty rows if needed
   const prepareTableData = () => {
-    const taskData = [...personnelTaskDistribution];
+    const taskData = Array.isArray(personnelTaskDistribution)
+      ? [...personnelTaskDistribution]
+      : [];
     
     // If less than 5 rows, add empty rows to maintain height
     if (taskData.length < 5) {

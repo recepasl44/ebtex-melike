@@ -10,7 +10,7 @@ interface StaffLeaveTrackingTableProps {
 }
 
 const StaffLeaveTrackingTableRow: React.FC<StaffLeaveTrackingTableProps> = ({
-  staffLeaveTracking,
+  staffLeaveTracking = [],
 }) => {
   // Period filter state
   const [selectedPeriod, setSelectedPeriod] = useState<'today' | 'week' | 'month'>('today');
@@ -63,7 +63,9 @@ const StaffLeaveTrackingTableRow: React.FC<StaffLeaveTrackingTableProps> = ({
   
   // Prepare table data with empty rows if needed
   const prepareTableData = () => {
-    const data = [...staffLeaveTracking];
+    const data = Array.isArray(staffLeaveTracking)
+      ? [...staffLeaveTracking]
+      : [];
     
     // If less than 5 rows, add empty rows to maintain height
     if (data.length < 5) {

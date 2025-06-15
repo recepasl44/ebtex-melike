@@ -28,8 +28,8 @@ const WeeklyFoodMenuRow: React.FC<WeeklyFoodMenuRowProps> = ({
 
   // Helper function to ensure consistent row count (minimum 5 rows)
   const ensureMinimumRows = (dayData: any, day: string) => {
-    const breakfast = [...dayData.breakfast];
-    const lunch = [...dayData.lunch];
+    const breakfast = [...(dayData?.breakfast ?? [])];
+    const lunch = [...(dayData?.lunch ?? [])];
 
     console.log(`Processing ${day} menu:`, { breakfast, lunch });
 
@@ -50,7 +50,7 @@ const WeeklyFoodMenuRow: React.FC<WeeklyFoodMenuRowProps> = ({
 
   // Render a day's menu with consistent row count
   const renderDayMenu = (dayData: any, day: string) => {
-    const { breakfast, lunch } = ensureMinimumRows(dayData, day);
+    const { breakfast, lunch } = ensureMinimumRows(dayData || {}, day);
 
     return breakfast.map((breakfastItem: string, index: number) => (
       <tr
@@ -80,7 +80,7 @@ const WeeklyFoodMenuRow: React.FC<WeeklyFoodMenuRowProps> = ({
                     tBodyClass="table-group-divider"
                     header={[{ title: "Kahvaltı" }, { title: "Öğle Yemeği" }]}
                   >
-                    {renderDayMenu(weeklyFoodsMenu.monday, "monday")}
+                    {renderDayMenu(weeklyFoodsMenu?.monday, "monday")}
                   </SpkTablescomponent>
                 </div>
               </div>
@@ -97,7 +97,7 @@ const WeeklyFoodMenuRow: React.FC<WeeklyFoodMenuRowProps> = ({
                     tBodyClass="table-group-divider"
                     header={[{ title: "Kahvaltı" }, { title: "Öğle Yemeği" }]}
                   >
-                    {renderDayMenu(weeklyFoodsMenu.tuesday, "tuesday")}
+                    {renderDayMenu(weeklyFoodsMenu?.tuesday, "tuesday")}
                   </SpkTablescomponent>
                 </div>
               </div>
@@ -114,7 +114,7 @@ const WeeklyFoodMenuRow: React.FC<WeeklyFoodMenuRowProps> = ({
                     tBodyClass="table-group-divider"
                     header={[{ title: "Kahvaltı" }, { title: "Öğle Yemeği" }]}
                   >
-                    {renderDayMenu(weeklyFoodsMenu.wednesday, "wednesday")}
+                    {renderDayMenu(weeklyFoodsMenu?.wednesday, "wednesday")}
                   </SpkTablescomponent>
                 </div>
               </div>
@@ -131,7 +131,7 @@ const WeeklyFoodMenuRow: React.FC<WeeklyFoodMenuRowProps> = ({
                     tBodyClass="table-group-divider"
                     header={[{ title: "Kahvaltı" }, { title: "Öğle Yemeği" }]}
                   >
-                    {renderDayMenu(weeklyFoodsMenu.Thursday, "thursday")}
+                    {renderDayMenu(weeklyFoodsMenu?.Thursday, "thursday")}
                   </SpkTablescomponent>
                 </div>
               </div>
@@ -148,7 +148,7 @@ const WeeklyFoodMenuRow: React.FC<WeeklyFoodMenuRowProps> = ({
                     tBodyClass="table-group-divider"
                     header={[{ title: "Kahvaltı" }, { title: "Öğle Yemeği" }]}
                   >
-                    {renderDayMenu(weeklyFoodsMenu.Friday, "friday")}
+                    {renderDayMenu(weeklyFoodsMenu?.Friday, "friday")}
                   </SpkTablescomponent>
                 </div>
               </div>
@@ -165,7 +165,7 @@ const WeeklyFoodMenuRow: React.FC<WeeklyFoodMenuRowProps> = ({
                     tBodyClass="table-group-divider"
                     header={[{ title: "Kahvaltı" }, { title: "Öğle Yemeği" }]}
                   >
-                    {renderDayMenu(weeklyFoodsMenu.Saturday, "saturday")}
+                    {renderDayMenu(weeklyFoodsMenu?.Saturday, "saturday")}
                   </SpkTablescomponent>
                 </div>
               </div>
@@ -182,7 +182,7 @@ const WeeklyFoodMenuRow: React.FC<WeeklyFoodMenuRowProps> = ({
                     tBodyClass="table-group-divider"
                     header={[{ title: "Kahvaltı" }, { title: "Öğle Yemeği" }]}
                   >
-                    {renderDayMenu(weeklyFoodsMenu.sunday, "sunday")}
+                    {renderDayMenu(weeklyFoodsMenu?.sunday, "sunday")}
                   </SpkTablescomponent>
                 </div>
               </div>
