@@ -14,9 +14,10 @@ interface TimeLeft {
 }
 
 const ExamCountdown: React.FC<ExamCountdownProps> = ({ examCountdown }) => {
-  const [activeTab, setActiveTab] = useState<string>(
-    examCountdown[0]?.name || ""
-  );
+  const items = examCountdown ?? [];
+  if (items.length === 0) return null;
+
+  const [activeTab, setActiveTab] = useState<string>(items[0]?.name || "");
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({
     days: 0,
     hours: 0,
@@ -27,7 +28,7 @@ const ExamCountdown: React.FC<ExamCountdownProps> = ({ examCountdown }) => {
   const calculateTimeLeft = () => {
     if (!activeTab) return;
 
-    const selectedExam = examCountdown.find((exam) => exam.name === activeTab);
+    const selectedExam = items.find((exam) => exam.name === activeTab);
     if (!selectedExam) return;
 
     const examDate = new Date(selectedExam.date);
@@ -77,7 +78,7 @@ const ExamCountdown: React.FC<ExamCountdownProps> = ({ examCountdown }) => {
         <Card.Body className="p-0">
           <div className="exam-tabs p-3" style={{ height: "60px" }}>
             <div className="d-flex gap-2">
-              {examCountdown.map((exam) => (
+              {items.map((exam) => (
                 <button
                   key={exam.name}
                   className={`btn ${

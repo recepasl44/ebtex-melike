@@ -9,11 +9,13 @@ interface MaleandfemaleStudentsCountChartProps {
 const MaleandfemaleStudentsCountChart: React.FC<
   MaleandfemaleStudentsCountChartProps
 > = ({ maleandfemaleStudentsCount }) => {
+  const items = maleandfemaleStudentsCount ?? [];
+  if (items.length === 0) return null;
 
   // Extract categories (school names) and data values for the chart
-  const categories = maleandfemaleStudentsCount.map(item => item.name);
-  const maleData = maleandfemaleStudentsCount.map(item => item.man);
-  const femaleData = maleandfemaleStudentsCount.map(item => item.girl);
+  const categories = items.map((item) => item.name);
+  const maleData = items.map((item) => item.man);
+  const femaleData = items.map((item) => item.girl);
 
   const chartOptions = {
     chart: {

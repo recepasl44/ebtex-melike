@@ -12,6 +12,8 @@ interface ClassHourAttendanceSummaryTableProps {
 const ClassHourAttendanceSummaryTable: React.FC<
   ClassHourAttendanceSummaryTableProps
 > = ({ data }) => {
+  const items = data ?? [];
+  if (items.length === 0) return null;
   const [activeTab, setActiveTab] = useState("Ortaokul");
 
   // Get dark mode state from Redux store
@@ -39,7 +41,7 @@ const ClassHourAttendanceSummaryTable: React.FC<
 
   // Prepare table data with empty rows if needed
   const prepareTableData = () => {
-    const filteredData = data.filter(() => {
+    const filteredData = items.filter(() => {
       // Filter by school level - in a real app, you'd have level property
       // This is just a placeholder, adjust according to your actual data structure
       return true; // For now, return all data

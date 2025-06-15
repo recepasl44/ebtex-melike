@@ -1,4 +1,4 @@
-import { Col, Form, Card, Nav, Tab } from 'react-bootstrap';
+import { Col, Form, Card, Nav, Tab, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import SpkButton from '../../@spk-reusable-components/reusable-uielements/spk-button';
 import SpkAlert from '../../@spk-reusable-components/reusable-uielements/spk-alert';
@@ -47,6 +47,7 @@ export default function LoginForm() {
               {/** REACT REAL API LOGIN **/}
               <Tab.Pane eventKey="react">
                 <Card.Body>
+                  <Form onSubmit={doLogin}>
                   <p className="h5 mb-2 text-center">Sign In</p>
                   <p className="mb-4 text-muted op-7 fw-normal text-center">
                     Welcome back Henry !
@@ -148,13 +149,9 @@ export default function LoginForm() {
                   </div>
 
                   <div className="d-grid mt-4">
-                    <Link
-                      to="#!"
-                      className="btn btn-primary"
-                      onClick={doLogin}
-                    >
+                    <Button type="submit" className="btn btn-primary">
                       Sign In
-                    </Link>
+                    </Button>
                   </div>
 
                   <div className="text-center">
@@ -189,6 +186,7 @@ export default function LoginForm() {
                       <i className="ri-instagram-line lh-1 align-center fs-17"></i>
                     </SpkButton>
                   </div>
+                  </Form>
                 </Card.Body>
               </Tab.Pane>
 

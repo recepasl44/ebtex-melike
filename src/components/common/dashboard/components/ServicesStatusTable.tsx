@@ -8,6 +8,8 @@ interface ServicesStatusTableProps {
 }
 
 const ServicesStatusTable: React.FC<ServicesStatusTableProps> = ({ data }) => {
+  const items = data ?? [];
+  if (items.length === 0) return null;
   // Fixed height container style
   const containerStyle = {
     height: '350px', // Fixed height for 5 rows + header
@@ -26,7 +28,7 @@ const ServicesStatusTable: React.FC<ServicesStatusTableProps> = ({ data }) => {
   
   // Prepare table data with empty rows if needed
   const prepareTableData = () => {
-    const serviceData = [...data];
+    const serviceData = [...items];
     
     // If less than 5 rows, add empty rows to maintain height
     if (serviceData.length < 5) {
