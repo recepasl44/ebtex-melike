@@ -8,9 +8,15 @@ export const fetchDashboard = createAsyncThunk<DashboardResponseType>(
   async (_, { rejectWithValue }) => {
     try {
       const resp = await axiosInstance.get(DASHBOARD);
+      if (!resp.data) {
+        throw new Error('No data received from the server');
+      }
       return resp.data as DashboardResponseType;
     } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || 'Fetch dashboard failed');
+      console.error('Dashboard fetch error:', err);
+      return rejectWithValue(
+        err.response?.data?.message || err.message || 'Fetch dashboard failed'
+      );
     }
   }
 );

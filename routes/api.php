@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\V1\BankController;
 use App\Http\Controllers\Api\V1\CreditCardController;
 use App\Http\Controllers\Api\V1\OpenAccountController;
 use App\Http\Controllers\Api\V1\AccountingController;
+use App\Http\Controllers\Api\V1\DashboardController;
 
 
 /*
@@ -242,6 +243,7 @@ Route::group(['namespace' => 'Api\V1', 'prefix' => 'v1', 'as' => 'v1.'], functio
     });
 
 
+        Route::get('/dashboard', [DashboardController::class, 'index']);
 
     // Sözleşme ayarlarının listelenmesi, oluşturulması, gösterilmesi, güncellenmesi ve silinmesi
     Route::get('agreements', [AgreementSettingController::class, 'index']);
@@ -452,6 +454,9 @@ Route::group(['namespace' => 'Api\V1', 'prefix' => 'v1', 'as' => 'v1.'], functio
         });
     });
 //expences
+
+
+
 
     Route::group(['prefix' => 'expenses', 'as' => 'expenses.'], function () {
         Route::get('/getExpenseCategories', [\App\Http\Controllers\Api\V1\ExpenseController::class, 'getExpenseCategoriesIndex'])->name('getExpenseCategoriesIndex');

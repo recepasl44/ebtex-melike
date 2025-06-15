@@ -37,7 +37,6 @@ const Row2Component: React.FC<Row1Props> = (props) => {
 
   const firstItem = props.data?.data?.[0];
 
-  const firstItem = props.data?.data?.[0];
 
   const images = {
     teacher: teacher,
