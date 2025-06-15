@@ -18,6 +18,7 @@ class DashboardController extends APIController
         );
 
         return $this->respond(['data' => [$data]]);
+
     }
 
     /**
