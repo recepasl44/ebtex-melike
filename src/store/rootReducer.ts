@@ -92,6 +92,7 @@ import openAccountAddReducer from '../slices/openAccount/add/reducer';
 import openAccountUpdateReducer from '../slices/openAccount/update/reducer';
 import openAccountDeleteReducer from '../slices/openAccount/delete/reducer';
 import openAccountShowReducer from '../slices/openAccount/detail/reducer';
+import dashboardListReducer from '../slices/dashboard/list/reducer';
 
 
 // Employee => Personel
@@ -1158,6 +1159,7 @@ const combinedReducer = combineReducers({
   userAdd: userAddReducer,
   userUpdate: userUpdateReducer,
   userDelete: userDeleteReducer,
+  dashboardData: dashboardListReducer,
 
 });
 
