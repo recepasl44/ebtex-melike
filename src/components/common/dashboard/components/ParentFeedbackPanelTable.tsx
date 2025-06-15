@@ -3,7 +3,7 @@ import SpkTablescomponent from "../../../../@spk-reusable-components/reusable-ta
 import { ParentFeedbackPanel } from "../type.ts";
 
 interface ParentFeedbackPanelTableProps {
-  data: ParentFeedbackPanel[];
+  data?: ParentFeedbackPanel[];
 }
 
 const ParentFeedbackPanelTable: React.FC<ParentFeedbackPanelTableProps> = ({ data }) => {
@@ -30,7 +30,7 @@ const ParentFeedbackPanelTable: React.FC<ParentFeedbackPanelTableProps> = ({ dat
   
   // Prepare table data with empty rows if needed
   const prepareTableData = () => {
-    const feedbackData = [...data];
+    const feedbackData = [...(data || [])];
     
     // If less than 5 rows, add empty rows to maintain height
     if (feedbackData.length < 5) {

@@ -1,14 +1,15 @@
 import { DashboardResponseType } from "../components/common/dashboard/type";
 
 export function generateChartSeries(data: DashboardResponseType): any[] {
-  if (!data?.data?.[0]?.monthly_installment_status) {
+  const item = Array.isArray(data?.data) ? data.data[0] : data?.data;
+  if (!item?.monthly_installment_status) {
     return [
       { name: 'Ödenen', type: "column", data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
       { name: 'Ödenmesi Gereken', type: "line", data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }
     ];
   }
-  
-  const installmentStatus = data.data[0].monthly_installment_status;
+
+  const installmentStatus = item.monthly_installment_status;
   
   return [
     {

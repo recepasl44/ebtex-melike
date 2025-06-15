@@ -1,5 +1,9 @@
 export interface DashboardResponseType {
-  data: Daum[];
+  /**
+   * API may return either an object or an array under the `data` key.
+   * Allow both shapes to keep the consumer code resilient.
+   */
+  data: Daum | Daum[];
 }
 
 export interface Daum {
