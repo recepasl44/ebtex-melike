@@ -42,6 +42,8 @@ const Row1Component: React.FC<Row1Props> = (props) => {
     science: bigGirl2,
     total: free,
   };
+  const firstItem = props.data?.data?.[0];
+
   const Cardsdata = generateFoundingDirectorCardData(props.data);
 
   const Overoptions = generateChartOptions();
@@ -49,30 +51,28 @@ const Row1Component: React.FC<Row1Props> = (props) => {
 
   // Günlük devam verisi
   const attendanceData = generateAttendanceData(
-    convertToAttendanceStatus(props.data.data[0].daily_attendance_status),
+    convertToAttendanceStatus(firstItem?.daily_attendance_status),
     images
   );
-
-  const weeklyFoodsMenu = props.data.data[0].weekly_foods_menu[0];
+  const weeklyFoodsMenu = firstItem?.weekly_foods_menu?.[0];
 
   // Ödemeler (supplier) verisi
-  const supplierPayments = props.data.data[0].payments?.suppliers || [];
+  const supplierPayments = firstItem?.payments?.suppliers || [];
   // güğnlük yoklama verisi
-  const dailyAttendanceData = props.data.data[0].daily_attendance_monitoring;
+  const dailyAttendanceData = firstItem?.daily_attendance_monitoring;
   // dönemsel Karsılastırma verisi
-  const periodicalComparisionData = props.data.data[0].periodic_comparison;
+  const periodicalComparisionData = firstItem?.periodic_comparison;
   // İç ve dış kayıtların aylık dağılımı
   const Number_of_internal_and_external_records_by_month =
-    props.data.data[0].Number_of_internal_and_external_records_by_month;
+    firstItem?.Number_of_internal_and_external_records_by_month;
   // Günlük bülten verisi
-  const daily_bulletins = props.data.data[0].daily_bulletins;
+  const daily_bulletins = firstItem?.daily_bulletins;
   // Personel izin takip tablosu verisi
-  const staffLeaveTracking = props.data.data[0].staff_leave_tracking_table;
+  const staffLeaveTracking = firstItem?.staff_leave_tracking_table;
   // Personel görev dağılımı verisi
-  const staffTaskDistribution = props.data.data[0].staff_task_distribution_table;
+  const staffTaskDistribution = firstItem?.staff_task_distribution_table;
   // Deneme sınavı puan dağılımı verisi
-  const trialExamScoreDistribution =
-    props.data.data[0].trial_exam_score_distribution;
+  const trialExamScoreDistribution = firstItem?.trial_exam_score_distribution;
   return (
     <Row>
       {/* Sol Sütun - Col 9 */}

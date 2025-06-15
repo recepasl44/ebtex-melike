@@ -28,6 +28,8 @@ const Row12Component: React.FC<Row12Props> = ({ data }) => {
   const localVariable = useSelector((state: RootState) => state.ui);
   const isDark = localVariable.dataThemeMode === "dark";
 
+  const firstItem = data?.data?.[0];
+
   const images = {
     teacher: teacher,
     staff: person,
@@ -45,75 +47,75 @@ const Row12Component: React.FC<Row12Props> = ({ data }) => {
 
   // Günlük devam verisi
   const attendanceData = generateAttendanceData(
-    convertToAttendanceStatus(data.data[0].daily_attendance_status),
+    convertToAttendanceStatus(firstItem?.daily_attendance_status),
     images
   );
   // Haftalık yemek menüsü verisi
-  const weeklyFoodsMenu = data.data[0].weekly_foods_menu[0];
+  const weeklyFoodsMenu = firstItem?.weekly_foods_menu?.[0];
 
   // Ödemeler (supplier) verisi
-  const supplierPayments = data.data[0].payments?.suppliers || [];
+  const supplierPayments = firstItem?.payments?.suppliers || [];
   // dönemsel Karsılastırma verisi
-  const periodicalComparisionData = data.data[0].periodic_comparison;
+  const periodicalComparisionData = firstItem?.periodic_comparison;
   // İç ve dış kayıtların aylık dağılımı
   const Number_of_internal_and_external_records_by_month =
-    data.data[0].Number_of_internal_and_external_records_by_month;
+    firstItem?.Number_of_internal_and_external_records_by_month;
   // Günlük bülten verisi
-  const daily_bulletins = data.data[0].daily_bulletins;
+  const daily_bulletins = firstItem?.daily_bulletins;
   // Personel izin takip tablosu verisi
-  const staffLeaveTracking = data.data[0].staff_leave_tracking_table;
+  const staffLeaveTracking = firstItem?.staff_leave_tracking_table;
   // Kurs Basarı Analizi verisi
-  const courseSuccessAnalysis = data.data[0].course_success_analysis;
+  const courseSuccessAnalysis = firstItem?.course_success_analysis;
   // Yaklaşan Görevler ve Hatırlatmalar
-  const upcomingTasksAndReminders = data.data[0].upcoming_tasks_and_reminders;
+  const upcomingTasksAndReminders = firstItem?.upcoming_tasks_and_reminders;
   //kız ve erkek öğrenci sayıları
   const maleandfemaleStudentsCount =
-    data.data[0].number_of_male_and_female_students;
+    firstItem?.number_of_male_and_female_students;
   // Ödev durumu analizi
-  const homeworkStatusAnalysis = data.data[0].homework_status_analysis;
+  const homeworkStatusAnalysis = firstItem?.homework_status_analysis;
   //Sınav Geri Sayımı
-  const examCountdown = data.data[0].exam_countdown;
+  const examCountdown = firstItem?.exam_countdown;
   // Günlük ders programı
-  const dailyCourseSchedule = data.data[0].daily_class_schedule;
+  const dailyCourseSchedule = firstItem?.daily_class_schedule;
   // Haftalık nöbet çizelgesi
-  const weeklyDutySchedule = data.data[0].weekly_duty_schedule;
+  const weeklyDutySchedule = firstItem?.weekly_duty_schedule;
   // Deneme sınavları puan dağılımı
-  const trialExamScoreDistribution = data.data[0].trial_exam_score_distribution;
+  const trialExamScoreDistribution = firstItem?.trial_exam_score_distribution;
   // servis durumu
-  const serviceStatus = data.data[0].service_status;
+  const serviceStatus = firstItem?.service_status;
   // Ders saati yoklama özeti
-  const classHourAttendanceSummary = data.data[0].class_hour_attendance_summary;
+  const classHourAttendanceSummary = firstItem?.class_hour_attendance_summary;
   // Sonuçlanan Ödev Sayıları
   const numberOfFinalizedAssignments =
-    data.data[0].number_of_completed_assignments;
+    firstItem?.number_of_completed_assignments;
   // Danısmanlık Görüşmeleri Listesi
-  const consultingMeetingList = data.data[0].pdr_meeting_list;
+  const consultingMeetingList = firstItem?.pdr_meeting_list;
   // Yoklama türü dağılımı
-  const attendanceTypeDistribution = data.data[0].poll_type_distribution;
+  const attendanceTypeDistribution = firstItem?.poll_type_distribution;
   // Pdr Görüşmeleri Listesi
-  const upcomingAppointments = data.data[0].upcoming_appointments;
+  const upcomingAppointments = firstItem?.upcoming_appointments;
   // servis rota olanı
-  const serviceRoute = data.data[0].service_route_plan;
+  const serviceRoute = firstItem?.service_route_plan;
   // servis güzergahı süre performansı
   const serviceRouteTimePerformance =
-    data.data[0].service_route_time_performance;
+    firstItem?.service_route_time_performance;
   //ders basarı analizi
-  const courseSuccessAnalysisData = data.data[0].course_success_analysis;
+  const courseSuccessAnalysisData = firstItem?.course_success_analysis;
   // ödeme ve finansal bilgiler
   const paymentAndFinancialInformation =
-    data.data[0].payment_and_financial_information;
+    firstItem?.payment_and_financial_information;
   // Yoklama Türü Dağılımı
-  const PollTypeDistribution = data.data[0].poll_type_distribution;
+  const PollTypeDistribution = firstItem?.poll_type_distribution;
   // haftalık ders çalışma programı
-  const weeklyLessonScheduleData = data.data[0].weekly_lesson_program;
+  const weeklyLessonScheduleData = firstItem?.weekly_lesson_program;
   // Rehberlik ve Danışmanlık Görüşmeleri Listesi
   const guidanceAndCounselingInterviewList =
-    data.data[0].guidance_counseling_interview_table;
+    firstItem?.guidance_counseling_interview_table;
   //sonuçlanan ödev sayıları
   const numberOfCompletedAssignments =
-    data.data[0].number_of_completed_assignments;
+    firstItem?.number_of_completed_assignments;
   // servis bilgileri
-  const serviceInformation = data.data[0].service_information;
+  const serviceInformation = firstItem?.service_information;
   return (
     <Row>
       {/* Sol Sütun - Col 9 */}
