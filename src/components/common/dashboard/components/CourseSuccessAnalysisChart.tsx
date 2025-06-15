@@ -18,8 +18,13 @@ interface ProgramData {
 const CourseSuccessAnalysisChart: React.FC<CourseSuccessAnalysisChartProps> = ({ courseSuccessAnalysis }) => {
     const [activeProgram, setActiveProgram] = useState<string>("ilkokul");
 
-    const activeProgramData = courseSuccessAnalysis.find(program =>
-        program.program.toLowerCase() === activeProgram.toLowerCase()) || courseSuccessAnalysis[0];
+    const activeProgramData = courseSuccessAnalysis.find(program => {
+        const programName = (program as any).program;
+        return (
+            typeof programName === "string" &&
+            programName.toLowerCase() === activeProgram.toLowerCase()
+        );
+    }) || courseSuccessAnalysis[0];
 
     const lessonNames = activeProgramData?.lessons.map(lesson => {
         const name = lesson.name.charAt(0).toUpperCase() + lesson.name.slice(1);

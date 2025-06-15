@@ -58,7 +58,7 @@ const Row3Component: React.FC<Row3Props> = ({ data }) => {
     images
   );
 
-  const weeklyFoodsMenu = firstItem?.weekly_foods_menu[0];
+  const weeklyFoodsMenu = firstItem?.weekly_foods_menu?.[0];
 
   // Ödemeler (supplier) verisi
   const supplierPayments = firstItem?.payments?.suppliers || [];

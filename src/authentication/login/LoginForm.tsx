@@ -87,6 +87,7 @@ export default function LoginForm() {
                         placeholder="user name"
                         value={loginData.email}
                         onChange={handleChange}
+                        autoComplete="username"
                       />
                     </Col>
 
@@ -112,6 +113,7 @@ export default function LoginForm() {
                           className="create-password-input"
                           id="signin-password"
                           placeholder="password"
+                          autoComplete="current-password"
                         />
                         <Link
                           to="#!"
