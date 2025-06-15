@@ -1,10 +1,11 @@
-import { dummyDataDashboar } from "./dummyData.ts";
 import FoundingDirectorDashboard from "./fields/foundingDirectorDashboard/index.tsx";
+import { useDashboard } from "../../hooks/dashboard/useDashboard";
 
 const Dashboard = () => {
+  const { data } = useDashboard();
   return (
     <div style={{ fontFamily: "Poppins, sans-serif" }}>
-      <FoundingDirectorDashboard data={dummyDataDashboar} />
+      {data && <FoundingDirectorDashboard data={data} />}
       {/* <CorporateLeaderDashboard data={dummyDataDashboar} /> */}
       {/* <ManagementDashboard data={dummyDataDashboar} /> */}
       {/* <TeachersDashboard data={dummyDataDashboar} /> */}
