@@ -29,6 +29,7 @@ export const ESTIMATED_BUDGETS = '/estimated-budgets';
 
 export const DAILY_SUMMARY = '/accounting/daily-summary';
 export const FINANCIAL_SUMMARY = '/accounting/financial-summary';
+export const DASHBOARD = '/dashboard';
 
 export const EXPENCES_SUMMARY = '/expenses/getExpenseSummary';
 export const EXPENCES = '/expenses';
