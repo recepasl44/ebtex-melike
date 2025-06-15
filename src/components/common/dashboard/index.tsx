@@ -1,4 +1,5 @@
 import FoundingDirectorDashboard from "./fields/foundingDirectorDashboard/index.tsx";
+
 import CorporateLeaderDashboard from "./fields/corporateDashboard/index.tsx";
 import ManagementDashboard from "./fields/managementDashboard/index.tsx";
 import TeachersDashboard from "./fields/TeachersDashboard/index.tsx";
@@ -54,6 +55,7 @@ const Dashboard = () => {
   return (
     <div style={{ fontFamily: "Poppins, sans-serif" }}>
       {renderDashboard()}
+
     </div>
   );
 };
