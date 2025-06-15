@@ -4,29 +4,38 @@ import { TrialExamScoreDistribution } from "../type.ts";
 import Spkapexcharts from "../../../../@spk-reusable-components/reusable-plugins/spk-apexcharts.tsx";
 
 interface TrialExamScoreDistributionProps {
-  data: TrialExamScoreDistribution[];
+  data: TrialExamScoreDistribution[] | any;
 }
 
-const TrialExamScoreDistributionChart: React.FC<TrialExamScoreDistributionProps> = ({ data }) => {
-  const categories = data.map((exam) => exam.name);
+const TrialExamScoreDistributionChart: React.FC<TrialExamScoreDistributionProps> = ({ data = [] }) => {
+  const categories = (data || []).map((exam: any, idx: number) => exam.name || `Quiz ${exam.quiz_id ?? idx+1}`);
   
-  const examSeries = [
-    {
-      name : "Kurum",
-      type: "column",
-      data: data.map((exam) => exam.branch),
-    },
-    {
-      name : "Genel",
-      type: "line",
-      data: data.map((exam) => exam.gneral),
-    },
-    {
-      name : "Zirve",
-      type: "line",
-      data: data.map((exam) => exam.peak),
-    },
-  ];
+  const hasDetailedFields = data.length && data[0].branch !== undefined;
+  const examSeries = hasDetailedFields
+    ? [
+        {
+          name: "Kurum",
+          type: "column",
+          data: data.map((exam: any) => exam.branch),
+        },
+        {
+          name: "Genel",
+          type: "line",
+          data: data.map((exam: any) => exam.gneral),
+        },
+        {
+          name: "Zirve",
+          type: "line",
+          data: data.map((exam: any) => exam.peak),
+        },
+      ]
+    : [
+        {
+          name: "Ortalama",
+          type: "line",
+          data: data.map((exam: any) => Number(exam.avg) || 0),
+        },
+      ];
 
   const discreteMarkers = [];
   for (let seriesIndex = 1; seriesIndex <= 2; seriesIndex++) {
