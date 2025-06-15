@@ -115,7 +115,7 @@ createRoot(document.getElementById("root")!).render(
               </Route>
               <Route path={`${import.meta.env.BASE_URL}`} element={<ErrorBoundary><App /></ErrorBoundary>}>
                 {Routedata.map((route: any) => (
-                  <Route key={route.id} path={route.path} element={route.element} />
+                  <Route key={route.path} path={route.path} element={route.element} />
                 ))}
               </Route>
 

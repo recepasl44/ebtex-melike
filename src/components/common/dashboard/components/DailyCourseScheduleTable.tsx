@@ -10,8 +10,10 @@ interface DailyCourseScheduleTableProps {
 }
 
 const DailyCourseScheduleTable: React.FC<DailyCourseScheduleTableProps> = ({ data }) => {
+  const items = data ?? [];
+  if (items.length === 0) return null;
   // Extract all available levels and classes
-  const allSchoolTypes = data.map(school => school.name);
+  const allSchoolTypes = items.map((school) => school.name);
     // Days of the week in Turkish
   const isDarkMode = useSelector(
     (state: RootState) => state.ui.dataThemeMode === "dark"
@@ -40,20 +42,24 @@ const DailyCourseScheduleTable: React.FC<DailyCourseScheduleTableProps> = ({ dat
 
   // Get unique level names for the selected school
   const getLevelsBySchool = (schoolName: string) => {
-    const school = data.find(s => s.name === schoolName);
+    const school = items.find((s) => s.name === schoolName);
     return school ? school.levels.map(level => level.name) : [];
   };
 
   // Get unique class names for the selected level
   const getClassesByLevel = (schoolName: string, levelName: string) => {
-    const school = data.find(s => s.name === schoolName);
+    const school = items.find((s) => s.name === schoolName);
     const level = school?.levels.find(l => l.name === levelName);
     return level ? level.classes.map(cls => cls.name) : [];
   };
 
   // Get classes data to display
-  const getClassData = (schoolName: string, levelName: string, className: string) => {
-    const school = data.find(s => s.name === schoolName);
+  const getClassData = (
+    schoolName: string,
+    levelName: string,
+    className: string
+  ) => {
+    const school = items.find((s) => s.name === schoolName);
     const level = school?.levels.find(l => l.name === levelName);
     if (level) {
       return level.classes.filter(c => c.name === className);
@@ -86,7 +92,7 @@ const DailyCourseScheduleTable: React.FC<DailyCourseScheduleTableProps> = ({ dat
   const getClassDropdowns = () => {
     if (!selectedSchool || !selectedLevel) return [];
 
-    const levels = data.find(s => s.name === selectedSchool)?.levels;
+    const levels = items.find((s) => s.name === selectedSchool)?.levels;
     const level = levels?.find(l => l.name === selectedLevel);
 
     if (!level) return [];

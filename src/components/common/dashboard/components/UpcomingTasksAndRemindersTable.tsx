@@ -9,6 +9,8 @@ interface UpcomingTasksAndRemindersTableProps {
 const UpcomingTasksAndRemindersTable: React.FC<UpcomingTasksAndRemindersTableProps> = ({
   upcomingTasksAndReminders
 }) => {
+  const items = upcomingTasksAndReminders ?? [];
+  if (items.length === 0) return null;
   // Format date function
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -88,7 +90,7 @@ const UpcomingTasksAndRemindersTable: React.FC<UpcomingTasksAndRemindersTablePro
 
   // Prepare table data with empty rows if needed
   const prepareTableData = () => {
-    const data = [...upcomingTasksAndReminders];
+    const data = [...items];
     
     // If less than 5 rows, add empty rows to maintain height
     if (data.length < 5) {
