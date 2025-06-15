@@ -35,7 +35,9 @@ const Row2Component: React.FC<Row1Props> = (props) => {
   const localVariable = useSelector((state: RootState) => state.ui);
   const isDark = localVariable.dataThemeMode === "dark";
 
-  const firstItem = props.data?.data?.[0];
+  const firstItem = Array.isArray(props.data?.data)
+    ? props.data?.data[0]
+    : props.data?.data;
 
 
   const images = {

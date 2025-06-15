@@ -33,7 +33,9 @@ const Row6Component: React.FC<Row6Props> = ({ data }) => {
   const localVariable = useSelector((state: RootState) => state.ui);
   const isDark = localVariable.dataThemeMode === "dark";
 
-  const firstItem = data?.data?.[0];
+  const firstItem = Array.isArray(data?.data)
+    ? data?.data[0]
+    : data?.data;
 
   const images = {
     teacher: teacher,

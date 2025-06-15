@@ -42,7 +42,9 @@ const Row1Component: React.FC<Row1Props> = (props) => {
     science: bigGirl2,
     total: free,
   };
-  const firstItem = props.data?.data?.[0];
+  const firstItem = Array.isArray(props.data?.data)
+    ? props.data?.data[0]
+    : props.data?.data;
 
   const Cardsdata = generateFoundingDirectorCardData(props.data);
 
