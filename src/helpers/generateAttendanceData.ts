@@ -22,7 +22,12 @@ export interface AttendanceStatus {
     [key: string]: string;
 }
 
-export const convertToAttendanceStatus = (data: DailyAttendanceStatus): AttendanceStatus => {
+export const convertToAttendanceStatus = (
+    data?: DailyAttendanceStatus
+): AttendanceStatus => {
+    if (!data) {
+        return {} as AttendanceStatus;
+    }
     return data as unknown as AttendanceStatus;
 };
 
@@ -43,9 +48,12 @@ export const calculatePercentage = (valueStr: string): number => {
  * @returns Tabloda görüntülenecek veri dizisi
  */
 export const generateAttendanceData = (
-    attendanceStatus: AttendanceStatus,
+    attendanceStatus: AttendanceStatus | undefined,
     images: Record<string, any> // StaticImageData yerine any kullanıyoruz
 ): AttendanceDataItem[] => {
+    // attendanceStatus boş olabilir, bu durumda varsayılan boş nesne kullanılır
+    const status = attendanceStatus || ({} as AttendanceStatus);
+
     // Veri yapısı ve görüntüleme ayarları
     const dataMapping = [
         { key: "teachers", title: "Öğretmenler", image: "teacher", color: "primary" },
@@ -62,8 +70,8 @@ export const generateAttendanceData = (
         id: index + 1,
         src: images[item.image] || "https://via.placeholder.com/40",
         states: item.title,
-        now: calculatePercentage(attendanceStatus[item.key] || "0/1"),
-        data: attendanceStatus[item.key] || "0/1",
+        now: calculatePercentage(status[item.key] || "0/1"),
+        data: status[item.key] || "0/1",
         color: item.color
     }));
 };
