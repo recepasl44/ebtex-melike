@@ -74,7 +74,7 @@ export default function PersonelTuitionFeeCrud() {
 
   async function handleSubmit(values: FormValues) {
     if (!personelId) return;
-  
+
     const payload = {
       personel_id: personelId,
       tarih: values.tarih,
@@ -82,7 +82,7 @@ export default function PersonelTuitionFeeCrud() {
       // ders_ucreti must be a string, not a number
       ders_ucreti: String(values.ders_ucreti),
     };
-  
+
     if (mode === "add") {
       await addNewTuitionFees(payload);
     } else if (id) {
@@ -91,10 +91,10 @@ export default function PersonelTuitionFeeCrud() {
         payload,
       });
     }
-  
+
     navigate(-1);
   }
-  
+
 
   const isLoading = addLoading || updateLoading;
   const error = addError || updateError;
