@@ -1,146 +1,208 @@
-
-import { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useMemo } from "react";
+import darkcontrol from "../../../../../utils/darkmodecontroller";
 import { Button } from "react-bootstrap";
-import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable";
-import { useCouponPriceShow } from "../../../../../hooks/employee/coupon_price/useCouponPriceShow";
-import { useCouponPriceDelete } from "../../../../../hooks/employee/coupon_price/useCouponPriceDelete";
-import { CouponPrice } from "../../../../../../types/employee/coupon_price/list";
+import { useNavigate } from "react-router-dom";
+import ReusableTable, {
+  ColumnDefinition,
+  FilterDefinition,
+} from "../../../../ReusableTable";
+import { useCouponPriceList } from "../../../../../hooks/employee/coupon_price/useList";
+import { useLevelsTable } from "../../../../../hooks/levels/useList";
+import { useLessonList } from "../../../../../hooks/lessons/useList";
+import { useAttendanceTeachersTable } from "../../../../../hooks/attendanceTeacher/useList";
 
-interface CouponTabProps {
-  personelId: number;
-  enabled: boolean;
+interface DetailRow {
+  id: number;
+  date: string;
+  hours: number;
+  fee: number;
 }
 
-export default function CouponTab({ personelId, enabled }: CouponTabProps) {
+interface Row {
+  id: number;
+  teacher_name: string;
+  lesson_name: string;
+  total_hours: number;
+  hourly_fee: number;
+  details?: DetailRow[];
+}
+
+export default function CouponDetailTab() {
+  const [dateRange, setDateRange] = useState({ startDate: "", endDate: "" });
+  const [level, setLevel] = useState("");
+  const [teacher, setTeacher] = useState("");
+  const [lesson, setLesson] = useState("");
+
+  const [enabled, setEnabled] = useState({
+    levels: false,
+    teachers: false,
+    lessons: false,
+  });
+
+  const { levelsData } = useLevelsTable({ enabled: enabled.levels });
+  const { attendanceTeachersData: teachersData } = useAttendanceTeachersTable({
+    enabled: enabled.teachers,
+  });
+  const { lessonsData } = useLessonList({
+    enabled: enabled.lessons,
+    class_level: +level || undefined,
+  });
+
   const navigate = useNavigate();
-  const [coupons, setCoupons] = useState<CouponPrice[]>([]);
 
-  const {
-    getCouponPrice,
-    loading: loadingShow,
-    error: errorShow,
-  } = useCouponPriceShow();
+  const listParams = useMemo(
+    () => ({
+      enabled: true,
+      start_date: dateRange.startDate || undefined,
+      end_date: dateRange.endDate || undefined,
+      level_id: level || undefined,
+      teacher_id: teacher || undefined,
+      lesson_id: lesson || undefined,
+    }),
+    [dateRange, level, teacher, lesson]
+  );
 
-  const {
-    deleteExistingCouponPrice,
-    error: deleteError,
-  } = useCouponPriceDelete();
+  const { couponPrices: fees, loading, error } = useCouponPriceList(listParams);
 
-  // fetch the person's coupon‐price records via SHOW hook
-  useEffect(() => {
-    if (!enabled) return;
-    (async () => {
-      const res = await getCouponPrice(personelId);
-      const arr = Array.isArray(res) ? res : res ? [res] : [];
-      setCoupons(arr);
-    })();
-  }, [enabled, personelId, getCouponPrice]);
+  const rows: Row[] = useMemo(
+    () =>
+      (fees ?? []).map((f: any) => ({
+        id: f.id,
+        teacher_name:
+          f.personel?.ad && f.personel?.soyad
+            ? `${f.personel.ad} ${f.personel.soyad}`
+            : f.teacher_name || "-",
+        lesson_name: f.lesson_name || f.lesson?.name || "-",
+        total_hours: Number(f.total_hours ?? f.ders_sayisi ?? 0),
+        hourly_fee: Number(f.hourly_fee ?? f.ders_ucreti ?? 0),
+        details: f.details || [],
+      })),
+    [fees]
+  );
 
-  const columns: ColumnDefinition<CouponPrice>[] = useMemo(
+
+  const columns: ColumnDefinition<Row>[] = useMemo(
     () => [
+      { key: "teacher_name", label: "Eğitmen Adı", render: (r) => r.teacher_name },
+      { key: "lesson_name", label: "Ürün/Ders Adı", render: (r) => r.lesson_name },
       {
-        key: "tarih",
-        label: "Tarih",
-        render: (row) => row.tarih || "-",
+        key: "total_hours",
+        label: "Toplam Ders Saati",
+        render: (r) => r.total_hours.toString(),
       },
       {
-        key: "urun_adi",
-        label: "Satış Adı",
-        render: (row) => row.urun_adi || "-",
+        key: "hourly_fee",
+        label: "Ders Ücreti (₺)",
+        render: (r) => `${r.hourly_fee.toLocaleString()} ₺`,
       },
       {
-        key: "satis_ucreti",
-        label: "Ücreti",
-        render: (row) =>
-          row.satis_ucreti
-            ? `${Number(row.satis_ucreti).toLocaleString()} ₺`
-            : "0,00 ₺",
-      },
-      {
-        key: "kupon_yuzde",
-        label: "Kupon %",
-        render: (row) => `${row.kupon_yuzdesi ?? 0}%`,
-      },
-      {
-        key: "gelir",
-        label: "Gelir",
-        render: (row) =>
-          row.gelir
-            ? `${Number(row.gelir).toLocaleString()} ₺`
-            : "0,00 ₺",
+        key: "total_fee",
+        label: "Ders Ücretleri Toplamı (₺)",
+        render: (r) => `${(r.total_hours * r.hourly_fee).toLocaleString()} ₺`,
       },
       {
         key: "actions",
         label: "İşlemler",
-        render: (row, openDeleteModal) => (
-          <>
-            <Button
-              size="sm"
-              variant="primary"
-              onClick={() =>
-                navigate(`/personelCouponCrud/${row.id}`, {
-                  state: {
-                    personelId,
-                    selectedCoupon: coupons.find((c) => c.id === row.id),
-                  },
-                })
-              }
-            >
-              <i className="ti ti-pencil" />
-            </Button>{" "}
-            <Button
-              size="sm"
-              variant="danger"
-              onClick={() => openDeleteModal?.(row)}
-            >
-              <i className="ti ti-trash" />
-            </Button>
-          </>
+        render: (r) => (
+          <Button
+            variant="primary-light"
+            size="sm"
+            className="btn-icon rounded-pill"
+            onClick={() =>
+              navigate(`/personelCouponCrud/${r.id}`, { state: { details: r.details } })
+            }
+          >
+            <i className="ti ti-eye" />
+          </Button>
         ),
       },
     ],
-    [navigate, personelId, coupons]
+    []
   );
 
-  const handleDelete = (row: CouponPrice) => {
-    if (row.id) deleteExistingCouponPrice(row.id);
-  };
+  const filters: FilterDefinition[] = useMemo(
+    () => [
+      {
+        key: "date_range",
+        label: "Tarih Aralığı",
+        type: "doubledate",
+        value: dateRange,
+        onChange: (v) => setDateRange(v ?? { startDate: "", endDate: "" }),
+      },
+      {
+        key: "level",
+        label: "Sınıf Seviyesi",
+        type: "select",
+        value: level,
+        onClick: () => setEnabled((e) => ({ ...e, levels: true })),
+        onChange: setLevel,
+        options: (levelsData ?? []).map((l: any) => ({
+          value: String(l.id),
+          label: l.name,
+        })),
+      },
+      {
+        key: "teacher",
+        label: "Eğitmen Adı Soyadı",
+        type: "select",
+        value: teacher,
+        onClick: () => setEnabled((e) => ({ ...e, teachers: true })),
+        onChange: setTeacher,
+        options: (teachersData ?? []).map((t: any) => ({
+          value: String(t.teacher_id),
+          label: t.teacher?.name_surname ?? "-",
+        })),
+      },
+      {
+        key: "lesson",
+        label: "Ürün/Ders Adı",
+        type: "select",
+        value: lesson,
+        onClick: () => setEnabled((e) => ({ ...e, lessons: true })),
+        onChange: setLesson,
+        options: (lessonsData ?? []).map((d: any) => ({
+          value: String(d.id),
+          label: d.name,
+        })),
+      },
+    ],
+    [
+      dateRange,
+      level,
+      teacher,
+      lesson,
+      levelsData,
+      teachersData,
+      lessonsData,
+    ]
+  );
 
-  // compute total
-  const total = coupons.reduce((sum, c) => sum + (Number(c.gelir) || 0), 0);
+  const totalAmount = rows.reduce(
+    (acc, r) => acc + r.total_hours * r.hourly_fee,
+    0
+  );
+
+  const textColor = darkcontrol.dataThemeMode === "dark" ? "#fff" : "#000";
+
+  const footer = (
+    <div className="d-flex justify-content-end fw-bold me-3" style={{ color: textColor }}>
+      Toplam: {totalAmount.toLocaleString()} ₺
+    </div>
+  );
 
   return (
-    <div>
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h6>
-          Kupon Ücreti — Toplam Gelir: {total.toFixed(2)} ₺
-        </h6>
-        <Button
-          variant="success"
-          onClick={() =>
-            navigate("/personelCouponCrud", { state: { personelId } })
-          }
-        >
-          Ekle
-        </Button>
-      </div>
-
-      <ReusableTable<CouponPrice>
+    <>
+      <ReusableTable<Row>
+        tableMode="single"
+        filters={filters}
         columns={columns}
-        data={coupons}
-        loading={loadingShow}
-        error={errorShow || deleteError}
-        currentPage={1}
-        totalPages={1}
-        totalItems={coupons.length}
-        pageSize={coupons.length}
-        onPageChange={() => { }}
-        onPageSizeChange={() => { }}
-        exportFileName="kupon_ucreti"
+        data={rows}
+        loading={loading}
+        error={error}
         showExportButtons
-        onDeleteRow={handleDelete}
+        exportFileName="soru_cozum_ucretleri"
+        customFooter={footer}
       />
-    </div>
+    </>
   );
 }
