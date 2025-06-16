@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReusableTable, { ColumnDefinition } from '../../ReusableTable';
 import { Button } from 'react-bootstrap';
-import Pageheader from '../../page-header/pageheader';
+import Pageheader from '../../../page-header/pageheader';
 
 import { useAppointmentList } from '../../../hooks/appointment/useList';
 import { useQuestionDelete } from '../../../hooks/questions/useDelete';
