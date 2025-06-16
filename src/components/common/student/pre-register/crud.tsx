@@ -115,7 +115,7 @@ const StudentModal: React.FC<StudentModalProps> = ({ onClose, onRefresh }) => {
     if (registerNo && mode === "add") {
       setInitialValues((prev) => ({
         ...prev,
-        register_no: registerNo,
+        register_no: registerNo || '',
       }));
     }
   }, [registerNo, mode]);

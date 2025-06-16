@@ -1,12 +1,11 @@
 import React from "react";
-import { Row, Col, Form, Button } from "react-bootstrap";
+import { Row, Col, Form, Button, Card } from "react-bootstrap";
 import { Typeahead } from "react-bootstrap-typeahead";
 import SpkFlatpickr from "../../../../../@spk-reusable-components/reusable-plugins/spk-flatpicker";
 
 export interface FilterDefinition {
     key: string;
     label: string;
-    col?: number;
     type:
     | "text"
     | "number"
@@ -20,12 +19,10 @@ export interface FilterDefinition {
     | "phone"
     | "textarea"
     | "iban"
-
-    | "autocomplete"
-    | "multiselect";
-    value?: string | string[] | { startDate: string; endDate: string };
+    | "multiselect"
+    | "autocomplete";
+    value?: string | { startDate: string; endDate: string };
     options?: { value: string; label: string }[];
-    selectProps?: any;
     plus?: boolean | string;
     dependencyKey?: string;
     onChange?: (value: any) => void;
@@ -66,28 +63,41 @@ function InputWithPlus({
 const FilterGroup: React.FC<FilterGroupProps> = ({
     filters,
     navigate,
-    columnsPerRow = 2,
+    columnsPerRow = 4,
 }) => {
     if (!filters || filters.length === 0) return null;
 
     const groups: FilterDefinition[][] = [];
-    for (let i = 0; i < filters.length; i += columnsPerRow) {
-        groups.push(filters.slice(i, i + columnsPerRow));
+
+    if (filters.length <= 6) {
+        groups.push(filters);
+    } else {
+        for (let i = 0; i < filters.length; i += columnsPerRow) {
+            groups.push(filters.slice(i, i + columnsPerRow));
+        }
     }
 
-    const colSize = Math.floor(12 / columnsPerRow);
+    const formatLocalDate = (date: Date): string => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+    };
 
     return (
-        <div className="mb-3 px-4 bg-white rounded-3">
-            {groups.map((group, idx) => (
-                <Row key={`filter-row-${idx}`} className="mb-2">
-                    {group.map((filter) => (
-                        <Col key={filter.key} md={colSize}>
-                            <Form.Group>
-                                <Row>
-                                    <Col md={12}>
+        <Card>
+            <div className="mb-1 bg-white rounded-3">
+                {groups.map((group, idx) => {
+                    const width = `${100 / (filters.length <= 6 ? group.length : columnsPerRow)}%`;
+                    return (
+                        <Row key={`filter-row-${idx}`} className="mb-2">
+                            {group.map((filter) => (
+                                <Col
+                                    key={filter.key}
+                                    style={{ flex: '0 0 ' + width, maxWidth: width }}
+                                >
+                                    <Form.Group>
                                         <Form.Label>{filter.label}</Form.Label>
-
                                         {filter.type === "autocomplete" ? (
                                             <InputWithPlus fieldDef={filter} navigate={navigate}>
                                                 <Typeahead
@@ -96,11 +106,7 @@ const FilterGroup: React.FC<FilterGroupProps> = ({
                                                     options={filter.options || []}
                                                     placeholder="Aramak için yazın..."
                                                     onChange={(selected) => {
-                                                        if (
-                                                            selected &&
-                                                            selected.length > 0 &&
-                                                            filter.onChange
-                                                        ) {
+                                                        if (selected && selected.length > 0 && filter.onChange) {
                                                             filter.onChange((selected[0] as any).value);
                                                         }
                                                     }}
@@ -110,9 +116,7 @@ const FilterGroup: React.FC<FilterGroupProps> = ({
                                                     }}
                                                     disabled={
                                                         filter.dependencyKey
-                                                            ? !filters.find(
-                                                                (f) => f.key === filter.dependencyKey
-                                                            )?.value
+                                                            ? !filters.find(f => f.key === filter.dependencyKey)?.value
                                                             : false
                                                     }
                                                 />
@@ -146,8 +150,7 @@ const FilterGroup: React.FC<FilterGroupProps> = ({
                                                 <SpkFlatpickr
                                                     value={
                                                         filter.value
-                                                            ? `${(filter.value as any).startDate} to ${(filter.value as any).endDate
-                                                            }`
+                                                            ? `${(filter.value as any).startDate} to ${(filter.value as any).endDate}`
                                                             : undefined
                                                     }
                                                     onfunChange={(dates: Date[]) => {
@@ -155,12 +158,8 @@ const FilterGroup: React.FC<FilterGroupProps> = ({
                                                             filter.onChange?.(null);
                                                             return;
                                                         }
-                                                        const startDate = dates[0]
-                                                            .toISOString()
-                                                            .split("T")[0];
-                                                        const endDate = dates[1]
-                                                            .toISOString()
-                                                            .split("T")[0];
+                                                        const startDate = formatLocalDate(dates[0]);
+                                                        const endDate = formatLocalDate(dates[1]);
                                                         filter.onChange?.({ startDate, endDate });
                                                     }}
                                                     options={{
@@ -178,11 +177,7 @@ const FilterGroup: React.FC<FilterGroupProps> = ({
                                                     value={
                                                         typeof filter.value === "string"
                                                             ? filter.value
-                                                            : filter.value &&
-                                                                "startDate" in filter.value &&
-                                                                "endDate" in filter.value
-                                                                ? `${filter.value.startDate} - ${filter.value.endDate}`
-                                                                : undefined
+                                                            : undefined
                                                     }
                                                     onChange={(e) => filter.onChange?.(e.target.value)}
                                                     onClick={(e) =>
@@ -193,9 +188,7 @@ const FilterGroup: React.FC<FilterGroupProps> = ({
                                                     onFocus={filter.onFocus}
                                                     disabled={
                                                         filter.dependencyKey
-                                                            ? !filters.find(
-                                                                (f) => f.key === filter.dependencyKey
-                                                            )?.value
+                                                            ? !filters.find(f => f.key === filter.dependencyKey)?.value
                                                             : false
                                                     }
                                                 >
@@ -221,22 +214,20 @@ const FilterGroup: React.FC<FilterGroupProps> = ({
                                                     onFocus={filter.onFocus}
                                                     disabled={
                                                         filter.dependencyKey
-                                                            ? !filters.find(
-                                                                (f) => f.key === filter.dependencyKey
-                                                            )?.value
+                                                            ? !filters.find(f => f.key === filter.dependencyKey)?.value
                                                             : false
                                                     }
                                                 />
                                             </InputWithPlus>
                                         )}
-                                    </Col>
-                                </Row>
-                            </Form.Group>
-                        </Col>
-                    ))}
-                </Row>
-            ))}
-        </div>
+                                    </Form.Group>
+                                </Col>
+                            ))}
+                        </Row>
+                    );
+                })}
+            </div>
+        </Card>
     );
 };
 

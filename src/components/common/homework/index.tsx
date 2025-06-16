@@ -56,7 +56,7 @@ const HomeworkTrackingPage: React.FC = () => {
     ];
 
     return (
-        <div className="px-4">
+        <div >
             <Pageheader title="Ödev Yönetimi" currentpage="Ödev Takip" />
 
             <TabsContainer
