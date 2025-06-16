@@ -107,34 +107,6 @@ export const getStudentAndSchoolFields = (): FieldDefinition[] => {
   // Alan tanımları
   return [
     {
-      name: "created_by",
-      label: "Kayıt Eden",
-      type: "select",
-      onClick: () => {
-        setFiltersEnabled((prev) => ({ ...prev, authorized_person: true }));
-      },
-      onChange: (val: any) => {
-        handleFilterChange("created_by", val);
-      },
-      options: (authorized_personOptions || []).map((item) => ({
-        label: item.label,
-        value: item.value,
-      })),
-    },
-    {
-      name: "register_no",
-      label: "Kayıt No",
-      type: "text",
-      placeholder: "Otomatik atanacak",
-      required: false,
-      disabled: true,
-    },
-    {
-      name: "register_date",
-      label: "Kayıt Tarihi",
-      type: "date",
-    },
-    {
       name: "branch_id",
       label: "Şube",
       type: "select",
@@ -160,6 +132,35 @@ export const getStudentAndSchoolFields = (): FieldDefinition[] => {
           formik.setFieldValue("register_no", "");
         }
       },
+    },
+
+    {
+      name: "register_no",
+      label: "Kayıt No",
+      type: "text",
+
+      required: false,
+      disabled: true,
+    },
+    {
+      name: "register_date",
+      label: "Kayıt Tarihi",
+      type: "date",
+    },
+    {
+      name: "created_by",
+      label: "Kayıt Eden",
+      type: "select",
+      onClick: () => {
+        setFiltersEnabled((prev) => ({ ...prev, authorized_person: true }));
+      },
+      onChange: (val: any) => {
+        handleFilterChange("created_by", val);
+      },
+      options: (authorized_personOptions || []).map((item) => ({
+        label: item.label,
+        value: item.value,
+      })),
     },
     {
       name: "identification_no",
