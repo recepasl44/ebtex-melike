@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import darkcontrol from "../../../../../utils/darkmodecontroller";
 import { Button, Modal, Table as BTable } from "react-bootstrap";
 import ReusableTable, {
   ColumnDefinition,
@@ -177,8 +178,10 @@ export default function TuitionFeesTab() {
     0
   );
 
+  const textColor = darkcontrol.dataThemeMode === "dark" ? "#fff" : "#000";
+
   const footer = (
-    <div className="d-flex justify-content-end fw-bold me-3">
+    <div className="d-flex justify-content-end fw-bold me-3" style={{ color: textColor }}>
       Toplam: {totalAmount.toLocaleString()} ₺
     </div>
   );
