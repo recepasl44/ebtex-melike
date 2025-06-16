@@ -44,7 +44,7 @@ const PollingManagementPage: React.FC = () => {
     ];
 
     return (
-        <div className="px-4">
+        <div >
             <Pageheader title="Yoklama Yönetimi" currentpage="Sınıf & Ders" />
 
             <TabsContainer

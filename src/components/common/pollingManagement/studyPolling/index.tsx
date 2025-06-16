@@ -51,7 +51,7 @@ const StudyPollingPage: React.FC = () => {
     ];
 
     return (
-        <div className="px-4">
+        <div >
             <Pageheader title="Yoklama Yönetimi" currentpage="Etüt Yoklama" />
 
             <TabsContainer

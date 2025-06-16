@@ -258,7 +258,7 @@ export default function ExpenseListPage() {
   return (
     <div className="container-fluid mt-3">
       <Pageheader title="Giderler" currentpage="Gider Kayıtları" />
-      <FilterGroup filters={filters} columnsPerRow={4} navigate={navigate} />
+      <FilterGroup filters={filters} columnsPerRow={5} navigate={navigate} />
 
       <ReusableTable<IExpense>
         // pageTitle="Gider Listesi"

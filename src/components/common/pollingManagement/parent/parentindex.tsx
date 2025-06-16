@@ -20,7 +20,7 @@ const ParentIndexPage: FC = () => {
     ];
 
     return (
-        <div className="px-4">
+        <div >
             <Pageheader title="Yoklama Yönetimi" currentpage="Veli Talep Girişi" />
 
             <TabsContainer

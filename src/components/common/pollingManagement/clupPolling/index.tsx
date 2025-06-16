@@ -51,7 +51,7 @@ const ClupPollingManagementPage: React.FC = () => {
     ];
 
     return (
-        <div className="px-4">
+        <div >
             <Pageheader title="Yoklama Yönetimi" currentpage="Kulüp Yoklama" />
 
             <TabsContainer

@@ -46,7 +46,7 @@ const PreRegisterIndexPage: React.FC = () => {
   ];
 
   return (
-    <div className="px-4">
+    <div >
       <Pageheader title="Öğrenciler" currentpage="Ön Kayıt" />
       <TabsContainer tabs={tabs} onTabChange={(idx) => setActiveIdx(idx)} />
     </div>

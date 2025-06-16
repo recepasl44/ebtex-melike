@@ -62,7 +62,7 @@ const OneToOneManagementPage: React.FC = () => {
   ];
 
   return (
-    <div className="px-4">
+    <div >
       <Pageheader title="Yoklama Yönetimi" currentpage="Birebir Yoklama" />
 
       <TabsContainer

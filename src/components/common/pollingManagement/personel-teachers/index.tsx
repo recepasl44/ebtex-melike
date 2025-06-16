@@ -47,7 +47,7 @@ const StaffPollingManagementPage: React.FC = () => {
     ];
 
     return (
-        <div className="px-4">
+        <div >
             <Pageheader title="Yoklama Yönetimi" currentpage="Personel / Öğretmen Yoklama" />
 
             <TabsContainer
