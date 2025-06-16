@@ -230,7 +230,7 @@ export default function LessonPollingTable() {
             value: classroom,
             onClick: () => setEnabled(e => ({ ...e, classes: true })),
             onChange: setClassroom,
-            options: classroomData.map(c => ({ value: String(c.id), label: c.name })),
+            options: classroomData.map((c: { id: any; name: any; }) => ({ value: String(c.id), label: c.name })),
         },
         {
             key: 'lesson_id', label: 'Ders', type: 'select', col: 1,
