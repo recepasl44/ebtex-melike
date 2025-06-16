@@ -6,6 +6,7 @@ import { useMeetingsList } from "../../../hooks/meetings/useList";
 import { useLocation, useNavigate } from "react-router-dom";
 import { deleteMeeting } from "../../../../slices/meetings/delete/thunk";
 import CalculateModal from "../calculate/CalculateModal";
+import Pageheader from "../../../page-header/pageheader";
 
 export default function StudentMeetingTable() {
   const navigate = useNavigate();
@@ -31,20 +32,27 @@ export default function StudentMeetingTable() {
     setPage(1);
   }, [studentIdFromUrl]);
 
+  const deleteMessage = (row: Meeting) => {
+    const student = row.student as any;
+    const fullName = student
+      ? `${student.first_name ?? ""} ${student.last_name ?? ""}`.trim()
+      : "";
+    return `${fullName} adlı kullanıcının ${row.meeting_date} tarihli görüşme kaydını silmek istediğinize emin misiniz?`;
+  };
+
   const columns: ColumnDefinition<Meeting>[] = useMemo(
     () => [
-      {
-        key: "branche",
-        label: "Şube",
-        render: (row) =>
-          row.branche ? String((row.branche as { name: string }).name) : "-",
-      },
-
       {
         key: "season",
         label: "Sezon",
         render: (row) =>
           row.season ? String((row.season as { name: string }).name) : "-",
+      },
+      {
+        key: "branche",
+        label: "Şube",
+        render: (row) =>
+          row.branche ? String((row.branche as { name: string }).name) : "-",
       },
       {
         key: "meeting_date",
@@ -57,14 +65,24 @@ export default function StudentMeetingTable() {
         render: (row) => (row.type_id ? String(row.type_id) : "-"),
       },
       {
-        key: "id",
-        label: "Kayıt No",
-        render: (row) => (row.id ? row.id : "-"),
+        key: "meeting_note",
+        label: "Görüşme Notu",
+        render: (row) => (row.meeting_note ? row.meeting_note : "-"),
+      },
+      {
+        key: "meeting_price",
+        label: "Ücret",
+        render: (row) => (row.meeting_price ? row.meeting_price : "-"),
       },
       {
         key: "created_by",
-        label: "Oluşturan",
+        label: "Kayıt Eden",
         render: (row) => (row.created_by ? String(row.created_by) : "-"),
+      },
+      {
+        key: "meeting_by",
+        label: "Görüşme Yetkilisi",
+        render: (row) => (row.meeting_by ? String(row.meeting_by) : "-"),
       },
       {
         key: "actions",
@@ -95,7 +113,8 @@ export default function StudentMeetingTable() {
   );
 
   return (
-    <>
+    <div className="px-4">
+      <Pageheader title="Ön Kayıt" currentpage="Görüşmeler" />
       <ReusableTable<Meeting>
         columns={columns}
         data={meetingsData}
@@ -115,6 +134,9 @@ export default function StudentMeetingTable() {
         onDeleteRow={(row) => {
           deleteMeeting(row.id);
         }}
+        deleteMessage={deleteMessage}
+        deleteCancelButtonLabel="Vazgeç"
+        deleteConfirmButtonLabel="Sil"
         button={() => setShowCalculateModal(true)}
         buttonText="Ücret Hesapla"
       />
@@ -124,6 +146,6 @@ export default function StudentMeetingTable() {
         onHide={() => setShowCalculateModal(false)}
         studentId={studentIdFromUrl ? Number(studentIdFromUrl) : null}
       />
-    </>
+    </div>
   );
 }
