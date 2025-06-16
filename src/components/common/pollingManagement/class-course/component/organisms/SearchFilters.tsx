@@ -63,18 +63,20 @@ function InputWithPlus({
 const FilterGroup: React.FC<FilterGroupProps> = ({
     filters,
     navigate,
-    columnsPerRow = 2,
+    columnsPerRow = 4,
 }) => {
     if (!filters || filters.length === 0) return null;
 
     const groups: FilterDefinition[][] = [];
-    for (let i = 0; i < filters.length; i += columnsPerRow) {
-        groups.push(filters.slice(i, i + columnsPerRow));
+
+    if (filters.length <= 6) {
+        groups.push(filters);
+    } else {
+        for (let i = 0; i < filters.length; i += columnsPerRow) {
+            groups.push(filters.slice(i, i + columnsPerRow));
+        }
     }
 
-    const colSize = Math.floor(12 / columnsPerRow);
-
-    // Yerel tarih formatında string olarak döndürür (YYYY-MM-DD)
     const formatLocalDate = (date: Date): string => {
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -84,162 +86,146 @@ const FilterGroup: React.FC<FilterGroupProps> = ({
 
     return (
         <Card>
-            <div className="mb-1 px-2 bg-white rounded-3">
-                {groups.map((group, idx) => (
-                    <Row key={`filter-row-${idx}`} className="mb-2">
-                        {group.map((filter) => (
-                            <Col key={filter.key} md={colSize}>
-                                <Form.Group>
-                                    <Row>
-                                        <Col md={12}>
-                                            <Form.Label>{filter.label}</Form.Label>
-                                            {filter.type === "autocomplete" ? (
-                                                <InputWithPlus fieldDef={filter} navigate={navigate}>
-                                                    <Typeahead
-                                                        id={`typeahead-${filter.key}`}
-                                                        labelKey="label"
-                                                        options={filter.options || []}
-                                                        placeholder="Aramak için yazın..."
-                                                        onChange={(selected) => {
-                                                            if (
-                                                                selected &&
-                                                                selected.length > 0 &&
-                                                                filter.onChange
-                                                            ) {
-                                                                filter.onChange((selected[0] as any).value);
-                                                            }
-                                                        }}
-                                                        onFocus={filter.onFocus}
-                                                        onInputChange={(text) => {
-                                                            if (filter.onChange) filter.onChange(text);
-                                                        }}
-                                                        disabled={
-                                                            filter.dependencyKey
-                                                                ? !filters.find(
-                                                                    (f) => f.key === filter.dependencyKey
-                                                                )?.value
-                                                                : false
+            <div className="mb-1 bg-white rounded-3">
+                {groups.map((group, idx) => {
+                    const width = `${100 / group.length}%`;
+                    return (
+                        <Row key={`filter-row-${idx}`} className="mb-2">
+                            {group.map((filter) => (
+                                <Col
+                                    key={filter.key}
+                                    style={{ flex: '0 0 ' + width, maxWidth: width }}
+                                >
+                                    <Form.Group>
+                                        <Form.Label>{filter.label}</Form.Label>
+                                        {filter.type === "autocomplete" ? (
+                                            <InputWithPlus fieldDef={filter} navigate={navigate}>
+                                                <Typeahead
+                                                    id={`typeahead-${filter.key}`}
+                                                    labelKey="label"
+                                                    options={filter.options || []}
+                                                    placeholder="Aramak için yazın..."
+                                                    onChange={(selected) => {
+                                                        if (selected && selected.length > 0 && filter.onChange) {
+                                                            filter.onChange((selected[0] as any).value);
                                                         }
-                                                    />
-                                                </InputWithPlus>
-                                            ) : filter.type === "date" ? (
-                                                <InputWithPlus fieldDef={filter} navigate={navigate}>
-                                                    <SpkFlatpickr
-                                                        value={
-                                                            filter.value
-                                                                ? new Date(filter.value as string)
-                                                                : undefined
+                                                    }}
+                                                    onFocus={filter.onFocus}
+                                                    onInputChange={(text) => {
+                                                        if (filter.onChange) filter.onChange(text);
+                                                    }}
+                                                    disabled={
+                                                        filter.dependencyKey
+                                                            ? !filters.find(f => f.key === filter.dependencyKey)?.value
+                                                            : false
+                                                    }
+                                                />
+                                            </InputWithPlus>
+                                        ) : filter.type === "date" ? (
+                                            <InputWithPlus fieldDef={filter} navigate={navigate}>
+                                                <SpkFlatpickr
+                                                    value={
+                                                        filter.value
+                                                            ? new Date(filter.value as string)
+                                                            : undefined
+                                                    }
+                                                    onfunChange={(dates: Date[]) => {
+                                                        if (!dates?.length) {
+                                                            filter.onChange?.(null);
+                                                            return;
                                                         }
-                                                        onfunChange={(dates: Date[]) => {
-                                                            if (!dates?.length) {
-                                                                filter.onChange?.(null);
-                                                                return;
-                                                            }
-                                                            const iso = dates[0].toISOString().split("T")[0];
-                                                            filter.onChange?.(iso);
-                                                        }}
-                                                        options={{
-                                                            dateFormat: "Y-m-d",
-                                                            allowInput: false,
-                                                        }}
-                                                        inputClass="form-control"
-                                                        placeholder="Tarih seçiniz"
-                                                    />
-                                                </InputWithPlus>
-                                            ) : filter.type === "doubledate" ? (
-                                                <InputWithPlus fieldDef={filter} navigate={navigate}>
-                                                    <SpkFlatpickr
-                                                        value={
-                                                            filter.value
-                                                                ? `${(filter.value as any).startDate} to ${(filter.value as any).endDate
-                                                                }`
-                                                                : undefined
+                                                        const iso = dates[0].toISOString().split("T")[0];
+                                                        filter.onChange?.(iso);
+                                                    }}
+                                                    options={{
+                                                        dateFormat: "Y-m-d",
+                                                        allowInput: false,
+                                                    }}
+                                                    inputClass="form-control"
+                                                    placeholder="Tarih seçiniz"
+                                                />
+                                            </InputWithPlus>
+                                        ) : filter.type === "doubledate" ? (
+                                            <InputWithPlus fieldDef={filter} navigate={navigate}>
+                                                <SpkFlatpickr
+                                                    value={
+                                                        filter.value
+                                                            ? `${(filter.value as any).startDate} to ${(filter.value as any).endDate}`
+                                                            : undefined
+                                                    }
+                                                    onfunChange={(dates: Date[]) => {
+                                                        if (!dates || dates.length < 2) {
+                                                            filter.onChange?.(null);
+                                                            return;
                                                         }
-                                                        onfunChange={(dates: Date[]) => {
-                                                            if (!dates || dates.length < 2) {
-                                                                if (filter.onChange) filter.onChange(null);
-                                                                return;
-                                                            }
-
-                                                            const startDate = formatLocalDate(dates[0]);
-                                                            const endDate = formatLocalDate(dates[1]);
-
-                                                            if (filter.onChange)
-                                                                filter.onChange({ startDate, endDate });
-                                                        }}
-                                                        options={{
-                                                            dateFormat: "Y-m-d",
-                                                            mode: "range",
-                                                            allowInput: false,
-                                                        }}
-                                                        inputClass="form-control"
-                                                        placeholder="Tarih aralığı seçiniz"
-                                                    />
-                                                </InputWithPlus>
-                                            ) : filter.options ? (
-                                                <InputWithPlus fieldDef={filter} navigate={navigate}>
-                                                    <Form.Select
-                                                        value={
-                                                            typeof filter.value === "string"
-                                                                ? filter.value
-                                                                : filter.value &&
-                                                                    "startDate" in filter.value &&
-                                                                    "endDate" in filter.value
-                                                                    ? `${filter.value.startDate} - ${filter.value.endDate}`
-                                                                    : undefined
-                                                        }
-                                                        onChange={(e) => filter.onChange?.(e.target.value)}
-                                                        onClick={(e) =>
-                                                            filter.onClick?.(
-                                                                (e.target as HTMLSelectElement).value
-                                                            )
-                                                        }
-                                                        onFocus={filter.onFocus}
-                                                        disabled={
-                                                            filter.dependencyKey
-                                                                ? !filters.find(
-                                                                    (f) => f.key === filter.dependencyKey
-                                                                )?.value
-                                                                : false
-                                                        }
-                                                    >
-                                                        <option value="">Seçiniz</option>
-                                                        {filter.options.map((opt) => (
-                                                            <option key={opt.value} value={opt.value}>
-                                                                {opt.label}
-                                                            </option>
-                                                        ))}
-                                                    </Form.Select>
-                                                </InputWithPlus>
-                                            ) : (
-                                                <InputWithPlus fieldDef={filter} navigate={navigate}>
-                                                    <Form.Control
-                                                        type={filter.type || "text"}
-                                                        value={filter.value as string}
-                                                        onChange={(e) => filter.onChange?.(e.target.value)}
-                                                        onClick={(e) =>
-                                                            filter.onClick?.(
-                                                                (e.target as HTMLInputElement).value
-                                                            )
-                                                        }
-                                                        onFocus={filter.onFocus}
-                                                        disabled={
-                                                            filter.dependencyKey
-                                                                ? !filters.find(
-                                                                    (f) => f.key === filter.dependencyKey
-                                                                )?.value
-                                                                : false
-                                                        }
-                                                    />
-                                                </InputWithPlus>
-                                            )}
-                                        </Col>
-                                    </Row>
-                                </Form.Group>
-                            </Col>
-                        ))}
-                    </Row>
-                ))}
+                                                        const startDate = formatLocalDate(dates[0]);
+                                                        const endDate = formatLocalDate(dates[1]);
+                                                        filter.onChange?.({ startDate, endDate });
+                                                    }}
+                                                    options={{
+                                                        dateFormat: "Y-m-d",
+                                                        mode: "range",
+                                                        allowInput: false,
+                                                    }}
+                                                    inputClass="form-control"
+                                                    placeholder="Tarih aralığı seçiniz"
+                                                />
+                                            </InputWithPlus>
+                                        ) : filter.options ? (
+                                            <InputWithPlus fieldDef={filter} navigate={navigate}>
+                                                <Form.Select
+                                                    value={
+                                                        typeof filter.value === "string"
+                                                            ? filter.value
+                                                            : undefined
+                                                    }
+                                                    onChange={(e) => filter.onChange?.(e.target.value)}
+                                                    onClick={(e) =>
+                                                        filter.onClick?.(
+                                                            (e.target as HTMLSelectElement).value
+                                                        )
+                                                    }
+                                                    onFocus={filter.onFocus}
+                                                    disabled={
+                                                        filter.dependencyKey
+                                                            ? !filters.find(f => f.key === filter.dependencyKey)?.value
+                                                            : false
+                                                    }
+                                                >
+                                                    <option value="">Seçiniz</option>
+                                                    {filter.options.map((opt) => (
+                                                        <option key={opt.value} value={opt.value}>
+                                                            {opt.label}
+                                                        </option>
+                                                    ))}
+                                                </Form.Select>
+                                            </InputWithPlus>
+                                        ) : (
+                                            <InputWithPlus fieldDef={filter} navigate={navigate}>
+                                                <Form.Control
+                                                    type={filter.type || "text"}
+                                                    value={filter.value as string}
+                                                    onChange={(e) => filter.onChange?.(e.target.value)}
+                                                    onClick={(e) =>
+                                                        filter.onClick?.(
+                                                            (e.target as HTMLInputElement).value
+                                                        )
+                                                    }
+                                                    onFocus={filter.onFocus}
+                                                    disabled={
+                                                        filter.dependencyKey
+                                                            ? !filters.find(f => f.key === filter.dependencyKey)?.value
+                                                            : false
+                                                    }
+                                                />
+                                            </InputWithPlus>
+                                        )}
+                                    </Form.Group>
+                                </Col>
+                            ))}
+                        </Row>
+                    );
+                })}
             </div>
         </Card>
     );
