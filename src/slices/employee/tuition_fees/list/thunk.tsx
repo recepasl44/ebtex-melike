@@ -7,7 +7,7 @@ import {
 import { TUITION_FEES_BASE } from "../../../../helpers/url_helper";
 
 export const fetchTuitionFeesList = createAsyncThunk<
-TuitionFeesListState,
+  TuitionFeesListState,
   TuitionFeesListArgs
 >(
   "tuitionFees/fetchList",

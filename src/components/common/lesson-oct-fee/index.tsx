@@ -1,20 +1,56 @@
+import React, { useState } from "react";
 import TabsContainer from "../guidance/components/organisms/TabsContainer";
+import Pageheader from "../../page-header/pageheader";
+
 import TuitionFeesTab from "../personel/personelDetail/tabs/ders-ucreti/table";
 import CouponTab from "../personel/personelDetail/tabs/kupon/table";
 import CoachingTab from "../personel/personelDetail/tabs/kocluk/table";
 import SpecialTab from "../personel/personelDetail/tabs/ozel-ders/table";
 
-export default function LessonOctFeeIndex() {
-  const tabsConfig = [
-    { label: "Ders Ücreti", content: <TuitionFeesTab /> },
-    { label: "Ders – Soru Çözüm Ücretleri", content: <CouponTab personelId={0} enabled={true} /> },
-    { label: "Koçluk Ücreti", content: <CoachingTab personelId={0} enabled={true} /> },
-    { label: "Özel Ders", content: <SpecialTab personelId={0} enabled={true} /> },
+const LessonOctFeeIndex: React.FC = () => {
+  const [, setActiveIdx] = useState<number>(0);
+
+  const tabs = [
+    {
+      label: "Ders Ücreti",
+      content: <TuitionFeesTab />,
+      activeBgColor: "#5C67F7",
+      activeTextColor: "#FFFFFF",
+      passiveBgColor: "#5C67F726",
+      passiveTextColor: "#5C67F7",
+    },
+    {
+      label: "Ders – Soru Çözüm Ücretleri",
+      content: <CouponTab personelId={0} enabled={true} />,
+      activeBgColor: "#5C67F7",
+      activeTextColor: "#FFFFFF",
+      passiveBgColor: "#5C67F726",
+      passiveTextColor: "#5C67F7",
+    },
+    {
+      label: "Koçluk Ücreti",
+      content: <CoachingTab personelId={0} enabled={true} />,
+      activeBgColor: "#5C67F7",
+      activeTextColor: "#FFFFFF",
+      passiveBgColor: "#5C67F726",
+      passiveTextColor: "#5C67F7",
+    },
+    {
+      label: "Özel Ders",
+      content: <SpecialTab personelId={0} enabled={true} />,
+      activeBgColor: "#5C67F7",
+      activeTextColor: "#FFFFFF",
+      passiveBgColor: "#5C67F726",
+      passiveTextColor: "#5C67F7",
+    },
   ];
 
   return (
-    <div className="flex" style={{ padding: "23px 50px 0" }}>
-      <TabsContainer tabs={tabsConfig as any} />
+    <div>
+      <Pageheader title="Personel Yönetimi" currentpage="Ders & Ek Ücretler" />
+      <TabsContainer tabs={tabs} onTabChange={(idx) => setActiveIdx(idx)} />
     </div>
   );
-}
+};
+
+export default LessonOctFeeIndex;

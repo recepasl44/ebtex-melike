@@ -36,7 +36,7 @@ const PreRegisterIndexPage: React.FC = () => {
       passiveTextColor: '#5C67F7',
     },
     {
-      label: 'Toplu Öğrenci Aktarma',
+      label: 'Öğrenci Yükle',
       content: <StudentImport />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
