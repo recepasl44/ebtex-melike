@@ -265,47 +265,41 @@ export const MENUITEMS: any = [
         path: "/checkManagement",
         type: "link",
       },
-      {
-        title: "Personel Yönetimi",
-        type: "sub",
-        children: [
-          { title: "Personeller", path: "/personel", type: "link" },
-          { title: "Finansal Özet", path: "/personel/financial-summary", type: "link" },
-          { title: "Maliyet Planlama", path: "/personel/cost-planning", type: "link" },
-          { title: "Tahmini Maliyetler", path: "/budget-estimate", type: "link" },
-
-          {
-            title: "Ders & Ek Ücretler",
-            type: "sub",
-            children: [
-              { title: "Ders Ücreti", path: "/personelTuitionFeeCrud", type: "link" },
-              { title: "Kupon Ücreti", path: "/personelCouponCrud", type: "link" },
-              { title: "Özel Ders", path: "/personelSpecialCrud", type: "link" },
-              { title: "Koçluk", path: "/personelCoachingCrud", type: "link" },
-            ],
-          },
-          {
-            title: "Çalışma ve Hakediş",
-            type: "sub",
-            children: [
-              { title: "Haftalık Ders Sayısı", path: "/personelWeeklyLessonCrud", type: "link" },
-              { title: "Ücret Bilgileri", path: "/personelcrud", type: "link" },
-              { title: "Maaş Borç", path: "/personelCompensationCrud", type: "link" },
-              { title: "Maaş Ödeme", path: "/personelSalaryPaymentCrud", type: "link" },
-            ],
-          },
-          {
-            title: "Ekstra İşlemler",
-            type: "sub",
-            children: [
-              { title: "Prim", path: "/personelPrimlerCrud", type: "link" },
-              { title: "Kesinti", path: "/personelKesintiCrud", type: "link" },
-              { title: "Tazminat", path: "/personelCompensationCrud", type: "link" },
-              { title: "İade", path: "/personelIadeCrud", type: "link" },
-            ],
-          },
-        ],
-      },
+        {
+          title: "Personel Yönetimi",
+          type: "sub",
+          children: [
+            {
+              title: "Ders & Ek Ücretler",
+              type: "sub",
+              children: [
+                { title: "Ders Ücreti", path: "/personelTuitionFeeCrud", type: "link" },
+                { title: "Ders – Soru Çözüm Ücretleri", path: "/personelCouponCrud", type: "link" },
+                { title: "Koçluk Ücreti", path: "/personelCoachingCrud", type: "link" },
+                { title: "Özel Ders", path: "/personelSpecialCrud", type: "link" },
+              ],
+            },
+            {
+              title: "Çalışma ve Hakediş",
+              type: "sub",
+              children: [
+                { title: "Sözleşme", path: "/personelWeeklyLessonCrud", type: "link" },
+                { title: "Hakkedişler", path: "/personelCompensationCrud", type: "link" },
+                { title: "Ödeme Kayıtları", path: "/personelSalaryPaymentCrud", type: "link" },
+              ],
+            },
+            {
+              title: "Ekstra İşlemler",
+              type: "sub",
+              children: [
+                { title: "Prim", path: "/personelPrimlerCrud", type: "link" },
+                { title: "Kesinti", path: "/personelKesintiCrud", type: "link" },
+                { title: "Tazminat", path: "/personelCompensationCrud", type: "link" },
+                { title: "İade", path: "/personelIadeCrud", type: "link" },
+              ],
+            },
+          ],
+        },
       {
         title: "Fatura Yönetimi",
         type: "sub",

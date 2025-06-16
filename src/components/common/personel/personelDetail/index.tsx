@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import TabsContainer from "../../guidance/components/organisms/TabsContainer";
 
-import PersonelAboutTab from "./tabs/about/table";
-import PersonelUcretTab from "./tabs/ucret/table";
 import PersonelTazminatTab from "./tabs/tazminat/table";
 import PersonelHaftaTab from "./tabs/haftalik-calisma/table";
 import PersonelMaasBorcTab from "./tabs/maas-borc/table";
@@ -11,7 +9,6 @@ import PersonelMaasOdemeTab from "./tabs/maas-odeme/table";
 import PersonelPrimTab from "./tabs/prim/table";
 import PersonelKesintiTab from "./tabs/kesinti/table";
 import PersonelIadeTab from "./tabs/iade/table";
-import PersonelDailyTab from "./tabs/daily/table";
 import PersonelDersUcretTab from "./tabs/ders-ucreti/table";
 import PersonelKuponTab from "./tabs/kupon/table";
 import PersonelOzelDersTab from "./tabs/ozel-ders/table";
@@ -35,10 +32,6 @@ export default function PersonelDetail() {
 
   const tabsConfig = [
     {
-      label: "About",
-      content: <PersonelAboutTab personel={personel} />,
-    },
-    {
       label: "Ders & Ek Ücretler",
       children: [
         {
@@ -46,16 +39,25 @@ export default function PersonelDetail() {
           content: (
             <PersonelDersUcretTab
               personelId={pId}
-              enabled={parentIndex === 1 && childIndex === 0}
+              enabled={parentIndex === 0 && childIndex === 0}
             />
           ),
         },
         {
-          label: "Kupon Ücreti",
+          label: "Ders – Soru Çözüm Ücretleri",
           content: (
             <PersonelKuponTab
               personelId={pId}
-              enabled={parentIndex === 1 && childIndex === 1}
+              enabled={parentIndex === 0 && childIndex === 1}
+            />
+          ),
+        },
+        {
+          label: "Koçluk Ücreti",
+          content: (
+            <PersonelKoclukTab
+              personelId={pId}
+              enabled={parentIndex === 0 && childIndex === 2}
             />
           ),
         },
@@ -64,16 +66,7 @@ export default function PersonelDetail() {
           content: (
             <PersonelOzelDersTab
               personelId={pId}
-              enabled={parentIndex === 1 && childIndex === 2}
-            />
-          ),
-        },
-        {
-          label: "Koçluk",
-          content: (
-            <PersonelKoclukTab
-              personelId={pId}
-              enabled={parentIndex === 1 && childIndex === 3}
+              enabled={parentIndex === 0 && childIndex === 3}
             />
           ),
         },
@@ -83,47 +76,29 @@ export default function PersonelDetail() {
       label: "Çalışma ve Hakediş",
       children: [
         {
-          label: "Haftalık Ders Sayısı",
+          label: "Sözleşme",
           content: (
             <PersonelHaftaTab
               personelId={pId}
-              enabled={parentIndex === 2 && childIndex === 0}
+              enabled={parentIndex === 1 && childIndex === 0}
             />
           ),
         },
         {
-          label: "Ücret Bilgileri",
-          content: (
-            <PersonelUcretTab
-              personelId={pId}
-              enabled={parentIndex === 2 && childIndex === 1}
-            />
-          ),
-        },
-        {
-          label: "Maaş Borç",
+          label: "Hakkedişler",
           content: (
             <PersonelMaasBorcTab
               personelId={pId}
-              enabled={parentIndex === 2 && childIndex === 2}
+              enabled={parentIndex === 1 && childIndex === 1}
             />
           ),
         },
         {
-          label: "Maaş Ödeme",
+          label: "Ödeme Kayıtları",
           content: (
             <PersonelMaasOdemeTab
               personelId={pId}
-              enabled={parentIndex === 2 && childIndex === 3}
-            />
-          ),
-        },
-        {
-          label: "Günlük Ders/Soru",
-          content: (
-            <PersonelDailyTab
-              personelId={pId}
-              enabled={parentIndex === 2 && childIndex === 4}
+              enabled={parentIndex === 1 && childIndex === 2}
             />
           ),
         },
@@ -137,7 +112,7 @@ export default function PersonelDetail() {
           content: (
             <PersonelPrimTab
               personelId={pId}
-              enabled={parentIndex === 3 && childIndex === 0}
+              enabled={parentIndex === 2 && childIndex === 0}
             />
           ),
         },
@@ -146,7 +121,7 @@ export default function PersonelDetail() {
           content: (
             <PersonelKesintiTab
               personelId={pId}
-              enabled={parentIndex === 3 && childIndex === 1}
+              enabled={parentIndex === 2 && childIndex === 1}
             />
           ),
         },
@@ -155,7 +130,7 @@ export default function PersonelDetail() {
           content: (
             <PersonelTazminatTab
               personelId={pId}
-              enabled={parentIndex === 3 && childIndex === 2}
+              enabled={parentIndex === 2 && childIndex === 2}
             />
           ),
         },
@@ -164,7 +139,7 @@ export default function PersonelDetail() {
           content: (
             <PersonelIadeTab
               personelId={pId}
-              enabled={parentIndex === 3 && childIndex === 3}
+              enabled={parentIndex === 2 && childIndex === 3}
             />
           ),
         },
