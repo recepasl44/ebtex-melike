@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { Button, Modal, Form } from "react-bootstrap";
 import ReusableTable, {
   ColumnDefinition,
-  FilterDefinition,
 } from "../ReusableTable";
+import FilterGroup, {
+  FilterDefinition,
+} from "./component/organisms/SearchFilters";
 import { useOverduePayments } from "../../hooks/overduePayments/useOverduePayments";
 import { OverduePayment } from "../../../types/overduePayments/list";
 import { useSeasonsList } from "../../hooks/season/useSeasonsList";
@@ -208,6 +210,7 @@ export default function OverduePaymentsPage() {
 
   return (
     <>
+      <FilterGroup filters={filters} navigate={navigate} columnsPerRow={4} />
       <ReusableTable<OverduePayment>
         columns={columns}
         data={overdueData}
@@ -221,7 +224,6 @@ export default function OverduePaymentsPage() {
           setPaginate(newSize);
           setPage(1);
         }}
-        filters={filters}
         tableMode="single"
         exportFileName="overdue_payments"
         showExportButtons
