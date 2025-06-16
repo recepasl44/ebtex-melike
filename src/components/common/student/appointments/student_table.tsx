@@ -96,7 +96,9 @@ export default function QuestionLabeling() {
             <Button
               variant=""
               size="sm"
-              onClick={() => navigate(`/studentmeetings?student_id=/${row.id}`)}
+              onClick={() =>
+                navigate(`/studentmeetings?student_id=${row.student_id}`)
+              }
             >
               <img
                 src={appoipmentButton}

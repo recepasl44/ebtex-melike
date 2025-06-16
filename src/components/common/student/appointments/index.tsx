@@ -132,7 +132,7 @@ export default function QuestionLabeling() {
     query.set("Appointment", String(params.Appointment));
     query.set("Appointment_time", String(params.Appointment_time));
     query.set("Program_id", String(params.Program_id));
-    query.set("Class_level", String(params.Chapters));
+    query.set("Class_level", String(params.Class_level));
     query.set("pageSize", String(params.pageSize));
     query.set("enabled", String(params.enabled));
     query.set("student_id", String(params.student_id));
@@ -371,7 +371,9 @@ export default function QuestionLabeling() {
               variant="warning-light"
               size="sm"
               className="btn-icon rounded-pill"
-              onClick={() => navigate(`/studentmeetings?student_id=${row.id}`)}
+              onClick={() =>
+                navigate(`/studentmeetings?student_id=${row.student_id}`)
+              }
             >
               <i className="ti ti-message"></i>
             </Button>{" "}
