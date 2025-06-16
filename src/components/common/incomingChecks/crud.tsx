@@ -481,3 +481,4 @@ function BuyerFormModal({
         />
     );
 }
+export default IncomingCheckFormModal;

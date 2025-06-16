@@ -921,7 +921,7 @@ export const Routedata = [
   },
 
   {
-    id: 10,
+    id: 10326542,
     path: `${import.meta.env.BASE_URL}lesson-oct-fee/:id?`,
     element: <LessonOctFeeIndex />,
   },
@@ -1778,7 +1778,7 @@ export const Routedata = [
       <IncomingChecksCrud
         show={true}
         onClose={() => window.history.back()}
-        onRefresh={() => { }}
+        onSubmit={(val) => { /* handle submit logic here */ }}
       />
     ),
   },
