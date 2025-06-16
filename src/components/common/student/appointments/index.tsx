@@ -1,6 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import ReusableTable, { ColumnDefinition } from "../../ReusableTable";
+import ReusableTable, { ColumnDefinition, useDebounce } from "../../ReusableTable";
 import { Button } from "react-bootstrap";
 import { useProgramsTable } from "../../../hooks/program/useList";
 import { useLevelsTable } from "../../../hooks/levels/useList";
@@ -39,6 +39,8 @@ export default function QuestionLabeling() {
   const [program_id, setProgram_id] = useState("");
   const [Class_level, setClass_level] = useState("");
   const [first_name, setFirst_name] = useState("");
+  const [inputName, setInputName] = useState("");
+  const debouncedName = useDebounce<string>(inputName, 500);
   const [student_id, setStudent_id] = useState("");
 
   const { removeAppointment } = useAppointmentDelete();
@@ -73,12 +75,22 @@ export default function QuestionLabeling() {
     pageSize: 100,
   });
 
-  const { data } = useListStudents({
-    enabled: first_name !== "" ? true : false,
+  const { data: studentNameData } = useListStudents({
+    enabled: filtersEnabled.first_name,
     first_name: first_name,
     page: 1,
     pageSize: 100,
   });
+
+  useEffect(() => {
+    if (debouncedName) {
+      setFirst_name(debouncedName);
+      setFiltersEnabled((prev) => ({
+        ...prev,
+        first_name: true,
+      }));
+    }
+  }, [debouncedName]);
 
   const handleFilterChange = (key: string, value: string) => {
     setFiltersEnabled((prev) => ({
@@ -261,33 +273,36 @@ export default function QuestionLabeling() {
       {
         key: "first_name",
         label: "Adı Soyadı",
-        value: first_name,
+        value: inputName,
         type: "autocomplete" as const,
 
         onChange: (val: string) => {
+          setInputName(val);
           if (val) {
-            const matchedStudent = data?.find((item: { label: string }) =>
-              item.label.toLowerCase().includes(val.toLowerCase())
+            const matchedStudent = studentNameData?.find(
+              (item: any) => item.first_name.toLowerCase() === val.toLowerCase()
             );
 
             if (matchedStudent) {
-              setFirst_name(matchedStudent.label);
-              setStudent_id(String(matchedStudent.value));
-            } else {
-              setFirst_name(val);
+              if (matchedStudent.id) {
+                setStudent_id(matchedStudent.id.toString());
+              }
+              if (matchedStudent.first_name) {
+                setFirst_name(matchedStudent.first_name);
+              }
             }
           } else {
+            setStudent_id("");
             setFirst_name("");
           }
-
-          handleFilterChange("first_name", val);
         },
         onClick: () => {
           setFiltersEnabled((prev) => ({ ...prev, first_name: true }));
         },
-        options: (data || []).map((item: { label: any }) => ({
-          value: item.label,
-          label: item.label,
+        options: (studentNameData || []).map((item: any) => ({
+          label: `${item.first_name || ""} ${item.last_name || ""}`,
+          value: item.first_name || "",
+          id: item.id,
         })),
       },
     ];
@@ -302,7 +317,8 @@ export default function QuestionLabeling() {
     branchData,
     programsData,
     levelsData,
-    first_name,
+    studentNameData,
+    inputName,
     student_id,
   ]);
 
