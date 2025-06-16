@@ -464,7 +464,7 @@ export default function MeetingListPage() {
               title="Not"
               content={row.meeting_note || "-"}
             >
-              <Button variant="link">
+              <Button variant="link" onClick={() => handleShowModal(row)}>
                 <img
                   src={info}
                   alt="Seç"
@@ -482,7 +482,9 @@ export default function MeetingListPage() {
               variant="warning-light"
               size="sm"
               className="btn-icon rounded-pill"
-              onClick={() => handleShowModal(row)}
+              onClick={() =>
+                navigate(`/studentmeetings?student_id=${row.student_id}`)
+              }
             >
               <i className="ti ti-message"></i>
             </Button>{" "}
