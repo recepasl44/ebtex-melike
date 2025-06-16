@@ -173,8 +173,8 @@ const MeetingModal: React.FC<MeetingModalProps> = ({
     mode === "add"
       ? addError
       : mode === "update"
-      ? updateError || showError
-      : null;
+        ? updateError || showError
+        : null;
 
   async function handleSubmit(
     values: IMeetingForm,

@@ -368,8 +368,8 @@ export default function MeetingListPage() {
         render: (row) =>
           row.student
             ? String(
-                (row.student as { identification_no: string }).identification_no
-              )
+              (row.student as { identification_no: string }).identification_no
+            )
             : "-",
       },
       {
