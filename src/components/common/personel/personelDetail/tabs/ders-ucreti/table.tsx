@@ -5,7 +5,7 @@ import ReusableTable, {
   ColumnDefinition,
   FilterDefinition,
 } from "../../../../ReusableTable"
-import FilterGroup from "../../../pollingManagement/class-course/component/organisms/SearchFilters"
+import FilterGroup from "./SearchFilters"
 import { useTuitionFeesList } from "../../../../../hooks/employee/tuition_fees/useTuitionFeesList"
 import { useTuitionFeesDelete } from "../../../../../hooks/employee/tuition_fees/useTuitionFeesDelete"
 import { useLevelsTable } from "../../../../../hooks/levels/useList"
@@ -91,15 +91,16 @@ export default function TuitionFeesTab({ personelId, enabled }: TuitionFeesTabPr
           <>
             <Button
               size="sm"
-              variant="primary"
+              variant="primary-light"
+              className="btn-icon rounded-pill me-1"
               onClick={() => setDetailRow(row)}
-              className="me-1"
             >
-              Detay
+              <i className="ti ti-eye" />
             </Button>
             <Button
               size="sm"
-              variant="info"
+              variant="info-light"
+              className="btn-icon rounded-pill me-1"
               onClick={() =>
                 navigate(`/personelTuitionFeeCrud/${row.id}`, {
                   state: {
@@ -108,13 +109,13 @@ export default function TuitionFeesTab({ personelId, enabled }: TuitionFeesTabPr
                   },
                 })
               }
-              className="me-1"
             >
               <i className="ti ti-pencil" />
             </Button>
             <Button
               size="sm"
-              variant="danger"
+              variant="danger-light"
+              className="btn-icon rounded-pill"
               onClick={() => openDeleteModal?.(row)}
             >
               <i className="ti ti-trash" />
