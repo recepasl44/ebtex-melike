@@ -7,6 +7,7 @@ import { useShowStudent } from "../../../hooks/student/useShowStudent";
 import { useAddStudent } from "../../../hooks/student/useAddStudent";
 import { getPreRegisterFields } from "./crudField";
 import { useRegisterNo } from "../../../hooks/student/useRegisterNo";
+import { formatDateForApi } from "../../../utils/formatters";
 interface StudentModalProps {
   show: boolean;
   onClose: () => void;
@@ -23,6 +24,8 @@ interface IStudentForm extends FormikValues {
   nationality_id?: number;
   email?: string;
   branche_id?: number;
+  register_no?: string;
+  register_date?: string;
   birthday?: string;
   additional_information_1?: string;
   additional_information_2: string;
@@ -78,6 +81,8 @@ const StudentModal: React.FC<StudentModalProps> = ({ onClose, onRefresh }) => {
     phone: "",
     email: "",
     branche_id: 0,
+    register_no: "",
+    register_date: formatDateForApi(new Date()),
     birthday: "",
     additional_information_2: "",
     financial_status: "",
@@ -98,7 +103,7 @@ const StudentModal: React.FC<StudentModalProps> = ({ onClose, onRefresh }) => {
       is_parent: false,
       kinship_id: 0,
       kinship: "",
-      identification_no: 0,
+      identification_no: "",
       full_name: "",
       phone: "",
     },
@@ -134,6 +139,10 @@ const StudentModal: React.FC<StudentModalProps> = ({ onClose, onRefresh }) => {
         email: fetchedStudentDetails.email || "",
         nationality_id: fetchedStudentDetails.nationality_id || 0,
         branche_id: fetchedStudentDetails.branche_id || 0,
+        register_no: fetchedStudentDetails.register_no || "",
+        register_date:
+          formatDateForApi(fetchedStudentDetails.register_date) ||
+          formatDateForApi(new Date()),
         birthday: fetchedStudentDetails.birthday || "",
         nationality: fetchedStudentDetails.nationality || "",
         additional_information_2:
@@ -157,7 +166,7 @@ const StudentModal: React.FC<StudentModalProps> = ({ onClose, onRefresh }) => {
           kinship_id: fetchedStudentDetails.guardian?.kinship_id || 0,
           kinship: fetchedStudentDetails.guardian?.kinship || "",
           identification_no:
-            fetchedStudentDetails?.guardian?.identification_no || 0,
+            fetchedStudentDetails?.guardian?.identification_no || "",
           full_name: fetchedStudentDetails.guardian?.full_name || "",
           phone: fetchedStudentDetails.guardian?.phone || "",
         },
@@ -207,7 +216,7 @@ const StudentModal: React.FC<StudentModalProps> = ({ onClose, onRefresh }) => {
       mode={"single"}
       initialValues={initialValues}
       onSubmit={handleSubmit}
-      confirmButtonLabel={mode === "add" ? "Ekle" : "Güncelle"}
+      confirmButtonLabel={mode === "add" ? "Kaydet" : "Güncelle"}
       cancelButtonLabel="Vazgeç"
       isLoading={loading}
       error={error || null}
