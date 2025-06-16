@@ -3,10 +3,8 @@ import { useNavigate } from "react-router-dom";
 import SupplierDetailModal from "../../supplier/supplierDetail/DetailModal";
 import ReusableTable, {
   ColumnDefinition,
-} from "../../ReusableTable";
-import FilterGroup, {
   FilterDefinition,
-} from "./component/organisms/SearchFilters";
+} from "../../ReusableTable";
 import { useExpencesTable } from "../../../hooks/expences/main/useExpenseList";
 import { IExpense } from "../../../../types/expences/main/list";
 
@@ -174,7 +172,6 @@ export default function ExpenseListPage() {
         key: "season",
         label: "Sezon",
         type: "select" as const,
-        col: 1,
         value: season,
         options: (seasonsData || []).map((s) => ({
           value: String(s.id),
@@ -187,7 +184,6 @@ export default function ExpenseListPage() {
         key: "branch",
         label: "Şube",
         type: "select" as const,
-        col: 1,
         value: branch,
         options: (branchData || []).map((b) => ({
           value: String(b.id),
@@ -200,7 +196,6 @@ export default function ExpenseListPage() {
         key: "category",
         label: "Gider Kalemi",
         type: "select" as const,
-        col: 1,
         value: category,
         options: (categoriesData || []).map((c) => ({
           value: String(c.id),
@@ -213,7 +208,6 @@ export default function ExpenseListPage() {
         key: "supplier_id",
         label: "Tedarikçi",
         type: "autocomplete" as const,
-        col: 1,
         value: supplierId,
         options: (suppliersData || []).map((s) => ({
           value: String(s.id),
@@ -229,7 +223,6 @@ export default function ExpenseListPage() {
         key: "date_range",
         label: "Tarih Aralığı",
         type: "doubledate" as const,
-        col: 1,
         value: [dateRange.startDate, dateRange.endDate],
         onChange: (dates: any) => {
           if (!dates) {
@@ -258,13 +251,13 @@ export default function ExpenseListPage() {
   return (
     <div className="container-fluid mt-3">
       <Pageheader title="Giderler" currentpage="Gider Kayıtları" />
-      <FilterGroup filters={filters} columnsPerRow={4} navigate={navigate} />
 
       <ReusableTable<IExpense>
         // pageTitle="Gider Listesi"
         onAdd={() => navigate("/expensecrud")}
         columns={columns}
         data={expensesData}
+        filters={filters}
         loading={loading}
         error={error}
         currentPage={page}
