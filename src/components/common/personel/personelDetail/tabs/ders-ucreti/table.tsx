@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import darkcontrol from "../../../../../utils/darkmodecontroller";
+import darkcontrol from "../../../../../../utils/darkmodecontroller";
 import { Button, Modal, Table as BTable } from "react-bootstrap";
 import ReusableTable, {
   ColumnDefinition,

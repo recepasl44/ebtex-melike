@@ -4,8 +4,10 @@ import {
   CouponPriceListResponse,
   CouponPriceListArgs,
 } from "../../../../types/employee/coupon_price/list";
-// Varsayalım endpoint: /employee/coupon-price
 import { COUPON_PRICE_BASE } from "../../../../helpers/url_helper";
+
+// Global cache key'lerini tutmak için bir Set
+const couponRequestCache = new Set<string>();
 
 export const fetchCouponPriceList = createAsyncThunk<
   CouponPriceListResponse,
@@ -30,5 +32,20 @@ export const fetchCouponPriceList = createAsyncThunk<
         err.response?.data?.message || "Fetch coupon price list failed"
       );
     }
+  },
+  {
+    // Sonsuz istekleri engellemek için condition ekliyoruz
+    condition: (params, { getState }) => {
+      const key = JSON.stringify(params);
+
+      // Daha önce bu parametrelerle istek atıldıysa, tekrar gönderme
+      if (couponRequestCache.has(key)) {
+        return false;
+      }
+
+      // İlk kez geliyorsa cache'e ekle ve fetch'e izin ver
+      couponRequestCache.add(key);
+      return true;
+    },
   }
 );

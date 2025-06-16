@@ -20,7 +20,7 @@ export default function CouponDetailModal() {
       {
         key: "index",
         label: "Sıra No",
-        render: (_r, _open, idx) => String(idx + 1),
+        render: (_r, _open, idx = 0) => String(idx + 1),
       },
       { key: "date", label: "Tarih", render: (r) => r.date },
       { key: "hours", label: "Ders Saati", render: (r) => r.hours.toString() },

@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import darkcontrol from "../../../../../utils/darkmodecontroller";
+import darkcontrol from "../../../../../../utils/darkmodecontroller";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import ReusableTable, {
