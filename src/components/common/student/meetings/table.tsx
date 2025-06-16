@@ -5,7 +5,7 @@ import ReusableTable, {
 } from "../../ReusableTable";
 import { useMeetingsList } from "../../../hooks/meetings/useList";
 import { Meeting } from "../../../../types/meetings/list";
-import { Button } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import { useBranchTable } from "../../../hooks/branch/useBranchList";
 import { useMeetingDelete } from "../../../hooks/meetings/useDelete";
 import { useListStudents } from "../../../hooks/student/useList";
@@ -14,6 +14,8 @@ import { useLevelsTable } from "../../../hooks/levels/useList";
 import { useProgramsTable } from "../../../hooks/program/useList";
 import info from "../../../../assets/images/media/info.svg";
 import info_hover from "../../../../assets/images/media/info-hover.svg";
+import SpkPopovers from "../../../../@spk-reusable-components/reusable-uielements/spk-popovers";
+import { formatCurrency } from "../../../../utils/formatters";
 import inside from "../../../../assets/images/media/svg/inside-button.svg";
 import outside from "../../../../assets/images/media/svg/outside-button.svg";
 
@@ -39,6 +41,8 @@ export default function MeetingListPage() {
   const [student_id, setStudentId] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
+  const [showModal, setShowModal] = useState(false);
   const [filtersEnabled, setFilterEnabled] = useState({
     branch: false,
     type_id: false,
@@ -71,6 +75,15 @@ export default function MeetingListPage() {
   }, [location.search]);
 
   useMeetingDelete();
+
+  const handleShowModal = (meeting: Meeting) => {
+    setSelectedMeeting(meeting);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
 
   const { branchData: branchData } = useBranchTable({
     enabled: filtersEnabled.branch,
@@ -404,47 +417,72 @@ export default function MeetingListPage() {
       },
       {
         key: "parent_phone",
-        label: "Veli Telefonu",
+        label: "Veli Cep",
         render: (row) =>
           row.student
             ? String((row.student as { mobile_phone: string }).mobile_phone)
             : "-",
       },
       {
-        key: "created_by",
-        label: "Oluşturan",
-        render: (row) => (row.created_by ? String(row.created_by) : "-"),
+        key: "meeting_price",
+        label: "Ücret",
+        render: (row) =>
+          row.meeting_price ? String(row.meeting_price) : "-",
+      },
+      {
+        key: "meeting_note",
+        label: "Görüşme Durumu",
+        render: (row) => row.meeting_note || "-",
+      },
+      {
+        key: "registration_price",
+        label: "Kayıt Fiyatı",
+        render: (row) => {
+          const enroll = (row.student as any)?.enrollments?.[0];
+          const price = enroll?.final_fee ?? enroll?.total_fee;
+          return price ? formatCurrency(price, true) : "-";
+        },
       },
       {
         key: "created_by",
-        label: "Görüşme Yetkilisi",
+        label: "Kayıt Eden",
         render: (row) => (row.created_by ? String(row.created_by) : "-"),
+      },
+      {
+        key: "meeting_by",
+        label: "Görüşme Yetkilisi",
+        render: (row) => (row.meeting_by ? String(row.meeting_by) : "-"),
       },
       {
         key: "actions",
         label: "İşlemler",
         render: (row) => (
           <>
-            <Button variant="link">
-              <img
-                src={info}
-                alt="Seç"
-                style={{
-                  width: "28px",
-                  height: "28px",
-                  margin: "-20px",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.src = info_hover)}
-                onMouseLeave={(e) => (e.currentTarget.src = info)}
-              />
-            </Button>{" "}
+            <SpkPopovers
+              trigger="hover"
+              placement="top"
+              title="Not"
+              content={row.meeting_note || "-"}
+            >
+              <Button variant="link">
+                <img
+                  src={info}
+                  alt="Seç"
+                  style={{
+                    width: "28px",
+                    height: "28px",
+                    margin: "-20px",
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.src = info_hover)}
+                  onMouseLeave={(e) => (e.currentTarget.src = info)}
+                />
+              </Button>
+            </SpkPopovers>{" "}
             <Button
               variant="warning-light"
               size="sm"
               className="btn-icon rounded-pill"
-              onClick={() =>
-                navigate(`/studentmeetings?student_id=${row.student_id}`)
-              }
+              onClick={() => handleShowModal(row)}
             >
               <i className="ti ti-message"></i>
             </Button>{" "}
@@ -452,26 +490,67 @@ export default function MeetingListPage() {
         ),
       },
     ],
-    [navigate]
+    [navigate, handleShowModal]
   );
 
   return (
-    <ReusableTable<Meeting>
-      columns={columns}
-      data={meetingsData}
-      loading={loading}
-      error={error}
-      showModal={false}
-      showExportButtons={true}
-      filters={filters}
-      tableMode="single"
-      totalPages={totalPages}
-      totalItems={totalItems}
-      pageSize={pageSize}
-      exportFileName="meetings"
-      currentPage={page}
-      onPageChange={setPage}
-      onPageSizeChange={setPageSize}
-    />
+    <>
+      <ReusableTable<Meeting>
+        columns={columns}
+        data={meetingsData}
+        loading={loading}
+        error={error}
+        showModal={false}
+        showExportButtons={true}
+        filters={filters}
+        tableMode="single"
+        totalPages={totalPages}
+        totalItems={totalItems}
+        pageSize={pageSize}
+        exportFileName="meetings"
+        currentPage={page}
+        onPageChange={setPage}
+        onPageSizeChange={setPageSize}
+      />
+      <Modal show={showModal} onHide={handleCloseModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Öğrenci Görüşmeleri</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedMeeting && (
+            <div>
+              <p>Görüşme Tarihi: {selectedMeeting.meeting_date}</p>
+              <p>
+                Season:{' '}
+                {selectedMeeting.season
+                  ? (selectedMeeting.season as any).name
+                  : '-'}
+              </p>
+              <p>
+                Şube:{' '}
+                {selectedMeeting.branche
+                  ? (selectedMeeting.branche as any).name
+                  : '-'}
+              </p>
+              <p>
+                Öğrenci:{' '}
+                {(selectedMeeting.student as any)?.first_name ?? ''}{' '}
+                {(selectedMeeting.student as any)?.last_name ?? ''}
+              </p>
+              <p>
+                Görüşme Tipi:{' '}
+                {selectedMeeting.type_id === 0
+                  ? 'Yüzyüze'
+                  : selectedMeeting.type_id === 1
+                  ? 'Uzaktan'
+                  : '-'}
+              </p>
+              <p>Not: {selectedMeeting.meeting_note}</p>
+              <p>Oluşturan: {selectedMeeting.created_by}</p>
+            </div>
+          )}
+        </Modal.Body>
+      </Modal>
+    </>
   );
 }
