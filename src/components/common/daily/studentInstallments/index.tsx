@@ -75,7 +75,7 @@ export default function StudentInstallmentsTable() {
     <div className="container-fluid mt-3">
       <Card className="shadow-sm border-0">
         <Card.Header className="bg-white border-bottom-0 pb-0">
-          <h5 className="mb-0 fw-semibold">Öğrenci Taksitleri</h5>
+
         </Card.Header>
         <Card.Body>
           <ReusableTable<IStudent>
