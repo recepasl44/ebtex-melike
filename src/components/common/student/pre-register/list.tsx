@@ -493,10 +493,13 @@ export default function StudentListPage() {
       totalItems={totalItems}
 
       tableMode="single"
-
       onDeleteRow={(row) => {
         deleteStudent(row.id);
       }}
+      deleteMessage={(row) =>
+        `${row.first_name} ${row.last_name} adlı öğrencinin bütün kayıt bilgilerini silmek istediğinizden emin misiniz?`}
+      deleteCancelButtonLabel="Vazgeç"
+      deleteConfirmButtonLabel="Sil"
     />
   );
 }

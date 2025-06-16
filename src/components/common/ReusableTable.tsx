@@ -109,6 +109,13 @@ interface ReusableTableProps<T> {
   /** CSV export verisini özelleştirmek için kullanılır */
   customCsvData?: (string | number | boolean | null)[][];
 
+  /** Silme onay mesajını özelleştirmek için kullanılır */
+  deleteMessage?: (row: T) => string;
+  /** Silme onay modalındaki Vazgeç butonu yazısı */
+  deleteCancelButtonLabel?: string;
+  /** Silme onay modalındaki Sil butonu yazısı */
+  deleteConfirmButtonLabel?: string;
+
 }
 export function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
@@ -156,6 +163,10 @@ function ReusableTable<T extends { [key: string]: any }>({
   period_date,
 
   customCsvData,
+
+  deleteMessage,
+  deleteCancelButtonLabel = "Hayır",
+  deleteConfirmButtonLabel = "Evet",
 
 }: ReusableTableProps<T>) {
   const navigate = useNavigate(); // useNavigate hook'u eklendi
@@ -1310,13 +1321,17 @@ function ReusableTable<T extends { [key: string]: any }>({
           <Modal.Header closeButton>
             <Modal.Title>Onay</Modal.Title>
           </Modal.Header>
-          <Modal.Body>Silmek istediğinizden emin misiniz?</Modal.Body>
+          <Modal.Body>
+            {deleteMessage && rowToDelete
+              ? deleteMessage(rowToDelete)
+              : "Silmek istediğinizden emin misiniz?"}
+          </Modal.Body>
           <Modal.Footer>
             <Button variant="outline-secondary" onClick={handleDeleteCancel}>
-              Hayır
+              {deleteCancelButtonLabel}
             </Button>
             <Button variant="outline-secondary" onClick={handleDeleteConfirm}>
-              Evet
+              {deleteConfirmButtonLabel}
             </Button>
           </Modal.Footer>
         </Modal>
@@ -1450,13 +1465,17 @@ function ReusableTable<T extends { [key: string]: any }>({
           <Modal.Header closeButton>
             <Modal.Title>Onay</Modal.Title>
           </Modal.Header>
-          <Modal.Body>Silmek istediğinizden emin misiniz?</Modal.Body>
+          <Modal.Body>
+            {deleteMessage && rowToDelete
+              ? deleteMessage(rowToDelete)
+              : "Silmek istediğinizden emin misiniz?"}
+          </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleDeleteCancel}>
-              Hayır
+              {deleteCancelButtonLabel}
             </Button>
             <Button variant="danger" onClick={handleDeleteConfirm}>
-              Evet
+              {deleteConfirmButtonLabel}
             </Button>
           </Modal.Footer>
         </Modal>
