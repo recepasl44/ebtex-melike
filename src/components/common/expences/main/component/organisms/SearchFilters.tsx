@@ -63,16 +63,19 @@ function InputWithPlus({
 const FilterGroup: React.FC<FilterGroupProps> = ({
     filters,
     navigate,
-    columnsPerRow = 2,
+    columnsPerRow = 4,
 }) => {
     if (!filters || filters.length === 0) return null;
 
     const groups: FilterDefinition[][] = [];
-    for (let i = 0; i < filters.length; i += columnsPerRow) {
-        groups.push(filters.slice(i, i + columnsPerRow));
-    }
 
-    const colSize = Math.floor(12 / columnsPerRow);
+    if (filters.length <= 6) {
+        groups.push(filters);
+    } else {
+        for (let i = 0; i < filters.length; i += columnsPerRow) {
+            groups.push(filters.slice(i, i + columnsPerRow));
+        }
+    }
 
     // Yerel tarih formatında string olarak döndürür (YYYY-MM-DD)
     const formatLocalDate = (date: Date): string => {
@@ -85,13 +88,18 @@ const FilterGroup: React.FC<FilterGroupProps> = ({
     return (
         <Card>
             <div className="mb-1 px-2 bg-white rounded-3">
-                {groups.map((group, idx) => (
-                    <Row key={`filter-row-${idx}`} className="mb-2">
-                        {group.map((filter) => (
-                            <Col key={filter.key} md={colSize}>
-                                <Form.Group>
-                                    <Row>
-                                        <Col md={12}>
+                {groups.map((group, idx) => {
+                    const width = `${100 / group.length}%`;
+                    return (
+                        <Row key={`filter-row-${idx}`} className="mb-2">
+                            {group.map((filter) => (
+                                <Col
+                                    key={filter.key}
+                                    style={{ flex: '0 0 ' + width, maxWidth: width }}
+                                >
+                                    <Form.Group>
+                                        <Row>
+                                            <Col md={12}>
                                             <Form.Label>{filter.label}</Form.Label>
                                             {filter.type === "autocomplete" ? (
                                                 <InputWithPlus fieldDef={filter} navigate={navigate}>
