@@ -146,15 +146,6 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
   const getFields = useCallback(
     (_values: IAppointmentForm): FieldDefinition[] => [
       {
-        name: "branche_id",
-        label: "Şube",
-        type: "select",
-        required: true,
-        onClick: () =>
-          setFiltersEnabled((prev) => ({ ...prev, branche: true })),
-        options: branchOptions,
-      },
-      {
         name: "season_id",
         label: "Sezon",
         type: "select",
@@ -162,6 +153,15 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
         onClick: () =>
           setFiltersEnabled((prev) => ({ ...prev, season_id: true })),
         options: seasonOptions,
+      },
+      {
+        name: "branche_id",
+        label: "Şube",
+        type: "select",
+        required: true,
+        onClick: () =>
+          setFiltersEnabled((prev) => ({ ...prev, branche: true })),
+        options: branchOptions,
       },
       {
         name: "authorized_person",
@@ -173,6 +173,12 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
         options: authorized_personOptions,
       },
       {
+        name: "meeting_date",
+        label: "Tarih",
+        type: "date",
+        required: true,
+      },
+      {
         name: "type_id",
         label: "Randevu Türü",
         type: "select",
@@ -182,12 +188,6 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
           { label: "Online", value: "online" },
           { label: "Hepsi", value: "all" },
         ],
-      },
-      {
-        name: "meeting_date",
-        label: "Tarih",
-        type: "date",
-        required: true,
       },
       {
         name: "meeting_note",
@@ -235,7 +235,7 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
       fields={getFields}
       initialValues={initialValues}
       onSubmit={handleSubmit}
-      confirmButtonLabel={mode === "add" ? "Ekle" : "Kaydet"}
+      confirmButtonLabel={mode === "add" ? "Ekle" : "Güncelle"}
       cancelButtonLabel="Vazgeç"
       isLoading={isLoading}
       error={combinedError || null}

@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReusableTable, { ColumnDefinition } from '../../ReusableTable';
 import { Button } from 'react-bootstrap';
+import Pageheader from '../../../page-header/pageheader';
 
 import { useAppointmentList } from '../../../hooks/appointment/useList';
 import { useQuestionDelete } from '../../../hooks/questions/useDelete';
@@ -45,56 +46,38 @@ export default function QuestionLabeling() {
 
   const columns: ColumnDefinition<data>[] = useMemo(() => [
     {
+      key: 'season',
+      label: 'Sezon',
+      render: (row) => (row.season as { name: string } | undefined)?.name ?? '-'
+    },
+    {
       key: 'branches',
       label: 'Şube',
       render: (row) => row.branche?.name ?? ''
     },
     {
-      key: 'appointment_time',
-      label: 'Randevu Zamanı',
-      render: (row) => row.meeting_date ?? ''
-    },
-   
-   
-
-    {
       key: 'appointment_type',
-      label: 'Tür',
+      label: 'Görüşme Türü',
       render: (row) => {
         if (row.type_id === 1) return 'Yüzyüze'
         if (row.type_id === 2) return 'Uzaktan'
         return '-'
       }
     },
-
-    {
-      key: 'identification_no',
-      label: 'TC Kimlik No',
-
-      render: (row) => row.student?.identification_no ?? ''
-    },
-
-    {
-      key: 'first_name',
-      label: 'Adı Soyadı',
-
-      render: (row) => (row.student?.first_name ?? '-') + ' ' + (row.student?.last_name ?? '')
-    },
-   
-    {
-      key: 'level',
-      label: 'Sınıf Seviyesi',
-      render: (row) => (row.student?.level as { name: string } | undefined)?.name ?? '-'
-    },
-    {
-      key: 'parent_id',
-      label: 'Veli Adı',
-      render: (row) => row.student?.parent?.full_name ?? '-'
-    },
     {
       key: 'meeting_note',
-      label: 'Görüşme Durumu',
-      render: (row: data) => row.meeting_by ?? '-'
+      label: 'Görüşme Notu',
+      render: (row) => row.meeting_note ?? '-'
+    },
+    {
+      key: 'created_by',
+      label: 'Kayıt Eden',
+      render: (row) => (row.created_by ?? '-') as any
+    },
+    {
+      key: 'meeting_by',
+      label: 'Görüşme Yetkilisi',
+      render: (row) => row.meeting_by ?? '-'
     },
 
 
@@ -105,13 +88,13 @@ export default function QuestionLabeling() {
         <>
 
 
-<Button
-                            variant="warning-light"
+                          <Button
+                            variant="info-light"
                             size="sm"
                             className="btn-icon rounded-pill"
                             onClick={() => navigate(`/appointmentscrud/${row.id}`)}
                           >
-                            <i className="ti ti-message"></i>
+                            <i className="ti ti-pencil"></i>
                           </Button>
               
                           <Button
@@ -143,9 +126,13 @@ export default function QuestionLabeling() {
 
 
   return (
-    <div>
-        
-      <h4>Görüşme Listesi</h4>
+    <div className="px-4">
+      <Pageheader
+        title="Ön Kayıt"
+        subtitle="Öğrenci Randevuları"
+        currentpage="Öğrenci Randevuları"
+        activepage="Öğrenci Randevuları"
+      />
       <ReusableTable<data>
         columns={columns}
         data={appointmentData as data[]}
@@ -168,12 +155,15 @@ export default function QuestionLabeling() {
         }}
         exportFileName="question_labeling"
         onDeleteRow={(row) => {
-
           if (row.id !== undefined) {
             removeAppointment(row.id);
           }
-
         }}
+        deleteMessage={(row) =>
+          `${row.meeting_date || ''} tarihli randevuyu silmek istediğinizden emin misiniz?`
+        }
+        cancelButtonText="Vazgeç"
+        confirmButtonText="Sil"
       />
     </div>
   );
