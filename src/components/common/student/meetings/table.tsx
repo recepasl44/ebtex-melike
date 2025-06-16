@@ -5,7 +5,7 @@ import ReusableTable, {
 } from "../../ReusableTable";
 import { useMeetingsList } from "../../../hooks/meetings/useList";
 import { Meeting } from "../../../../types/meetings/list";
-import { Button, Modal } from "react-bootstrap";
+import { Button, Modal, Accordion } from "react-bootstrap";
 import { useBranchTable } from "../../../hooks/branch/useBranchList";
 import { useMeetingDelete } from "../../../hooks/meetings/useDelete";
 import { useListStudents } from "../../../hooks/student/useList";
@@ -520,36 +520,42 @@ export default function MeetingListPage() {
         </Modal.Header>
         <Modal.Body>
           {selectedMeeting && (
-            <div>
-              <p>Görüşme Tarihi: {selectedMeeting.meeting_date}</p>
-              <p>
-                Season:{' '}
-                {selectedMeeting.season
-                  ? (selectedMeeting.season as any).name
-                  : '-'}
-              </p>
-              <p>
-                Şube:{' '}
-                {selectedMeeting.branche
-                  ? (selectedMeeting.branche as any).name
-                  : '-'}
-              </p>
-              <p>
-                Öğrenci:{' '}
-                {(selectedMeeting.student as any)?.first_name ?? ''}{' '}
-                {(selectedMeeting.student as any)?.last_name ?? ''}
-              </p>
-              <p>
-                Görüşme Tipi:{' '}
-                {selectedMeeting.type_id === 0
-                  ? 'Yüzyüze'
-                  : selectedMeeting.type_id === 1
-                  ? 'Uzaktan'
-                  : '-'}
-              </p>
-              <p>Not: {selectedMeeting.meeting_note}</p>
-              <p>Oluşturan: {selectedMeeting.created_by}</p>
-            </div>
+            <Accordion>
+              <Accordion.Item eventKey="0">
+                <Accordion.Header>
+                  Görüşme Tarihi: {selectedMeeting.meeting_date}
+                </Accordion.Header>
+                <Accordion.Body>
+                  <p>
+                    Season:{' '}
+                    {selectedMeeting.season
+                      ? (selectedMeeting.season as any).name
+                      : '-'}
+                  </p>
+                  <p>
+                    Şube:{' '}
+                    {selectedMeeting.branche
+                      ? (selectedMeeting.branche as any).name
+                      : '-'}
+                  </p>
+                  <p>
+                    Öğrenci:{' '}
+                    {(selectedMeeting.student as any)?.first_name ?? ''}{' '}
+                    {(selectedMeeting.student as any)?.last_name ?? ''}
+                  </p>
+                  <p>
+                    Görüşme Tipi:{' '}
+                    {selectedMeeting.type_id === 0
+                      ? 'Yüzyüze'
+                      : selectedMeeting.type_id === 1
+                      ? 'Uzaktan'
+                      : '-'}
+                  </p>
+                  <p>Not: {selectedMeeting.meeting_note}</p>
+                  <p>Oluşturan: {selectedMeeting.created_by}</p>
+                </Accordion.Body>
+              </Accordion.Item>
+            </Accordion>
           )}
         </Modal.Body>
       </Modal>
