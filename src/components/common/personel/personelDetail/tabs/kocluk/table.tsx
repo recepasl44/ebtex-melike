@@ -1,11 +1,12 @@
 
-import { useEffect, useState, useMemo } from "react"
+import { useState, useMemo } from "react"
 import { useNavigate } from "react-router-dom"
 import { Button } from "react-bootstrap"
-import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable"
-import { useCoachingShow } from "../../../../../hooks/employee/coaching/useShow"
-import { useCoachingDelete } from "../../../../../hooks/employee/coaching/useDelete"
-import { Coaching } from "../../../../../../types/employee/coaching/list"
+import ReusableTable, {
+  ColumnDefinition,
+  FilterDefinition,
+} from "../../../../ReusableTable"
+import { useCoachingList } from "../../../../../hooks/employee/coaching/useList"
 
 interface CoachingTabProps {
   personelId: number
@@ -14,118 +15,133 @@ interface CoachingTabProps {
 
 export default function CoachingTab({ personelId, enabled }: CoachingTabProps) {
   const navigate = useNavigate()
-  const [data, setData] = useState<Coaching[]>([])
 
-  const {
-    coaching: _singleCoaching,
-    getCoaching,
-    error: detailError,
-  } = useCoachingShow()
-  const { deleteExistingCoaching, error: deleteError } = useCoachingDelete()
+  const [dateRange, setDateRange] = useState<{ startDate: string; endDate: string } | null>(null)
+  const [classLevel, setClassLevel] = useState("")
+  const [trainerName, setTrainerName] = useState("")
 
-  // when enabled, fetch this person's coachings
-  useEffect(() => {
-    if (!enabled) return
-    ;(async () => {
-      const res = await getCoaching(personelId)
-      // show endpoint returns array under `.data` or as array directly
-      const arr = Array.isArray(res) ? res : res ? [res] : []
-      setData(arr)
-    })()
-  }, [enabled, personelId, getCoaching])
+  const { coachings, loading, error } = useCoachingList({
+    enabled,
+    personel_id: personelId,
+    start_date: dateRange?.startDate,
+    end_date: dateRange?.endDate,
+    class_level: classLevel,
+    trainer_name: trainerName,
+  })
 
-  const columns: ColumnDefinition<Coaching>[] = useMemo(
+  interface AggRow {
+    ad_soyad: string
+    totalSessions: number
+    totalStudents: number
+    totalFee: number
+  }
+
+  const aggData: AggRow[] = useMemo(() => {
+    const map = new Map<string, AggRow>()
+    ;(coachings || []).forEach(c => {
+      const key = c.ad_soyad || "-"
+      if (!map.has(key)) {
+        map.set(key, { ad_soyad: key, totalSessions: 0, totalStudents: 0, totalFee: 0 })
+      }
+      const item = map.get(key)!
+      item.totalSessions += 1
+      item.totalStudents += Number(c.ogrenci_sayisi) || 0
+      item.totalFee += Number(c.toplam_ucret) || 0
+    })
+    return Array.from(map.values())
+  }, [coachings])
+
+  const totalFeeSum = useMemo(
+    () => aggData.reduce((sum, r) => sum + r.totalFee, 0),
+    [aggData]
+  )
+
+  const columns: ColumnDefinition<AggRow>[] = useMemo(
     () => [
+      { key: "ad_soyad", label: "Eğitmen Adı" },
       {
-        key: "tarih",
-        label: "Tarih",
-        render: row => row.tarih || "-",
+        key: "totalSessions",
+        label: "Toplam Seans Sayısı",
+        render: r => r.totalSessions.toString(),
       },
       {
-        key: "kisi_basi_ucreti",
-        label: "Kişi Başı",
-        render: row =>
-          row.kisi_basi_ucreti
-            ? `${Number(row.kisi_basi_ucreti).toLocaleString()} ₺`
-            : "0,00 ₺",
+        key: "totalStudents",
+        label: "Toplam Öğrenci Sayısı",
+        render: r => r.totalStudents.toString(),
       },
       {
-        key: "ogrenci_sayisi",
-        label: "Öğrenci Sayısı",
-        render: row => row.ogrenci_sayisi?.toString() ?? "0",
-      },
-      {
-        key: "toplam_ucret",
-        label: "Toplam",
-        render: (row: { toplam_ucret: any }) =>
-          row.toplam_ucret
-            ? `${Number(row.toplam_ucret).toLocaleString()} ₺`
-            : "0,00 ₺",
+        key: "totalFee",
+        label: "Toplam Koçluk Ücreti (₺)",
+        render: r => `${r.totalFee.toLocaleString()} ₺`,
       },
       {
         key: "actions",
         label: "İşlemler",
-        render: (row, openDeleteModal) => (
-          <>
-            <Button
-              size="sm"
-              variant="primary"
-              onClick={() =>
-                navigate(`/personelCoachingCrud/${row.id}`, {
-                  state: {
-                    personelId,
-                    selectedCoaching: data.find(c => c.id === row.id),
-                  },
-                })
-              }
-            >
-              <i className="ti ti-pencil" />
-            </Button>{" "}
-            <Button
-              size="sm"
-              variant="danger"
-              onClick={() => openDeleteModal?.(row)}
-            >
-              <i className="ti ti-trash" />
-            </Button>
-          </>
+        render: r => (
+          <Button
+            size="sm"
+            variant="info"
+            onClick={() =>
+              navigate("/personelCoachingCrud", {
+                state: { personelId, instructorName: r.ad_soyad },
+              })
+            }
+          >
+            Detay
+          </Button>
         ),
       },
     ],
-    [navigate, personelId, data]
+    [navigate, personelId]
   )
 
-  function handleDelete(row: Coaching) {
-    if (row.id) deleteExistingCoaching(row.id)
-  }
+  const filters: FilterDefinition[] = useMemo(
+    () => [
+      {
+        key: "dateRange",
+        label: "Tarih Aralığı",
+        type: "doubledate",
+        value: dateRange as any,
+        onChange: val => setDateRange(val),
+      },
+      {
+        key: "classLevel",
+        label: "Sınıf Seviyesi",
+        type: "text",
+        value: classLevel,
+        onChange: val => setClassLevel(val),
+      },
+      {
+        key: "trainerName",
+        label: "Eğitmen Adı Soyadı",
+        type: "text",
+        value: trainerName,
+        onChange: val => setTrainerName(val),
+      },
+    ],
+    [dateRange, classLevel, trainerName]
+  )
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h6>Koçluk</h6>
-        <Button
-          variant="success"
-          onClick={() =>
-            navigate("/personelCoachingCrud", { state: { personelId } })
-          }
-        >
-          Ekle
-        </Button>
-      </div>
-
-      <ReusableTable<Coaching>
+      <ReusableTable<AggRow>
         columns={columns}
-        data={data}
-        error={detailError || deleteError}
+        data={aggData}
+        filters={filters}
+        loading={loading}
+        error={error}
         currentPage={1}
         totalPages={1}
-        totalItems={data.length}
-        pageSize={data.length}
+        totalItems={aggData.length}
+        pageSize={aggData.length}
         onPageChange={() => {}}
         onPageSizeChange={() => {}}
         exportFileName="kocluk"
-        showExportButtons
-        onDeleteRow={handleDelete}
+        customFooter={
+          <div className="text-end fw-bold p-2">
+            Toplam: {totalFeeSum.toLocaleString()} ₺
+          </div>
+        }
       />
     </div>
   )

@@ -1,10 +1,14 @@
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { useNavigate, useLocation, useParams } from "react-router-dom"
 import ReusableModalForm, { FieldDefinition } from "../../../../ReusableModalForm"
+import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable"
+import { useCoachingList } from "../../../../../hooks/employee/coaching/useList"
 import { useCoachingShow } from "../../../../../hooks/employee/coaching/useShow"
 import { useCoachingAdd } from "../../../../../hooks/employee/coaching/useAdd"
 import { useCoachingUpdate } from "../../../../../hooks/employee/coaching/useUpdate"
+import { useCoachingDelete } from "../../../../../hooks/employee/coaching/useDelete"
+import { Modal, Button } from "react-bootstrap"
 import { Coaching } from "../../../../../../types/employee/coaching/list"
 
 type FormValues = {
@@ -23,14 +27,22 @@ export default function PersonelCoachingCrud() {
   const mode = Boolean(id) ? "update" : "add"
 
   const { state } = useLocation() as {
-    state?: { personelId?: number; selectedCoaching?: Coaching }
+    state?: { personelId?: number; selectedCoaching?: Coaching; instructorName?: string }
   }
   const personelId = state?.personelId
+  const instructorName = state?.instructorName
   const selectedCoaching = state?.selectedCoaching
 
   const { coaching, getCoaching, error: detailError } = useCoachingShow()
   const { addNewCoaching, error: addError } = useCoachingAdd()
   const { updateExistingCoaching, error: updateError } = useCoachingUpdate()
+  const { deleteExistingCoaching } = useCoachingDelete()
+
+  const { coachings, loading: listLoading, error: listError } = useCoachingList({
+    enabled: !id && !!personelId,
+    personel_id: personelId,
+    instructor_name: instructorName,
+  })
 
   const [initialValues, setInitialValues] = useState<FormValues>({
     tarih: "",
@@ -111,20 +123,109 @@ export default function PersonelCoachingCrud() {
   const isLoading = !!detailError
   const error     = detailError || addError || updateError
 
+  if (mode === "add" || mode === "update") {
+    return (
+      <ReusableModalForm<FormValues>
+        show
+        title={mode === "add" ? "Koçluk Ekle" : "Koçluk Güncelle"}
+        fields={getFields()}
+        initialValues={initialValues}
+        onSubmit={handleSubmit}
+        confirmButtonLabel={mode === "add" ? "Kaydet" : "Güncelle"}
+        cancelButtonLabel="İptal"
+        isLoading={isLoading}
+        error={error || null}
+        onClose={() => navigate(-1)}
+        autoGoBackOnModalClose
+        mode="double"
+      />
+    )
+  }
+
+  const columns: ColumnDefinition<Coaching>[] = useMemo(
+    () => [
+      { key: "tarih", label: "Tarih", render: r => r.tarih || "-" },
+      {
+        key: "ad_soyad",
+        label: "Öğrenci Adı Soyadı",
+        render: r => r.ad_soyad || "-",
+      },
+      {
+        key: "saat",
+        label: "Başlangıç- Bitiş",
+        render: r => `${(r as any).baslangic_saati || ""} - ${(r as any).bitis_saati || ""}`,
+      },
+      {
+        key: "kisi_basi_ucreti",
+        label: "Seans Ücreti (₺)",
+        render: r => `${Number(r.kisi_basi_ucreti || 0).toLocaleString()} ₺`,
+      },
+      {
+        key: "actions",
+        label: "İşlemler",
+        render: row => (
+          <>
+            <Button
+              size="sm"
+              variant="primary"
+              onClick={() =>
+                navigate(`/personelCoachingCrud/${row.id}`, { state: { personelId, instructorName } })
+              }
+            >
+              <i className="ti ti-pencil" />
+            </Button>{" "}
+            <Button
+              size="sm"
+              variant="danger"
+              onClick={() => row.id && deleteExistingCoaching(row.id)}
+            >
+              <i className="ti ti-trash" />
+            </Button>
+          </>
+        ),
+      },
+    ],
+    [navigate, personelId, instructorName, deleteExistingCoaching]
+  )
+
+  const total = useMemo(
+    () => coachings.reduce((sum, c) => sum + Number(c.kisi_basi_ucreti || 0), 0),
+    [coachings]
+  )
+
   return (
-    <ReusableModalForm<FormValues>
-      show
-      title={mode === "add" ? "Koçluk Ekle" : "Koçluk Güncelle"}
-      fields={getFields()}
-      initialValues={initialValues}
-      onSubmit={handleSubmit}
-      confirmButtonLabel={mode === "add" ? "Kaydet" : "Güncelle"}
-      cancelButtonLabel="İptal"
-      isLoading={isLoading}
-      error={error || null}
-      onClose={() => navigate(-1)}
-      autoGoBackOnModalClose
-      mode="double"
-    />
+    <Modal show onHide={() => navigate(-1)} size="lg">
+      <Modal.Header closeButton>
+        <Modal.Title>Koçluk Detayları</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <ReusableTable<Coaching>
+          columns={columns}
+          data={coachings}
+          loading={listLoading}
+          error={listError}
+          currentPage={1}
+          totalPages={1}
+          totalItems={coachings.length}
+          pageSize={coachings.length}
+          onPageChange={() => {}}
+          onPageSizeChange={() => {}}
+          exportFileName="kocluk_detay"
+          customFooter={
+            <div className="text-end fw-bold p-2">
+              Toplam: {total.toLocaleString()} ₺
+            </div>
+          }
+        />
+      </Modal.Body>
+      <Modal.Footer>
+        <Button
+          variant="success"
+          onClick={() => navigate("/personelCoachingCrud", { state: { personelId, instructorName } })}
+        >
+          Ekle
+        </Button>
+      </Modal.Footer>
+    </Modal>
   )
 }
