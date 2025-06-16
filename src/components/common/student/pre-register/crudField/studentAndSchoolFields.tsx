@@ -125,6 +125,7 @@ export const getStudentAndSchoolFields = (): FieldDefinition[] => {
       name: "register_no",
       label: "Kayıt No",
       type: "text",
+      placeholder: "Otomatik atanacak",
       required: false,
       disabled: true,
     },
