@@ -317,34 +317,22 @@ export default function QuestionLabeling() {
         label: "Randevu Zamanı",
         render: (row) => row.meeting_date ?? "",
       },
-
       {
-        key: "appointment_type",
-        label: "Tür",
-        render: (row) => {
-          if (row.type_id === 1) return "Yüzyüze";
-          if (row.type_id === 2) return "Uzaktan";
-          return "-";
-        },
+        key: "student_id",
+        label: "Kayıt No",
+        render: (row) => (row.student_id ? String(row.student_id) : "-"),
       },
-
       {
         key: "identification_no",
-        label: "TC Kimlik No",
-
+        label: "T.C Kimlik",
         render: (row) => row.student?.identification_no ?? "",
       },
-
       {
         key: "first_name",
-        label: "Adı Soyadı",
-
+        label: "Ad Soyad",
         render: (row) =>
-          (row.student?.first_name ?? "-") +
-          " " +
-          (row.student?.last_name ?? ""),
+          (row.student?.first_name ?? "-") + " " + (row.student?.last_name ?? ""),
       },
-
       {
         key: "level",
         label: "Sınıf Seviyesi",
@@ -352,26 +340,27 @@ export default function QuestionLabeling() {
           (row.student?.level as { name: string } | undefined)?.name ?? "-",
       },
       {
-        key: "parent_id",
-        label: "Veli Adı",
-        render: (row) => row.student?.parent?.full_name ?? "-",
+        key: "created_by",
+        label: "Kayıt Eden",
+        render: (row) => (row.created_by ? String(row.created_by) : "-"),
       },
       {
-        key: "meeting_note",
-        label: "Görüşme Durumu",
-        render: (row: data) => row.meeting_by ?? "-",
+        key: "meeting_by",
+        label: "Görüşme Yetkilisi",
+        render: (row: data) => (row.meeting_by ? String(row.meeting_by) : "-"),
       },
-
       {
         key: "actions",
-        label: "Actions",
+        label: "İşlemler",
         render: (row) => (
           <>
             <Button
               variant="warning-light"
               size="sm"
               className="btn-icon rounded-pill"
-              onClick={() => navigate(`/studentmeetings?student_id=${row.id}`)}
+              onClick={() =>
+                navigate(`/studentmeetings?student_id=${row.student_id}`)
+              }
             >
               <i className="ti ti-message"></i>
             </Button>{" "}
@@ -379,7 +368,7 @@ export default function QuestionLabeling() {
               variant=""
               size="sm"
               onClick={() =>
-                navigate(`/appointmentsdetail?student_id=${row.id}`)
+                navigate(`/appointmentsdetail?student_id=${row.student_id}`)
               }
             >
               <img
