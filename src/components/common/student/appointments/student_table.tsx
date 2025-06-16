@@ -15,8 +15,8 @@ import appoipmentButton from '../../../../assets/images/media/appoipment-buton.s
 
 
 export default function QuestionLabeling() {
-    const searchParams = new URLSearchParams(location.search);
-    const studentIdFromUrl = searchParams.get("student_id");
+  const searchParams = new URLSearchParams(location.search);
+  const studentIdFromUrl = searchParams.get("student_id");
   const navigate = useNavigate();
 
 
@@ -30,7 +30,7 @@ export default function QuestionLabeling() {
   const [page, setPage] = useState<number>(1);
 
 
-  
+
   const {
     appointmentData,
     loading,
@@ -39,9 +39,9 @@ export default function QuestionLabeling() {
     totalItems,
     setPage: _updatePage,
     setPageSize: _updateTablePageSize
-  } = useAppointmentList({enabled: true, page, pageSize, student_id: studentIdFromUrl ? Number(studentIdFromUrl) : undefined });
+  } = useAppointmentList({ enabled: true, page, pageSize, student_id: studentIdFromUrl ? Number(studentIdFromUrl) : undefined });
   // Filtre seçeneklerini oluşturma
-  
+
 
   const columns: ColumnDefinition<data>[] = useMemo(() => [
     {
@@ -54,8 +54,8 @@ export default function QuestionLabeling() {
       label: 'Randevu Zamanı',
       render: (row) => row.meeting_date ?? ''
     },
-   
-   
+
+
 
     {
       key: 'appointment_type',
@@ -80,7 +80,7 @@ export default function QuestionLabeling() {
 
       render: (row) => (row.student?.first_name ?? '-') + ' ' + (row.student?.last_name ?? '')
     },
-   
+
     {
       key: 'level',
       label: 'Sınıf Seviyesi',
@@ -105,36 +105,36 @@ export default function QuestionLabeling() {
         <>
 
 
-<Button
-                            variant="warning-light"
-                            size="sm"
-                            className="btn-icon rounded-pill"
-                            onClick={() => navigate(`/appointmentscrud/${row.id}`)}
-                          >
-                            <i className="ti ti-message"></i>
-                          </Button>
-              
-                          <Button
-                            variant=""
-                            size="sm"
-                            onClick={() => navigate(`/studentmeetings?student_id=/${row.id}`)}
-                          >
-                            <img
-                              src={appoipmentButton}
-                              alt="Seç"
-                              style={{
-                                width: "28px",
-                                height: "28px",
-                                margin: "-10px",
-                              }}
-                              onMouseEnter={(e) =>
-                                (e.currentTarget.src = appoipmentButtonHover)
-                              }
-                              onMouseLeave={(e) =>
-                                (e.currentTarget.src = appoipmentButton)
-                              }
-                            />
-                          </Button>
+          <Button
+            variant="warning-light"
+            size="sm"
+            className="btn-icon rounded-pill"
+            onClick={() => navigate(`/appointmentscrud/${row.id}`)}
+          >
+            <i className="ti ti-message"></i>
+          </Button>
+
+          <Button
+            variant=""
+            size="sm"
+            onClick={() => navigate(`/studentmeetings?student_id=/${row.id}`)}
+          >
+            <img
+              src={appoipmentButton}
+              alt="Seç"
+              style={{
+                width: "28px",
+                height: "28px",
+                margin: "-10px",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.src = appoipmentButtonHover)
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.src = appoipmentButton)
+              }
+            />
+          </Button>
 
         </>
       ),
@@ -144,7 +144,7 @@ export default function QuestionLabeling() {
 
   return (
     <div>
-        
+
       <h4>Görüşme Listesi</h4>
       <ReusableTable<data>
         columns={columns}
