@@ -93,6 +93,10 @@ interface ReusableTableProps<T> {
   buttonText?: string; // Buton metni özelliği eklendi
   // Ek: Satır silme işlemi için callback (silme onayı verildiğinde çağrılır)
   onDeleteRow?: (row: T) => void;
+  // Silme modali için özelleştirilebilir mesaj
+  deleteMessage?: (row: T) => React.ReactNode;
+  cancelButtonText?: string;
+  confirmButtonText?: string;
   // Modal desteği
   showModal?: boolean;
   onCloseModal?: () => void;
@@ -132,6 +136,9 @@ function ReusableTable<T extends { [key: string]: any }>({
   button,
   buttonText,
   onDeleteRow,
+  deleteMessage,
+  cancelButtonText,
+  confirmButtonText,
   showModal = false,
   onCloseModal,
   pageTitle,
@@ -1108,13 +1115,17 @@ function ReusableTable<T extends { [key: string]: any }>({
           <Modal.Header closeButton>
             <Modal.Title>Onay</Modal.Title>
           </Modal.Header>
-          <Modal.Body>Silmek istediğinizden emin misiniz?</Modal.Body>
+          <Modal.Body>
+            {deleteMessage && rowToDelete
+              ? deleteMessage(rowToDelete)
+              : "Silmek istediğinizden emin misiniz?"}
+          </Modal.Body>
           <Modal.Footer>
             <Button variant="outline-secondary" onClick={handleDeleteCancel}>
-              Hayır
+              {cancelButtonText || "Hayır"}
             </Button>
             <Button variant="outline-secondary" onClick={handleDeleteConfirm}>
-              Evet
+              {confirmButtonText || "Evet"}
             </Button>
           </Modal.Footer>
         </Modal>
@@ -1246,13 +1257,17 @@ function ReusableTable<T extends { [key: string]: any }>({
           <Modal.Header closeButton>
             <Modal.Title>Onay</Modal.Title>
           </Modal.Header>
-          <Modal.Body>Silmek istediğinizden emin misiniz?</Modal.Body>
+          <Modal.Body>
+            {deleteMessage && rowToDelete
+              ? deleteMessage(rowToDelete)
+              : "Silmek istediğinizden emin misiniz?"}
+          </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleDeleteCancel}>
-              Hayır
+              {cancelButtonText || "Hayır"}
             </Button>
             <Button variant="danger" onClick={handleDeleteConfirm}>
-              Evet
+              {confirmButtonText || "Evet"}
             </Button>
           </Modal.Footer>
         </Modal>
