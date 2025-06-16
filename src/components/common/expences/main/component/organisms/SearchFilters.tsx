@@ -88,7 +88,7 @@ const FilterGroup: React.FC<FilterGroupProps> = ({
         <Card>
             <div className="mb-1 bg-white rounded-3">
                 {groups.map((group, idx) => {
-                    const width = `${100 / group.length}%`;
+                    const width = `${100 / (filters.length <= 6 ? group.length : columnsPerRow)}%`;
                     return (
                         <Row key={`filter-row-${idx}`} className="mb-2">
                             {group.map((filter) => (
