@@ -19,11 +19,13 @@ export function useTuitionFeesList(params: { enabled?: boolean; [key: string]: a
   useEffect(() => {
     if (!enabled) return;
 
-    dispatch(fetchTuitionFeesList({
-      ...otherParams,
-      filter,
-    }));
-  }, [enabled, filter, dispatch, otherParams]);
+    dispatch(
+      fetchTuitionFeesList({
+        ...otherParams,
+        filter,
+      })
+    );
+  }, [enabled, filter, dispatch, JSON.stringify(otherParams)]);
   const fees: TuitionFees[] = data || [];
   const loading = status === TuitionFeesListStatus.LOADING;
 
