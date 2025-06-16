@@ -271,13 +271,8 @@ export const MENUITEMS: any = [
           children: [
             {
               title: "Ders & Ek Ücretler",
-              type: "sub",
-              children: [
-                { title: "Ders Ücreti", path: "/personelTuitionFeeCrud", type: "link" },
-                { title: "Ders – Soru Çözüm Ücretleri", path: "/personelCouponCrud", type: "link" },
-                { title: "Koçluk Ücreti", path: "/personelCoachingCrud", type: "link" },
-                { title: "Özel Ders", path: "/personelSpecialCrud", type: "link" },
-              ],
+              path: "/lessonOctFee",
+              type: "link",
             },
             {
               title: "Çalışma ve Hakediş",
