@@ -101,8 +101,13 @@ export default function TuitionFeesTab() {
         key: "actions",
         label: "İşlemler",
         render: (r) => (
-          <Button size="sm" variant="primary" onClick={() => setDetailRow(r)}>
-            Detay
+          <Button
+            variant="primary-light"
+            size="sm"
+            className="btn-icon rounded-pill"
+            onClick={() => setDetailRow(r)}
+          >
+            <i className="ti ti-eye" />
           </Button>
         ),
       },
