@@ -173,6 +173,7 @@ export default function QuestionLabeling() {
       appointment_type,
       appointment_time,
       Class_level,
+      first_name,
       student_id,
     ]
   );

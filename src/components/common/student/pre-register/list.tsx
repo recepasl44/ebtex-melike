@@ -306,7 +306,7 @@ export default function StudentListPage() {
       },
       {
         key: "first_name",
-        label: "Öğrenci Adı",
+        label: "Adı Soyadı",
         value: inputName,
         type: "autocomplete",
         onChange: (val: any) => {
