@@ -41,6 +41,8 @@ export default function StudentListPage() {
   const [inputName, setInputName] = useState(""); // UI için
   const debouncedName = useDebounce<string>(inputName, 500);
   const [created_by, setCreatedBy] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [filtersEnabled, setFiltersEnabled] = useState({
     date: false,
     branch: false,
@@ -71,6 +73,8 @@ export default function StudentListPage() {
     endDate: endDate || undefined,
     branch_id: branch ? Number(branch) : undefined,
     created_by: created_by || undefined,
+    page,
+    paginate: pageSize,
   });
 
   const { branchData: branchData } = useBranchTable({
@@ -98,7 +102,7 @@ export default function StudentListPage() {
     enabled: filtersEnabled.first_name,
     first_name: firstName,
     page: 1,
-    pageSize: 100,
+    paginate: 100,
   });
 
   const authorized_personOptions = useMemo(
@@ -116,7 +120,7 @@ export default function StudentListPage() {
   useListStudents({
     enabled: filtersEnabled.first_name,
     page: 1,
-    pageSize: 100,
+    paginate: 100,
   });
   const handleFilterChange = (key: string, value: string) => {
     setFiltersEnabled((prev) => ({
@@ -195,7 +199,7 @@ export default function StudentListPage() {
   );
   const updateQueryParams = (params: QueryParams) => {
     const query = new URLSearchParams();
-    query.set("paginate", String(params.page));
+    query.set("paginate", String(pageSize));
     query.set("startDate", String(params.date_range[0]));
     query.set("endDate", String(params.date_range[1]));
     navigate(`?${query.toString()}`);
@@ -492,6 +496,9 @@ export default function StudentListPage() {
       totalPages={totalPages}
       totalItems={totalItems}
 
+      currentPage={page}
+      pageSize={pageSize}
+
       tableMode="single"
       onDeleteRow={(row) => {
         deleteStudent(row.id);
@@ -500,6 +507,11 @@ export default function StudentListPage() {
         `${row.first_name} ${row.last_name} adlı öğrencinin bütün kayıt bilgilerini silmek istediğinizden emin misiniz?`}
       deleteCancelButtonLabel="Vazgeç"
       deleteConfirmButtonLabel="Sil"
+      onPageChange={(p) => setPage(p)}
+      onPageSizeChange={(size) => {
+        setPageSize(size);
+        setPage(1);
+      }}
     />
   );
 }
