@@ -506,6 +506,11 @@ export default function StudentListPage() {
       onDeleteRow={(row) => {
         deleteStudent(row.id);
       }}
+      deleteMessage={(row) =>
+        `${row.first_name || ""} ${row.last_name || ""} adlı öğrencinin bütün kayıt bilgilerini silmek istediğinizden emin misiniz?`
+      }
+      cancelButtonText="Vazgeç"
+      confirmButtonText="Sil"
     />
   );
 }
