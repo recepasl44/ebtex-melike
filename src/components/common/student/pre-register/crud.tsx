@@ -7,7 +7,7 @@ import { useShowStudent } from "../../../hooks/student/useShowStudent";
 import { useAddStudent } from "../../../hooks/student/useAddStudent";
 import { getPreRegisterFields } from "./crudField";
 import { useRegisterNo } from "../../../hooks/student/useRegisterNo";
-import { formatDateForApi } from "../../../utils/formatters";
+import { formatDateForApi } from "../../../../utils/formatters";
 interface StudentModalProps {
   show: boolean;
   onClose: () => void;
@@ -45,7 +45,7 @@ interface IStudentForm extends FormikValues {
     is_parent?: boolean;
     kinship_id?: number;
     kinship?: string;
-    identification_no?: number;
+    identification_no?: string;
     full_name?: string;
     phone?: string;
   };
@@ -184,8 +184,8 @@ const StudentModal: React.FC<StudentModalProps> = ({ onClose, onRefresh }) => {
     mode === "add"
       ? addError
       : mode === "update"
-      ? updateError || showError
-      : null;
+        ? updateError || showError
+        : null;
 
   async function handleSubmit(
     values: IStudentForm,
