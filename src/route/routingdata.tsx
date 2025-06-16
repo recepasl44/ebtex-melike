@@ -316,9 +316,7 @@ const PersonelSpecialCrud = lazy(
 const PersonelCoachingCrud = lazy(
   () => import("../components/common/personel/personelDetail/tabs/kocluk/crud")
 );
-const LessonOctFeeIndex = lazy(
-  () => import("../components/common/personel/personelDetail/lesson-oct-fee")
-);
+
 const PersonelFinancialSummary = lazy(
   () => import("../components/common/personel/financialSummary")
 );
@@ -920,11 +918,7 @@ export const Routedata = [
     element: <PersonelCouponCrud />,
   },
 
-  {
-    id: 10326542,
-    path: `${import.meta.env.BASE_URL}lesson-oct-fee/:id?`,
-    element: <LessonOctFeeIndex />,
-  },
+
 
   {
     id: 10,
