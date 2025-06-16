@@ -135,8 +135,8 @@ export default function CouponTab({ personelId, enabled }: CouponTabProps) {
         totalPages={1}
         totalItems={coupons.length}
         pageSize={coupons.length}
-        onPageChange={() => {}}
-        onPageSizeChange={() => {}}
+        onPageChange={() => { }}
+        onPageSizeChange={() => { }}
         exportFileName="kupon_ucreti"
         showExportButtons
         onDeleteRow={handleDelete}
