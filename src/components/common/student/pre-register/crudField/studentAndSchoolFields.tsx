@@ -75,13 +75,12 @@ export const getStudentAndSchoolFields = (): FieldDefinition[] => {
 
   // Select options
   const branchOptions = useMemo(() => {
-    const list =
+    return (
       branchData?.map((b) => ({
         label: b.name,
         value: b.id,
-      })) || [];
-    list.unshift({ label: "Seçiniz", value: 0 });
-    return list;
+      })) || []
+    );
   }, [branchData]);
 
   const authorized_personOptions = useMemo(
@@ -108,36 +107,6 @@ export const getStudentAndSchoolFields = (): FieldDefinition[] => {
   // Alan tanımları
   return [
     {
-      name: "branch_id",
-      label: "Şube",
-      type: "select",
-      required: true,
-      onClick: () => {
-        setFiltersEnabled((prev) => ({ ...prev, branch_id: true }));
-      },
-      options: branchOptions,
-      onChange: async (selectedValue, formik) => {
-        formik.setFieldValue("branch_id", selectedValue);
-
-        // Şube seçilmezse register_no sıfırla
-        if (!selectedValue) {
-          formik.setFieldValue("register_no", "");
-          return;
-        }
-
-        // Şube seçildiyse register_no’yu getir
-        const branchId = Number(selectedValue);
-        const resp = await getRegisterNo(0, branchId);
-
-        if (resp && resp.data?.register_no) {
-          // API örneği: { "data": { "register_no": 10000 } }
-          formik.setFieldValue("register_no", resp.data.register_no);
-        } else {
-          formik.setFieldValue("register_no", "");
-        }
-      },
-    },
-    {
       name: "created_by",
       label: "Kayıt Eden",
       type: "select",
@@ -157,6 +126,7 @@ export const getStudentAndSchoolFields = (): FieldDefinition[] => {
       label: "Kayıt No",
       type: "text",
       required: false,
+      disabled: true,
     },
     {
       name: "register_date",
@@ -164,15 +134,30 @@ export const getStudentAndSchoolFields = (): FieldDefinition[] => {
       type: "date",
     },
     {
-      name: "branche_id",
-      label: "Şube (Tekrar)",
+      name: "branch_id",
+      label: "Şube",
       type: "select",
-      options: branchData.map((branch) => ({
-        value: branch.id,
-        label: branch.name,
-      })),
+      required: true,
+      options: branchOptions,
       onClick: () => {
         setFiltersEnabled((prev) => ({ ...prev, branch_id: true }));
+      },
+      onChange: async (selectedValue, formik) => {
+        formik.setFieldValue("branch_id", selectedValue);
+
+        if (!selectedValue) {
+          formik.setFieldValue("register_no", "");
+          return;
+        }
+
+        const branchId = Number(selectedValue);
+        const resp = await getRegisterNo(0, branchId);
+
+        if (resp && resp.data?.register_no) {
+          formik.setFieldValue("register_no", resp.data.register_no);
+        } else {
+          formik.setFieldValue("register_no", "");
+        }
       },
     },
     {
@@ -180,23 +165,34 @@ export const getStudentAndSchoolFields = (): FieldDefinition[] => {
       label: "TC Kimlik No",
       type: "text",
       placeholder: "11 haneli",
+      required: true,
+      minLength: 11,
+      maxLength: 11,
+      pattern: /^\d{11}$/,
+      onChange: (val, formik) => {
+        const sanitized = val.replace(/\D/g, "").slice(0, 11);
+        formik.setFieldValue("identification_no", sanitized);
+      },
     },
     {
       name: "first_name",
       label: "Ad",
       type: "text",
       placeholder: "Ör: Abuzer",
+      required: true,
     },
     {
       name: "last_name",
       label: "Soyad",
       type: "text",
       placeholder: "Ör: Kömürcü",
+      required: true,
     },
     {
       name: "gender_id",
       label: "Cinsiyet",
       type: "select",
+      required: true,
       options: [
         { value: 1, label: "Erkek" },
         { value: 2, label: "Kadın" },
@@ -206,6 +202,7 @@ export const getStudentAndSchoolFields = (): FieldDefinition[] => {
       name: "birthday",
       label: "Doğum Tarihi",
       type: "date",
+      required: true,
     },
     {
       name: "email",
@@ -217,20 +214,13 @@ export const getStudentAndSchoolFields = (): FieldDefinition[] => {
       name: "phone",
       label: "Telefon",
       type: "phone",
+      required: true,
     },
     {
       name: "mobile_phone",
       label: "Öğr. Cep",
       type: "phone",
-    },
-    {
-      name: "status",
-      label: "Durum",
-      type: "select",
-      options: [
-        { value: 0, label: "Pasif" },
-        { value: 1, label: "Aktif" },
-      ],
+      required: true,
     },
     {
       name: "program",

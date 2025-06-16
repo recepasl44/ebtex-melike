@@ -38,6 +38,13 @@ export const getGuardianFields = (): FieldDefinition[] => {
       type: "text",
       required: true,
       placeholder: "11 haneli",
+      minLength: 11,
+      maxLength: 11,
+      pattern: /^\d{11}$/,
+      onChange: (val, formik) => {
+        const sanitized = val.replace(/\D/g, "").slice(0, 11);
+        formik.setFieldValue("guardian.identification_no", sanitized);
+      },
     },
     {
       name: "guardian.phone",
@@ -57,6 +64,12 @@ export const getGuardianFields = (): FieldDefinition[] => {
       label: "Özel Bilgi",
       type: "text",
       placeholder: "Özel Bilgi 1",
+    },
+    {
+      name: "additional_information_2",
+      label: "Açıklama",
+      type: "textarea",
+      placeholder: "Açıklama yazınız",
     },
   ];
 };

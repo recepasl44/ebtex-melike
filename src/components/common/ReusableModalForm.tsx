@@ -1259,6 +1259,7 @@ export function renderField(
           type={f.type === "textarea" ? undefined : f.type}
           name={f.name}
           className="form-control"
+          disabled={f.disabled}
           placeholder={f.placeholder || ""}
           onChange={(
             e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

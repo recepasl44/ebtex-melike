@@ -82,25 +82,20 @@ export const getAddressFields = (): FieldDefinition[] => {
   }, [countriesData]);
 
   const cityOptions = useMemo(() => {
-    return allCities.map((c) => ({
-      label: c.name,
-      value: c.id,
-    }));
+    return allCities
+      .map((c) => ({ label: c.name, value: c.id }))
+      .sort((a, b) => a.label.localeCompare(b.label));
   }, [allCities]);
 
   const countyOptions = useMemo(() => {
-    return (allCounties || []).map((c: { name: any; id: any }) => ({
-      label: c.name,
-      value: c.id,
-    }));
+    return (allCounties || [])
+      .map((c: { name: any; id: any }) => ({ label: c.name, value: c.id }))
+      .sort((a, b) => a.label.localeCompare(b.label));
   }, [allCounties]);
   const districtOptions = useMemo(() => {
-    return (Array.isArray(allDistricts) ? allDistricts : []).map(
-      (d: { name: any; id: any }) => ({
-        label: d.name,
-        value: d.id,
-      })
-    );
+    return (Array.isArray(allDistricts) ? allDistricts : [])
+      .map((d: { name: any; id: any }) => ({ label: d.name, value: d.id }))
+      .sort((a, b) => a.label.localeCompare(b.label));
   }, [allDistricts]);
 
   return [
@@ -129,14 +124,14 @@ export const getAddressFields = (): FieldDefinition[] => {
         formik.setFieldValue("address.county_id", "");
         formik.setFieldValue("address.district_id", "");
       },
-      options: [{ label: "Seçiniz", value: "" }, ...countryOptions],
+      options: countryOptions,
     },
     {
       name: "address.city_id",
       label: "İl",
       type: "select",
       onClick: () => setEnableCities(true),
-      options: [{ label: "Seçiniz", value: "" }, ...cityOptions],
+      options: cityOptions,
       onChange: (val, formik) => {
         formik.setFieldValue("address.city_id", val);
 
@@ -153,7 +148,7 @@ export const getAddressFields = (): FieldDefinition[] => {
       label: "İlçe",
       type: "select",
       onClick: () => setEnableCounties(true),
-      options: [{ label: "Seçiniz", value: "" }, ...countyOptions],
+      options: countyOptions,
       onChange: (val, formik) => {
         formik.setFieldValue("address.county_id", val);
 
@@ -168,7 +163,7 @@ export const getAddressFields = (): FieldDefinition[] => {
       label: "Mahalle",
       type: "select",
       onClick: () => setEnableDistricts(true),
-      options: [{ label: "Seçiniz", value: "" }, ...districtOptions],
+      options: districtOptions,
       onChange: (val, formik) => {
         formik.setFieldValue("address.district_id", val);
       },
