@@ -329,6 +329,9 @@ const BudgetEstimate = lazy(
 const FinancialSummary = lazy(
   () => import("../components/common/accounting/financialSummary")
 );
+const LessonOctFeeIndex = lazy(
+  () => import("../components/common/lesson-oct-fee")
+);
 
 const InvoiceTable = lazy(() => import("../components/common/invoice/table"));
 const Invoicedetail = lazy(() => import("../components/common/invoice/detail"));
@@ -940,6 +943,11 @@ export const Routedata = [
     id: 23,
     path: `${import.meta.env.BASE_URL}personel/cost-planning`,
     element: <PersonelCostPlanning />,
+  },
+  {
+    id: 68,
+    path: `${import.meta.env.BASE_URL}lesson-oct-fee`,
+    element: <LessonOctFeeIndex />,
   },
   {
     id: 24,
