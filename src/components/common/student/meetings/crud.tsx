@@ -63,7 +63,7 @@ const MeetingModal: React.FC<MeetingModalProps> = ({
     branche_id: 0,
     student_id: 0,
     type_id: 0,
-    meeting_date: "",
+    meeting_date: new Date().toISOString().split("T")[0],
     meeting_note: "",
     created_by: "",
     meeting_price: "",
@@ -81,7 +81,7 @@ const MeetingModal: React.FC<MeetingModalProps> = ({
       },
       {
         name: "branche_id",
-        label: "Branş",
+        label: "Şube",
         type: "select",
         options: branches,
         required: true,
@@ -100,6 +100,12 @@ const MeetingModal: React.FC<MeetingModalProps> = ({
         required: true,
       },
       {
+        name: "meeting_price",
+        label: "Ücret",
+        type: "currency",
+        required: true,
+      },
+      {
         name: "type_id",
         label: "Görüşme Türü",
         type: "select",
@@ -111,12 +117,6 @@ const MeetingModal: React.FC<MeetingModalProps> = ({
         required: true,
       },
       {
-        name: "meeting_price",
-        label: "Ücret",
-        type: "currency",
-        required: true,
-      },
-      {
         name: "meeting_date",
         label: "Tarih",
         type: "date",
@@ -124,8 +124,9 @@ const MeetingModal: React.FC<MeetingModalProps> = ({
       },
       {
         name: "meeting_note",
-        label: "Notlar",
+        label: "Görüşme Notu",
         type: "textarea",
+        col: 12,
       },
     ];
   };
