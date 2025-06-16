@@ -86,8 +86,9 @@ export default function CalculatePage({ studentId }: CalculatePageProps = {}) {
   const [levelId, setLevelId] = useState<number | "">("");
   const [courseId, setCourseId] = useState<number | "">("");
   const [schoolTypeId, setSchoolTypeId] = useState<number | "">("");
-  const [_installmentStart, setInstallmentStart] = useState<string>("");
-  const [_installmentEnd, setInstallmentEnd] = useState<string>("");
+  const today = new Date().toISOString().split("T")[0];
+  const [_installmentStart, setInstallmentStart] = useState<string>(today);
+  const [_installmentEnd, setInstallmentEnd] = useState<string>(today);
   // Filtreleme durumunu takip eden state
   const [filtersApplied, setFiltersApplied] = useState(false);
 
@@ -450,13 +451,18 @@ export default function CalculatePage({ studentId }: CalculatePageProps = {}) {
             <Col md={2}>
               <Form.Label>Taksit Dönemi</Form.Label>
               <SpkFlatpickr
-                placeholder="YYYY-MM-DD Range"
+                placeholder={[today, today]}
                 options={{
                   mode: "range",
                   dateFormat: "Y-m-d",
                   disableMobile: true,
                 }}
                 inputClass="form-control"
+                value={
+                  _installmentEnd
+                    ? `${_installmentStart} to ${_installmentEnd}`
+                    : _installmentStart
+                }
                 onfunChange={(dates: Date[]) => {
                   if (dates.length === 2) {
                     setInstallmentStart(dates[0].toISOString().split("T")[0]);
@@ -479,7 +485,7 @@ export default function CalculatePage({ studentId }: CalculatePageProps = {}) {
       {filtersApplied && selectedServices.length > 0 ? (
         <>
           (
-          <Row className="mb-3">
+          <Row className="mb-3 bg-dark text-white py-2 rounded">
             <Col md={4} className="text-center">
               <strong>Liste: </strong>
               {formatCurrency(totalPrice)}
@@ -554,19 +560,19 @@ export default function CalculatePage({ studentId }: CalculatePageProps = {}) {
                 <Accordion.Body>
                   <div className="d-flex flex-wrap gap-3 mb-2">
                     <div>
+                      <strong>Taksit Dönemi:</strong> {sel.serviceDate || "-"}
+                    </div>
+                    <div>
+                      <i className="bi bi-credit-card-2-front-fill text-primary me-2" />
                       <strong>Maksimum Taksit:</strong> {sel.maxInstallments}
                     </div>
                     <div>
                       <strong>Taksit Başına Ödeme:</strong>{" "}
                       {formatCurrency(monthlyPay)}
                     </div>
-                    <div>
-                      <strong>Liste::</strong>{" "}
-                      {formatCurrency(srv.price as number)}
-                    </div>
                   </div>
 
-                  <Row className="mb-3 text-center">
+                  <Row className="mb-3 text-center bg-dark text-white py-2 rounded">
                     <Col md={4}>
                       Liste: {formatCurrency(srv.price as number)}
                     </Col>
