@@ -46,12 +46,14 @@ const DiscountModal: React.FC<DiscountModalProps> = ({
         name: "name",
         label: "Ad",
         type: "text",
+        placeholder: "İndirim adı...",
         required: true,
       },
       {
         name: "amount",
         label: "Ücret",
         type: "currency",
+        placeholder: "Ücret...",
         required: true,
       },
       {
@@ -159,7 +161,7 @@ const DiscountModal: React.FC<DiscountModalProps> = ({
       fields={getFields()}
       initialValues={initialValues}
       onSubmit={handleSubmit}
-      confirmButtonLabel={mode === "add" ? "Ekle" : "Güncelle"}
+      confirmButtonLabel={mode === "add" ? "Kaydet" : "Güncelle"}
       cancelButtonLabel="Vazgeç"
       isLoading={loading}
       error={error || null}

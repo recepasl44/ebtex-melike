@@ -508,6 +508,9 @@ export default function ServiceManagementListPage({
         onDeleteRow={(row) => {
           deleteServicetype(row.id);
         }}
+        deleteMessage={(row) => `${row.name} adlı hizmeti silmek istediğinize emin misiniz?`}
+        deleteCancelButtonLabel="Vazgeç"
+        deleteConfirmButtonLabel="Sil"
         onPageSizeChange={(newPageSize) => {
           setPageSize(newPageSize);
           updatePageSize(newPageSize);

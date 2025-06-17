@@ -180,6 +180,8 @@ interface ReusableModalFormProps<T extends FormikValues> {
   children?: React.ReactNode;
   activeStep?: number;
   handleStepAttempt?: (targetIndex: number) => void;
+  /** Modal boyutu (lg varsayılan) */
+  modalSize?: "sm" | "lg" | "xl";
 }
 
 /** Elemanları satır bazında gruplamak için helper */
@@ -213,6 +215,7 @@ export default function ReusableModalForm<T extends FormikValues>({
   activeStep = 0,
   buttonText,
   handleStepAttempt,
+  modalSize = "lg",
 }: ReusableModalFormProps<T>) {
   const navigate = useNavigate();
 
@@ -235,7 +238,7 @@ export default function ReusableModalForm<T extends FormikValues>({
 
   if (show) {
     return (
-      <Modal show={true} onHide={handleClose} centered size="lg">
+      <Modal show={true} onHide={handleClose} centered size={modalSize}>
         {/** OPSİYONEL STEPPER */}
         {showStepper && steps.length > 0 && (
           <div className="p-3">

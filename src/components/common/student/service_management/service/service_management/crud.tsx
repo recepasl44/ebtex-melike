@@ -40,6 +40,7 @@ const ServiceTypeModal: React.FC<ServiceTypeModalProps> = ({
         name: "name",
         label: "Hizmet Adı",
         type: "text",
+        placeholder: "Hizmet adı...",
         required: true,
       },
     ];
@@ -120,12 +121,13 @@ const ServiceTypeModal: React.FC<ServiceTypeModalProps> = ({
         fields={getFields()}
         initialValues={initialValues}
         onSubmit={handleSubmit}
-        confirmButtonLabel={mode === "add" ? "Ekle" : "Güncelle"}
+        confirmButtonLabel={mode === "add" ? "Kaydet" : "Güncelle"}
         cancelButtonLabel="Vazgeç"
         isLoading={loading}
         error={error || null}
         autoGoBackOnModalClose={true}
         onClose={onClose}
+        modalSize="md"
       />
     </>
   );

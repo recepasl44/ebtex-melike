@@ -65,6 +65,7 @@ export default function ServiceTypeTable() {
       loading={loading}
       error={error}
       showModal={true}
+      modalTitle="Hizmet Türleri"
       tableMode="single"
       totalPages={totalPages}
       totalItems={totalItems}
