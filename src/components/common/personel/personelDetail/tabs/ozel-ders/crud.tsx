@@ -63,7 +63,7 @@ export default function PersonelSpecialCrud() {
         tarih: src.tarih || "",
         baslangic_saat: src.baslangic_saati || "",
         bitis_saat: src.bitis_saati || "",
-        ogrenci: src.ogrenci_yuzdesi ||"",
+        ogrenci: src.ogrenci_yuzdesi || "",
         ucret: src.ucret || 0,
         kar_yuzde: src.kar_yuzdesi?.toString() ?? "0",
       })

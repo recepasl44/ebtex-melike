@@ -26,17 +26,15 @@ export default function CoachingTab() {
   const { attendanceTeachersData: teachersData } = useAttendanceTeachersTable({
     enabled: enabled.teachers,
   })
-
-  const listParams = useMemo(
-    () => ({
-      enabled: true,
+  const listParams = useMemo(() => {
+    return {
       start_date: dateRange.startDate || undefined,
       end_date: dateRange.endDate || undefined,
       level_id: level || undefined,
       teacher_id: teacher || undefined,
-    }),
-    [dateRange, level, teacher]
-  )
+    };
+  }, [dateRange.startDate, dateRange.endDate, level, teacher]);
+
 
   const { coachings, loading, error } = useCoachingList(listParams)
   const { deleteExistingCoaching, error: deleteError } = useCoachingDelete()
@@ -51,23 +49,23 @@ export default function CoachingTab() {
 
   const rows: SummaryRow[] = useMemo(() => {
     const map = new Map<string, SummaryRow>()
-    ;(coachings ?? []).forEach(c => {
-      const key = c.ad_soyad || "-"
-      if (!map.has(key)) {
-        map.set(key, {
-          teacherName: key,
-          coachings: [],
-          totalSession: 0,
-          totalStudent: 0,
-          totalFee: 0,
-        })
-      }
-      const item = map.get(key)!
-      item.coachings.push(c)
-      item.totalSession += 1
-      item.totalStudent += Number(c.ogrenci_sayisi ?? 0)
-      item.totalFee += Number(c.toplam_ucret ?? 0)
-    })
+      ; (coachings ?? []).forEach(c => {
+        const key = c.ad_soyad || "-"
+        if (!map.has(key)) {
+          map.set(key, {
+            teacherName: key,
+            coachings: [],
+            totalSession: 0,
+            totalStudent: 0,
+            totalFee: 0,
+          })
+        }
+        const item = map.get(key)!
+        item.coachings.push(c)
+        item.totalSession += 1
+        item.totalStudent += Number(c.ogrenci_sayisi ?? 0)
+        item.totalFee += Number(c.toplam_ucret ?? 0)
+      })
     return Array.from(map.values())
   }, [coachings])
 

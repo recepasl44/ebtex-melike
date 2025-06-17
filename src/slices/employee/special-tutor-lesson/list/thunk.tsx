@@ -6,6 +6,9 @@ import {
 } from "../../../../types/employee/special_tutor_lesson/list";
 import { SPECIAL_TUTOR_LESSON_BASE } from "../../../../helpers/url_helper";
 
+// Önceki istekleri tutacak hafıza (global context dışında değilse bile sabit olur)
+const previousRequestKeys = new Set<string>();
+
 export const fetchSpecialTutorLessonList = createAsyncThunk<
   SpecialTutorLessonListResponse,
   SpecialTutorLessonListArgs
@@ -29,5 +32,19 @@ export const fetchSpecialTutorLessonList = createAsyncThunk<
         err.response?.data?.message || "Fetch special tutor lesson list failed"
       );
     }
+  },
+  {
+    condition: (params) => {
+      const key = JSON.stringify(params);
+
+      // Aynı parametrelerle daha önce çağrıldıysa tekrar çağırma
+      if (previousRequestKeys.has(key)) {
+        return false;
+      }
+
+      // Yeni ise cache'e ekle ve izin ver
+      previousRequestKeys.add(key);
+      return true;
+    },
   }
 );
