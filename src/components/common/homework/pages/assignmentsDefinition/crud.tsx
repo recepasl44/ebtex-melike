@@ -229,74 +229,6 @@ const AssignmentStudentCrudModal: React.FC<Props> = ({
     const getFields = useCallback(
         (): FieldDefinition[] => [
             {
-                name: 'level_id',
-                label: 'Sınıf Seviyesi',
-                type: 'select',
-                required: true,
-                options: levelOpts,
-                onClick: () => setEnabled(e => ({ ...e, level_id: true })),
-                onChange: (v, f) => {
-                    const n = Number(v) || 0;
-                    setLevelId(n || null);
-                    setLessonId(null);
-                    setUnitId(null);
-                    setEnabled(e => ({ ...e, classroom_id: false, lesson_id: false, unit_id: false }));
-                    f.setValues({ ...f.values, level_id: n, classroom_id: 0, lesson_id: 0, unit_id: 0 });
-                },
-            },
-            {
-                name: 'classroom_id',
-                label: 'Sınıf / Şube',
-                type: 'select',
-                required: true,
-                options: classOpts,
-                onClick: () => setEnabled(e => ({ ...e, classroom_id: true })),
-            },
-            {
-                name: 'lesson_id',
-                label: 'Ders',
-                type: 'select',
-                required: true,
-                options: lessonOpts,
-                onClick: () => setEnabled(e => ({ ...e, lesson_id: true })),
-                onChange: (v, f) => {
-                    const n = Number(v) || 0;
-                    setLessonId(n || null);
-                    setUnitId(null);
-                    setEnabled(e => ({ ...e, unit_id: false }));
-                    f.setFieldValue('lesson_id', n);
-                    f.setFieldValue('unit_id', 0);
-                },
-            },
-            {
-                name: 'unit_id',
-                label: 'Ünite / Konu',
-                type: 'select',
-                required: true,
-                options: unitOpts,
-                onClick: () => setEnabled(e => ({ ...e, unit_id: true })),
-                onChange: (v, f) => {
-                    const n = Number(v) || 0;
-                    setUnitId(n || null);
-                    f.setFieldValue('unit_id', n);
-                },
-            },
-            {
-                name: 'student_id',
-                label: 'Öğrenci',
-                type: 'select',
-                required: true,
-                options: studentOpts,
-                onClick: () => setEnabled(e => ({ ...e, student_id: true })),
-            },
-            {
-                name: 'source_id',
-                label: 'Kaynak',
-                type: 'select',
-                options: sourceOpts,
-                onClick: () => setEnabled(e => ({ ...e, source_id: true })),
-            },
-            {
                 name: 'planned_status',
                 label: 'Kategori',
                 type: 'select',
@@ -330,11 +262,80 @@ const AssignmentStudentCrudModal: React.FC<Props> = ({
                 },
 
             },
-            { name: 'title', label: 'Ödev Başlığı', type: 'text', required: true },
-            { name: 'start_date', label: 'Başlangıç Tarihi', type: 'date', required: true },
-            { name: 'end_date', label: 'Bitiş Tarihi', type: 'date', required: true },
+            {
+                name: 'level_id',
+                label: 'Sınıf Seviyesi',
+                type: 'select',
+                required: true,
+                options: levelOpts,
+                onClick: () => setEnabled(e => ({ ...e, level_id: true })),
+                onChange: (v, f) => {
+                    const n = Number(v) || 0;
+                    setLevelId(n || null);
+                    setLessonId(null);
+                    setUnitId(null);
+                    setEnabled(e => ({ ...e, classroom_id: false, lesson_id: false, unit_id: false }));
+                    f.setValues({ ...f.values, level_id: n, classroom_id: 0, lesson_id: 0, unit_id: 0 });
+                },
+            },
+            {
+                name: 'classroom_id',
+                label: 'Sınıf / Şube',
+                type: 'select',
+                required: true,
+                options: classOpts,
+                onClick: () => setEnabled(e => ({ ...e, classroom_id: true })),
+            },
+            {
+                name: 'student_id',
+                label: 'Öğrenci',
+                type: 'select',
+                required: true,
+                options: studentOpts,
+                onClick: () => setEnabled(e => ({ ...e, student_id: true })),
+            },
+            {
+                name: 'lesson_id',
+                label: 'Ders',
+                type: 'select',
+                required: true,
+                options: lessonOpts,
+                onClick: () => setEnabled(e => ({ ...e, lesson_id: true })),
+                onChange: (v, f) => {
+                    const n = Number(v) || 0;
+                    setLessonId(n || null);
+                    setUnitId(null);
+                    setEnabled(e => ({ ...e, unit_id: false }));
+                    f.setFieldValue('lesson_id', n);
+                    f.setFieldValue('unit_id', 0);
+                },
+            },
+            {
+                name: 'unit_id',
+                label: 'Ünite / Konu',
+                type: 'select',
+                required: true,
+                options: unitOpts,
+                onClick: () => setEnabled(e => ({ ...e, unit_id: true })),
+                onChange: (v, f) => {
+                    const n = Number(v) || 0;
+                    setUnitId(n || null);
+                    f.setFieldValue('unit_id', n);
+                },
+            },
+            {
+                name: 'title', label: 'Ödev Başlığı', type: 'text', required: true },
+            {
+                name: 'source_id',
+                label: 'Kaynak',
+                type: 'select',
+                options: sourceOpts,
+                onClick: () => setEnabled(e => ({ ...e, source_id: true })),
+            },
             { name: 'question_count', label: 'Soru Sayısı', type: 'number', min: 0 },
             { name: 'student_file', label: 'Dosya Yükle', type: 'file' },
+            { name: 'start_date', label: 'Başlangıç Tarihi', type: 'date', required: true },
+            { name: 'end_date', label: 'Bitiş Tarihi', type: 'date', required: true },
             {
                 name: 'delivery_format',
                 label: 'Teslim Formatı',
@@ -366,7 +367,7 @@ const AssignmentStudentCrudModal: React.FC<Props> = ({
             await updateExistingAssignmentStudent({ assignmentStudentId: +id, payload: vals });
         }
         onRefresh();
-        nav(-1);
+        nav('/homework/definingHomework');
     };
 
     const isLoading = mode === 'add' ? addSt === 'LOADING' : updSt === 'LOADING';
@@ -380,13 +381,13 @@ const AssignmentStudentCrudModal: React.FC<Props> = ({
             fields={getFields}
             initialValues={initial}
             onSubmit={handleSubmit}
-            confirmButtonLabel={mode === 'add' ? 'Ekle' : 'Kaydet'}
+            confirmButtonLabel="Kaydet"
             cancelButtonLabel="Vazgeç"
             isLoading={isLoading}
             error={errorMsg || null}
             onClose={() => {
                 onClose();
-                nav(-1);
+                nav('/homework/definingHomework');
             }}
             autoGoBackOnModalClose
             mode="double"
