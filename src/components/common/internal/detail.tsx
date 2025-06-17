@@ -2,12 +2,14 @@ import React, { useState, useMemo, useEffect } from "react";
 import { FormikHelpers, FormikValues } from "formik";
 import ReusableModalForm, { FieldDefinition } from "../ReusableModalForm";
 import ReusableTable, { ColumnDefinition } from "../ReusableTable";
+import { useNavigate } from "react-router-dom";
 
 import { useProgramsTable } from "../../hooks/program/useList";
 import { useLevelsTable } from "../../hooks/levels/useList";
 import { useCoursesTable } from "../../hooks/course/useList";
 import { useSchoolTypesList } from "../../hooks/schoolTypes/useSchoolTypesList";
 import { useClassroomList } from "../../hooks/classrooms/useList";
+import { useListStudents } from "../../hooks/student/useList";
 
 interface IReportFilters extends FormikValues {
     program_id: number;
@@ -222,7 +224,8 @@ const StudentReportModal: React.FC<StudentReportModalProps> = ({
     interface IStudentReportRow {
         id: number;
         studentNo: string;
-        studentName: string;
+        firstName: string;
+        lastName: string;
         programName: string;
         levelName: string;
         courseName: string;
@@ -233,6 +236,8 @@ const StudentReportModal: React.FC<StudentReportModalProps> = ({
         classroomName: string;
     }
 
+    const navigate = useNavigate();
+
     const columns = useMemo<ColumnDefinition<IStudentReportRow>[]>(() => [
         {
             key: "studentNo",
@@ -240,9 +245,14 @@ const StudentReportModal: React.FC<StudentReportModalProps> = ({
             render: (row) => row.studentNo || "-",
         },
         {
-            key: "studentName",
-            label: "Adı Soyadı",
-            render: (row) => row.studentName || "-",
+            key: "firstName",
+            label: "Adı",
+            render: (row) => row.firstName || "-",
+        },
+        {
+            key: "lastName",
+            label: "Soyadı",
+            render: (row) => row.lastName || "-",
         },
         {
             key: "programName",
@@ -284,41 +294,70 @@ const StudentReportModal: React.FC<StudentReportModalProps> = ({
             label: "Sınıf",
             render: (row) => row.classroomName || "-",
         },
-    ], []);
+        {
+            key: "actions",
+            label: "Taksitler",
+            style: { textAlign: "center", width: 80 },
+            render: (row) => (
+                <button
+                    type="button"
+                    className="btn btn-icon btn-sm btn-primary-light rounded-pill"
+                    onClick={() => navigate(`/studentpaymentdetails/${row.id}`)}
+                >
+                    <i className="ti ti-eye" />
+                </button>
+            ),
+        },
+    ], [navigate]);
 
     const [reportData, setReportData] = useState<IStudentReportRow[]>([]);
 
+    const { data: studentsData, loading: studentsLoading } = useListStudents({
+        enabled: true,
+        program_id: filters.program_id || undefined,
+        level_id: filters.level_id || undefined,
+        course_id: filters.course_id || undefined,
+        schooltype_id: filters.school_type_id || undefined,
+        classroom_id: filters.classroom_id || undefined,
+        startDate: filters.registration_from,
+        endDate: filters.registration_to,
+        page: 1,
+        paginate: 100,
+    });
+
     useEffect(() => {
-        const dummy = [
-            {
-                id: 1,
-                studentNo: "721",
-                studentName: "Merve Nur Demo",
-                programName: "Lise",
-                levelName: "test",
-                courseName: "Sayısal",
-                schoolTypeName: "Özel",
-                listPriceTotal: 1000,
-                discountPrice: 0,
-                registrationDate: "2025-01-01",
-                classroomName: "12A",
-            },
-            {
-                id: 2,
-                studentNo: "1",
-                studentName: "Rabia Eda Demo",
-                programName: "Ortaokul",
-                levelName: "7. Sınıf",
-                courseName: "Fen",
-                schoolTypeName: "Devlet",
-                listPriceTotal: 800,
-                discountPrice: 50,
-                registrationDate: "2025-03-10",
-                classroomName: "7C",
-            },
-        ];
-        setReportData(dummy);
-    }, [filters]);
+        if (!studentsData) {
+            setReportData([]);
+            return;
+        }
+        const rows: IStudentReportRow[] = studentsData.map((stu: any) => {
+            const listPriceTotal = (stu.enrollments || []).reduce(
+                (sum: number, e: any) => sum + parseFloat(e.total_fee || "0"),
+                0
+            );
+            const discountPrice = (stu.enrollments || []).reduce(
+                (sum: number, e: any) =>
+                    sum + parseFloat(e.final_fee || e.total_fee || "0"),
+                0
+            );
+
+            return {
+                id: stu.id,
+                studentNo: stu.student_no || "",
+                firstName: stu.first_name || "",
+                lastName: stu.last_name || "",
+                programName: stu.program?.name || "",
+                levelName: stu.level?.name || "",
+                courseName: stu.course?.name || "",
+                schoolTypeName: stu.schooltype_id || "",
+                listPriceTotal,
+                discountPrice,
+                registrationDate: stu.register_date || "",
+                classroomName: stu.branche?.name || "",
+            } as IStudentReportRow;
+        });
+        setReportData(rows);
+    }, [studentsData]);
 
     const initialValues = { ...filters };
 
@@ -348,7 +387,7 @@ const StudentReportModal: React.FC<StudentReportModalProps> = ({
                 <ReusableTable<IStudentReportRow>
                     columns={columns}
                     data={reportData}
-                    loading={false}
+                    loading={studentsLoading}
                     tableMode="single"
                     showExportButtons={true}
                     exportFileName="student-report"
