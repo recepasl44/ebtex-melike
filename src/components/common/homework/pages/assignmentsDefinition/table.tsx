@@ -112,6 +112,10 @@ export default function DefiningHomeworkPage() {
 
     const filters: FilterDefinition[] = useMemo(() => [
         {
+            key: "dateFrom", label: "Tarih Aralığı", type: "doubledate",
+            value: dateFrom, onChange: setDateFrom,
+        },
+        {
             key: "plannedStatus", label: "Kategori", type: "select",
             value: plannedStatus, onChange: setPlannedStatus,
             options: [
@@ -134,6 +138,17 @@ export default function DefiningHomeworkPage() {
             options: classroomList.map(c => ({ label: c.name, value: String(c.id) })),
         },
         {
+            key: "student", label: "Öğrenci", type: "autocomplete",
+            value: studentName,
+            onClick: () => setEnabled(p => ({ ...p, student: true })),
+            onChange: val => {
+                setStudent(val);
+                const f = studentOptions.find(o => o.label.toLowerCase() === val.toLowerCase());
+                setStudentId(f ? String(f.value) : "");
+            },
+            options: studentOptions.map(o => ({ label: o.label, value: String(o.value) })),
+        },
+        {
             key: "lesson", label: "Ders", type: "select",
             value: lessonId,
             onClick: () => setEnabled(p => ({ ...p, lesson: true })),
@@ -148,17 +163,6 @@ export default function DefiningHomeworkPage() {
             options: unitsData.map(u => ({ label: u.name, value: String(u.id) })),
         },
         {
-            key: "student", label: "Öğrenci", type: "autocomplete",
-            value: studentName,
-            onClick: () => setEnabled(p => ({ ...p, student: true })),
-            onChange: val => {
-                setStudent(val);
-                const f = studentOptions.find(o => o.label.toLowerCase() === val.toLowerCase());
-                setStudentId(f ? String(f.value) : "");
-            },
-            options: studentOptions.map(o => ({ label: o.label, value: String(o.value) })),
-        },
-        {
             key: "assignStatus", label: "Ödev Durumu", type: "select",
             value: assignStatus, onChange: setAssignStatus,
             options: [
@@ -167,10 +171,6 @@ export default function DefiningHomeworkPage() {
                 { label: "Eksik", value: "2" },
                 { label: "Gelmedi", value: "3" },
             ],
-        },
-        {
-            key: "dateFrom", label: "Tarih Aralığı", type: "doubledate",
-            value: dateFrom, onChange: setDateFrom,
         },
     ], [
         plannedStatus, levelId, branchId, lessonId, unitId,
@@ -231,13 +231,13 @@ export default function DefiningHomeworkPage() {
             key: "actions", label: "İşlemler",
             render: row => (
                 <>
-                    <button className="btn btn-icon btn-sm btn-danger-light rounded-pill"
-                        onClick={() => deleteExistingAssignmentStudent(row.id)}>
-                        <i className="ti ti-trash" />
-                    </button>
                     <button className="btn btn-icon btn-sm btn-info-light rounded-pill"
                         onClick={() => navigate(`/assignmentstudentscrud/${row.id}`)}>
                         <i className="ti ti-pencil" />
+                    </button>
+                    <button className="btn btn-icon btn-sm btn-danger-light rounded-pill"
+                        onClick={() => deleteExistingAssignmentStudent(row.id)}>
+                        <i className="ti ti-trash" />
                     </button>
                 </>
             ),
