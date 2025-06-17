@@ -5,6 +5,7 @@ import ReusableTable, {
   useDebounce,
 } from "../../../ReusableTable";
 import { useDiscountsTable } from "../../../../hooks/discounts/useList";
+import { useDiscountDelete } from "../../../../hooks/discounts/useDelete";
 import { DiscountData } from "../../../../../types/discounts/list";
 import { formatCurrency } from "../../../../../utils/formatters";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -13,6 +14,8 @@ import { useUpdateQueryParamsFromFilters } from "../../../../hooks/utilshooks/us
 interface DiscountTableProps {
   serviceId?: number;
   enabled?: boolean;
+  /** İsim filtresini göster */
+  showNameFilter?: boolean;
 }
 
 type QueryParams = {
@@ -20,7 +23,10 @@ type QueryParams = {
   name: string;
 };
 
-export default function DiscountTable({ serviceId }: DiscountTableProps) {
+export default function DiscountTable({
+  serviceId,
+  showNameFilter = true,
+}: DiscountTableProps) {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [inputName, setInputName] = useState(""); // UI için
@@ -28,6 +34,7 @@ export default function DiscountTable({ serviceId }: DiscountTableProps) {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [enabled, setEnabled] = useState(false);
+  const { deleteExistingDiscount } = useDiscountDelete();
   const { state } = useLocation() as {
     state?: { service_id?: number; enabled?: boolean };
   };
@@ -43,6 +50,7 @@ export default function DiscountTable({ serviceId }: DiscountTableProps) {
   const [filtersEnabled, setFiltersEnabled] = useState({
     name: false,
   });
+
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -107,13 +115,14 @@ export default function DiscountTable({ serviceId }: DiscountTableProps) {
 
   // Filtre Tablosu
   const filters = useMemo(() => {
-    return [
+    const arr = [
       {
         key: "name",
         label: "İndirim Adı",
         value: inputName,
         placeholder: "İndirim adı...",
         type: "text" as const,
+        fullRow: true,
         onChange: (val: any) => {
           setInputName(val);
           if (val) {
@@ -132,7 +141,8 @@ export default function DiscountTable({ serviceId }: DiscountTableProps) {
         isEnabled: filtersEnabled.name,
       },
     ];
-  }, [inputName]);
+    return showNameFilter ? arr : [];
+  }, [inputName, showNameFilter]);
 
   // ANa tablo
   const columns: ColumnDefinition<DiscountData>[] = useMemo(() => {
@@ -159,7 +169,7 @@ export default function DiscountTable({ serviceId }: DiscountTableProps) {
       {
         key: "actions",
         label: "İşlemler",
-        render: (row) => (
+        render: (row, openDeleteModal) => (
           <div className="d-flex gap-2">
             <button
               className="btn btn-icon btn-sm btn-info-light rounded-pill"
@@ -169,7 +179,10 @@ export default function DiscountTable({ serviceId }: DiscountTableProps) {
             >
               <i className="ti ti-pencil"></i>
             </button>
-            <button className="btn btn-icon btn-sm btn-danger-light rounded-pill">
+            <button
+              className="btn btn-icon btn-sm btn-danger-light rounded-pill"
+              onClick={() => openDeleteModal && openDeleteModal(row)}
+            >
               <i className="ti ti-trash"></i>
             </button>
           </div>
@@ -199,6 +212,10 @@ export default function DiscountTable({ serviceId }: DiscountTableProps) {
             state: { service_id: currentServiceId, enabled: enabled },
           });
         }}
+        onDeleteRow={(row) => deleteExistingDiscount(row.id)}
+        deleteMessage={(row) => `${row.name} adlı indirimi silmek istediğinize emin misiniz?`}
+        deleteCancelButtonLabel="Vazgeç"
+        deleteConfirmButtonLabel="Sil"
       />
     </div>
   );

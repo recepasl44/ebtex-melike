@@ -25,6 +25,8 @@ import sec_hover from "../../../../../assets/images/media/sec-buton-hover.svg";
 interface ServiceTableProps {
   // Parent bileşenden gelecek callback
   onSelectService?: (service: IService) => void;
+  /** Name filtresini göster */
+  showNameFilter?: boolean;
 }
 
 type QueryParams = {
@@ -42,6 +44,7 @@ type QueryParams = {
 
 export default function ServiceManagementListPage({
   onSelectService,
+  showNameFilter = true,
 }: ServiceTableProps) {
   const navigate = useNavigate();
   const [branch, setBranch] = useState("");
@@ -70,6 +73,7 @@ export default function ServiceManagementListPage({
     start_installment_date: false,
     end_installment_date: false,
   });
+
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -220,6 +224,7 @@ export default function ServiceManagementListPage({
         value: inputName,
         placeholder: "Hizmet adı...",
         type: "text" as const,
+        fullRow: true,
         onChange: (val: any) => {
           setInputName(val);
           if (val) {
@@ -374,8 +379,8 @@ export default function ServiceManagementListPage({
       },
     ];
 
-    return basicFilters;
-  }, [name, branch, serviceTypesFilterData, branchData]);
+    return showNameFilter ? basicFilters : basicFilters.slice(1);
+  }, [name, branch, serviceTypesFilterData, branchData, showNameFilter]);
 
   const questionParams = useMemo(
     () => ({
@@ -508,6 +513,9 @@ export default function ServiceManagementListPage({
         onDeleteRow={(row) => {
           deleteServicetype(row.id);
         }}
+        deleteMessage={(row) => `${row.name} adlı hizmeti silmek istediğinize emin misiniz?`}
+        deleteCancelButtonLabel="Vazgeç"
+        deleteConfirmButtonLabel="Sil"
         onPageSizeChange={(newPageSize) => {
           setPageSize(newPageSize);
           updatePageSize(newPageSize);

@@ -70,6 +70,8 @@ export interface FilterDefinition {
   onFocus?: () => void; // onFocus özelliği eklendi
   plus?: string;
   value?: any; // Filtre değeri; ihtiyaç duyulursa any tipi kullanılabilir
+  /** Filtreyi tam genişlikte ayrı bir satırda göster */
+  fullRow?: boolean;
 }
 
 interface ReusableTableProps<T> {
@@ -254,13 +256,20 @@ function ReusableTable<T extends { [key: string]: any }>({
   // --- SINGLE MODE: Filtreler için dinamik grup oluşturma ---
   const groupFilters = (filters: FilterDefinition[]): FilterDefinition[][] => {
     const groups: FilterDefinition[][] = [];
-    // Maksimum 6 filtre bir satıra
     let temp: FilterDefinition[] = [];
     filters.forEach((filter) => {
-      temp.push(filter);
-      if (temp.length === 6) {
-        groups.push(temp);
-        temp = [];
+      if (filter.fullRow) {
+        if (temp.length > 0) {
+          groups.push(temp);
+          temp = [];
+        }
+        groups.push([filter]);
+      } else {
+        temp.push(filter);
+        if (temp.length === 6) {
+          groups.push(temp);
+          temp = [];
+        }
       }
     });
     if (temp.length > 0) groups.push(temp);
@@ -696,17 +705,32 @@ function ReusableTable<T extends { [key: string]: any }>({
   const renderFiltersMulti = () => {
     if (!filters || filters.length === 0) return null;
     const groups: FilterDefinition[][] = [];
-    for (let i = 0; i < filters.length; i += 2) {
-      groups.push(filters.slice(i, i + 2));
-    }
+    let temp: FilterDefinition[] = [];
+    filters.forEach((filter) => {
+      if (filter.fullRow) {
+        if (temp.length) {
+          groups.push(temp);
+          temp = [];
+        }
+        groups.push([filter]);
+      } else {
+        temp.push(filter);
+        if (temp.length === 2) {
+          groups.push(temp);
+          temp = [];
+        }
+      }
+    });
+    if (temp.length) groups.push(temp);
     return (
       <div className="mb-3">
         {groups.map((group, idx) => (
           <Row key={`filter-row-${idx}`} className="mb-2">
             {group.map((filter) => {
               if (filter.type === "date") {
+                const colSize = Math.floor(12 / group.length);
                 return (
-                  <Col key={filter.key} md={6}>
+                  <Col key={filter.key} md={colSize}>
                     <Form.Group>
                       <Form.Label>{filter.label}</Form.Label>
                       {filter.plus ? (
@@ -764,8 +788,9 @@ function ReusableTable<T extends { [key: string]: any }>({
                   filter.value?.endDate
                 );
 
+                const colSize = Math.floor(12 / group.length);
                 return (
-                  <Col key={filter.key} md={6}>
+                  <Col key={filter.key} md={colSize}>
                     <Form.Group>
                       <Form.Label>{filter.label}</Form.Label>
                       {filter.plus ? (
@@ -821,8 +846,9 @@ function ReusableTable<T extends { [key: string]: any }>({
                   </Col>
                 );
               } else if (filter.type === "multiselect") {
+                const colSize = Math.floor(12 / group.length);
                 return (
-                  <Col key={filter.key} md={6}>
+                  <Col key={filter.key} md={colSize}>
                     <Form.Group>
                       <Form.Label>{filter.label}</Form.Label>
                       <Form.Select
@@ -847,8 +873,9 @@ function ReusableTable<T extends { [key: string]: any }>({
                 );
               } // renderFiltersMulti fonksiyonu içindeki if-else bloklarına eklenecek
 
+              const colSize = Math.floor(12 / group.length);
               return (
-                <Col key={filter.key} md={6}>
+                <Col key={filter.key} md={colSize}>
                   <Form.Group>
                     <Form.Label>{filter.label}</Form.Label>
                     {filter.type === "autocomplete" ? (
