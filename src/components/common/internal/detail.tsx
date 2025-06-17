@@ -25,13 +25,11 @@ interface StudentReportModalProps {
     onRefresh: (filters: IReportFilters) => void;
 }
 
-
 const StudentReportModal: React.FC<StudentReportModalProps> = ({
     show,
     onClose,
     onRefresh,
 }) => {
-
     const [enabled, setEnabled] = useState({
         program: true,
         level: false,
@@ -49,7 +47,6 @@ const StudentReportModal: React.FC<StudentReportModalProps> = ({
         registration_from: undefined,
         registration_to: undefined,
     });
-
 
     const { programsData } = useProgramsTable({ enabled: enabled.program });
     const programOptions = useMemo(
@@ -226,9 +223,9 @@ const StudentReportModal: React.FC<StudentReportModalProps> = ({
         id: number;
         studentNo: string;
         studentName: string;
-        programName: string; // Okul Seviyesi
-        levelName: string;   // Sınıf Seviyesi
-        courseName: string;  // Alan
+        programName: string;
+        levelName: string;
+        courseName: string;
         schoolTypeName: string;
         listPriceTotal: number;
         discountPrice: number;
@@ -289,13 +286,10 @@ const StudentReportModal: React.FC<StudentReportModalProps> = ({
         },
     ], []);
 
-
     const [reportData, setReportData] = useState<IStudentReportRow[]>([]);
 
     useEffect(() => {
-        if (!show) return;
         const dummy = [
-
             {
                 id: 1,
                 studentNo: "721",
@@ -322,12 +316,9 @@ const StudentReportModal: React.FC<StudentReportModalProps> = ({
                 registrationDate: "2025-03-10",
                 classroomName: "7C",
             },
-            // vs...
         ];
         setReportData(dummy);
-    }, [filters, show]);
-
-
+    }, [filters]);
 
     const initialValues = { ...filters };
 
@@ -353,7 +344,6 @@ const StudentReportModal: React.FC<StudentReportModalProps> = ({
             autoGoBackOnModalClose
             onClose={onClose}
         >
-
             <div style={{ marginTop: "1rem" }}>
                 <ReusableTable<IStudentReportRow>
                     columns={columns}

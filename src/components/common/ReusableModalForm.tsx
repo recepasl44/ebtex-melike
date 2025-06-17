@@ -309,7 +309,7 @@ export default function ReusableModalForm<T extends FormikValues>({
                       })}
                     </Row>
                   ))}
-                  {children}
+
                 </Modal.Body>
                 {!hideButtons && (
                   <Modal.Footer>
@@ -404,22 +404,20 @@ export default function ReusableModalForm<T extends FormikValues>({
                 )}
 
                 {error && <div className="alert alert-danger">{error}</div>}
+                {fieldChunks.map((row, idx) => (
+                  <Row key={idx}>
+                    {row.map((fieldDef) => {
+                      const span = fieldDef.col ?? (mode === "single" ? 12 : 6);
+                      return (
+                        <Col md={span} key={fieldDef.name}>
+                          {renderField(fieldDef, formik, navigate)}
+                        </Col>
+                      );
+                    })}
+                  </Row>
+                ))}
 
-                  {fieldChunks.map((row, idx) => (
-                    <Row key={idx}>
-                      {row.map((fieldDef) => {
-                        const span = fieldDef.col ?? (mode === "single" ? 12 : 6);
-                        return (
-                          <Col md={span} key={fieldDef.name}>
-                            {renderField(fieldDef, formik, navigate)}
-                          </Col>
-                        );
-                      })}
-                    </Row>
-                  ))}
-                  {children}
-
-                  {!hideButtons && (
+                {!hideButtons && (
                   <div className="mt-3 d-flex justify-content-end">
                     <Button
                       variant="outline-secondary"
