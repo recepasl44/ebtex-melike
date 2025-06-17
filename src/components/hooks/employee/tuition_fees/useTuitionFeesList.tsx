@@ -1,6 +1,4 @@
-// F:\xintra_react_ts\src\components\hooks\employee\tuition_fees\useTuitionFeesList.tsx
-
-import { useEffect, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../store/rootReducer";
 import { AppDispatch } from "../../../../store";
@@ -8,24 +6,32 @@ import { fetchTuitionFeesList } from "../../../../slices/employee/tuition_fees/l
 import TuitionFeesListStatus from "../../../../enums/employee/tuition_fees/list";
 import { TuitionFees } from "../../../../types/employee/tuition_fees/list";
 
-export function useTuitionFeesList(params: { enabled?: boolean; [key: string]: any }) {
+interface UseTuitionFeesListParams {
+  enabled?: boolean;
+  [key: string]: any;
+}
+
+export function useTuitionFeesList(params: UseTuitionFeesListParams) {
   const dispatch = useDispatch<AppDispatch>();
   const { data, status, error } = useSelector(
     (state: RootState) => state.tuitionFeesList
   );
 
-  const [filter] = useState<any>(null);
   const { enabled, ...otherParams } = params;
+
+  // Params sabit referanslı hale getiriliyor
+  const memoizedParams = useMemo(() => {
+    return {
+      ...otherParams,
+      filter: null, // filter sabit, gerekirse yukarıdan parametre olarak da alabilirsin
+    };
+  }, [JSON.stringify(otherParams)]); // Object değişince sadece yeniden hesaplanır
+
   useEffect(() => {
     if (!enabled) return;
+    dispatch(fetchTuitionFeesList(memoizedParams));
+  }, [enabled, dispatch, memoizedParams]);
 
-    dispatch(
-      fetchTuitionFeesList({
-        ...otherParams,
-        filter,
-      })
-    );
-  }, [enabled, filter, dispatch, JSON.stringify(otherParams)]);
   const fees: TuitionFees[] = data || [];
   const loading = status === TuitionFeesListStatus.LOADING;
 

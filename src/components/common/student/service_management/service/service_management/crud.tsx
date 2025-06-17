@@ -1,18 +1,16 @@
-import { useParams } from "react-router-dom";
-import ReusableModalForm, {
-  FieldDefinition,
-} from "../../../../ReusableModalForm";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import ReusableModalForm, { FieldDefinition } from "../../../../ReusableModalForm";
 import { useServiceTypeAdd } from "../../../../../hooks/serviceTypes/useAdd";
 import { useServiceTypeUpdate } from "../../../../../hooks/serviceTypes/useUpdate";
-import { FormikHelpers, FormikValues } from "formik";
 import { useServiceTypeDetail } from "../../../../../hooks/serviceTypes/useDetail";
+import { FormikHelpers, FormikValues } from "formik";
 
 interface ServiceTypeModalProps extends FormikValues {
   show: boolean;
   onClose: () => void;
   onRefresh: () => void;
-  token?: string;
+  servicetypeId?: number; // ✅ dışarıdan prop olarak destekledik
 }
 
 interface IServiceTypeFormData {
@@ -24,8 +22,12 @@ const ServiceTypeModal: React.FC<ServiceTypeModalProps> = ({
   show,
   onClose,
   onRefresh,
+  servicetypeId, // dışarıdan gelen props
 }) => {
-  const { id } = useParams<{ id?: string }>();
+  const routeParams = useParams<{ id?: string }>();
+
+  // ✅ önce props varsa onu al, yoksa route paramı
+  const id = servicetypeId ?? (routeParams.id ? parseInt(routeParams.id) : undefined);
   const mode = id ? "update" : "add";
 
   const [initialValues, setInitialValues] = useState<IServiceTypeFormData>({
@@ -33,43 +35,16 @@ const ServiceTypeModal: React.FC<ServiceTypeModalProps> = ({
     name: "",
   });
 
-  // Field definitions for the form
-  const getFields = (): FieldDefinition[] => {
-    return [
-      {
-        name: "name",
-        label: "Hizmet Adı",
-        type: "text",
-        placeholder: "Hizmet adı...",
-        required: true,
-      },
-    ];
-  };
-
-  const {
-    addNewServicetype,
-    status: addStatus,
-    error: addError,
-  } = useServiceTypeAdd();
-
-  const {
-    updateExistingServicetype,
-    status: updateStatus,
-    error: updateError,
-  } = useServiceTypeUpdate();
-
-  const {
-    getServicetype,
-    status: showStatus,
-    error: showError,
-  } = useServiceTypeDetail();
+  const { addNewServicetype, status: addStatus, error: addError } = useServiceTypeAdd();
+  const { updateExistingServicetype, status: updateStatus, error: updateError } = useServiceTypeUpdate();
+  const { getServicetype, status: showStatus, error: showError } = useServiceTypeDetail();
 
   useEffect(() => {
     if (mode === "update" && id) {
-      getServicetype(parseInt(id)).then((data) => {
+      getServicetype(id).then((data) => {
         if (data) {
           setInitialValues({
-            servicetypeId: parseInt(id),
+            servicetypeId: id,
             name: data.name,
           });
         }
@@ -77,59 +52,63 @@ const ServiceTypeModal: React.FC<ServiceTypeModalProps> = ({
     }
   }, [mode, id, getServicetype]);
 
-  // loading and error handling
   const loading =
     mode === "add"
       ? addStatus === "LOADING"
       : updateStatus === "LOADING" || showStatus === "LOADING";
+
   const error =
     mode === "add"
       ? addError
       : mode === "update"
-      ? updateError || showError
-      : null;
+        ? updateError || showError
+        : null;
 
-  // handle form submission
+  const getFields = (): FieldDefinition[] => [
+    {
+      name: "name",
+      label: "Hizmet Adı",
+      type: "text",
+      placeholder: "Hizmet adı...",
+      required: true,
+    },
+  ];
+
   async function handleSubmit(
     values: IServiceTypeFormData,
     _helpers: FormikHelpers<IServiceTypeFormData>
   ) {
     try {
       if (mode === "add") {
-        await addNewServicetype({
-          name: values.name,
-        });
-      } else if (mode === "update") {
+        await addNewServicetype({ name: values.name });
+      } else if (mode === "update" && id) {
         await updateExistingServicetype({
-          servicetypeId: Number(id),
-          payload: {
-            name: values.name,
-          },
+          servicetypeId: id,
+          payload: { name: values.name },
         });
         onRefresh();
         onClose();
       }
     } catch (error) {
-      console.error("Error adding service type:", error);
+      console.error("Error in ServiceTypeModal:", error);
     }
   }
+
   return (
-    <>
-      <ReusableModalForm
-        show={show}
-        title={mode === "add" ? "Hizmet Türü Ekle" : "Hizmet Türünü Güncelle"}
-        fields={getFields()}
-        initialValues={initialValues}
-        onSubmit={handleSubmit}
-        confirmButtonLabel={mode === "add" ? "Kaydet" : "Güncelle"}
-        cancelButtonLabel="Vazgeç"
-        isLoading={loading}
-        error={error || null}
-        autoGoBackOnModalClose={true}
-        onClose={onClose}
-        modalSize="md"
-      />
-    </>
+    <ReusableModalForm
+      show={show}
+      title={mode === "add" ? "Hizmet Türü Ekle" : "Hizmet Türünü Güncelle"}
+      fields={getFields()}
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
+      confirmButtonLabel={mode === "add" ? "Kaydet" : "Güncelle"}
+      cancelButtonLabel="Vazgeç"
+      isLoading={loading}
+      error={error || null}
+      autoGoBackOnModalClose={true}
+      onClose={onClose}
+      modalSize="sm"
+    />
   );
 };
 

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import darkcontrol from "../../../../../../utils/darkmodecontroller";
 import { Button, Modal, Table as BTable } from "react-bootstrap";
 import ReusableTable, {
@@ -47,16 +47,22 @@ export default function TuitionFeesTab() {
     class_level: +level || undefined,
   });
 
+  // ✅ Sayfa açıldığında bir kez API isteği atmak için kontrol
+  const [fetchEnabled, setFetchEnabled] = useState(false);
+  useEffect(() => {
+    setFetchEnabled(true);
+  }, []);
+
   const listParams = useMemo(
     () => ({
-      enabled: true,
+      enabled: fetchEnabled,
       start_date: dateRange.startDate || undefined,
       end_date: dateRange.endDate || undefined,
       level_id: level || undefined,
       teacher_id: teacher || undefined,
       lesson_id: lesson || undefined,
     }),
-    [dateRange, level, teacher, lesson]
+    [fetchEnabled, dateRange, level, teacher, lesson]
   );
 
   const { fees, loading, error } = useTuitionFeesList(listParams);
@@ -162,15 +168,7 @@ export default function TuitionFeesTab() {
         })),
       },
     ],
-    [
-      dateRange,
-      level,
-      teacher,
-      lesson,
-      levelsData,
-      teachersData,
-      lessonsData,
-    ]
+    [dateRange, level, teacher, lesson, levelsData, teachersData, lessonsData]
   );
 
   const totalAmount = rows.reduce(
@@ -201,12 +199,7 @@ export default function TuitionFeesTab() {
       />
 
       {detailRow && (
-        <Modal
-          show={true}
-          onHide={() => setDetailRow(null)}
-          centered
-          size="lg"
-        >
+        <Modal show onHide={() => setDetailRow(null)} centered size="lg">
           <Modal.Header closeButton>
             <Modal.Title>Detay</Modal.Title>
           </Modal.Header>
