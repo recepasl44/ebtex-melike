@@ -104,6 +104,19 @@ export default function PlannedAssignmentsTable() {
     const filters: FilterDefinition[] = useMemo(
         () => [
             {
+                key: 'dateRange',
+                label: 'Tarih Aralığı',
+                type: 'doubledate' as const,
+                value: dateRange,
+                onChange: (val: any) => {
+                    if (val?.startDate && val?.endDate) {
+                        setDateRange(val);
+                    } else {
+                        setDateRange({ startDate: '', endDate: '' });
+                    }
+                },
+            },
+            {
                 key: 'class_level',
                 label: 'Sınıf Seviyesi',
                 type: 'select',
@@ -159,19 +172,6 @@ export default function PlannedAssignmentsTable() {
                 })),
             },
             {
-                key: 'dateRange',
-                label: 'Tarih Aralığı',
-                type: 'doubledate' as const,
-                value: dateRange,
-                onChange: (val: any) => {
-                    if (val?.startDate && val?.endDate) {
-                        setDateRange(val);
-                    } else {
-                        setDateRange({ startDate: '', endDate: '' });
-                    }
-                },
-            },
-            {
                 key: 'status',
                 label: 'Durum',
                 type: 'select',
@@ -219,12 +219,18 @@ export default function PlannedAssignmentsTable() {
             {
                 key: 'start_date',
                 label: 'Başlangıç',
-                render: (r) => r.assignment?.start_date ?? r.start_date ?? '-',
+                render: (r) => {
+                    const val = r.assignment?.start_date ?? r.start_date ?? '';
+                    return val ? val.substring(0, 10) : '-';
+                },
             },
             {
                 key: 'end_date',
                 label: 'Bitiş',
-                render: (r) => r.assignment?.end_date ?? r.end_date ?? '-',
+                render: (r) => {
+                    const val = r.assignment?.end_date ?? r.end_date ?? '';
+                    return val ? val.substring(0, 10) : '-';
+                },
             },
             {
                 key: 'unit',
@@ -238,7 +244,7 @@ export default function PlannedAssignmentsTable() {
             },
             {
                 key: 'sources',
-                label: 'Kaynaklar',
+                label: 'Kaynak',
                 render: (r) =>
                     r.assignment?.source_id?.toString() ??
                     r.source_id?.toString() ??
@@ -260,19 +266,6 @@ export default function PlannedAssignmentsTable() {
                 label: 'İşlemler',
                 render: (row) => (
                     <div className="d-flex justify-content-end gap-2">
-                        {/* PLANLANAN ÖDEVİ ÖDEV TANIMLAMA FORMUNA AKTAR */}
-                        <button
-                            onClick={() =>
-                                navigate('/assignmentdefinition/crud', {
-                                    state: { assignment_id: row.id }, // 🡒 formu dolduracak ID
-                                })
-                            }
-                            className="btn btn-icon btn-sm btn-primary-light rounded-pill"
-                            title="Tanımla"
-                        >
-                            <i className="ti ti-plus" />
-                        </button>
-
                         {/* Düzenle */}
                         <button
                             onClick={() =>
