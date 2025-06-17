@@ -184,8 +184,8 @@ export default function SpecialTab() {
         render: (row, openDeleteModal) => (
           <>
             <Button
-              size="sm"
-              variant="primary"
+              variant="info-light"
+              className="btn btn-icon btn-sm rounded-pill me-1"
               onClick={() =>
                 navigate(`/personelSpecialCrud/${row.id}`, {
                   state: { personelId: row.personel_id, selectedLesson: row },
@@ -193,10 +193,10 @@ export default function SpecialTab() {
               }
             >
               <i className="ti ti-pencil" />
-            </Button>{" "}
+            </Button>
             <Button
-              size="sm"
-              variant="danger"
+              variant="danger-light"
+              className="btn btn-icon btn-sm rounded-pill"
               onClick={() => openDeleteModal?.(row)}
             >
               <i className="ti ti-trash" />
@@ -236,7 +236,7 @@ export default function SpecialTab() {
           <Modal.Body>
             <div className="d-flex justify-content-end mb-2">
               <Button
-                variant="success"
+                variant="outline-secondary"
                 onClick={() =>
                   navigate("/personelSpecialCrud", {
                     state: { personelId: detailRow.lessons[0]?.personel_id },

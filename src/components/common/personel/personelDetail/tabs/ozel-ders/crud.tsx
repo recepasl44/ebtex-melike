@@ -10,9 +10,8 @@ type FormValues = {
   tarih: string
   baslangic_saat: string
   bitis_saat: string
-  ogrenci: string | number;
+  ogrenci: string
   ucret: number
-  kar_yuzde: string
 }
 
 export default function PersonelSpecialCrud() {
@@ -49,7 +48,6 @@ export default function PersonelSpecialCrud() {
     bitis_saat: "",
     ogrenci: "",
     ucret: 0,
-    kar_yuzde: "",
   })
 
   useEffect(() => {
@@ -58,25 +56,23 @@ export default function PersonelSpecialCrud() {
 
   useEffect(() => {
     const src = selected || specialTutorLesson!
-    if ((mode === "update") && src) {
+    if (mode === "update" && src) {
       setInitialValues({
         tarih: src.tarih || "",
         baslangic_saat: src.baslangic_saati || "",
         bitis_saat: src.bitis_saati || "",
-        ogrenci: src.ogrenci_yuzdesi || "",
+        ogrenci: src.ad_soyad || "",
         ucret: src.ucret || 0,
-        kar_yuzde: src.kar_yuzdesi?.toString() ?? "0",
       })
     }
   }, [mode, selected, specialTutorLesson])
 
   const getFields = (): FieldDefinition[] => [
     { name: "tarih", label: "Tarih", type: "date", required: true },
+    { name: "ogrenci", label: "Öğrenci Adı Soyadı", type: "text", required: true },
     { name: "baslangic_saat", label: "Başlangıç Saati", type: "time", required: true },
     { name: "bitis_saat", label: "Bitiş Saati", type: "time", required: true },
-    { name: "ogrenci", label: "Ad Soyad (Öğrenci)", type: "text", required: true },
-    { name: "ucret", label: "Ücret", type: "currency", required: true },
-    { name: "kar_yuzde", label: "Kar Yüzdesi", type: "number", required: true },
+    { name: "ucret", label: "Seans Ücreti (₺)", type: "currency", required: true },
   ]
 
   async function handleSubmit(vals: FormValues) {
@@ -88,7 +84,6 @@ export default function PersonelSpecialCrud() {
       bitis_saati: vals.bitis_saat,
       ad_soyad: vals.ogrenci,
       ucret: vals.ucret,
-      kar_yuzdesi: Number(vals.kar_yuzde),
     }
     if (mode === "add") {
       await addNewSpecialTutorLesson(payload as any)
