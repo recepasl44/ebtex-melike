@@ -1,4 +1,4 @@
-import  { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import ReusableTable, {
@@ -31,7 +31,7 @@ export default function InternalsTable() {
     const internalEnabled = Boolean(branchId) || Boolean(schoolId);
     const {
         summaryData,
-      
+
         error,
     } = useInternalSummary({
         enabled: internalEnabled,
@@ -115,16 +115,16 @@ export default function InternalsTable() {
         },
         {
             key: "actions",
-            label: "İşlemler",
-            style: { textAlign: "right" },
+            label: "İşlem",
+            style: { width: 80, textAlign: "center" },
             render: (row) => (
-                <Button
-                    variant="light"
-                    size="sm"
+                <button
+                    type="button"
+                    className="btn btn-icon btn-sm btn-primary-light rounded-pill"
                     onClick={() => navigate(`/internals/detail/${row.id}`)}
                 >
                     <i className="ti ti-eye" />
-                </Button>
+                </button>
             ),
         },
     ], [navigate]);
