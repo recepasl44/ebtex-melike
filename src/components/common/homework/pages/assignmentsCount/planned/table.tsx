@@ -128,9 +128,9 @@ export default function PlannedHomeworkCount() {
                 onChange: setBranchId,
                 options: classroomList.map(c => ({ label: c.name, value: String(c.id) })),
             },
-            {
+            { 
                 key: 'lesson',
-                label: 'Dersler',
+                label: 'Ders',
                 type: 'select',
                 value: lessonId,
                 onClick: () => setEnabled(prev => ({ ...prev, lesson: true })),
@@ -138,7 +138,7 @@ export default function PlannedHomeworkCount() {
                 options: lessonsData.map(l => ({ label: l.name, value: String(l.id) })),
             }, {
                 key: "unit",
-                label: "Üniteler",
+                label: "Ünite",
                 type: "select",          // ← EKLENDİ
                 value: unitId,
                 onClick: () => setEnabled(prev => ({ ...prev, unit: true })),
@@ -160,18 +160,18 @@ export default function PlannedHomeworkCount() {
     const columns: ColumnDefinition<AssignmentRow>[] = useMemo(() => [
         {
             key: 'assignment.class_section',
-            label: 'Sınıflar',
+            label: 'Sınıf/Şube',
             render: r => r.assignment?.class_section ?? '-',
         },
         {
             key: 'lessons',
-            label: 'Dersler',
+            label: 'Ders',
             render: (row) => row.assignment.lessons,
 
         },
         {
             key: 'unit',
-            label: 'Üniteler',
+            label: 'Ünite',
             render: (row) => row.assignment.unit_topic ?? '',
         },
         {
