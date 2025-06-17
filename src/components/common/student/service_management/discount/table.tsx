@@ -1,5 +1,6 @@
 // src/pages/discounts/table.tsx
 import { useState, useMemo, useEffect } from "react";
+import { Form } from "react-bootstrap";
 import ReusableTable, {
   ColumnDefinition,
   useDebounce,
@@ -109,32 +110,8 @@ export default function DiscountTable({ serviceId }: DiscountTableProps) {
 
   // Filtre Tablosu
   const filters = useMemo(() => {
-    return [
-      {
-        key: "name",
-        label: "İndirim Adı",
-        value: inputName,
-        placeholder: "İndirim adı...",
-        type: "text" as const,
-        onChange: (val: any) => {
-          setInputName(val);
-          if (val) {
-            const matchedDiscount = discountsData?.find(
-              (item: any) => item.name.toLowerCase() === val.toLowerCase()
-            );
-            if (matchedDiscount) {
-              if (matchedDiscount.name) {
-                setName(matchedDiscount.name);
-              }
-            }
-          } else {
-            setName("");
-          }
-        },
-        isEnabled: filtersEnabled.name,
-      },
-    ];
-  }, [inputName]);
+    return [];
+  }, []);
 
   // ANa tablo
   const columns: ColumnDefinition<DiscountData>[] = useMemo(() => {
@@ -185,6 +162,16 @@ export default function DiscountTable({ serviceId }: DiscountTableProps) {
 
   return (
     <div>
+      <Form.Group className="mb-3">
+        <Form.Control
+          placeholder="İndirim adı..."
+          value={inputName}
+          onChange={(e) => {
+            setInputName(e.target.value);
+            setFiltersEnabled((prev) => ({ ...prev, name: true }));
+          }}
+        />
+      </Form.Group>
       <ReusableTable<DiscountData>
         columns={columns}
         data={discountsData}

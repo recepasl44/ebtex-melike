@@ -18,7 +18,7 @@ import {
   formatDateForApi,
 } from "../../../../../utils/formatters";
 import { deleteServicetype } from "../../../../../slices/serviceTypes/delete/thunk";
-import { Button } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import sec_buton from "../../../../../assets/images/media/sec-buton.svg";
 import sec_hover from "../../../../../assets/images/media/sec-buton-hover.svg";
 
@@ -215,28 +215,6 @@ export default function ServiceManagementListPage({
   const filters = useMemo(() => {
     const basicFilters = [
       {
-        key: "name",
-        label: "Hizmet Adı",
-        value: inputName,
-        placeholder: "Hizmet adı...",
-        type: "text" as const,
-        onChange: (val: any) => {
-          setInputName(val);
-          if (val) {
-            const matchedService = servicesData?.find(
-              (item: any) => item.name.toLowerCase() === val.toLowerCase()
-            );
-            if (matchedService) {
-              if (matchedService.name) {
-                setName(matchedService.name);
-              }
-            }
-          } else {
-            setName("");
-          }
-        },
-      },
-      {
         key: "branch",
         label: "Şube",
         value: branch,
@@ -375,7 +353,7 @@ export default function ServiceManagementListPage({
     ];
 
     return basicFilters;
-  }, [name, branch, serviceTypesFilterData, branchData]);
+  }, [branch, serviceTypesFilterData, branchData]);
 
   const questionParams = useMemo(
     () => ({
@@ -486,6 +464,16 @@ export default function ServiceManagementListPage({
   );
   return (
     <>
+      <Form.Group className="mb-3">
+        <Form.Control
+          placeholder="Hizmet adı..."
+          value={inputName}
+          onChange={(e) => {
+            setInputName(e.target.value);
+            setFilterEnabled((prev) => ({ ...prev, name: true }));
+          }}
+        />
+      </Form.Group>
       <ReusableTable<IService>
         columns={columns}
         data={servicesData}
