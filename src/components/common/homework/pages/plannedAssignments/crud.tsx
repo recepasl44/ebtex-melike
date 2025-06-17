@@ -134,7 +134,7 @@ const AssignmentCrudModal: React.FC<Props> = ({ onClose, onRefresh }) => {
             },
         },
         {
-            name: 'classroom_id', label: 'Sınıf / Şube', type: 'select', required: true,
+            name: 'classroom_id', label: 'Sınıf / Şube', type: 'select', required: false,
             options: classOpts,
             onClick: () => setEnable(e => ({ ...e, classroom_id: true })),
             onChange: (v, fm) => {
@@ -168,12 +168,12 @@ const AssignmentCrudModal: React.FC<Props> = ({ onClose, onRefresh }) => {
                 fm.setFieldValue('unit_id', id);
             },
         },
+        { name: 'title', label: 'Ödev Başlığı', type: 'text', required: true },
         {
             name: 'source_id', label: 'Kaynak', type: 'select',
             options: sourceOpts,
             onClick: () => setEnable(e => ({ ...e, source_id: true })),
         },
-        { name: 'title', label: 'Ödev Başlığı', type: 'text', required: true },
         { name: 'start_date', label: 'Başlangıç Tarihi', type: 'date', required: true },
         { name: 'end_date', label: 'Bitiş Tarihi', type: 'date', required: true },
         { name: 'description', label: 'Açıklama', type: 'textarea' },
@@ -212,7 +212,7 @@ const AssignmentCrudModal: React.FC<Props> = ({ onClose, onRefresh }) => {
             fields={getFields}
             initialValues={initial}
             onSubmit={handleSubmit}
-            confirmButtonLabel={mode === 'add' ? 'Ekle' : 'Kaydet'}
+            confirmButtonLabel="Kaydet"
             cancelButtonLabel="Vazgeç"
             isLoading={mode === 'add' ? addSt === 'LOADING' : updSt === 'LOADING'}
             error={(mode === 'add' ? addErr : updErr) || null}
