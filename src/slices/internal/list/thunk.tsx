@@ -6,6 +6,7 @@ import { InternalSummaryResponse } from '../../../types/internal/list';
 export interface InternalListArgs {
     school_id?: string;
     branche_id?: string;
+    program_id?: string;
     [key: string]: any;
     enabled?: boolean;
 }
@@ -20,6 +21,7 @@ export const fetchInternalSummary = createAsyncThunk<
             const q = new URLSearchParams();
             if (params.school_id) q.append('school_id', params.school_id);
             if (params.branche_id) q.append('branche_id', params.branche_id);
+            if (params.program_id) q.append('program_id', params.program_id);
 
             // → burayı backend'in gerçekte beklediği yola göre ayarlayın
             // eğer endpoint: /students/internals?school_id=…&branche_id=… ise:

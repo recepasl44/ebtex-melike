@@ -1,12 +1,12 @@
 import { useState, useEffect, useMemo } from "react";
-import { Button, Spinner } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import ReusableTable, {
     ColumnDefinition,
     FilterDefinition,
 } from "../ReusableTable";
 import { useBranchTable } from "../../hooks/branch/useBranchList";
-import { useSchoolTable } from "../../hooks/school/useSchoolList";
+import { useProgramsTable } from "../../hooks/program/useList";
 import { useInternalSummary } from "../../hooks/internal/useInternalSummary";
 import InternalListStatus from "../../../enums/internal/list";
 import { IInternalSummary } from "../../../types/internal/list";
@@ -19,16 +19,13 @@ export default function InternalsTable() {
     const [branchEnabled, setBranchEnabled] = useState(false);
     const { branchData } = useBranchTable({ enabled: branchEnabled });
 
-    // --- Okul arama filtresi ---
-    const [schoolTerm, setSchoolTerm] = useState("");
-    const [schoolEnabled, setSchoolEnabled] = useState(false);
-    const { schoolData, setFilter: setSchoolFilter } = useSchoolTable({
-        enabled: schoolEnabled,
-    });
-    const [schoolId, setSchoolId] = useState("");
+    // --- Okul Seviyesi filtresi ---
+    const [programId, setProgramId] = useState("");
+    const [programEnabled, setProgramEnabled] = useState(false);
+    const { programsData } = useProgramsTable({ enabled: programEnabled });
 
     // --- summary fetch için enabled bayrağı ---
-    const internalEnabled = Boolean(branchId) || Boolean(schoolId);
+    const internalEnabled = Boolean(branchId) || Boolean(programId);
     const {
         summaryData,
 
@@ -36,18 +33,10 @@ export default function InternalsTable() {
     } = useInternalSummary({
         enabled: internalEnabled,
         branche_id: branchId || undefined,
-        school_id: schoolId || undefined,
+        program_id: programId || undefined,
     });
     const loading = status === InternalListStatus.LOADING;
 
-    // Okul arama input’una her yazıldığında aktif et + filter uygula
-    useEffect(() => {
-        if (schoolTerm.length > 0) {
-            setSchoolEnabled(true);
-            setSchoolFilter(schoolTerm);
-            setSchoolId("");
-        }
-    }, [schoolTerm, setSchoolFilter]);
 
     // --- filtre tanımları ---
     const filters = useMemo<FilterDefinition[]>(() => [
@@ -68,23 +57,21 @@ export default function InternalsTable() {
             })),
         },
         {
-            key: "school",
-            label: "Okul Ara…",
-            type: "autocomplete",
-            value: schoolTerm,
-            onClick: () => setSchoolEnabled(true),
-            onChange: (val: string) => setSchoolTerm(val),
-            onSelect: (val: string) => {
-                setSchoolId(val);
-                const sel = schoolData.find((s) => String(s.id) === val);
-                if (sel) setSchoolTerm(sel.name);
+            key: "program",
+            label: "Okul Seviyesi",
+            type: "select",
+            value: programId,
+            onClick: () => setProgramEnabled(true),
+            onChange: (val: string) => {
+                setProgramEnabled(true);
+                setProgramId(val);
             },
-            options: schoolData.map((s) => ({
-                value: String(s.id),
-                label: s.name,
+            options: programsData.map((p) => ({
+                value: String(p.id),
+                label: p.name,
             })),
         },
-    ], [branchId, branchData, schoolTerm, schoolData]);
+    ], [branchId, branchData, programId, programsData]);
 
     // --- kolon tanımları ---
     const columns = useMemo<ColumnDefinition<IInternalSummary>[]>(() => [
