@@ -21,7 +21,7 @@ const LessonOctFeeIndex: React.FC = () => {
     },
     {
       label: "Ders – Soru Çözüm Ücretleri",
-      content: <CouponTab personelId={0} enabled={true} />,
+      content: <CouponTab />,
       activeBgColor: "#5C67F7",
       activeTextColor: "#FFFFFF",
       passiveBgColor: "#5C67F726",
@@ -29,7 +29,7 @@ const LessonOctFeeIndex: React.FC = () => {
     },
     {
       label: "Koçluk Ücreti",
-      content: <CoachingTab personelId={0} enabled={true} />,
+      content: <CoachingTab />,
       activeBgColor: "#5C67F7",
       activeTextColor: "#FFFFFF",
       passiveBgColor: "#5C67F726",
@@ -37,7 +37,7 @@ const LessonOctFeeIndex: React.FC = () => {
     },
     {
       label: "Özel Ders",
-      content: <SpecialTab personelId={0} enabled={true} />,
+      content: <SpecialTab />,
       activeBgColor: "#5C67F7",
       activeTextColor: "#FFFFFF",
       passiveBgColor: "#5C67F726",
