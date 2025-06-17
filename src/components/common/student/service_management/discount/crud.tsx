@@ -46,14 +46,14 @@ const DiscountModal: React.FC<DiscountModalProps> = ({
         name: "name",
         label: "Ad",
         type: "text",
-        placeholder: "İndirim adı...",
+        placeholder: "İndirim adını giriniz...",
         required: true,
       },
       {
         name: "amount",
         label: "Ücret",
-        type: "currency",
-        placeholder: "Ücret...",
+        type: "text",
+        placeholder: "İndirim tutarını giriniz...",
         required: true,
       },
       {

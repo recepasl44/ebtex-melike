@@ -20,6 +20,7 @@ import { useServicesTable } from "../../../hooks/service/useList";
 import { useDiscountsTable } from "../../../hooks/discounts/useList";
 import { usePaymentMethodsList } from "../../../hooks/paymentMethods/useList";
 
+
 // Types
 interface Branch {
   id?: number;
@@ -91,9 +92,17 @@ export default function CalculatePage({ studentId }: CalculatePageProps = {}) {
   const [_installmentEnd, setInstallmentEnd] = useState<string>(today);
   // Filtreleme durumunu takip eden state
   const [filtersApplied, setFiltersApplied] = useState(false);
+  useEffect(() => {
+    if (branchId && programId && levelId && courseId && schoolTypeId) {
+      setFiltersApplied(true);
+    } else {
+      setFiltersApplied(false);
+    }
+  }, [branchId, programId, levelId, courseId, schoolTypeId]);
 
   // 2) We start with `enabled = false`. Only when user changes something do we enable.
   const [filtersEnabled, setFiltersEnabled] = useState(false);
+
 
   // 3) Hooks with dynamic `enabled`
   const { data: branchData } = useBranchTable({ enabled: filtersEnabled });
@@ -347,7 +356,8 @@ export default function CalculatePage({ studentId }: CalculatePageProps = {}) {
   }
 
   return (
-    <div>
+    <div >
+
       {/* Hizmet Yok Modal */}
       <Modal
         show={showNoServiceModal}
@@ -450,34 +460,36 @@ export default function CalculatePage({ studentId }: CalculatePageProps = {}) {
 
             <Col md={2}>
               <Form.Label>Taksit Dönemi</Form.Label>
-              <SpkFlatpickr
-                placeholder={[today, today]}
-                options={{
-                  mode: "range",
-                  dateFormat: "Y-m-d",
-                  disableMobile: true,
-                }}
-                inputClass="form-control"
-                value={
-                  _installmentEnd
-                    ? `${_installmentStart} to ${_installmentEnd}`
-                    : _installmentStart
-                }
-                onfunChange={(dates: Date[]) => {
-                  if (dates.length === 2) {
-                    setInstallmentStart(dates[0].toISOString().split("T")[0]);
-                    setInstallmentEnd(dates[1].toISOString().split("T")[0]);
-                  } else if (dates.length === 1) {
-                    setInstallmentStart(dates[0].toISOString().split("T")[0]);
-                    setInstallmentEnd("");
-                  } else {
-                    setInstallmentStart("");
-                    setInstallmentEnd("");
+              <div style={{ width: "100%" }}>
+                <SpkFlatpickr
+                  placeholder={[today, today]}
+                  options={{
+                    mode: "range",
+                    dateFormat: "Y-m-d",
+                    disableMobile: true,
+                  }}
+                  inputClass="form-control"
+                  value={
+                    _installmentEnd
+                      ? `${_installmentStart} to ${_installmentEnd}`
+                      : _installmentStart
                   }
-                  // Also enable fetch
-                  setFiltersEnabled(true);
-                }}
-              />
+                  onfunChange={(dates: Date[]) => {
+                    if (dates.length === 2) {
+                      setInstallmentStart(dates[0].toISOString().split("T")[0]);
+                      setInstallmentEnd(dates[1].toISOString().split("T")[0]);
+                    } else if (dates.length === 1) {
+                      setInstallmentStart(dates[0].toISOString().split("T")[0]);
+                      setInstallmentEnd("");
+                    } else {
+                      setInstallmentStart("");
+                      setInstallmentEnd("");
+                    }
+                    // Also enable fetch
+                    setFiltersEnabled(true);
+                  }}
+                />
+              </div>
             </Col>
           </Row>
         </Card.Body>
@@ -678,8 +690,8 @@ export default function CalculatePage({ studentId }: CalculatePageProps = {}) {
                               d.discount_type === 0
                                 ? `${d.name} (%${d.amount})`
                                 : `${d.name} (${formatCurrency(
-                                    d.amount as number
-                                  )})`;
+                                  d.amount as number
+                                )})`;
                             return (
                               <Form.Check
                                 key={d.id}
@@ -708,8 +720,8 @@ export default function CalculatePage({ studentId }: CalculatePageProps = {}) {
                               d.discount_type === 0
                                 ? `${d.name} (%${d.amount})`
                                 : `${d.name} (${formatCurrency(
-                                    d.amount as number
-                                  )})`;
+                                  d.amount as number
+                                )})`;
                             return (
                               <Form.Check
                                 key={d.id}

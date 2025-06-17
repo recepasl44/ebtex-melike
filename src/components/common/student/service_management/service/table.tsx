@@ -221,6 +221,7 @@ export default function ServiceManagementListPage({
         placeholder: "Hizmet adı...",
         type: "text" as const,
         onChange: (val: any) => {
+
           setInputName(val);
           if (val) {
             const matchedService = servicesData?.find(
