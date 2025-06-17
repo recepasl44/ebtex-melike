@@ -15,7 +15,7 @@ export function usePaymentMethodsList(params: PaymentMethodsListArg) {
   useEffect(() => {
     if (params?.enabled === false) return
     dispatch(fetchPaymentMethods(params))
-  }, [dispatch])
+  }, [dispatch, params])
 
   const loading = status === PaymentMethodsListStatus.LOADING
   return {

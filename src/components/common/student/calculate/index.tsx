@@ -19,6 +19,7 @@ import { useSchoolTypesList } from "../../../hooks/schoolTypes/useSchoolTypesLis
 import { useServicesTable } from "../../../hooks/service/useList";
 import { useDiscountsTable } from "../../../hooks/discounts/useList";
 import { usePaymentMethodsList } from "../../../hooks/paymentMethods/useList";
+import Pageheader from "../../../page-header/pageheader";
 
 // Types
 interface Branch {
@@ -91,6 +92,14 @@ export default function CalculatePage({ studentId }: CalculatePageProps = {}) {
   const [_installmentEnd, setInstallmentEnd] = useState<string>(today);
   // Filtreleme durumunu takip eden state
   const [filtersApplied, setFiltersApplied] = useState(false);
+
+  useEffect(() => {
+    if (branchId && programId && levelId && courseId && schoolTypeId) {
+      setFiltersApplied(true);
+    } else {
+      setFiltersApplied(false);
+    }
+  }, [branchId, programId, levelId, courseId, schoolTypeId]);
 
   // 2) We start with `enabled = false`. Only when user changes something do we enable.
   const [filtersEnabled, setFiltersEnabled] = useState(false);
@@ -347,7 +356,8 @@ export default function CalculatePage({ studentId }: CalculatePageProps = {}) {
   }
 
   return (
-    <div>
+    <div className="px-4">
+      <Pageheader title="Öğrenciler" currentpage="Ücret Hesapla" />
       {/* Hizmet Yok Modal */}
       <Modal
         show={showNoServiceModal}
@@ -451,6 +461,7 @@ export default function CalculatePage({ studentId }: CalculatePageProps = {}) {
             <Col md={2}>
               <Form.Label>Taksit Dönemi</Form.Label>
               <SpkFlatpickr
+                style={{ width: "100%" }}
                 placeholder={[today, today]}
                 options={{
                   mode: "range",
@@ -638,7 +649,7 @@ export default function CalculatePage({ studentId }: CalculatePageProps = {}) {
                     <Col md={3}>
                       <Form.Group>
                         <Form.Label>Taksit Dönemi</Form.Label>
-                        <div style={{ minWidth: "200px" }}>
+                        <div style={{ minWidth: "200px", width: "100%" }}>
                           <SpkFlatpickr
                             placeholder="YYYY-MM-DD"
                             options={{

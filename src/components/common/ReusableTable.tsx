@@ -13,7 +13,7 @@ import {
   Modal,
   InputGroup,
 } from "react-bootstrap";
-import { CSVLink } from "react-csv";
+import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { Typeahead } from "react-bootstrap-typeahead";
@@ -192,7 +192,7 @@ function ReusableTable<T extends { [key: string]: any }>({
   }, [customCsvData, data, columns]);
 
   const handleExportPDF = () => {
-    const doc = new jsPDF("p", "pt");
+    const doc = new jsPDF("p", "pt", "a4", true);
     const tableColumn = columns.map((col) => col.label);
     const tableRows = (data ?? []).map((row) =>
       columns.map((col) =>
@@ -201,6 +201,20 @@ function ReusableTable<T extends { [key: string]: any }>({
     );
     autoTable(doc, { head: [tableColumn], body: tableRows, startY: 20 });
     doc.save(`${exportFileName}.pdf`);
+  };
+
+  const handleExportExcel = () => {
+    const worksheetData = (data ?? []).map((row) => {
+      const newObj: Record<string, any> = {};
+      columns.forEach((col) => {
+        newObj[col.label] = row[col.key];
+      });
+      return newObj;
+    });
+    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+    XLSX.writeFile(workbook, `${exportFileName}.xlsx`);
   };
 
   // Delete modal state ve ilgili fonksiyonlar
@@ -1067,14 +1081,13 @@ function ReusableTable<T extends { [key: string]: any }>({
                     >
                       PDF
                     </Button>
-                    <CSVLink
-                      data={csvData}
-                      headers={csvHeaders}
-                      filename={`${exportFileName}.csv`}
-                      className="btn btn-outline-secondary btn-sm"
+                    <Button
+                      variant="outline-secondary"
+                      size="sm"
+                      onClick={handleExportExcel}
                     >
                       Excel
-                    </CSVLink>
+                    </Button>
                   </>
                 )}
               </div>
@@ -1362,14 +1375,13 @@ function ReusableTable<T extends { [key: string]: any }>({
             >
               PDF
             </Button>
-            <CSVLink
-              data={csvData}
-              headers={csvHeaders}
-              filename={`${exportFileName}.csv`}
-              className="btn btn-outline-secondary btn-sm"
+            <Button
+              variant="outline-secondary"
+              size="sm"
+              onClick={handleExportExcel}
             >
               Excel
-            </CSVLink>
+            </Button>
           </div>
         )}
         {/* İsteğe bağlı başlık vs. ekleyebilirsiniz. */}
