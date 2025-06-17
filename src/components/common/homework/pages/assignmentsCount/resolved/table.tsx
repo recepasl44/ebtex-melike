@@ -19,7 +19,7 @@ export default function CompletedHomeworkCount() {
     const navigate = useNavigate();
 
     //#region  State tanımlamalarnı yapıp sayfa ilk yüklendiğinde tüm filtreleri pasife çekiyorum.
-    const [dateRange] = useState({
+    const [dateRange, setDateRange] = useState({
         startDate: "",
         endDate: "",
     });
@@ -76,7 +76,9 @@ export default function CompletedHomeworkCount() {
             classroom_id: branchId ? Number(branchId) : undefined,
             lesson_id: lessonId ? Number(lessonId) : undefined,
             student_id: studentId ? Number(studentId) : undefined,
-        }), [page, pageSize, levelId, branchId, lessonId, studentId],
+            start_date: dateRange.startDate || undefined,
+            end_date: dateRange.endDate || undefined,
+        }), [page, pageSize, levelId, branchId, lessonId, studentId, dateRange],
     );
     //#endregion
 
@@ -92,6 +94,24 @@ export default function CompletedHomeworkCount() {
     //#region Filtre alanları tanımlanıp optimize ediliyor.
     const filters: FilterDefinition[] = useMemo(
         () => [
+            {
+                key: "dateRange",
+                label: "Tarih Aralığı",
+                value: dateRange,
+                onClick: () => setEnabled((prev) => ({ ...prev, dateRange: true })),
+                onChange: (val: any) => {
+                    if (val && typeof val === 'object' && 'startDate' in val && 'endDate' in val) {
+                        setDateRange(val);
+                    } else {
+                        setDateRange({ startDate: "", endDate: "" });
+                    }
+                },
+                render: (value: any) => {
+                    if (!value || !value.startDate || !value.endDate) return '-';
+                    return `${value.startDate} - ${value.endDate}`;
+                },
+                type: "doubledate"
+            },
 
             {
                 key: 'level',
@@ -129,7 +149,7 @@ export default function CompletedHomeworkCount() {
             },
             {
                 key: 'lesson',
-                label: 'Dersler',
+                label: 'Ders',
                 type: 'select',
                 value: lessonId,
                 onClick: () => setEnabled(prev => ({ ...prev, lesson: true })),
@@ -152,7 +172,7 @@ export default function CompletedHomeworkCount() {
         },
         {
             key: 'lessons',
-            label: 'Dersler',
+            label: 'Ders',
             render: (row) => row.assignment.lessons,
 
         },
