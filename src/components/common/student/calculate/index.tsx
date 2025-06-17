@@ -18,7 +18,6 @@ import { useCoursesTable } from "../../../hooks/course/useList";
 import { useSchoolTypesList } from "../../../hooks/schoolTypes/useSchoolTypesList";
 import { useServicesTable } from "../../../hooks/service/useList";
 import { useDiscountsTable } from "../../../hooks/discounts/useList";
-import { usePaymentMethodsList } from "../../../hooks/paymentMethods/useList";
 
 
 // Types
@@ -139,11 +138,24 @@ export default function CalculatePage({ studentId }: CalculatePageProps = {}) {
     page: 1,
     pageSize: 9999,
   });
-  const { data: paymentMethodList } = usePaymentMethodsList({
-    enabled: filtersEnabled,
-    page: 1,
-    pageSize: 9999,
-  });
+
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
+  useEffect(() => {
+    try {
+      const userData = localStorage.getItem("userData");
+      if (userData) {
+        const parsedData = JSON.parse(userData);
+        if (
+          parsedData?.payment_methods &&
+          Array.isArray(parsedData.payment_methods)
+        ) {
+          setPaymentMethods(parsedData.payment_methods);
+        }
+      }
+    } catch (error) {
+      console.error("Ödeme yöntemleri yüklenirken hata:", error);
+    }
+  }, []);
 
   // 4) Convert data or fallback
   const branches: Branch[] = branchData || [];
@@ -167,7 +179,7 @@ export default function CalculatePage({ studentId }: CalculatePageProps = {}) {
     service_id: d.service_id ?? undefined,
   }));
 
-  const paymentMethods: PaymentMethod[] = paymentMethodList || [];
+
 
   // 5) “Selected services”
   const [selectedServices, setSelectedServices] = useState<SelectedService[]>(
