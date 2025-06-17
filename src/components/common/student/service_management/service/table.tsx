@@ -25,6 +25,10 @@ import sec_hover from "../../../../../assets/images/media/sec-buton-hover.svg";
 interface ServiceTableProps {
   // Parent bileşenden gelecek callback
   onSelectService?: (service: IService) => void;
+  /** Harici arama değeri */
+  searchValue?: string;
+  /** Name filtresini göster */
+  showNameFilter?: boolean;
 }
 
 type QueryParams = {
@@ -42,6 +46,8 @@ type QueryParams = {
 
 export default function ServiceManagementListPage({
   onSelectService,
+  searchValue = "",
+  showNameFilter = true,
 }: ServiceTableProps) {
   const navigate = useNavigate();
   const [branch, setBranch] = useState("");
@@ -70,6 +76,15 @@ export default function ServiceManagementListPage({
     start_installment_date: false,
     end_installment_date: false,
   });
+
+  // Harici arama değeri değiştiğinde iç durumu güncelle
+  useEffect(() => {
+    setInputName(searchValue);
+    setName(searchValue);
+    if (searchValue) {
+      setFilterEnabled((prev) => ({ ...prev, name: true }));
+    }
+  }, [searchValue]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -374,8 +389,8 @@ export default function ServiceManagementListPage({
       },
     ];
 
-    return basicFilters;
-  }, [name, branch, serviceTypesFilterData, branchData]);
+    return showNameFilter ? basicFilters : basicFilters.slice(1);
+  }, [name, branch, serviceTypesFilterData, branchData, showNameFilter]);
 
   const questionParams = useMemo(
     () => ({

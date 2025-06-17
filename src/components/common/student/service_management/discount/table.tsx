@@ -14,6 +14,10 @@ import { useUpdateQueryParamsFromFilters } from "../../../../hooks/utilshooks/us
 interface DiscountTableProps {
   serviceId?: number;
   enabled?: boolean;
+  /** Harici arama değeri */
+  searchValue?: string;
+  /** İsim filtresini göster */
+  showNameFilter?: boolean;
 }
 
 type QueryParams = {
@@ -21,7 +25,11 @@ type QueryParams = {
   name: string;
 };
 
-export default function DiscountTable({ serviceId }: DiscountTableProps) {
+export default function DiscountTable({
+  serviceId,
+  searchValue = "",
+  showNameFilter = true,
+}: DiscountTableProps) {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [inputName, setInputName] = useState(""); // UI için
@@ -45,6 +53,15 @@ export default function DiscountTable({ serviceId }: DiscountTableProps) {
   const [filtersEnabled, setFiltersEnabled] = useState({
     name: false,
   });
+
+  // Harici arama değeri değiştiğinde iç durumu güncelle
+  useEffect(() => {
+    setInputName(searchValue);
+    setName(searchValue);
+    if (searchValue) {
+      setFiltersEnabled((prev) => ({ ...prev, name: true }));
+    }
+  }, [searchValue]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -109,7 +126,7 @@ export default function DiscountTable({ serviceId }: DiscountTableProps) {
 
   // Filtre Tablosu
   const filters = useMemo(() => {
-    return [
+    const arr = [
       {
         key: "name",
         label: "İndirim Adı",
@@ -134,7 +151,8 @@ export default function DiscountTable({ serviceId }: DiscountTableProps) {
         isEnabled: filtersEnabled.name,
       },
     ];
-  }, [inputName]);
+    return showNameFilter ? arr : [];
+  }, [inputName, showNameFilter]);
 
   // ANa tablo
   const columns: ColumnDefinition<DiscountData>[] = useMemo(() => {
