@@ -293,7 +293,9 @@ const StudentReportModal: React.FC<StudentReportModalProps> = ({
     const [reportData, setReportData] = useState<IStudentReportRow[]>([]);
 
     useEffect(() => {
+        if (!show) return;
         const dummy = [
+
             {
                 id: 1,
                 studentNo: "721",
@@ -323,7 +325,7 @@ const StudentReportModal: React.FC<StudentReportModalProps> = ({
             // vs...
         ];
         setReportData(dummy);
-    }, [filters]);
+    }, [filters, show]);
 
 
 
