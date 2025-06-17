@@ -6,6 +6,7 @@ import DiscountTable from "./discount/table"; // 2. adımda oluşturduğumuz dis
 
 export default function CombinedPage() {
   const [selectedServiceId, setSelectedServiceId] = useState<number>();
+  const [selectedServiceName, setSelectedServiceName] = useState<string>("");
   const [enabled, setEnabled] = useState(false);
 
   return (
@@ -17,6 +18,7 @@ export default function CombinedPage() {
             <ServiceTable
               onSelectService={(service) => {
                 setSelectedServiceId(service.id);
+                setSelectedServiceName(service.name);
                 setEnabled(true);
               }}
             />
@@ -25,7 +27,10 @@ export default function CombinedPage() {
 
         <Col md={6}>
           <Card>
-            <h5>Hizmetine Bağlı İndirimler</h5>
+            <h5>
+              Hizmetine Bağlı İndirimler
+              {selectedServiceName && ` - ${selectedServiceName}`}
+            </h5>
             <DiscountTable serviceId={selectedServiceId} enabled={enabled} />
           </Card>
         </Col>
