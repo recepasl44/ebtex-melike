@@ -1,7 +1,7 @@
 import React from "react";
 import { Row, Col, Form, Button, Card } from "react-bootstrap";
 import { Typeahead } from "react-bootstrap-typeahead";
-import SpkFlatpickr from "../../../../../@spk-reusable-components/reusable-plugins/spk-flatpicker";
+import SpkFlatpickr from "@spk-reusable-components/reusable-plugins/spk-flatpicker";
 
 export interface FilterDefinition {
     key: string;
@@ -21,10 +21,11 @@ export interface FilterDefinition {
     | "iban"
     | "multiselect"
     | "autocomplete";
-    value?: string | { startDate: string; endDate: string };
+    value?: string | string[] | { startDate: string; endDate: string };
     options?: { value: string; label: string }[];
     plus?: boolean | string;
     dependencyKey?: string;
+  col?: number;
     onChange?: (value: any) => void;
     onClick?: (value: string) => void;
     onFocus?: () => void;

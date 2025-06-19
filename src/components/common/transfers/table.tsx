@@ -46,9 +46,8 @@ export default function TransfersTable() {
       {
         key: "branch_name",
         label: "Şube",
-        render: (row: {
-          bank_account: any; sender_branch_id: any;
-        }) => (row as any).branch_name || row.sender_branch_id || "-",
+        render: (row) =>
+          (row as any).branch_name || (row as any).sender_branch_id || "-",
       },
       { key: "transaction_type", label: "İşlem Türü" },
       {
@@ -85,7 +84,7 @@ export default function TransfersTable() {
       {
         key: "actions",
         label: "İşlemler",
-        render: (row, openDeleteModal) => (
+        render: (row: TransferData, openDeleteModal: (row: TransferData) => void) => (
           <>
             <button
               onClick={() => setDetailRow(row)}

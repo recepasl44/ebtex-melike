@@ -4,7 +4,7 @@ import ReusableTable, {
 } from "../../ReusableTable";
 import { useExpenseSummaryTable } from "../../../hooks/expences/summary/useExpencesSummary";
 import { ExpenseSummary } from "../../../../types/expences/summary/getExpenseSummary";
-import SpkFlatpickr from "../../../../@spk-reusable-components/reusable-plugins/spk-flatpicker";
+import SpkFlatpickr from "@spk-reusable-components/reusable-plugins/spk-flatpicker";
 import { InputGroup } from "react-bootstrap";
 
 export default function ExpenseSummaryTable() {

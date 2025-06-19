@@ -19,7 +19,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
-import SpkFlatpickr from "../../@spk-reusable-components/reusable-plugins/spk-flatpicker";
+import SpkFlatpickr from "@spk-reusable-components/reusable-plugins/spk-flatpicker";
 import darkcontrol from "../../utils/darkmodecontroller";
 
 // ColumnDefinition.render openDeleteModal fonksiyonunun yanında
@@ -64,6 +64,7 @@ export interface FilterDefinition {
   pattern?: RegExp;
   options?: { label: string; value: any }[];
   dependencyKey?: string;
+  col?: number;
   renderForm?: (formik: any) => JSX.Element;
   onChange?: (value: any, formik?: any) => void;
   onAdd?: () => void;
