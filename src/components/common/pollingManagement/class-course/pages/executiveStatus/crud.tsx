@@ -213,7 +213,7 @@ export default function ExecutiveStatusAdd() {
     return (
         <ReusableModalForm<IForm>
             show
-            mode="single"
+            mode="double"
             title="İzin / Rapor Kaydı"
             fields={fields}
             initialValues={initialValues}
