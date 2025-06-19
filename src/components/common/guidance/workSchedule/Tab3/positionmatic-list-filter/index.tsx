@@ -36,6 +36,22 @@ const PositionmatikListFilter: React.FC<PositionmatikFilterProps> = ({
   });
   const { default_branche } = getUserDataField();
 
+  // Load stored filter selections on mount
+  useEffect(() => {
+    const stored = localStorage.getItem("positionmatikFilters");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (parsed.program_id) setProgramId(parsed.program_id);
+        if (parsed.level_id) setLevelId(parsed.level_id);
+        if (parsed.studentId) setStudentId(parsed.studentId);
+        if (parsed.inputName) setInputName(parsed.inputName);
+      } catch (err) {
+        console.error("Failed to parse stored filters", err);
+      }
+    }
+  }, []);
+
   const levelParams = useMemo(
     () => ({
       enabled: program_id ? true : false,
@@ -66,6 +82,17 @@ const PositionmatikListFilter: React.FC<PositionmatikFilterProps> = ({
   useEffect(() => {
     PositionmatikChange({ id: studentId, name: inputName });
   }, [studentId, inputName, PositionmatikChange]);
+
+  // Persist current filters so other assignments can reuse them
+  useEffect(() => {
+    const toStore = {
+      program_id,
+      level_id,
+      studentId,
+      inputName,
+    };
+    localStorage.setItem("positionmatikFilters", JSON.stringify(toStore));
+  }, [program_id, level_id, studentId, inputName]);
 
   const handleFilterChange = (key: string, value: string) => {
     setFilterEnabled((prev) => ({
