@@ -10,7 +10,9 @@ import { useLessonList } from '../../../../../hooks/lessons/useList';
 import { useLevelsTable } from '../../../../../hooks/levels/useList';
 import { useClassroomList } from '../../../../../hooks/classrooms/useList';
 import { useAttendanceStudentsTable } from '../../../../../hooks/attendanceStudent/useList';
-import sınıftam from "../../../../../../assets/images/media/sınıftam.svg";
+import sınıfTam from "../../../../../../assets/images/media/sınıf-tam.svg";
+import sınıfTamHover from "../../../../../../assets/images/media/sınıf-tam-hover.svg";
+import { Button } from 'react-bootstrap';
 
 
 interface Row {
@@ -290,21 +292,25 @@ export default function LessonPollingTable() {
 
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
                 {/* <span style={{ fontWeight: 600, fontSize: 18 }}>Ders Yoklama</span> */}
-                <button
-                    style={{
-                        marginLeft: 'auto', background: '#52c41a', color: '#fff',
-                        border: 'none', borderRadius: 6, padding: '6px 16px',
-                        cursor: 'pointer', fontWeight: 500,
-                    }}
+                <Button
+                    style={{ marginLeft: 'auto', padding: 0 }}
+                    variant=""
                     onClick={setAllCame}
                     disabled={rows.every(r => !isEditable(r) || r.status === 0)}
                 >
                     <img
-                        src={sınıftam}
+                        src={sınıfTam}
                         alt="Sınıf Tam"
-                        style={{ width: 28, height: 28 }}
+                        width={24}
+                        height={24}
+                        onMouseEnter={(e) => {
+                            (e.currentTarget as HTMLImageElement).src = sınıfTamHover;
+                        }}
+                        onMouseLeave={(e) => {
+                            (e.currentTarget as HTMLImageElement).src = sınıfTam;
+                        }}
                     />
-                </button>
+                </Button>
             </div>
 
             <ReusableTable<Row>
