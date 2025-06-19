@@ -11,7 +11,7 @@ import { useLessonList } from '../../../../../hooks/lessons/useList';
 import { useLevelsTable } from '../../../../../hooks/levels/useList';
 import { useClassroomList } from '../../../../../hooks/classrooms/useList';
 import { useAttendanceStudentsTable } from '../../../../../hooks/attendanceStudent/useList';
-import sınıftam from "../../../../../../assets/images/media/sınıftam.svg";
+import sınıfTam from "../../../../../../assets/images/media/sınıf-tam.svg";
 
 
 interface Row {
@@ -288,7 +288,7 @@ export default function LessonPollingTable() {
                     disabled={rows.every(r => !isEditable(r) || r.status === 0)}
                 >
                     <img
-                        src={sınıftam}
+                        src={sınıfTam}
                         alt="Sınıf Tam"
                         style={{ width: 28, height: 28 }}
                     />
