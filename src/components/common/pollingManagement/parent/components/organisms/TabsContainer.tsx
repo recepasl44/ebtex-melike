@@ -20,53 +20,29 @@ interface TabsContainerProps {
 }
 
 const TabsContainer: FC<TabsContainerProps> = ({ tabs, onTabChange }) => {
-    // LocalStorage'dan kaydedilmiş tab durumunu al
-    const [value, setValue] = useState<number>(() => {
-        const savedValue = localStorage.getItem("selectedParentTab");
-        return savedValue ? parseInt(savedValue, 10) : 0;
-    });
-
-    const [childValue, setChildValue] = useState<number | null>(() => {
-        const savedChildValue = localStorage.getItem("selectedChildTab");
-        return savedChildValue ? parseInt(savedChildValue, 10) : null;
-    });
+    // always start from the first tab
+    const [value, setValue] = useState<number>(0);
+    const [childValue, setChildValue] = useState<number | null>(
+        tabs?.[0]?.children?.length ? 0 : null
+    );
 
     useEffect(() => {
-        // Tab yapısı değişirse doğrulama yap
-        const savedParentTab = localStorage.getItem("selectedParentTab");
-        if (savedParentTab) {
-            const parentIndex = parseInt(savedParentTab, 10);
-            const validParentIndex = parentIndex < tabs.length ? parentIndex : 0;
-            setValue(validParentIndex);
-
-            if (tabs[validParentIndex]?.children?.length) {
-                const savedChildTab = localStorage.getItem("selectedChildTab");
-                if (savedChildTab) {
-                    const childIndex = parseInt(savedChildTab, 10);
-                    const validChildIndex =
-                        childIndex < tabs[validParentIndex].children!.length
-                            ? childIndex
-                            : 0;
-                    setChildValue(validChildIndex);
-                } else {
-                    setChildValue(0);
-                }
-            }
-        } else if (tabs?.[0]?.children?.length) {
+        // reset child index if tab structure changes
+        if (tabs?.[value]?.children?.length) {
             setChildValue(0);
+        } else {
+            setChildValue(null);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tabs]);
 
     const handleChange = (_: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
-        localStorage.setItem("selectedParentTab", newValue.toString());
         const hasChildren = tabs?.[newValue]?.children?.length;
         if (hasChildren) {
             setChildValue(0);
-            localStorage.setItem("selectedChildTab", "0");
         } else {
             setChildValue(null);
-            localStorage.removeItem("selectedChildTab");
         }
 
         if (onTabChange) onTabChange(newValue, hasChildren ? 0 : null);
@@ -74,7 +50,6 @@ const TabsContainer: FC<TabsContainerProps> = ({ tabs, onTabChange }) => {
 
     const handleChildChange = (_: React.SyntheticEvent, newValue: number) => {
         setChildValue(newValue);
-        localStorage.setItem("selectedChildTab", newValue.toString());
         if (onTabChange) onTabChange(value, newValue);
     };
 
