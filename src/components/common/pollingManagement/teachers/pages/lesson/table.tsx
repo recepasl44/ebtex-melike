@@ -11,6 +11,7 @@ import { useLessonList } from '../../../../../hooks/lessons/useList';
 import { useLevelsTable } from '../../../../../hooks/levels/useList';
 import { useClassroomList } from '../../../../../hooks/classrooms/useList';
 import { useAttendanceStudentsTable } from '../../../../../hooks/attendanceStudent/useList';
+import classFullIcon from '../../../../../../assets/images/media/list-button.svg';
 
 
 interface Row {
@@ -286,7 +287,11 @@ export default function LessonPollingTable() {
                     onClick={handleSetAllCame}
                     disabled={rows.every(r => !isEditable(r) || r.status === 0)}
                 >
-                    Sınıf Tam
+                    <img
+                        src={classFullIcon}
+                        alt="Sınıf Tam"
+                        style={{ width: 28, height: 28 }}
+                    />
                 </button>
             </div>
 
