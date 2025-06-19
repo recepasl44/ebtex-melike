@@ -282,9 +282,11 @@ export default function LessonPollingTable() {
                 {/* <span style={{ fontWeight: 600, fontSize: 18 }}>Öğretmen Yoklama</span> */}
                 <button
                     style={{
-                        marginLeft: 'auto', background: '#52c41a', color: '#fff',
-                        border: 'none', borderRadius: 6, padding: '6px 16px',
-                        cursor: 'pointer', fontWeight: 500,
+                        marginLeft: 'auto',
+                        background: 'transparent',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer',
                     }}
                     onClick={setAllCame}
                     disabled={rows.every(r => !isEditable(r) || r.status === 0)}
