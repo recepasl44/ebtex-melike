@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Accordion, Button, Modal, Row, Col, Form } from "react-bootstrap";
 import { NumericFormat } from "react-number-format";
-import SpkFlatpickr from "../../../../../@spk-reusable-components/reusable-plugins/spk-flatpicker";
+import SpkFlatpickr from "@spk-reusable-components/reusable-plugins/spk-flatpicker";
 
 // Hooks
 import { useServicesTable } from "../../../../hooks/service/useList";

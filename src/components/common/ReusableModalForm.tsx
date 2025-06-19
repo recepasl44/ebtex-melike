@@ -3,7 +3,7 @@ import { Modal, Button, Row, Col, Form as BsForm } from "react-bootstrap";
 import { Formik, Form, Field, FormikValues, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { NumericFormat, PatternFormat } from "react-number-format";
-import SpkFlatpickr from "../../@spk-reusable-components/reusable-plugins/spk-flatpicker";
+import SpkFlatpickr from "@spk-reusable-components/reusable-plugins/spk-flatpicker";
 import { useNavigate } from "react-router-dom";
 import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
