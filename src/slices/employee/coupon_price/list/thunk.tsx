@@ -35,7 +35,7 @@ export const fetchCouponPriceList = createAsyncThunk<
   },
   {
     // Sonsuz istekleri engellemek için condition ekliyoruz
-    condition: (params) => {
+    condition: (params, { getState }) => {
       const key = JSON.stringify(params);
 
       // Daha önce bu parametrelerle istek atıldıysa, tekrar gönderme

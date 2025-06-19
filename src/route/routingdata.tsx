@@ -1780,7 +1780,7 @@ export const Routedata = [
       <IncomingChecksCrud
         show={true}
         onClose={() => window.history.back()}
-        onSubmit={() => { /* handle submit logic here */ }}
+        onSubmit={(val) => { /* handle submit logic here */ }}
       />
     ),
   },

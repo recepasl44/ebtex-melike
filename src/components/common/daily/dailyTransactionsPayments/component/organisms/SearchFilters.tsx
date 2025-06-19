@@ -1,7 +1,7 @@
 import React from "react";
 import { Row, Col, Form, Button } from "react-bootstrap";
 import { Typeahead } from "react-bootstrap-typeahead";
-import SpkFlatpickr from "@spk-reusable-components/reusable-plugins/spk-flatpicker";
+import SpkFlatpickr from "../../../../../../@spk-reusable-components/reusable-plugins/spk-flatpicker";
 
 export interface FilterDefinition {
     key: string;
@@ -28,7 +28,6 @@ export interface FilterDefinition {
     selectProps?: any;
     plus?: boolean | string;
     dependencyKey?: string;
-  col?: number;
     onChange?: (value: any) => void;
     onClick?: (value: string) => void;
     onFocus?: () => void;

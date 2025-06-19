@@ -37,25 +37,37 @@ export default function PersonelDetail() {
         {
           label: "Ders Ücreti",
           content: (
-            <PersonelDersUcretTab />
+            <PersonelDersUcretTab
+              personelId={pId}
+              enabled={parentIndex === 0 && childIndex === 0}
+            />
           ),
         },
         {
           label: "Ders – Soru Çözüm Ücretleri",
           content: (
-            <PersonelKuponTab />
+            <PersonelKuponTab
+              personelId={pId}
+              enabled={parentIndex === 0 && childIndex === 1}
+            />
           ),
         },
         {
           label: "Koçluk Ücreti",
           content: (
-            <PersonelKoclukTab />
+            <PersonelKoclukTab
+              personelId={pId}
+              enabled={parentIndex === 0 && childIndex === 2}
+            />
           ),
         },
         {
           label: "Özel Ders",
           content: (
-            <PersonelOzelDersTab />
+            <PersonelOzelDersTab
+              personelId={pId}
+              enabled={parentIndex === 0 && childIndex === 3}
+            />
           ),
         },
       ],

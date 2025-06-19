@@ -34,6 +34,7 @@ export default function DiscountTable({ serviceId }: DiscountTableProps) {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [enabled, setEnabled] = useState(false);
+  const [filtersEnabled, setFiltersEnabled] = useState({ name: false });
 
   const { deleteExistingDiscount } = useDiscountDelete();
 

@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Row, Col, Card, Form } from "react-bootstrap";
 import ReusableTable, { ColumnDefinition } from "../../ReusableTable";
 import Pageheader from "../../../page-header/pageheader";
-import SpkFlatpickr from "@spk-reusable-components/reusable-plugins/spk-flatpicker";
+import SpkFlatpickr from "../../../../@spk-reusable-components/reusable-plugins/spk-flatpicker";
 import darkcontrol from "../../../../utils/darkmodecontroller";
 import { useFinancialSummary } from "../../../hooks/accounting/financial_summary/useFinancialSummary";
 import { useSeasonsList } from "../../../hooks/season/useSeasonsList";

@@ -8,7 +8,7 @@ import {
   Modal,
   Button,
 } from "react-bootstrap";
-import SpkFlatpickr from "@spk-reusable-components/reusable-plugins/spk-flatpicker";
+import SpkFlatpickr from "../../../../@spk-reusable-components/reusable-plugins/spk-flatpicker";
 
 // Hooks
 import { useBranchTable } from "../../../hooks/branch/useBranchList";

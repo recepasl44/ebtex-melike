@@ -115,7 +115,7 @@ const StudentModal: React.FC<StudentModalProps> = ({ onClose, onRefresh }) => {
     if (registerNo && mode === "add") {
       setInitialValues((prev) => ({
         ...prev,
-        register_no: registerNo.register_no || '',
+        register_no: registerNo || '',
       }));
     }
   }, [registerNo, mode]);
@@ -166,9 +166,7 @@ const StudentModal: React.FC<StudentModalProps> = ({ onClose, onRefresh }) => {
           kinship_id: fetchedStudentDetails.guardian?.kinship_id || 0,
           kinship: fetchedStudentDetails.guardian?.kinship || "",
           identification_no:
-            fetchedStudentDetails?.guardian?.identification_no
-              ? String(fetchedStudentDetails.guardian.identification_no)
-              : "",
+            fetchedStudentDetails?.guardian?.identification_no || "",
           full_name: fetchedStudentDetails.guardian?.full_name || "",
           phone: fetchedStudentDetails.guardian?.phone || "",
         },
@@ -196,7 +194,7 @@ const StudentModal: React.FC<StudentModalProps> = ({ onClose, onRefresh }) => {
     try {
       if (mode === "add") {
         console.log("Ekle modunda değerler:", values);
-        await createStudent(values as unknown as AddStudentPayload);
+        await createStudent(values);
       } else if (mode === "update" && id) {
         await editStudent({
           studentId: Number(id),

@@ -7,7 +7,7 @@ import {
   Spinner,
   Modal,
 } from "react-bootstrap";
-import SpkFlatpickr from "@spk-reusable-components/reusable-plugins/spk-flatpicker";
+import SpkFlatpickr from "../../../../../@spk-reusable-components/reusable-plugins/spk-flatpicker";
 
 // Tarih manipülasyonu için dayjs
 import dayjs from "dayjs";
