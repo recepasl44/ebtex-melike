@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import DualListBox from 'react-dual-listbox';
+const DualListBoxComponent = DualListBox as unknown as React.ComponentType<any>;
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 
 interface SelectType {
@@ -24,7 +25,7 @@ export const Dualbox = () => {
     const [selected, setSelected] = useState<any>([]);
 
     return (
-        <DualListBox
+        <DualListBoxComponent
             options={options}
             selected={selected}
             onChange={(newValue: any) => setSelected(newValue)}

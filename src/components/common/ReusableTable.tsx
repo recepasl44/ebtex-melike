@@ -172,25 +172,6 @@ function ReusableTable<T extends { [key: string]: any }>({
 }: ReusableTableProps<T>) {
   const navigate = useNavigate(); // useNavigate hook'u eklendi
 
-  // CSV başlıkları ve veri dönüşümü
-  const csvHeaders = useMemo(() => {
-    if (customCsvData) return undefined;
-    return columns.map((col) => ({
-      label: col.label,
-      key: col.key,
-    }));
-  }, [columns, customCsvData]);
-
-  const csvData = useMemo(() => {
-    if (customCsvData) return customCsvData;
-    return (data ?? []).map((row) => {
-      const newObj: any = {};
-      columns.forEach((col) => {
-        newObj[col.key] = row[col.key];
-      });
-      return newObj;
-    });
-  }, [customCsvData, data, columns]);
 
   const handleExportPDF = () => {
     const doc = new jsPDF("p", "pt", "a4", 1);

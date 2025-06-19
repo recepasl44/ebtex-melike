@@ -4,7 +4,7 @@ import { AppDispatch } from "../../../store";
 import { RootState } from "../../../store/rootReducer";
 import { fetchSupplierShow } from "../../../slices/suppliers/supplier/show/thunk";
 
-export function useSupplierShow(supplierId: number) {
+export function useSupplierShow() {
   const dispatch = useDispatch<AppDispatch>();
   const { data, status, error } = useSelector(
     (state: RootState) => state.supplierShow
