@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { Pagination } from 'react-bootstrap';
 
 interface IMeta {
@@ -38,7 +39,9 @@ export function CustomPagination({
         <span>Sayfa Boyutu: </span>
         <select
           value={pageSize}
-          onChange={(e) => onPageSizeChange(Number(e.target.value))}
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+            onPageSizeChange(Number(e.target.value))
+          }
           style={{ width: 70 }}
         >
           <option value={5}>5</option>

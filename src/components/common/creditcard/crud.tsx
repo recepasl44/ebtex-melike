@@ -14,7 +14,6 @@ import CreditCardDetailTables from "./service_management";
 interface CreditCardModalProps {
   show: boolean;
   onClose: () => void;
-  onRefresh: () => void;
 }
 
 interface ICreditCardFormData extends FormikValues {
@@ -29,7 +28,7 @@ interface ICreditCardFormData extends FormikValues {
   description?: string;
 }
 
-const CreditCardModal: React.FC<CreditCardModalProps> = ({ show, onClose, onRefresh }) => {
+const CreditCardModal: React.FC<CreditCardModalProps> = ({ show, onClose }) => {
   const { id } = useParams<{ id?: string }>();
   const navigate = useNavigate();
   const location = useLocation();
