@@ -76,7 +76,7 @@ export default function TeacherMatchModal({ demandId, show, onClose }: Props) {
 
     return (
         <ReusableTable<Row>
-            pageTitle="Öğretmen Eşleştir"
+            modalTitle="Öğretmen Eşleştir"
             showModal={show}
             onCloseModal={onClose}
             tableMode="single"

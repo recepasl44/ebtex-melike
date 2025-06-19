@@ -216,7 +216,7 @@ export default function OneToOnePollingTable() {
             <FilterGroup filters={filters} columnsPerRow={4} navigate={useNavigate()} />
 
             <ReusableTable<Row>
-                pageTitle="Bire-bir Yoklama"
+                // pageTitle="Bire-bir Yoklama"
                 tableMode="single"
                 columns={columns}
                 data={rows}

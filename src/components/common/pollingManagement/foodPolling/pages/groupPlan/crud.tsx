@@ -266,11 +266,11 @@ export default function FoodPlanModal({ show, onClose, onRefresh }: ModalProps) 
         <ReusableModalForm<IForm>
             show={show}
             title={mode === 'add' ? 'Plan Ekle' : 'Plan Güncelle'}
-            mode="single"
+            mode="double"
             fields={getFields}
             initialValues={initial}
             onSubmit={handleSubmit}
-            confirmButtonLabel={mode === 'add' ? 'Kaydet' : 'Güncelle'}
+            confirmButtonLabel={mode === 'add' ? 'Ekle' : 'Güncelle'}
             cancelButtonLabel="Vazgeç"
             isLoading={isLoading}
             error={(addErr || updErr || detErr) || null}

@@ -257,7 +257,7 @@ export default function ClubPlanModal({
     return (
         <ReusableModalForm<FormValues>
             show={show}
-            mode="single"
+            mode="double"
             title={mode === 'add' ? 'Kulüp Ekle' : 'Kulüp Düzenle'}
             fields={fields}
             initialValues={initial}

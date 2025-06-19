@@ -145,7 +145,7 @@ export default function OneToOneTeacherCountTable() {
                 navigate={useNavigate()}
             />
             <ReusableTable<Row>
-                pageTitle="Öğretmen İstatistikleri"
+                // pageTitle="Öğretmen İstatistikleri"
                 tableMode="single"
                 columns={columns}
                 data={rows}

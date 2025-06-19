@@ -157,7 +157,7 @@ export default function TeacherOneByOnePlanCrud() {
     return (
         <ReusableTable<SlotRow>
 
-            pageTitle="Öğretmen Bire-bir Planı"
+            modalTitle="Öğretmen Bire-bir Planı"
             showModal
             onCloseModal={() => navigate(-1)}
             tableMode="single"
