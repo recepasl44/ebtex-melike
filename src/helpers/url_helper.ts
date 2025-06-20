@@ -166,4 +166,6 @@ export const STUDENTGROUPS = "/studentgroups";
 export const BULLETINS = '/bulletins';
 export const CONVERSATIONS = '/conversations';
 
+export const MESSAGES = '/messages';
+
 
