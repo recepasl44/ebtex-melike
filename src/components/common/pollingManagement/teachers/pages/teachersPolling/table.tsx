@@ -13,6 +13,7 @@ import { useAttendanceStudentsTable } from '../../../../../hooks/attendanceStude
 import sınıfTam from "../../../../../../assets/images/media/sınıf-tam.svg";
 import sınıfTamHover from "../../../../../../assets/images/media/sınıf-tam-hover.svg";
 import { Button } from 'react-bootstrap';
+import { toast } from 'react-toastify';
 
 
 interface Row {
@@ -157,11 +158,15 @@ export default function LessonPollingTable() {
 
     const setAllCame = async () => {
         const updatable = rows.filter(r => isEditable(r) && r.status !== 0);
-        if (!updatable.length) return;
+        if (!updatable.length) {
+            toast.info('Sınıf zaten tam.');
+            return;
+        }
         setRows(r => r.map(row =>
             isEditable(row) ? { ...row, status: 0, clicked: true } : row,
         ));
         await updateAllAttendanceStatus(updatable.map(r => r.id), 0);
+        toast.success('Sınıf tam olarak işaretlendi.');
     };
 
 
