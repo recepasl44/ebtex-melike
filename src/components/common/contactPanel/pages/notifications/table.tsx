@@ -5,7 +5,6 @@ import dayjs from 'dayjs';
 import ReusableTable, { ColumnDefinition } from '../../../ReusableTable';
 import FilterGroup, { FilterDefinition } from '../../component/organisms/SearchFilters';
 import { useNotificationsList } from '../../../../hooks/notifications/useList';
-import { useGroupsTable } from '../../../../hooks/group/useList';
 import { useUsersTable } from '../../../../hooks/user/useList';
 import { useNotificationDelete } from '../../../../hooks/notifications/useDelete';
 import type { NotificationData } from '../../../../../types/notifications/list';
@@ -21,9 +20,8 @@ export default function NotificationsTable() {
     const [senderId, setSenderId] = useState('');
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
-    const [enabled, setEnabled] = useState({ groups: false, users: false });
+    const [enabled, setEnabled] = useState({ users: false });
 
-    const { groupsData = [] } = useGroupsTable({ enabled: enabled.groups, pageSize: 999 });
     const { usersData = [] } = useUsersTable({ enabled: enabled.users, pageSize: 999 });
     const { deleteExistingNotification } = useNotificationDelete();
 
@@ -130,9 +128,9 @@ export default function NotificationsTable() {
                 label: 'Hedef Kitle',
                 type: 'multiselect',
                 value: targetIds,
-                onClick: () => setEnabled((e) => ({ ...e, groups: true })),
+                onClick: () => setEnabled((e) => ({ ...e, users: true })),
                 onChange: setTargetIds,
-                options: groupsData.map((g) => ({ value: String(g.id), label: g.name })),
+                options: usersData.map((u) => ({ value: String(u.id), label: u.name_surname || `${u.first_name} ${u.last_name}` })),
             },
             {
                 key: 'source_id',
@@ -152,7 +150,7 @@ export default function NotificationsTable() {
                 options: usersData.map((u) => ({ value: String(u.id), label: u.name_surname || `${u.first_name} ${u.last_name}` })),
             },
         ],
-        [dateRange, categoryId, targetIds, sourceId, senderId, groupsData, usersData]
+        [dateRange, categoryId, targetIds, sourceId, senderId, usersData]
     );
 
     return (
