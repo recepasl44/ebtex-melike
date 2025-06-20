@@ -54,6 +54,11 @@ import supplierDeleteReducer from '../slices/suppliers/supplier/delete/reducer';
 import supplierListReducer from '../slices/suppliers/supplier/list/reducer';
 import supplierShowReducer from '../slices/suppliers/supplier/show/reducer';
 import overduePaymentsSlice from '../slices/overduePayments/list/reducer'; // Assuming you have a courseListSlice for listing courses
+import bulletinListSlice from '../slices/bulletins/list/reducer';
+import bulletinShowSlice from '../slices/bulletins/detail/reducer';
+import bulletinAddSlice from '../slices/bulletins/add/reducer';
+import bulletinUpdateSlice from '../slices/bulletins/update/reducer';
+import bulletinDeleteSlice from '../slices/bulletins/delete/reducer';
 // Transfers
 import transferListSlice from '../slices/transfers/list/reducer'; // Assuming you have a courseListSlice for listing courses
 import transferAddSlice from '../slices/transfers/add/reducer'; // Assuming you have a courseListSlice for adding courses
@@ -632,6 +637,11 @@ const combinedReducer = combineReducers({
   debtList: DebtListSlice,
   discountStudentList: discountStudentListSlice,
   overduePayments: overduePaymentsSlice,
+  bulletinList: bulletinListSlice,
+  bulletinShow: bulletinShowSlice,
+  bulletinAdd: bulletinAddSlice,
+  bulletinUpdate: bulletinUpdateSlice,
+  bulletinDelete: bulletinDeleteSlice,
   // Transfers
   transferList: transferListSlice,
   transferAdd: transferAddSlice,
