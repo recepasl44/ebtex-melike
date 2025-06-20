@@ -14,7 +14,6 @@ interface RowData {
 }
 
 const DailyTransactionsFinancialSummary: React.FC = () => {
-  // --------- Filters ---------
   const [seasonId, setSeasonId] = useState('');
   const [date, setDate] = useState('');
   const [seasonsEnabled, setSeasonsEnabled] = useState(false);
@@ -35,7 +34,6 @@ const DailyTransactionsFinancialSummary: React.FC = () => {
   const formatLocalDate = (d: Date) =>
     `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
-  // --------- Rows / Totals ---------
   const cashInHand = useMemo(() => {
     if (!dailySummary) return 0;
     const paymentsCash = dailySummary.payments.reduce(
@@ -46,19 +44,36 @@ const DailyTransactionsFinancialSummary: React.FC = () => {
       (sum, t) => sum + Number(t.cash || 0),
       0
     );
-    return paymentsCash - transfersCash;
+    const result = paymentsCash - transfersCash;
+    console.log('cashInHand:', result);
+    return result;
   }, [dailySummary]);
 
-  const liquidTotal =
-    cashInHand +
-    (summary?.liquid_assets.remaining_receivables ?? 0) +
-    (summary?.liquid_assets.banks.reduce((a, b) => a + (b.amount ?? 0), 0) ?? 0);
+  const liquidTotal = useMemo(() => {
+    const remaining = Number(summary?.liquid_assets.remaining_receivables ?? 0);
+    const banksSum =
+      summary?.liquid_assets.banks.reduce((acc, b) => acc + Number(b.amount ?? 0), 0) ?? 0;
+    const total = cashInHand + remaining + banksSum;
+    console.log('liquidTotal parts:', { cashInHand, remaining, banksSum }, '=>', total);
+    return total;
+  }, [summary, cashInHand]);
 
-  const liabilitiesTotal =
-    (summary?.liabilities.personnel_payables ?? 0) +
-    (summary?.liabilities.supplier_debts ?? 0);
+  const liabilitiesTotal = useMemo(() => {
+    const personnel = Number(summary?.liabilities.personnel_payables ?? 0);
+    const supplier = Number(summary?.liabilities.supplier_debts ?? 0);
+    const total = personnel + supplier;
+    console.log('liabilitiesTotal parts:', { personnel, supplier }, '=>', total);
+    return total;
+  }, [summary]);
 
-  const cashBoxInfo = Math.abs(liquidTotal - liabilitiesTotal);
+  const cashBoxInfo = useMemo(() => {
+    const info =
+      liquidTotal > liabilitiesTotal
+        ? liquidTotal - liabilitiesTotal
+        : liabilitiesTotal - liquidTotal;
+    console.log('cashBoxInfo:', info);
+    return info;
+  }, [liquidTotal, liabilitiesTotal]);
 
   const liquidRows: RowData[] = useMemo(() => {
     if (!summary) return [];
@@ -104,7 +119,6 @@ const DailyTransactionsFinancialSummary: React.FC = () => {
 
   return (
     <div className="container-fluid mt-3">
-      {/* Filters */}
       <Card className="mb-4 glass-card">
         <Card.Body>
           <Row className="g-3">
@@ -143,7 +157,6 @@ const DailyTransactionsFinancialSummary: React.FC = () => {
         </Card.Body>
       </Card>
 
-      {/* Tables */}
       <Row className="g-4">
         <Col xs={12} lg={6}>
           <Card className="glass-card h-100">

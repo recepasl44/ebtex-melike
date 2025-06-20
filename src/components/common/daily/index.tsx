@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import TabsContainer from './component/organisms/TabsContainer';
-
 import DailyTransactionsFinancialSummary from '../daily/dailyTransactionsFinancialSummary';
 import StudentInstallmentsTable from '../daily/studentInstallments';
 import DailyIncomeTable from '../daily/dailyIncome/table';
 import DailyExpensesTable from '../daily/dailyExpenses';
-import DailyStaffAppointmentsTable from "../daily/dailyStaffAppointments";
+import DailyStaffAppointmentsTable from '../daily/dailyStaffAppointments';
 import DailyCardManagementTable from '../daily/dailyCardManagement';
 import DailyTransactionsPaymentsTable from '../daily/dailyTransactionsPayments/table';
 import DailyTransferTable from './dailyTransfer';
 import DailyOperationsAuthorized from '../daily/dailyOperationsAuthorized';
-
 import Pageheader from '../../page-header/pageheader';
 
 const DailyModule: React.FC = () => {
@@ -19,11 +17,7 @@ const DailyModule: React.FC = () => {
   const tabsConfig = [
     {
       label: 'Finansal Özet',
-      content: (
-        <div className="w-full px-4 sm:px-6 lg:px-8">
-          <DailyTransactionsFinancialSummary />
-        </div>
-      ),
+      content: <DailyTransactionsFinancialSummary />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#5C67F726',
@@ -31,11 +25,7 @@ const DailyModule: React.FC = () => {
     },
     {
       label: 'Taksitler',
-      content: (
-        <div className="w-full px-4 sm:px-6 lg:px-8">
-          <StudentInstallmentsTable />
-        </div>
-      ),
+      content: <StudentInstallmentsTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#5C67F726',
@@ -43,11 +33,7 @@ const DailyModule: React.FC = () => {
     },
     {
       label: 'Gelirler',
-      content: (
-        <div className="w-full px-4 sm:px-6 lg:px-8">
-          <DailyIncomeTable />
-        </div>
-      ),
+      content: <DailyIncomeTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#5C67F726',
@@ -55,11 +41,7 @@ const DailyModule: React.FC = () => {
     },
     {
       label: 'Giderler',
-      content: (
-        <div className="w-full px-4 sm:px-6 lg:px-8">
-          <DailyExpensesTable />
-        </div>
-      ),
+      content: <DailyExpensesTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#5C67F726',
@@ -67,11 +49,7 @@ const DailyModule: React.FC = () => {
     },
     {
       label: 'Personel Ödemeleri',
-      content: (
-        <div className="w-full px-4 sm:px-6 lg:px-8">
-          <DailyStaffAppointmentsTable />
-        </div>
-      ),
+      content: <DailyStaffAppointmentsTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#5C67F726',
@@ -79,11 +57,7 @@ const DailyModule: React.FC = () => {
     },
     {
       label: 'Kart Yönetimi',
-      content: (
-        <div className="w-full px-4 sm:px-6 lg:px-8">
-          <DailyCardManagementTable />
-        </div>
-      ),
+      content: <DailyCardManagementTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#5C67F726',
@@ -91,11 +65,7 @@ const DailyModule: React.FC = () => {
     },
     {
       label: 'Ödemeler',
-      content: (
-        <div className="w-full px-4 sm:px-6 lg:px-8">
-          <DailyTransactionsPaymentsTable />
-        </div>
-      ),
+      content: <DailyTransactionsPaymentsTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#5C67F726',
@@ -103,11 +73,7 @@ const DailyModule: React.FC = () => {
     },
     {
       label: 'Transfer',
-      content: (
-        <div className="w-full px-4 sm:px-6 lg:px-8">
-          <DailyTransferTable />
-        </div>
-      ),
+      content: <DailyTransferTable />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#5C67F726',
@@ -115,11 +81,7 @@ const DailyModule: React.FC = () => {
     },
     {
       label: 'Yetkili',
-      content: (
-        <div className="w-full px-4 sm:px-6 lg:px-8">
-          <DailyOperationsAuthorized />
-        </div>
-      ),
+      content: <DailyOperationsAuthorized />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#5C67F726',
@@ -128,8 +90,9 @@ const DailyModule: React.FC = () => {
   ];
 
   return (
-    <div className="w-full">
+    <div>
       <Pageheader title="Finans ve Muhasebe" currentpage="Günlük İşlemler" />
+
       <TabsContainer
         tabs={tabsConfig}
         onTabChange={(idx: number) => setActiveIdx(idx)}

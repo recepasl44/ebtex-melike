@@ -26,7 +26,7 @@ export const DEBTS = '/debts';
 export const DISCOUNT_STUDENT = '/enrollment-report';
 export const TRANSFERS = '/transfers';
 export const ESTIMATED_BUDGETS = '/estimated-budgets';
-export const BULLETINS = '/bulletins';
+
 
 export const DAILY_SUMMARY = '/accounting/daily-summary';
 export const FINANCIAL_SUMMARY = '/accounting/financial-summary';
@@ -161,5 +161,9 @@ export const ATTENDANCESTUDENTS = "/attendancestudents";
 export const ATTENDANCEDAYS = "/attendancedays";
 export const ATTENDANCETEACHERS = "/attendanceteachers";
 export const STUDENTGROUPS = "/studentgroups";
+
+//iletişim panelı
+export const BULLETINS = '/bulletins';
+export const CONVERSATIONS = '/conversations';
 
 
