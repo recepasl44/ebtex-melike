@@ -99,7 +99,7 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({
                 <Row>
                     <Col md={6} className="mb-3">
                         <Accordion
-                            defaultActiveKey="program"
+                            alwaysOpen
                             className="accordion-customicon1 customized-accordion accordions-items-seperate"
                         >
                             <Accordion.Item eventKey="program" className="custom-accordion-primary">
@@ -131,58 +131,62 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({
                                     </ListGroup>
                                 </Accordion.Body>
                             </Accordion.Item>
-                            <Accordion.Item eventKey="level" className="custom-accordion-success">
-                                <Accordion.Header>Seviye</Accordion.Header>
-                                <Accordion.Body>
-                                    {renderLoading(loadingLevels)}
-                                    <ListGroup className="mb-3">
-                                        {levels.map((l) => (
-                                            <ListGroup.Item
-                                                key={l.id}
-                                                className="d-flex justify-content-between align-items-center"
-                                            >
-                                                <span
-                                                    role="button"
-                                                    onClick={() => setSelectedLevel(l.id)}
-                                                    style={{ cursor: 'pointer' }}
+                            {selectedProgram !== null && (
+                                <Accordion.Item eventKey="level" className="custom-accordion-success ms-4">
+                                    <Accordion.Header>Seviye</Accordion.Header>
+                                    <Accordion.Body>
+                                        {renderLoading(loadingLevels)}
+                                        <ListGroup className="mb-3">
+                                            {levels.map((l) => (
+                                                <ListGroup.Item
+                                                    key={l.id}
+                                                    className="d-flex justify-content-between align-items-center"
                                                 >
-                                                    {l.name}
-                                                </span>
-                                                <Button
-                                                    size="sm"
-                                                    variant="success"
-                                                    onClick={() => addItem('level', l.id, l.name)}
+                                                    <span
+                                                        role="button"
+                                                        onClick={() => setSelectedLevel(l.id)}
+                                                        style={{ cursor: 'pointer' }}
+                                                    >
+                                                        {l.name}
+                                                    </span>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="success"
+                                                        onClick={() => addItem('level', l.id, l.name)}
+                                                    >
+                                                        +
+                                                    </Button>
+                                                </ListGroup.Item>
+                                            ))}
+                                        </ListGroup>
+                                    </Accordion.Body>
+                                </Accordion.Item>
+                            )}
+                            {selectedLevel !== null && (
+                                <Accordion.Item eventKey="classroom" className="custom-accordion-warning ms-5">
+                                    <Accordion.Header>Sınıf</Accordion.Header>
+                                    <Accordion.Body>
+                                        {renderLoading(loadingClassrooms)}
+                                        <ListGroup>
+                                            {classrooms.map((c) => (
+                                                <ListGroup.Item
+                                                    key={c.id}
+                                                    className="d-flex justify-content-between align-items-center"
                                                 >
-                                                    +
-                                                </Button>
-                                            </ListGroup.Item>
-                                        ))}
-                                    </ListGroup>
-                                </Accordion.Body>
-                            </Accordion.Item>
-                            <Accordion.Item eventKey="classroom" className="custom-accordion-warning">
-                                <Accordion.Header>Sınıf</Accordion.Header>
-                                <Accordion.Body>
-                                    {renderLoading(loadingClassrooms)}
-                                    <ListGroup>
-                                        {classrooms.map((c) => (
-                                            <ListGroup.Item
-                                                key={c.id}
-                                                className="d-flex justify-content-between align-items-center"
-                                            >
-                                                <span>{c.name}</span>
-                                                <Button
-                                                    size="sm"
-                                                    variant="success"
-                                                    onClick={() => addItem('classroom', c.id, c.name)}
-                                                >
-                                                    +
-                                                </Button>
-                                            </ListGroup.Item>
-                                        ))}
-                                    </ListGroup>
-                                </Accordion.Body>
-                            </Accordion.Item>
+                                                    <span>{c.name}</span>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="success"
+                                                        onClick={() => addItem('classroom', c.id, c.name)}
+                                                    >
+                                                        +
+                                                    </Button>
+                                                </ListGroup.Item>
+                                            ))}
+                                        </ListGroup>
+                                    </Accordion.Body>
+                                </Accordion.Item>
+                            )}
                         </Accordion>
                     </Col>
                     <Col md={6} className="mb-3">
