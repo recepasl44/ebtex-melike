@@ -123,9 +123,9 @@ export default function SmsCrud() {
             },
             ...(values.send_option === 'schedule'
                 ? [
-                      { name: 'send_date', label: 'Tarih', type: 'date', required: true },
-                      { name: 'send_time', label: 'Saat', type: 'time', required: true },
-                  ]
+                    { name: 'send_date', label: 'Tarih', type: 'date' as const, required: true },
+                    { name: 'send_time', label: 'Saat', type: 'time' as const, required: true },
+                ]
                 : []),
             { name: 'status', label: 'Durum', type: 'select', options: statusOptions },
             {
