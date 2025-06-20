@@ -167,5 +167,6 @@ export const BULLETINS = '/bulletins';
 export const CONVERSATIONS = '/conversations';
 
 export const MESSAGES = '/messages';
+export const CONVERSATIONUSERS = '/conversationusers';
 
 
