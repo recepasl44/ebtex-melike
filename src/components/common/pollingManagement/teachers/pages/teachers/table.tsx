@@ -1,5 +1,5 @@
 
-import { useState, useMemo, useEffect, useRef, MouseEvent } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import dayjs from 'dayjs';
 
 import ReusableTable, { ColumnDefinition } from '../../../../ReusableTable';
@@ -266,7 +266,7 @@ export default function LessonPollingTable() {
     ]);
 
 
-    function handleSetAllCame(_event: MouseEvent<HTMLImageElement>): void {
+    function handleSetAllCame(): void {
         setAllCame();
     }
 
