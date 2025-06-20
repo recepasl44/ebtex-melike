@@ -22,6 +22,11 @@ export default function TransfersTable() {
   const [dateRange, setDateRange] = useState({ startDate: "", endDate: "" });
   const [detailRow, setDetailRow] = useState<TransferData | null>(null);
 
+  const [filtersEnabled, setFiltersEnabled] = useState({
+    branch: false,
+    bank: false,
+  });
+
 
   const {
     transfersData,
@@ -36,8 +41,14 @@ export default function TransfersTable() {
     setFilter,
   } = useTransfersTable({ enabled: true });
 
-  const { branchData } = useBranchTable({ enabled: true, paginate: 100 });
-  const { bankData } = useBankTable({ enabled: true, paginate: 100 });
+  const { branchData } = useBranchTable({
+    enabled: filtersEnabled.branch,
+    paginate: 100,
+  });
+  const { bankData } = useBankTable({
+    enabled: filtersEnabled.bank,
+    paginate: 100,
+  });
   const { deleteExistingTransfer } = useTransferDelete();
 
 
@@ -134,6 +145,7 @@ export default function TransfersTable() {
         type: "select" as const,
         value: branch,
         options: (branchData || []).map((b) => ({ value: String(b.id), label: b.name })),
+        onClick: () => setFiltersEnabled((p) => ({ ...p, branch: true })),
         onChange: (val: string) => {
           setBranch(val);
           setPage(1);
@@ -156,6 +168,7 @@ export default function TransfersTable() {
         type: "select" as const,
         value: bankAccount,
         options: (bankData || []).map((b) => ({ value: String(b.id), label: b.bank_name })),
+        onClick: () => setFiltersEnabled((p) => ({ ...p, bank: true })),
         onChange: (val: string) => {
           setBankAccount(val);
           setPage(1);
