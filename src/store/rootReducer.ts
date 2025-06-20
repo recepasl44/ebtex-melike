@@ -524,6 +524,11 @@ import conversationUsersShowReducer from '../slices/conversationusers/detail/red
 import conversationUsersAddReducer from '../slices/conversationusers/add/reducer';
 import conversationUsersUpdateReducer from '../slices/conversationusers/update/reducer';
 import conversationUsersDeleteReducer from '../slices/conversationusers/delete/reducer';
+import notificationsListReducer from '../slices/notifications/list/reducer';
+import notificationsShowReducer from '../slices/notifications/detail/reducer';
+import notificationsAddReducer from '../slices/notifications/add/reducer';
+import notificationsUpdateReducer from '../slices/notifications/update/reducer';
+import notificationsDeleteReducer from '../slices/notifications/delete/reducer';
 
 //sourceTypes
 import sourceTypesAddSlice from '../slices/sourceTypes/add/reducer';
@@ -1124,6 +1129,11 @@ const combinedReducer = combineReducers({
   messageAdd: messagesAddReducer,
   messageUpdate: messagesUpdateReducer,
   messageDelete: messagesDeleteReducer,
+  notificationList: notificationsListReducer,
+  notificationShow: notificationsShowReducer,
+  notificationAdd: notificationsAddReducer,
+  notificationUpdate: notificationsUpdateReducer,
+  notificationDelete: notificationsDeleteReducer,
 
   //sourcetypes
   sourceTypesAdd: sourceTypesAddSlice,
