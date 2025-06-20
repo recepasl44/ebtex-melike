@@ -332,6 +332,13 @@ export const MENUITEMS: any = [
     ],
   },
 
+  {
+    title: "İletişim Paneli",
+    icon: Dashboardicon,
+    path: "/contact-panel",
+    type: "link",
+  },
+
   //  ----- WEB APPS -----
   {
     menutitle: "WEB APPS",
