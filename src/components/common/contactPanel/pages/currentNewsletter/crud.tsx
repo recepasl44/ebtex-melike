@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormikValues, Field } from 'formik';
-import { Modal, Button } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
+import TargetAudienceModal, { Student } from './TargetAudienceModal';
 
 import ReusableModalForm, { FieldDefinition } from '../../../ReusableModalForm';
 import { useBulletinAdd } from '../../../../hooks/bulletin/useAdd';
@@ -51,6 +52,7 @@ export default function CurrentNewsletterCrud() {
         send_sms_email: false,
     });
     const [showGroupModal, setShowGroupModal] = useState(false);
+    const [selectedStudents, setSelectedStudents] = useState<Student[]>([]);
 
     useEffect(() => {
         if (mode === 'update' && id) {
@@ -198,17 +200,14 @@ export default function CurrentNewsletterCrud() {
                 autoGoBackOnModalClose
                 mode="double"
             />
-            <Modal show={showGroupModal} onHide={() => setShowGroupModal(false)} centered>
-                <Modal.Header closeButton>
-                    <Modal.Title>Hedef Kitle</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>İçerik daha sonra eklenecek.</Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowGroupModal(false)}>
-                        Kapat
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+            <TargetAudienceModal
+                show={showGroupModal}
+                onClose={() => setShowGroupModal(false)}
+                onSave={(students) => {
+                    setSelectedStudents(students);
+                    setShowGroupModal(false);
+                }}
+            />
         </>
     );
 }
