@@ -4,45 +4,57 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../../store/rootReducer'
 import { AppDispatch } from '../../../store'
 import { fetchNotificationUsers } from '../../../slices/notificationusers/list/thunk'
-import { NotificationUsersData, ListNotificationUserArg, ListMeta } from '../../../types/notificationusers/list'
+import {
+    NotificationUsersData,
+    ListNotificationUserArg,
+    ListMeta
+} from '../../../types/notificationusers/list'
 import { NotificationUserListStatus } from '../../../enums/notificationusers/list'
 
 export function useNotificationUsersList(params: ListNotificationUserArg) {
-    if (params?.enabled === false) return
     const dispatch = useDispatch<AppDispatch>()
+    const {
+        enabled = true,
+        page: initialPage = 1,
+        pageSize: initialSize = 10,
+        ...restParams
+    } = params
 
-    const [page, setPage] = useState<number>(params.page || 1)
-    const [pageSize, setPageSize] = useState<number>(params.pageSize || 10)
+    const [page, setPage] = useState<number>(initialPage)
+    const [pageSize, setPageSize] = useState<number>(initialSize)
     const [filter, setFilter] = useState<any>(null)
 
     const { data, meta, status, error } = useSelector(
         (state: RootState) => state.notificationUserList
     )
 
-    const buildQuery = () => {
-        const { enabled, ...restParams } = params
+    const restKey = JSON.stringify(restParams)
+
+    const buildQuery = useCallback(() => {
         return {
+            enabled,
             ...restParams,
             filter,
             page,
             pageSize,
-            per_page: pageSize,
+            per_page: pageSize
         } as ListNotificationUserArg
-    }
+    }, [enabled, restKey, filter, page, pageSize])
 
     useEffect(() => {
+        if (!enabled) return
         dispatch(fetchNotificationUsers(buildQuery()))
-    }, [dispatch, filter, page, pageSize, params])
+    }, [dispatch, enabled, buildQuery])
 
     const refetch = useCallback(() => {
         dispatch(fetchNotificationUsers(buildQuery()))
-    }, [dispatch, filter, page, pageSize, params])
+    }, [dispatch, buildQuery])
 
     const loading = status === NotificationUserListStatus.LOADING
     const notificationUsersData: NotificationUsersData[] = data || []
-    const paginationMeta: ListMeta | null = meta
-    const totalPages = paginationMeta ? paginationMeta.last_page : 1
-    const totalItems = paginationMeta ? paginationMeta.total : 0
+    const paginationMeta: ListMeta | null = meta || null
+    const totalPages = paginationMeta?.last_page ?? 1
+    const totalItems = paginationMeta?.total ?? 0
 
     return {
         notificationUsersData,
@@ -56,6 +68,6 @@ export function useNotificationUsersList(params: ListNotificationUserArg) {
         setFilter,
         totalPages,
         totalItems,
-        refetch,
+        refetch
     }
 }

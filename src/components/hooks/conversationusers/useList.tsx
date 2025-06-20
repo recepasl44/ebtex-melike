@@ -4,45 +4,55 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../../store/rootReducer'
 import { AppDispatch } from '../../../store'
 import { fetchConversationUsers } from '../../../slices/conversationusers/list/thunk'
-import { ConversationUsersData, ListConversationUserArg, ListMeta } from '../../../types/conversationusers/list'
+import {
+    ConversationUsersData,
+    ListConversationUserArg,
+    ListMeta
+} from '../../../types/conversationusers/list'
 import { ConversationUserListStatus } from '../../../enums/conversationusers/list'
 
 export function useConversationUsersList(params: ListConversationUserArg) {
-    if (params?.enabled === false) return
     const dispatch = useDispatch<AppDispatch>()
+    const {
+        enabled = true,
+        page: initialPage = 1,
+        pageSize: initialSize = 10,
+        ...restParams
+    } = params
 
-    const [page, setPage] = useState<number>(params.page || 1)
-    const [pageSize, setPageSize] = useState<number>(params.pageSize || 10)
+    const [page, setPage] = useState<number>(initialPage)
+    const [pageSize, setPageSize] = useState<number>(initialSize)
     const [filter, setFilter] = useState<any>(null)
 
     const { data, meta, status, error } = useSelector(
         (state: RootState) => state.conversationUserList
     )
 
-    const buildQuery = () => {
-        const { enabled, ...restParams } = params
-        return {
-            ...restParams,
-            filter,
-            page,
-            pageSize,
-            per_page: pageSize,
-        } as ListConversationUserArg
-    }
+    const restKey = JSON.stringify(restParams)
+
+    const buildQuery = useCallback((): ListConversationUserArg => ({
+        enabled,
+        ...restParams,
+        filter,
+        page,
+        pageSize,
+        per_page: pageSize
+    }), [enabled, restKey, filter, page, pageSize])
 
     useEffect(() => {
+        if (!enabled) return
         dispatch(fetchConversationUsers(buildQuery()))
-    }, [dispatch, filter, page, pageSize, params])
+    }, [dispatch, enabled, buildQuery])
 
     const refetch = useCallback(() => {
         dispatch(fetchConversationUsers(buildQuery()))
-    }, [dispatch, filter, page, pageSize, params])
+    }, [dispatch, buildQuery])
 
     const loading = status === ConversationUserListStatus.LOADING
     const conversationUsersData: ConversationUsersData[] = data || []
-    const paginationMeta: ListMeta | null = meta
-    const totalPages = paginationMeta ? paginationMeta.last_page : 1
-    const totalItems = paginationMeta ? paginationMeta.total : 0
+    const paginationMeta: ListMeta | null = meta || null
+    const totalPages = paginationMeta?.last_page ?? 1
+    const totalItems = paginationMeta?.total ?? 0
 
     return {
         conversationUsersData,
@@ -56,6 +66,6 @@ export function useConversationUsersList(params: ListConversationUserArg) {
         setFilter,
         totalPages,
         totalItems,
-        refetch,
+        refetch
     }
 }

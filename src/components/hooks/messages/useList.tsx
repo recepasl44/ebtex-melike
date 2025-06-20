@@ -8,41 +8,47 @@ import { MessageData, ListMessageArg, ListMeta } from '../../../types/messages/l
 import { MessageListStatus } from '../../../enums/messages/list'
 
 export function useMessagesList(params: ListMessageArg) {
-    if (params?.enabled === false) return
     const dispatch = useDispatch<AppDispatch>()
+    const {
+        enabled = true,
+        page: initialPage = 1,
+        pageSize: initialSize = 10,
+        ...restParams
+    } = params
 
-    const [page, setPage] = useState<number>(params.page || 1)
-    const [pageSize, setPageSize] = useState<number>(params.pageSize || 10)
+    const [page, setPage] = useState<number>(initialPage)
+    const [pageSize, setPageSize] = useState<number>(initialSize)
     const [filter, setFilter] = useState<any>(null)
 
     const { data, meta, status, error } = useSelector(
         (state: RootState) => state.messageList
     )
 
-    const buildQuery = () => {
-        const { enabled, ...restParams } = params
-        return {
-            ...restParams,
-            filter,
-            page,
-            pageSize,
-            per_page: pageSize,
-        } as ListMessageArg
-    }
+    const restKey = JSON.stringify(restParams)
+
+    const buildQuery = useCallback((): ListMessageArg => ({
+        enabled,
+        ...restParams,
+        filter,
+        page,
+        pageSize,
+        per_page: pageSize
+    }), [enabled, restKey, filter, page, pageSize])
 
     useEffect(() => {
+        if (!enabled) return
         dispatch(fetchMessages(buildQuery()))
-    }, [dispatch, filter, page, pageSize, params])
+    }, [dispatch, enabled, buildQuery])
 
     const refetch = useCallback(() => {
         dispatch(fetchMessages(buildQuery()))
-    }, [dispatch, filter, page, pageSize, params])
+    }, [dispatch, buildQuery])
 
     const loading = status === MessageListStatus.LOADING
     const messagesData: MessageData[] = data || []
-    const paginationMeta: ListMeta | null = meta
-    const totalPages = paginationMeta ? paginationMeta.last_page : 1
-    const totalItems = paginationMeta ? paginationMeta.total : 0
+    const paginationMeta: ListMeta | null = meta || null
+    const totalPages = paginationMeta?.last_page ?? 1
+    const totalItems = paginationMeta?.total ?? 0
 
     return {
         messagesData,

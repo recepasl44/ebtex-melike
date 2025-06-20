@@ -8,41 +8,48 @@ import { NotificationData, ListNotificationArg, ListMeta } from '../../../types/
 import { NotificationListStatus } from '../../../enums/notifications/list'
 
 export function useNotificationsList(params: ListNotificationArg) {
-    if (params?.enabled === false) return
     const dispatch = useDispatch<AppDispatch>()
+    const {
+        enabled = true,
+        page: initialPage = 1,
+        pageSize: initialSize = 10,
+        ...restParams
+    } = params
 
-    const [page, setPage] = useState<number>(params.page || 1)
-    const [pageSize, setPageSize] = useState<number>(params.pageSize || 10)
+    const [page, setPage] = useState<number>(initialPage)
+    const [pageSize, setPageSize] = useState<number>(initialSize)
     const [filter, setFilter] = useState<any>(null)
 
     const { data, meta, status, error } = useSelector(
         (state: RootState) => state.notificationList
     )
 
-    const buildQuery = () => {
-        const { enabled, ...restParams } = params
-        return {
-            ...restParams,
-            filter,
-            page,
-            pageSize,
-            per_page: pageSize,
-        } as ListNotificationArg
-    }
+    // stringify restParams to stabilize dependency
+    const restKey = JSON.stringify(restParams)
+
+    const buildQuery = useCallback((): ListNotificationArg => ({
+        enabled,
+        ...restParams,
+        filter,
+        page,
+        pageSize,
+        per_page: pageSize
+    }), [enabled, restKey, filter, page, pageSize])
 
     useEffect(() => {
+        if (!enabled) return
         dispatch(fetchNotifications(buildQuery()))
-    }, [dispatch, filter, page, pageSize, params])
+    }, [dispatch, enabled, buildQuery])
 
     const refetch = useCallback(() => {
         dispatch(fetchNotifications(buildQuery()))
-    }, [dispatch, filter, page, pageSize, params])
+    }, [dispatch, buildQuery])
 
     const loading = status === NotificationListStatus.LOADING
     const notificationsData: NotificationData[] = data || []
-    const paginationMeta: ListMeta | null = meta
-    const totalPages = paginationMeta ? paginationMeta.last_page : 1
-    const totalItems = paginationMeta ? paginationMeta.total : 0
+    const paginationMeta: ListMeta | null = meta || null
+    const totalPages = paginationMeta?.last_page ?? 1
+    const totalItems = paginationMeta?.total ?? 0
 
     return {
         notificationsData,
@@ -56,6 +63,6 @@ export function useNotificationsList(params: ListNotificationArg) {
         setFilter,
         totalPages,
         totalItems,
-        refetch,
+        refetch
     }
 }

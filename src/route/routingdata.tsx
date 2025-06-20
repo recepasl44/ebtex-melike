@@ -87,6 +87,7 @@ const IncomingChecksCrud = lazy(
   () => import("../components/common/incomingChecks/crud")
 );
 const CurrentNewsletterTable = lazy(() => import("../components/common/contactPanel/pages/currentNewsletter/table"));
+const CurrentNewsletterCrud = lazy(() => import("../components/common/contactPanel/pages/currentNewsletter/crud"));
 
 const OverduePaymentDetailPage = lazy(
   () => import("../components/common/overduePayments/detail")
@@ -1783,11 +1784,7 @@ export const Routedata = [
     ),
   },
 
-  {
-    id: 67,
-    path: `${import.meta.env.BASE_URL}contact-panel/current-newsletter`,
-    element: <CurrentNewsletterTable />,
-  },
+
   {
     id: 61,
     path: `${import.meta.env.BASE_URL}checks-promissory/:id?`,
@@ -2254,6 +2251,17 @@ export const Routedata = [
     id: 67,
     path: `${import.meta.env.BASE_URL}checkManagement`,
     element: <CheckManagementIndex />,
+  },
+  //iletişim paneli
+  {
+    id: 767,
+    path: `${import.meta.env.BASE_URL}contact-panel/current-newsletter`,
+    element: <CurrentNewsletterTable />,
+  },
+  {
+    id: 678,
+    path: `${import.meta.env.BASE_URL}contact-panel/current-newsletter/crud/:id?`,
+    element: <CurrentNewsletterCrud />,
   },
 
 
