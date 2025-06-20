@@ -75,7 +75,7 @@ export default function EmailTable() {
                 render: (n) => (
                     <div className="d-flex align-items-center gap-2">
                         <span>{(n.group as any)?.name || '-'}</span>
-                        <i className="ti ti-eye" />
+
                     </div>
                 ),
             },
