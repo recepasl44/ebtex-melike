@@ -7,7 +7,6 @@ import ReusableModalForm, { FieldDefinition } from '../../../ReusableModalForm';
 import { useBulletinAdd } from '../../../../hooks/bulletin/useAdd';
 import { useBulletinUpdate } from '../../../../hooks/bulletin/useUpdate';
 import { useBulletinShow } from '../../../../hooks/bulletin/useDetail';
-import { useGroupsTable } from '../../../../hooks/group/useList';
 import { useUsersTable } from '../../../../hooks/user/useList';
 
 interface FormData extends FormikValues {
@@ -34,8 +33,7 @@ export default function CurrentNewsletterCrud() {
     const { updateExistingBulletin, status: updStatus, error: updError } =
         useBulletinUpdate();
 
-    const [enabled, setEnabled] = useState({ groups: false, users: false });
-    const { groupsData = [] } = useGroupsTable({ enabled: enabled.groups, pageSize: 999 });
+    const [enabled, setEnabled] = useState({ users: false });
     const { usersData = [] } = useUsersTable({ enabled: enabled.users, pageSize: 999 });
 
     const [initialValues, setInitialValues] = useState<FormData>({
@@ -85,7 +83,6 @@ export default function CurrentNewsletterCrud() {
         { value: '2', label: 'Topluluk' },
     ];
 
-    const groupOptions = groupsData.map((g) => ({ value: String(g.id), label: g.name }));
     const userOptions = usersData.map((u) => ({ value: String(u.id), label: u.name_surname || `${u.first_name} ${u.last_name}` }));
 
     const getFields = (): FieldDefinition[] => [
@@ -117,25 +114,10 @@ export default function CurrentNewsletterCrud() {
         {
             name: 'group_id',
             label: 'Hedef Kitle',
-            renderForm: (formik) => (
-                <div className="d-flex" style={{ gap: 8 }}>
-                    <select
-                        className="form-select"
-                        value={formik.values.group_id || ''}
-                        onChange={(e) => formik.setFieldValue('group_id', e.target.value)}
-                        onClick={() => setEnabled((e) => ({ ...e, groups: true }))}
-                    >
-                        <option value="">Seçiniz</option>
-                        {groupOptions.map((g) => (
-                            <option key={g.value} value={g.value}>
-                                {g.label}
-                            </option>
-                        ))}
-                    </select>
-                    <Button variant="outline-secondary" onClick={() => setShowGroupModal(true)}>
-                        <i className="ti ti-eye" />
-                    </Button>
-                </div>
+            renderForm: () => (
+                <Button variant="outline-secondary" onClick={() => setShowGroupModal(true)}>
+                    <i className="ti ti-eye" />
+                </Button>
             ),
         },
     ];
