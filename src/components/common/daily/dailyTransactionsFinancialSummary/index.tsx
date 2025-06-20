@@ -58,6 +58,8 @@ const DailyTransactionsFinancialSummary: React.FC = () => {
     (summary?.liabilities.personnel_payables ?? 0) +
     (summary?.liabilities.supplier_debts ?? 0);
 
+  const cashBoxInfo = Math.abs(liquidTotal - liabilitiesTotal);
+
   const liquidRows: RowData[] = useMemo(() => {
     if (!summary) return [];
     const arr: RowData[] = [
@@ -179,6 +181,14 @@ const DailyTransactionsFinancialSummary: React.FC = () => {
           </Card>
         </Col>
       </Row>
+
+      <Card className="mt-4 glass-card">
+        <Card.Body>
+          <div className="d-flex justify-content-end fw-bold me-3" style={{ color: textColor }}>
+            Kasa Bilgisi: {formatCurrency(cashBoxInfo)}
+          </div>
+        </Card.Body>
+      </Card>
     </div>
   );
 };
