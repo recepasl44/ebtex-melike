@@ -86,15 +86,23 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({
         flag ? <Spinner animation="border" size="sm" /> : null;
 
     return (
-        <Modal show={show} onHide={onClose} size="lg" centered>
+        <Modal
+            show={show}
+            onHide={onClose}
+            centered
+            dialogClassName="target-audience-modal"
+        >
             <Modal.Header closeButton>
                 <Modal.Title>Hedef Kitle</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Row>
                     <Col md={6} className="mb-3">
-                        <Accordion defaultActiveKey="program">
-                            <Accordion.Item eventKey="program">
+                        <Accordion
+                            defaultActiveKey="program"
+                            className="accordion-customicon1 customized-accordion accordions-items-seperate"
+                        >
+                            <Accordion.Item eventKey="program" className="custom-accordion-primary">
                                 <Accordion.Header>Program</Accordion.Header>
                                 <Accordion.Body>
                                     {renderLoading(loadingPrograms)}
@@ -123,7 +131,7 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({
                                     </ListGroup>
                                 </Accordion.Body>
                             </Accordion.Item>
-                            <Accordion.Item eventKey="level">
+                            <Accordion.Item eventKey="level" className="custom-accordion-success">
                                 <Accordion.Header>Seviye</Accordion.Header>
                                 <Accordion.Body>
                                     {renderLoading(loadingLevels)}
@@ -152,7 +160,7 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({
                                     </ListGroup>
                                 </Accordion.Body>
                             </Accordion.Item>
-                            <Accordion.Item eventKey="classroom">
+                            <Accordion.Item eventKey="classroom" className="custom-accordion-warning">
                                 <Accordion.Header>Sınıf</Accordion.Header>
                                 <Accordion.Body>
                                     {renderLoading(loadingClassrooms)}
