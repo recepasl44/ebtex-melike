@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormikValues, Field } from 'formik';
 import { Button } from 'react-bootstrap';
-import TargetAudienceModal, { Student } from './TargetAudienceModal';
+import TargetAudienceModal, { AudienceItem } from './TargetAudienceModal';
 
 import ReusableModalForm, { FieldDefinition } from '../../../ReusableModalForm';
 import { useBulletinAdd } from '../../../../hooks/bulletin/useAdd';
@@ -52,7 +52,7 @@ export default function CurrentNewsletterCrud() {
         send_sms_email: false,
     });
     const [showGroupModal, setShowGroupModal] = useState(false);
-    const [selectedStudents, setSelectedStudents] = useState<Student[]>([]);
+    const [selectedAudience, setSelectedAudience] = useState<AudienceItem[]>([]);
 
     useEffect(() => {
         if (mode === 'update' && id) {
@@ -203,8 +203,8 @@ export default function CurrentNewsletterCrud() {
             <TargetAudienceModal
                 show={showGroupModal}
                 onClose={() => setShowGroupModal(false)}
-                onSave={(students) => {
-                    setSelectedStudents(students);
+                onSave={(items) => {
+                    setSelectedAudience(items);
                     setShowGroupModal(false);
                 }}
             />
