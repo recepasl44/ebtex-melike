@@ -9,17 +9,18 @@ const AssignmentsCountPage: React.FC = () => {
     const [, setSelectedTab] = useState(0);
 
     const tabsConfig = [
+
         {
-            label: 'Verilen Ödevler',
-            content: <GivenHomeworkCount />,
+            label: 'Planlanan Ödevler',
+            content: <PlannedHomeworkCount />,
             activeBgColor: '#9E5CF7',
             activeTextColor: '#FFFFFF',
             passiveBgColor: '#9E5CF726',
             passiveTextColor: '#9E5CF7',
         },
         {
-            label: 'Planlanan Ödevler',
-            content: <PlannedHomeworkCount />,
+            label: 'Verilen Ödevler',
+            content: <GivenHomeworkCount />,
             activeBgColor: '#9E5CF7',
             activeTextColor: '#FFFFFF',
             passiveBgColor: '#9E5CF726',

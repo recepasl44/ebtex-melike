@@ -7,13 +7,13 @@ import ReusableModalForm, { FieldDefinition } from '../../../ReusableModalForm';
 import { useBulletinAdd } from '../../../../hooks/bulletin/useAdd';
 import { useBulletinUpdate } from '../../../../hooks/bulletin/useUpdate';
 import { useBulletinShow } from '../../../../hooks/bulletin/useDetail';
-import { useGroupsTable } from '../../../../hooks/group/useList';
 import { useUsersTable } from '../../../../hooks/user/useList';
 
 interface FormData extends FormikValues {
     title: string;
     content: string;
     category_id: string;
+    source: string;
     start_date: string;
     end_date: string;
     send_time: string;
@@ -34,14 +34,14 @@ export default function CurrentNewsletterCrud() {
     const { updateExistingBulletin, status: updStatus, error: updError } =
         useBulletinUpdate();
 
-    const [enabled, setEnabled] = useState({ groups: false, users: false });
-    const { groupsData = [] } = useGroupsTable({ enabled: enabled.groups, pageSize: 999 });
+    const [enabled, setEnabled] = useState({ users: false });
     const { usersData = [] } = useUsersTable({ enabled: enabled.users, pageSize: 999 });
 
     const [initialValues, setInitialValues] = useState<FormData>({
         title: '',
         content: '',
         category_id: '',
+        source: '',
         start_date: '',
         end_date: '',
         send_time: '',
@@ -64,6 +64,7 @@ export default function CurrentNewsletterCrud() {
                 title: bulletin.title ?? '',
                 content: bulletin.content ?? '',
                 category_id: String(bulletin.category_id ?? ''),
+                source: (bulletin as any).source ?? '',
                 start_date: bulletin.start_date ?? '',
                 end_date: bulletin.end_date ?? '',
                 send_time: (bulletin as any).send_time ?? '',
@@ -85,73 +86,79 @@ export default function CurrentNewsletterCrud() {
         { value: '2', label: 'Topluluk' },
     ];
 
-    const groupOptions = groupsData.map((g) => ({ value: String(g.id), label: g.name }));
     const userOptions = usersData.map((u) => ({ value: String(u.id), label: u.name_surname || `${u.first_name} ${u.last_name}` }));
 
-    const getFields = (): FieldDefinition[] => [
-        { name: 'title', label: 'Başlık', type: 'text', required: true },
-        { name: 'content', label: 'İçerik', type: 'textarea', required: true },
-        {
-            name: 'category_id',
-            label: 'Kategori',
-            type: 'select',
-            options: mode === 'add' ? categoryOptionsAdd : categoryOptionsUpdate,
-        },
-        {
-            name: 'created_by',
-            label: 'Gönderen',
-            type: 'select',
-            options: userOptions,
-            onClick: () => setEnabled((e) => ({ ...e, users: true })),
-        },
-        { name: 'start_date', label: mode === 'add' ? 'Yayın Tarihi' : 'Yayın Başlangıç Tarihi', type: 'date', required: true },
-        ...(mode === 'update'
-            ? [{ name: 'end_date', label: 'Yayın Bitiş Tarihi', type: 'date', required: true }]
-            : []),
-        { name: 'send_time', label: 'Gönderim Saati', type: 'time', required: true },
-        {
-            name: 'group_id',
-            label: 'Hedef Kitle',
-            renderForm: (formik) => (
-                <div className="d-flex" style={{ gap: 8 }}>
-                    <select
-                        className="form-select"
-                        value={formik.values.group_id || ''}
-                        onChange={(e) => formik.setFieldValue('group_id', e.target.value)}
-                        onClick={() => setEnabled((e) => ({ ...e, groups: true }))}
-                    >
-                        <option value="">Seçiniz</option>
-                        {groupOptions.map((g) => (
-                            <option key={g.value} value={g.value}>
-                                {g.label}
-                            </option>
-                        ))}
-                    </select>
+    const getFields = (): FieldDefinition[] => {
+        if (mode === 'add') {
+            return [
+                { name: 'title', label: 'Başlık', type: 'text', required: true },
+                { name: 'content', label: 'İçerik', type: 'textarea', required: true },
+                {
+                    name: 'category_id',
+                    label: 'Kategori',
+                    type: 'select',
+                    options: categoryOptionsAdd,
+                },
+
+                {
+                    name: 'created_by',
+                    label: 'Gönderen',
+                    type: 'select',
+                    options: userOptions,
+                    onClick: () => setEnabled((e) => ({ ...e, users: true })),
+                },
+                { name: 'start_date', label: 'Yayın Tarihi', type: 'date', required: true },
+                { name: 'send_time', label: 'Gönderim Saati', type: 'time', required: true },
+                {
+                    name: 'send_sms_email',
+                    label: 'SMS ve E-Posta ile Gönderilsin mi?',
+                    type: 'checkbox',
+                },
+                {
+                    name: 'group_id',
+                    label: 'Hedef Kitle',
+                    renderForm: () => (
+                        <Button variant="outline-secondary" onClick={() => setShowGroupModal(true)}>
+                            <i className="ti ti-eye" />
+                        </Button>
+                    ),
+                },
+            ];
+        }
+        return [
+            { name: 'title', label: 'Başlık', type: 'text', required: true },
+            { name: 'content', label: 'İçerik', type: 'textarea', required: true },
+            {
+                name: 'category_id',
+                label: 'Kategori',
+                type: 'select',
+                options: categoryOptionsUpdate,
+            },
+            {
+                name: 'created_by',
+                label: 'Gönderen',
+                type: 'select',
+                options: userOptions,
+                onClick: () => setEnabled((e) => ({ ...e, users: true })),
+            },
+            { name: 'start_date', label: 'Yayın Tarihi', type: 'date', required: true },
+            { name: 'send_time', label: 'Gönderim Saati', type: 'time', required: true },
+            {
+                name: 'send_sms_email',
+                label: 'SMS ve E-Posta ile Gönderilsin mi?',
+                type: 'checkbox',
+            },
+            {
+                name: 'group_id',
+                label: 'Hedef Kitle',
+                renderForm: () => (
                     <Button variant="outline-secondary" onClick={() => setShowGroupModal(true)}>
                         <i className="ti ti-eye" />
                     </Button>
-                </div>
-            ),
-        },
-        ...(mode === 'update'
-            ? [
-                  {
-                      name: 'send_sms_email',
-                      label: 'SMS ve eposta ile gönderilsin mi',
-                      type: 'checkbox',
-                  },
-              ]
-            : []),
-        {
-            name: 'status',
-            label: 'Yayın Durumu',
-            type: 'select',
-            options: [
-                { value: '1', label: 'Yayında' },
-                { value: '0', label: 'Taslak' },
-            ],
-        },
-    ];
+                ),
+            },
+        ];
+    };
 
     const isLoading =
         (mode === 'add' && addStatus === 'LOADING') ||
@@ -176,29 +183,32 @@ export default function CurrentNewsletterCrud() {
     };
 
     return (
-        <ReusableModalForm<FormData>
-            show
-            title={mode === 'add' ? 'Bülten Ekle' : 'Bülten Güncelle'}
-            fields={getFields}
-            initialValues={initialValues}
-            onSubmit={handleSubmit}
-            confirmButtonLabel={mode === 'add' ? 'Ekle' : 'Güncelle'}
-            cancelButtonLabel="Vazgeç"
-            isLoading={isLoading}
-            error={combinedError || undefined}
-            onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel/current-newsletter`)}
-            autoGoBackOnModalClose
-        />
-        <Modal show={showGroupModal} onHide={() => setShowGroupModal(false)} centered>
-            <Modal.Header closeButton>
-                <Modal.Title>Hedef Kitle</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>İçerik daha sonra eklenecek.</Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={() => setShowGroupModal(false)}>
-                    Kapat
-                </Button>
-            </Modal.Footer>
-        </Modal>
+        <>
+            <ReusableModalForm<FormData>
+                show
+                title={mode === 'add' ? 'Bildirim Ekle' : 'Bülten Detay / Düzenle'}
+                fields={getFields}
+                initialValues={initialValues}
+                onSubmit={handleSubmit}
+                confirmButtonLabel="Gönder"
+                cancelButtonLabel="Vazgeç"
+                isLoading={isLoading}
+                error={combinedError || undefined}
+                onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel/current-newsletter`)}
+                autoGoBackOnModalClose
+                mode="single"
+            />
+            <Modal show={showGroupModal} onHide={() => setShowGroupModal(false)} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Hedef Kitle</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>İçerik daha sonra eklenecek.</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowGroupModal(false)}>
+                        Kapat
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
     );
 }
