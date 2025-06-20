@@ -34,6 +34,7 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({
 }) => {
     const [selectedProgram, setSelectedProgram] = useState<number | null>(null);
     const [selectedLevel, setSelectedLevel] = useState<number | null>(null);
+    const [activeKey, setActiveKey] = useState<string>('program');
     const [selectedItems, setSelectedItems] = useState<AudienceItem[]>([]);
 
     const {
@@ -75,6 +76,7 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({
         setSelectedItems([]);
         setSelectedProgram(null);
         setSelectedLevel(null);
+        setActiveKey('program');
     };
 
     const handleSave = () => {
@@ -99,7 +101,8 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({
                 <Row>
                     <Col md={6} className="mb-3">
                         <Accordion
-                            defaultActiveKey="program"
+                            activeKey={activeKey}
+                            onSelect={(k) => k && setActiveKey(k)}
                             className="accordion-customicon1 customized-accordion accordions-items-seperate"
                         >
                             <Accordion.Item eventKey="program" className="custom-accordion-primary">
@@ -114,7 +117,10 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({
                                             >
                                                 <span
                                                     role="button"
-                                                    onClick={() => setSelectedProgram(p.id)}
+                                                    onClick={() => {
+                                                        setSelectedProgram(p.id);
+                                                        setActiveKey('level');
+                                                    }}
                                                     style={{ cursor: 'pointer' }}
                                                 >
                                                     {p.name}
@@ -131,7 +137,11 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({
                                     </ListGroup>
                                 </Accordion.Body>
                             </Accordion.Item>
-                            <Accordion.Item eventKey="level" className="custom-accordion-success">
+                            {selectedProgram !== null && (
+                                <Accordion.Item
+                                    eventKey="level"
+                                    className="custom-accordion-success ms-3"
+                                >
                                 <Accordion.Header>Seviye</Accordion.Header>
                                 <Accordion.Body>
                                     {renderLoading(loadingLevels)}
@@ -143,7 +153,10 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({
                                             >
                                                 <span
                                                     role="button"
-                                                    onClick={() => setSelectedLevel(l.id)}
+                                                    onClick={() => {
+                                                        setSelectedLevel(l.id);
+                                                        setActiveKey('classroom');
+                                                    }}
                                                     style={{ cursor: 'pointer' }}
                                                 >
                                                     {l.name}
@@ -159,8 +172,13 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({
                                         ))}
                                     </ListGroup>
                                 </Accordion.Body>
-                            </Accordion.Item>
-                            <Accordion.Item eventKey="classroom" className="custom-accordion-warning">
+                                </Accordion.Item>
+                            )}
+                            {selectedLevel !== null && (
+                                <Accordion.Item
+                                    eventKey="classroom"
+                                    className="custom-accordion-warning ms-5"
+                                >
                                 <Accordion.Header>Sınıf</Accordion.Header>
                                 <Accordion.Body>
                                     {renderLoading(loadingClassrooms)}
@@ -182,7 +200,8 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({
                                         ))}
                                     </ListGroup>
                                 </Accordion.Body>
-                            </Accordion.Item>
+                                </Accordion.Item>
+                            )}
                         </Accordion>
                     </Col>
                     <Col md={6} className="mb-3">
