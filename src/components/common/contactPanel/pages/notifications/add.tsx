@@ -95,7 +95,7 @@ export default function NotificationAdd() {
             error={error || undefined}
             onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel/notifications`)}
             autoGoBackOnModalClose
-            mode="single"
+            mode="double"
         />
     );
 }

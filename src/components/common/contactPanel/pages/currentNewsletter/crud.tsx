@@ -196,7 +196,7 @@ export default function CurrentNewsletterCrud() {
                 error={combinedError || undefined}
                 onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel/current-newsletter`)}
                 autoGoBackOnModalClose
-                mode="single"
+                mode="double"
             />
             <Modal show={showGroupModal} onHide={() => setShowGroupModal(false)} centered>
                 <Modal.Header closeButton>

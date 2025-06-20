@@ -142,7 +142,7 @@ export default function NotificationEdit() {
             error={combinedError || undefined}
             onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel/notifications`)}
             autoGoBackOnModalClose
-            mode="single"
+            mode="double"
         />
     );
 }

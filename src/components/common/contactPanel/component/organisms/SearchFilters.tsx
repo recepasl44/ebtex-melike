@@ -21,7 +21,7 @@ export interface FilterDefinition {
     | "iban"
     | "multiselect"
     | "autocomplete";
-    value?: string | { startDate: string; endDate: string };
+    value?: string | string[] | { startDate: string; endDate: string }
     options?: { value: string; label: string }[];
     plus?: boolean | string;
     dependencyKey?: string;
