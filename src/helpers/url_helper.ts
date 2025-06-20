@@ -162,4 +162,6 @@ export const ATTENDANCEDAYS = "/attendancedays";
 export const ATTENDANCETEACHERS = "/attendanceteachers";
 export const STUDENTGROUPS = "/studentgroups";
 
+export const MESSAGES = '/messages';
+
 
