@@ -529,6 +529,11 @@ import notificationsShowReducer from '../slices/notifications/detail/reducer';
 import notificationsAddReducer from '../slices/notifications/add/reducer';
 import notificationsUpdateReducer from '../slices/notifications/update/reducer';
 import notificationsDeleteReducer from '../slices/notifications/delete/reducer';
+import notificationUsersListReducer from '../slices/notificationusers/list/reducer';
+import notificationUsersShowReducer from '../slices/notificationusers/detail/reducer';
+import notificationUsersAddReducer from '../slices/notificationusers/add/reducer';
+import notificationUsersUpdateReducer from '../slices/notificationusers/update/reducer';
+import notificationUsersDeleteReducer from '../slices/notificationusers/delete/reducer';
 
 //sourceTypes
 import sourceTypesAddSlice from '../slices/sourceTypes/add/reducer';
@@ -1134,6 +1139,11 @@ const combinedReducer = combineReducers({
   notificationAdd: notificationsAddReducer,
   notificationUpdate: notificationsUpdateReducer,
   notificationDelete: notificationsDeleteReducer,
+  notificationUserList: notificationUsersListReducer,
+  notificationUserShow: notificationUsersShowReducer,
+  notificationUserAdd: notificationUsersAddReducer,
+  notificationUserUpdate: notificationUsersUpdateReducer,
+  notificationUserDelete: notificationUsersDeleteReducer,
 
   //sourcetypes
   sourceTypesAdd: sourceTypesAddSlice,
