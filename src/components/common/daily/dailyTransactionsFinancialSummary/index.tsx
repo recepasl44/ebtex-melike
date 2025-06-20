@@ -58,7 +58,10 @@ const DailyTransactionsFinancialSummary: React.FC = () => {
     (summary?.liabilities.personnel_payables ?? 0) +
     (summary?.liabilities.supplier_debts ?? 0);
 
-  const cashBoxInfo = Math.abs(liquidTotal - liabilitiesTotal);
+  const cashBoxInfo =
+    liquidTotal > liabilitiesTotal
+      ? liquidTotal - liabilitiesTotal
+      : liabilitiesTotal - liquidTotal;
 
   const liquidRows: RowData[] = useMemo(() => {
     if (!summary) return [];
