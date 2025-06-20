@@ -88,6 +88,9 @@ const IncomingChecksCrud = lazy(
 );
 const CurrentNewsletterTable = lazy(() => import("../components/common/contactPanel/pages/currentNewsletter/table"));
 const CurrentNewsletterCrud = lazy(() => import("../components/common/contactPanel/pages/currentNewsletter/crud"));
+const NotificationsTable = lazy(() => import("../components/common/contactPanel/pages/notifications/table"));
+const NotificationAdd = lazy(() => import("../components/common/contactPanel/pages/notifications/add"));
+const NotificationEdit = lazy(() => import("../components/common/contactPanel/pages/notifications/edit"));
 
 const OverduePaymentDetailPage = lazy(
   () => import("../components/common/overduePayments/detail")
@@ -2262,6 +2265,21 @@ export const Routedata = [
     id: 678,
     path: `${import.meta.env.BASE_URL}contact-panel/current-newsletter/crud/:id?`,
     element: <CurrentNewsletterCrud />,
+  },
+  {
+    id: 779,
+    path: `${import.meta.env.BASE_URL}contact-panel/notifications`,
+    element: <NotificationsTable />,
+  },
+  {
+    id: 780,
+    path: `${import.meta.env.BASE_URL}contact-panel/notifications/add`,
+    element: <NotificationAdd />,
+  },
+  {
+    id: 781,
+    path: `${import.meta.env.BASE_URL}contact-panel/notifications/edit/:id`,
+    element: <NotificationEdit />,
   },
 
 
