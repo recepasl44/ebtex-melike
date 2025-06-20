@@ -20,9 +20,14 @@ export default function FinanceNotesTable() {
     const [levelId, setLevelId] = useState('');
     const [classId, setClassId] = useState('');
     const [student, setStudent] = useState('');
+    const [filtersEnabled, setFiltersEnabled] = useState({
+        season: false,
+        branch: false,
+        student: false,
+    });
 
-    const { seasonsData } = useSeasonsList({ enabled: true, page: 1, paginate: 100 });
-    const { branchData } = useBranchTable({ enabled: true });
+    const { seasonsData } = useSeasonsList({ enabled: filtersEnabled.season, page: 1, paginate: 100 });
+    const { branchData } = useBranchTable({ enabled: filtersEnabled.branch });
     const { programsData } = useProgramsTable({
         enabled: !!branch,
         branch_id: branch ? Number(branch) : undefined,
@@ -41,7 +46,7 @@ export default function FinanceNotesTable() {
     });
 
     const { data: studentsData = [] } = useListStudents({
-        enabled: true,
+        enabled: filtersEnabled.student,
         branch_id: branch ? Number(branch) : undefined,
         program_id: programId ? Number(programId) : undefined,
         level_id: levelId ? Number(levelId) : undefined,
@@ -92,12 +97,13 @@ export default function FinanceNotesTable() {
     ], []);
 
     const filters: FilterDefinition[] = useMemo(() => [
-        {
+        { 
             key: 'season',
             label: 'Sezon',
             type: 'select',
             value: season,
             options: (seasonsData || []).map((s: any) => ({ value: String(s.id), label: s.name })),
+            onClick: () => setFiltersEnabled((p) => ({ ...p, season: true })),
             onChange: (val: string) => {
                 setSeason(val);
                 setPage(1);
@@ -109,6 +115,7 @@ export default function FinanceNotesTable() {
             type: 'select',
             value: branch,
             options: (branchData || []).map((b: any) => ({ value: String(b.id), label: b.name })),
+            onClick: () => setFiltersEnabled((p) => ({ ...p, branch: true })),
             onChange: (val: string) => {
                 setBranch(val);
                 setPage(1);
@@ -156,6 +163,7 @@ export default function FinanceNotesTable() {
                 value: `${s.first_name} ${s.last_name}`.trim(),
                 label: `${s.first_name} ${s.last_name}`.trim(),
             })),
+            onFocus: () => setFiltersEnabled((p) => ({ ...p, student: true })),
             onChange: (val: string) => {
                 setStudent(val);
                 setPage(1);
