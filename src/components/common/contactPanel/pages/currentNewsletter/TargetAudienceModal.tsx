@@ -25,12 +25,24 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({ show, onClose
 
     const [selectedStudents, setSelectedStudents] = useState<Student[]>([]);
 
+    const toArray = <T,>(value: unknown): T[] => {
+        if (Array.isArray(value)) return value as T[];
+        // some APIs wrap results in a `data` property
+        if (value && typeof value === 'object' && Array.isArray((value as any).data)) {
+            return (value as any).data as T[];
+        }
+        return [];
+    };
+
     // Fetch programs when modal opens
     useEffect(() => {
         if (!show) return;
-        axios.get<Program[]>('/api/programs').then(res => {
-            setPrograms(res.data);
-        });
+        axios
+            .get<Program[]>('/api/programs')
+            .then(res => {
+                setPrograms(toArray<Program>(res.data));
+            })
+            .catch(() => setPrograms([]));
     }, [show]);
 
     // Fetch levels when program changes
@@ -40,9 +52,12 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({ show, onClose
             setSelectedLevelId('');
             return;
         }
-        axios.get<Level[]>(`/api/programs/${selectedProgramId}/levels`).then(res => {
-            setLevels(res.data);
-        });
+        axios
+            .get<Level[]>(`/api/programs/${selectedProgramId}/levels`)
+            .then(res => {
+                setLevels(toArray<Level>(res.data));
+            })
+            .catch(() => setLevels([]));
     }, [selectedProgramId]);
 
     // Fetch classrooms when level changes
@@ -52,9 +67,12 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({ show, onClose
             setSelectedClassroomId('');
             return;
         }
-        axios.get<Classroom[]>(`/api/levels/${selectedLevelId}/classrooms`).then(res => {
-            setClassrooms(res.data);
-        });
+        axios
+            .get<Classroom[]>(`/api/levels/${selectedLevelId}/classrooms`)
+            .then(res => {
+                setClassrooms(toArray<Classroom>(res.data));
+            })
+            .catch(() => setClassrooms([]));
     }, [selectedLevelId]);
 
     // Fetch students when classroom changes
@@ -65,7 +83,8 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({ show, onClose
         }
         axios
             .get<Student[]>(`/api/classrooms/${selectedClassroomId}/students`)
-            .then(res => setStudents(res.data));
+            .then(res => setStudents(toArray<Student>(res.data)))
+            .catch(() => setStudents([]));
     }, [selectedClassroomId]);
 
     const addStudent = useCallback(
