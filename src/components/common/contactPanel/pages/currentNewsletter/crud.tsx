@@ -110,6 +110,11 @@ export default function CurrentNewsletterCrud() {
             : []),
         { name: 'send_time', label: 'Gönderim Saati', type: 'time', required: true },
         {
+            name: 'send_sms_email',
+            label: 'SMS ve E-Posta ile Gönderilsin mi?',
+            type: 'checkbox',
+        },
+        {
             name: 'group_id',
             label: 'Hedef Kitle',
             renderForm: (formik) => (
@@ -132,24 +137,6 @@ export default function CurrentNewsletterCrud() {
                     </Button>
                 </div>
             ),
-        },
-        ...(mode === 'update'
-            ? [
-                  {
-                      name: 'send_sms_email',
-                      label: 'SMS ve eposta ile gönderilsin mi',
-                      type: 'checkbox',
-                  },
-              ]
-            : []),
-        {
-            name: 'status',
-            label: 'Yayın Durumu',
-            type: 'select',
-            options: [
-                { value: '1', label: 'Yayında' },
-                { value: '0', label: 'Taslak' },
-            ],
         },
     ];
 
@@ -176,18 +163,20 @@ export default function CurrentNewsletterCrud() {
     };
 
     return (
+        <>
         <ReusableModalForm<FormData>
             show
-            title={mode === 'add' ? 'Bülten Ekle' : 'Bülten Güncelle'}
+            title="Bülten Detay / Düzenle"
             fields={getFields}
             initialValues={initialValues}
             onSubmit={handleSubmit}
-            confirmButtonLabel={mode === 'add' ? 'Ekle' : 'Güncelle'}
+            confirmButtonLabel="Gönder"
             cancelButtonLabel="Vazgeç"
             isLoading={isLoading}
             error={combinedError || undefined}
             onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel/current-newsletter`)}
             autoGoBackOnModalClose
+            mode="single"
         />
         <Modal show={showGroupModal} onHide={() => setShowGroupModal(false)} centered>
             <Modal.Header closeButton>
@@ -200,5 +189,6 @@ export default function CurrentNewsletterCrud() {
                 </Button>
             </Modal.Footer>
         </Modal>
+        </>
     );
 }
