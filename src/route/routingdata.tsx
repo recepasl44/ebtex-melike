@@ -93,6 +93,8 @@ const NotificationAdd = lazy(() => import("../components/common/contactPanel/pag
 const NotificationEdit = lazy(() => import("../components/common/contactPanel/pages/notifications/edit"));
 const SmsTable = lazy(() => import("../components/common/contactPanel/pages/sms/table"));
 const SmsCrud = lazy(() => import("../components/common/contactPanel/pages/sms/crud"));
+const EmailTable = lazy(() => import("../components/common/contactPanel/pages/e-mail/table"));
+const EmailCrud = lazy(() => import("../components/common/contactPanel/pages/e-mail/crud"));
 
 const OverduePaymentDetailPage = lazy(
   () => import("../components/common/overduePayments/detail")
@@ -2297,6 +2299,21 @@ export const Routedata = [
     id: 784,
     path: `${import.meta.env.BASE_URL}contact-panel/sms/edit/:id`,
     element: <SmsCrud />,
+  },
+  {
+    id: 785,
+    path: `${import.meta.env.BASE_URL}contact-panel/e-mail`,
+    element: <EmailTable />,
+  },
+  {
+    id: 786,
+    path: `${import.meta.env.BASE_URL}contact-panel/e-mail/add`,
+    element: <EmailCrud />,
+  },
+  {
+    id: 787,
+    path: `${import.meta.env.BASE_URL}contact-panel/e-mail/edit/:id`,
+    element: <EmailCrud />,
   },
 
 
