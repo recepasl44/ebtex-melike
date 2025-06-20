@@ -509,6 +509,11 @@ import assignmentsDeleteSlice from '../slices/assignments/delete/reducer';
 import assignmentsListSlice from '../slices/assignments/list/reducer';
 import assignmentsUpdateSlice from '../slices/assignments/update/reducer';
 import assignmentsDetailSlice from '../slices/assignments/detail/reducer';
+import conversationsListReducer from '../slices/conversations/list/reducer';
+import conversationsShowReducer from '../slices/conversations/detail/reducer';
+import conversationsAddReducer from '../slices/conversations/add/reducer';
+import conversationsUpdateReducer from '../slices/conversations/update/reducer';
+import conversationsDeleteReducer from '../slices/conversations/delete/reducer';
 
 //sourceTypes
 import sourceTypesAddSlice from '../slices/sourceTypes/add/reducer';
@@ -1094,6 +1099,11 @@ const combinedReducer = combineReducers({
   assignmentsList: assignmentsListSlice,
   assignmentsUpdate: assignmentsUpdateSlice,
   assignmentsDetail: assignmentsDetailSlice,
+  conversationList: conversationsListReducer,
+  conversationShow: conversationsShowReducer,
+  conversationAdd: conversationsAddReducer,
+  conversationUpdate: conversationsUpdateReducer,
+  conversationDelete: conversationsDeleteReducer,
 
   //sourcetypes
   sourceTypesAdd: sourceTypesAddSlice,
