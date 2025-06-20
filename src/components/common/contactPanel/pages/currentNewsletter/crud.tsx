@@ -120,7 +120,7 @@ export default function CurrentNewsletterCrud() {
                     name: 'group_id',
                     label: 'Hedef Kitle',
                     renderForm: () => (
-                        <Button variant="outline-secondary" onClick={() => setShowGroupModal(true)}>
+                        <Button type="button" variant="outline-secondary" onClick={() => setShowGroupModal(true)}>
                             <i className="ti ti-eye" />
                         </Button>
                     ),
@@ -154,7 +154,7 @@ export default function CurrentNewsletterCrud() {
                 name: 'group_id',
                 label: 'Hedef Kitle',
                 renderForm: () => (
-                    <Button variant="outline-secondary" onClick={() => setShowGroupModal(true)}>
+                    <Button type="button" variant="outline-secondary" onClick={() => setShowGroupModal(true)}>
                         <i className="ti ti-eye" />
                     </Button>
                 ),
