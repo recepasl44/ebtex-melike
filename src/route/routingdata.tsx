@@ -87,6 +87,7 @@ const IncomingChecksCrud = lazy(
   () => import("../components/common/incomingChecks/crud")
 );
 const CurrentNewsletterTable = lazy(() => import("../components/common/contactPanel/pages/currentNewsletter/table"));
+const CurrentNewsletterCrud = lazy(() => import("../components/common/contactPanel/pages/currentNewsletter/crud"));
 
 const OverduePaymentDetailPage = lazy(
   () => import("../components/common/overduePayments/detail")
@@ -1787,6 +1788,11 @@ export const Routedata = [
     id: 67,
     path: `${import.meta.env.BASE_URL}contact-panel/current-newsletter`,
     element: <CurrentNewsletterTable />,
+  },
+  {
+    id: 68,
+    path: `${import.meta.env.BASE_URL}contact-panel/current-newsletter/crud/:id?`,
+    element: <CurrentNewsletterCrud />,
   },
   {
     id: 61,
