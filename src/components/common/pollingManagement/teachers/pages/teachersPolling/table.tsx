@@ -296,25 +296,18 @@ export default function LessonPollingTable() {
 
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
                 {/* <span style={{ fontWeight: 600, fontSize: 18 }}>Ders Yoklama</span> */}
-                <Button
-                    style={{ marginLeft: 'auto', padding: 0 }}
-                    variant=""
+                <Button variant=""
                     onClick={handleSetAllCame}
-                    disabled={rows.every(r => !isEditable(r) || r.status === 0)}
                 >
                     <img
                         src={sınıfTam}
                         alt="Sınıf Tam"
-                        width={24}
-                        height={24}
-                        onMouseEnter={(e) => {
-                            (e.currentTarget as HTMLImageElement).src = sınıfTamHover;
-                        }}
-                        onMouseLeave={(e) => {
-                            (e.currentTarget as HTMLImageElement).src = sınıfTam;
-                        }}
+                        style={{ width: 24, height: 24 }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLImageElement).src = sınıfTamHover; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLImageElement).src = sınıfTam; }}
                     />
                 </Button>
+
             </div>
 
             <ReusableTable<Row>
