@@ -279,14 +279,16 @@ export default function LessonPollingTable() {
 
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
                 {/* <span style={{ fontWeight: 600, fontSize: 18 }}>Ders Yoklama</span> */}
-                <Button variant="">
+                <Button
+                    variant=""
+                    onClick={handleSetAllCame}
+                >
                     <img
                         src={sınıfTam}
                         alt="Sınıf Tam"
                         style={{ width: 24, height: 24 }}
                         onMouseEnter={e => { (e.currentTarget as HTMLImageElement).src = sınıfTamHover; }}
                         onMouseLeave={e => { (e.currentTarget as HTMLImageElement).src = sınıfTam; }}
-                        onClick={handleSetAllCame}
                     />
                 </Button>
 

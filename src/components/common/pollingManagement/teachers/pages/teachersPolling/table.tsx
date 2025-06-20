@@ -277,8 +277,8 @@ export default function LessonPollingTable() {
         lessonsData, levelsData, classroomData, studentsData,
     ]);
 
-    function handleSetAllCame(event: MouseEvent<HTMLButtonElement>): void {
-        throw new Error('Function not implemented.');
+    function handleSetAllCame(_event: MouseEvent<HTMLButtonElement>): void {
+        setAllCame();
     }
 
     /* —— Render —— */
