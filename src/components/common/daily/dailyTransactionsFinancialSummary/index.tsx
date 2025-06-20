@@ -4,6 +4,7 @@ import ReusableTable, { ColumnDefinition } from '../../ReusableTable';
 import SpkFlatpickr from '../../../../@spk-reusable-components/reusable-plugins/spk-flatpicker';
 import darkcontrol from '../../../../utils/darkmodecontroller';
 import { useFinancialSummary } from '../../../hooks/accounting/financial_summary/useFinancialSummary';
+import { useDailySummary } from '../../../hooks/accounting/useDailySummary';
 import { useSeasonsList } from '../../../hooks/season/useSeasonsList';
 import { formatCurrency } from '../../../../utils/formatters';
 
@@ -29,12 +30,27 @@ const DailyTransactionsFinancialSummary: React.FC = () => {
     date: date || undefined,
   });
 
+  const { data: dailySummary } = useDailySummary(date || undefined);
+
   const formatLocalDate = (d: Date) =>
     `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
   // --------- Rows / Totals ---------
+  const cashInHand = useMemo(() => {
+    if (!dailySummary) return 0;
+    const paymentsCash = dailySummary.payments.reduce(
+      (sum, p) => sum + Number(p.cash || 0),
+      0
+    );
+    const transfersCash = dailySummary.transfers.reduce(
+      (sum, t) => sum + Number(t.cash || 0),
+      0
+    );
+    return paymentsCash - transfersCash;
+  }, [dailySummary]);
+
   const liquidTotal =
-    (summary?.liquid_assets.cash ?? 0) +
+    cashInHand +
     (summary?.liquid_assets.remaining_receivables ?? 0) +
     (summary?.liquid_assets.banks.reduce((a, b) => a + (b.amount ?? 0), 0) ?? 0);
 
@@ -45,14 +61,14 @@ const DailyTransactionsFinancialSummary: React.FC = () => {
   const liquidRows: RowData[] = useMemo(() => {
     if (!summary) return [];
     const arr: RowData[] = [
-      { category: 'Kasa Nakit', amount: summary.liquid_assets.cash ?? '-' },
+      { category: 'Kasa Nakit', amount: cashInHand },
       { category: 'Kalan Alacaklar', amount: summary.liquid_assets.remaining_receivables ?? '-' },
     ];
     summary.liquid_assets.banks.forEach((b) =>
       arr.push({ category: b.bank_name, amount: b.amount ?? '-' })
     );
     return arr;
-  }, [summary]);
+  }, [summary, cashInHand]);
 
   const liabilityRows: RowData[] = useMemo(() => {
     if (!summary) return [];
