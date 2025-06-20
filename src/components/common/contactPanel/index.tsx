@@ -8,7 +8,7 @@ import SmsTable from './pages/sms/table';
 import EmailTable from './pages/e-mail/table';
 
 const ContactPanelIndex: React.FC = () => {
-    const [, setActiveIdx] = useState<number>(0);
+    const [activeIdx, setActiveIdx] = useState<number>(0);
 
     const tabs = [
         {
@@ -47,8 +47,14 @@ const ContactPanelIndex: React.FC = () => {
 
     return (
         <div>
-            <Pageheader title="İletişim  Paneli" currentpage="\u0130leti\u015fim Paneli" />
-            <TabsContainer tabs={tabs} onTabChange={(idx) => setActiveIdx(idx)} />
+            <Pageheader
+                title="İletişim  Paneli"
+                currentpage={tabs[activeIdx].label}
+            />
+            <TabsContainer
+                tabs={tabs}
+                onTabChange={(parentIdx) => setActiveIdx(parentIdx)}
+            />
         </div>
     );
 };
