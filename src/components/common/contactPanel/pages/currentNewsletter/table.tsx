@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import ReusableTable, { ColumnDefinition } from '../../../ReusableTable';
 import FilterGroup, { FilterDefinition } from '../../component/organisms/SearchFilters';
 import { useBulletinsList } from '../../../../hooks/bulletin/useBulletinsList';
-import { useGroupsTable } from '../../../../hooks/group/useList';
 import { useBulletinDelete } from '../../../../hooks/bulletin/useDelete';
 import type { data as Bulletin } from '../../../../../types/bulletins/list';
 
@@ -18,9 +17,7 @@ export default function CurrentNewsletterTable() {
     const [status, setStatus] = useState('');
     const [page, setPage] = useState(1);
     const [paginate, setPaginate] = useState(10);
-    const [enabled, setEnabled] = useState({ groups: false });
 
-    const { groupsData = [] } = useGroupsTable({ enabled: enabled.groups, pageSize: 999 });
     const { deleteExistingBulletin } = useBulletinDelete();
 
     const { bulletinsData = [], loading, error, totalPages, totalItems } = useBulletinsList({
@@ -34,10 +31,29 @@ export default function CurrentNewsletterTable() {
         enabled: true,
     });
 
+    const groupMap = useMemo(() => {
+        const map: Record<number, string> = {};
+        bulletinsData.forEach((b) => {
+            if (b.group) {
+                map[b.group_id] = b.group.name;
+            }
+        });
+        return map;
+    }, [bulletinsData]);
+
     const categoryOptions = [
         { value: '1', label: 'Genel' },
         { value: '2', label: 'Duyuru' },
     ];
+
+    const groupOptions = useMemo(
+        () =>
+            Object.entries(groupMap).map(([id, name]) => ({
+                value: id,
+                label: name,
+            })),
+        [groupMap],
+    );
 
     const columns: ColumnDefinition<Bulletin>[] = useMemo(
         () => [
@@ -62,7 +78,7 @@ export default function CurrentNewsletterTable() {
             {
                 key: 'target',
                 label: 'Hedef Kitle',
-                render: (b) => (b as any).group?.name || '-',
+                render: (b) => groupMap[b.group_id] || (b as any).group?.name || (b.group_id ? String(b.group_id) : '-'),
             },
             {
                 key: 'status',
@@ -109,9 +125,8 @@ export default function CurrentNewsletterTable() {
                 label: 'Hedef Kitle',
                 type: 'select',
                 value: groupId,
-                onClick: () => setEnabled((e) => ({ ...e, groups: true })),
                 onChange: setGroupId,
-                options: groupsData.map((g) => ({ value: String(g.id), label: g.name })),
+                options: groupOptions,
             },
             {
                 key: 'category_id',
@@ -133,7 +148,7 @@ export default function CurrentNewsletterTable() {
                 ],
             },
         ],
-        [dateRange, groupId, categoryId, status, groupsData]
+        [dateRange, groupId, categoryId, status, groupOptions]
     );
 
     return (
