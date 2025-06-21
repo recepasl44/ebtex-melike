@@ -19,7 +19,8 @@ export default function CurrentNewsletterTable() {
     const [page, setPage] = useState(1);
     const [paginate, setPaginate] = useState(10);
 
-    const { groupsData = [] } = useGroupsTable({ enabled: true, pageSize: 999 });
+    const [groupsEnabled, setGroupsEnabled] = useState(false);
+    const { groupsData = [] } = useGroupsTable({ enabled: groupsEnabled, pageSize: 999 });
 
     const groupMap = useMemo(() => {
         const map: Record<number, string> = {};
@@ -116,6 +117,7 @@ export default function CurrentNewsletterTable() {
                 label: 'Hedef Kitle',
                 type: 'select',
                 value: groupId,
+                onClick: () => setGroupsEnabled(true),
                 onChange: setGroupId,
                 options: groupsData.map((g) => ({ value: String(g.id), label: g.name })),
             },
