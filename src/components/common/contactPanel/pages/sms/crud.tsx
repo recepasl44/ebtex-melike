@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
 import { FormikValues } from 'formik';
 
 import ReusableModalForm, { FieldDefinition } from '../../../ReusableModalForm';
@@ -137,9 +136,13 @@ export default function SmsCrud() {
                 name: 'group_id',
                 label: 'Hedef Kitle',
                 renderForm: () => (
-                    <Button variant="outline-secondary" onClick={() => setShowGroupModal(true)}>
+                    <button
+                        type="button"
+                        className="btn btn-icon btn-sm btn-info-light rounded-pill"
+                        onClick={() => setShowGroupModal(true)}
+                    >
                         <i className="ti ti-eye" />
-                    </Button>
+                    </button>
                 ),
             },
         ];
