@@ -175,7 +175,13 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({ show, onClose
                                                                                         <i className="ti ti-minus" />
                                                                                     </Button>
                                                                                 ) : (
-                                                                                    <Button size="sm" variant="light-success" className="btn-icon rounded-circle" onClick={() => addItem('student', s.id, `${s.first_name} ${s.last_name}`)}>
+                                                                                    <Button size="sm" variant="light-success" className="btn-icon rounded-circle" onClick={() => {
+                                                                                        // Sınıf adını bul
+                                                                                        const cls = classes.find(c => c.id === expandedClassroom);
+                                                                                        const clsName = cls ? ` (${cls.name})` : '';
+                                                                                        // Öğrenciyi 'İsim (Sınıf)' formatında ekle
+                                                                                        addItem('student', s.id, `${s.first_name} ${s.last_name}${clsName}`);
+                                                                                    }}>
                                                                                         <i className="ti ti-plus" />
                                                                                     </Button>
                                                                                 )}

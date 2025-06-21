@@ -8,6 +8,7 @@ import { useBulletinAdd } from '../../../../hooks/bulletin/useAdd';
 import { useBulletinUpdate } from '../../../../hooks/bulletin/useUpdate';
 import { useBulletinShow } from '../../../../hooks/bulletin/useDetail';
 import { useUsersTable } from '../../../../hooks/user/useList';
+import { Button } from 'react-bootstrap';
 
 interface FormData extends FormikValues {
     title: string;
@@ -157,12 +158,14 @@ export default function CurrentNewsletterCrud() {
                 name: 'group_id',
                 label: 'Hedef Kitle',
                 renderForm: () => (
-                    <button
-                        type="button"
-                        className="btn btn-icon btn-sm btn-info-light rounded-pill" onClick={() => setShowGroupModal(true)}
+                    <Button
+                        variant="primary-light"
+                        size="sm"
+                        className="btn-icon rounded-pill"
+                        onClick={() => setShowGroupModal(true)}
                     >
-                        <i className="ti ti-eye" />
-                    </button>
+                        <i className="ti ti-eye"></i>
+                    </Button>
                 ),
             },
         ];
