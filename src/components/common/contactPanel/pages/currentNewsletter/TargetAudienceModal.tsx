@@ -1,19 +1,22 @@
 import { useCallback, useState } from 'react';
 import {
-    Modal,
-    Button,
-    Row,
-    Col,
-    Accordion,
-    ListGroup,
-    Spinner,
-} from 'react-bootstrap';
+    useProgramsTable as useProgramsList,
+} from '../../../../hooks/program/useList';
+import {
+    useLevelsTable as useLevelsList,
+} from '../../../../hooks/levels/useList';
+import {
+    useClassroomList as useClassroomsList,
+} from '../../../../hooks/classrooms/useList';
+import {
+    useListStudents as useStudentsTable,
+} from '../../../../hooks/student/useList';
 
-import { useProgramsTable as useProgramsList } from '../../../../hooks/program/useList';
-import { useLevelsTable as useLevelsList } from '../../../../hooks/levels/useList';
-import { useClassroomList as useClassroomsList } from '../../../../hooks/classrooms/useList';
-
-export type AudienceItemType = 'program' | 'level' | 'classroom';
+export type AudienceItemType =
+    | 'program'
+    | 'level'
+    | 'classroom'
+    | 'student';
 
 export interface AudienceItem {
     id: number;
@@ -32,28 +35,41 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({
     onClose,
     onSave,
 }) => {
+    const [opened, setOpened] = useState({
+        program: false,
+        level: false,
+        classroom: false,
+        student: false,
+    });
     const [selectedProgram, setSelectedProgram] = useState<number | null>(null);
     const [selectedLevel, setSelectedLevel] = useState<number | null>(null);
+    const [selectedClassroom, setSelectedClassroom] = useState<number | null>(
+        null
+    );
     const [selectedItems, setSelectedItems] = useState<AudienceItem[]>([]);
 
-    const {
-        programsData: programs = [],
-        loading: loadingPrograms,
-    } = useProgramsList({ enabled: show });
+    const { programsData: programs = [], loading: loadingPrograms } =
+        useProgramsList({ enabled: opened.program });
 
     const { levelsData: levels = [], loading: loadingLevels } = useLevelsList({
-        enabled: show && selectedProgram !== null,
+        enabled: opened.level && selectedProgram !== null,
         program_id: selectedProgram ?? undefined,
     });
 
-    const {
-        classroomData: classrooms = [],
-        loading: loadingClassrooms,
-    } = useClassroomsList({
-        enabled: show && selectedLevel !== null,
-        program_id: selectedProgram ?? undefined,
-        level_id: selectedLevel ?? undefined,
+    const { classroomData: classrooms = [], loading: loadingClassrooms } =
+        useClassroomsList({
+            enabled: opened.classroom && selectedLevel !== null,
+            program_id: selectedProgram ?? undefined,
+            level_id: selectedLevel ?? undefined,
+        });
+
+    const { data: students = [], loading: loadingStudents } = useStudentsTable({
+        enabled: opened.student && selectedClassroom !== null,
+        classroom_id: selectedClassroom ?? undefined,
     });
+
+    const toggleSection = (key: keyof typeof opened) =>
+        setOpened((prev) => ({ ...prev, [key]: !prev[key] }));
 
     const addItem = useCallback(
         (type: AudienceItemType, id: number, name: string) => {
@@ -67,14 +83,18 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({
         []
     );
 
-    const removeItem = useCallback((id: number, type: AudienceItemType) => {
-        setSelectedItems((prev) => prev.filter((p) => !(p.id === id && p.type === type)));
+    const removeItem = useCallback((type: AudienceItemType, id: number) => {
+        setSelectedItems((prev) =>
+            prev.filter((p) => !(p.id === id && p.type === type))
+        );
     }, []);
 
     const handleClear = () => {
-        setSelectedItems([]);
+        setOpened({ program: false, level: false, classroom: false, student: false });
         setSelectedProgram(null);
         setSelectedLevel(null);
+        setSelectedClassroom(null);
+        setSelectedItems([]);
     };
 
     const handleSave = () => {
@@ -82,133 +102,226 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({
         onClose();
     };
 
+    if (!show) return null;
+
     const renderLoading = (flag: boolean) =>
-        flag ? <Spinner animation="border" size="sm" /> : null;
+        flag ? <span className="loading">Yükleniyor...</span> : null;
 
     return (
-        <Modal show={show} onHide={onClose} size="lg" centered>
-            <Modal.Header closeButton>
-                <Modal.Title>Hedef Kitle</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <Row>
-                    <Col md={6} className="mb-3">
-                        <Accordion defaultActiveKey="program">
-                            <Accordion.Item eventKey="program">
-                                <Accordion.Header>Program</Accordion.Header>
-                                <Accordion.Body>
+        <div className="ta-modal-overlay" onClick={onClose}>
+            <div
+                className="ta-modal"
+                onClick={(e) => {
+                    e.stopPropagation();
+                }}
+            >
+                <div className="ta-header">
+                    <span>Hedef Kitle</span>
+                    <button className="btn-circle" onClick={onClose}>
+                        ×
+                    </button>
+                </div>
+                <div className="ta-body">
+                    <div className="ta-columns">
+                        <div className="tree-section" style={{ flex: 1 }}>
+                            <div
+                                className="tree-row tree-header"
+                                onClick={() => toggleSection('program')}
+                            >
+                                Program
+                            </div>
+                            {opened.program && (
+                                <div className="tree-items">
                                     {renderLoading(loadingPrograms)}
-                                    <ListGroup className="mb-3">
-                                        {programs.map((p) => (
-                                            <ListGroup.Item
-                                                key={p.id}
-                                                className="d-flex justify-content-between align-items-center"
+                                    {programs.map((p) => (
+                                        <div
+                                            key={p.id}
+                                            className="tree-row indent-1"
+                                        >
+                                            <span
+                                                className="label"
+                                                onClick={() => {
+                                                    setSelectedProgram(p.id);
+                                                    setOpened((o) => ({
+                                                        ...o,
+                                                        level: false,
+                                                        classroom: false,
+                                                        student: false,
+                                                    }));
+                                                }}
                                             >
-                                                <span
-                                                    role="button"
-                                                    onClick={() => setSelectedProgram(p.id)}
-                                                    style={{ cursor: 'pointer' }}
-                                                >
-                                                    {p.name}
-                                                </span>
-                                                <Button
-                                                    size="sm"
-                                                    variant="success"
-                                                    onClick={() => addItem('program', p.id, p.name)}
-                                                >
-                                                    +
-                                                </Button>
-                                            </ListGroup.Item>
-                                        ))}
-                                    </ListGroup>
-                                </Accordion.Body>
-                            </Accordion.Item>
-                            <Accordion.Item eventKey="level">
-                                <Accordion.Header>Seviye</Accordion.Header>
-                                <Accordion.Body>
-                                    {renderLoading(loadingLevels)}
-                                    <ListGroup className="mb-3">
-                                        {levels.map((l) => (
-                                            <ListGroup.Item
-                                                key={l.id}
-                                                className="d-flex justify-content-between align-items-center"
+                                                {p.name}
+                                            </span>
+                                            <button
+                                                className="btn-circle"
+                                                onClick={() =>
+                                                    addItem('program', p.id, p.name)
+                                                }
                                             >
-                                                <span
-                                                    role="button"
-                                                    onClick={() => setSelectedLevel(l.id)}
-                                                    style={{ cursor: 'pointer' }}
-                                                >
-                                                    {l.name}
-                                                </span>
-                                                <Button
-                                                    size="sm"
-                                                    variant="success"
-                                                    onClick={() => addItem('level', l.id, l.name)}
-                                                >
-                                                    +
-                                                </Button>
-                                            </ListGroup.Item>
-                                        ))}
-                                    </ListGroup>
-                                </Accordion.Body>
-                            </Accordion.Item>
-                            <Accordion.Item eventKey="classroom">
-                                <Accordion.Header>Sınıf</Accordion.Header>
-                                <Accordion.Body>
-                                    {renderLoading(loadingClassrooms)}
-                                    <ListGroup>
-                                        {classrooms.map((c) => (
-                                            <ListGroup.Item
-                                                key={c.id}
-                                                className="d-flex justify-content-between align-items-center"
-                                            >
-                                                <span>{c.name}</span>
-                                                <Button
-                                                    size="sm"
-                                                    variant="success"
-                                                    onClick={() => addItem('classroom', c.id, c.name)}
-                                                >
-                                                    +
-                                                </Button>
-                                            </ListGroup.Item>
-                                        ))}
-                                    </ListGroup>
-                                </Accordion.Body>
-                            </Accordion.Item>
-                        </Accordion>
-                    </Col>
-                    <Col md={6} className="mb-3">
-                        <h6 className="mb-2">Eklentiler</h6>
-                        <ListGroup>
-                            {selectedItems.map((item) => (
-                                <ListGroup.Item
-                                    key={`${item.type}-${item.id}`}
-                                    className="d-flex justify-content-between align-items-center"
-                                >
-                                    <span>{item.name}</span>
-                                    <Button
-                                        size="sm"
-                                        variant="danger"
-                                        onClick={() => removeItem(item.id, item.type)}
+                                                ＋
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                            {selectedProgram !== null && (
+                                <>
+                                    <div
+                                        className="tree-row tree-header indent-1"
+                                        onClick={() => toggleSection('level')}
                                     >
-                                        -
-                                    </Button>
-                                </ListGroup.Item>
+                                        Seviye
+                                    </div>
+                                    {opened.level && (
+                                        <div className="tree-items">
+                                            {renderLoading(loadingLevels)}
+                                            {levels.map((l) => (
+                                                <div
+                                                    key={l.id}
+                                                    className="tree-row indent-2"
+                                                >
+                                                    <span
+                                                        className="label"
+                                                        onClick={() => {
+                                                            setSelectedLevel(l.id);
+                                                            setOpened((o) => ({
+                                                                ...o,
+                                                                classroom: false,
+                                                                student: false,
+                                                            }));
+                                                        }}
+                                                    >
+                                                        {l.name}
+                                                    </span>
+                                                    <button
+                                                        className="btn-circle"
+                                                        onClick={() =>
+                                                            addItem(
+                                                                'level',
+                                                                l.id,
+                                                                l.name
+                                                            )
+                                                        }
+                                                    >
+                                                        ＋
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </>
+                            )}
+                            {selectedLevel !== null && (
+                                <>
+                                    <div
+                                        className="tree-row tree-header indent-2"
+                                        onClick={() => toggleSection('classroom')}
+                                    >
+                                        Sınıf
+                                    </div>
+                                    {opened.classroom && (
+                                        <div className="tree-items">
+                                            {renderLoading(loadingClassrooms)}
+                                            {classrooms.map((c) => (
+                                                <div
+                                                    key={c.id}
+                                                    className="tree-row indent-3"
+                                                >
+                                                    <span
+                                                        className="label"
+                                                        onClick={() => {
+                                                            setSelectedClassroom(c.id);
+                                                            setOpened((o) => ({
+                                                                ...o,
+                                                                student: false,
+                                                            }));
+                                                        }}
+                                                    >
+                                                        {c.name}
+                                                    </span>
+                                                    <button
+                                                        className="btn-circle"
+                                                        onClick={() =>
+                                                            addItem(
+                                                                'classroom',
+                                                                c.id,
+                                                                c.name
+                                                            )
+                                                        }
+                                                    >
+                                                        ＋
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </>
+                            )}
+                            {selectedClassroom !== null && (
+                                <>
+                                    <div
+                                        className="tree-row tree-header indent-3"
+                                        onClick={() => toggleSection('student')}
+                                    >
+                                        Öğrenci
+                                    </div>
+                                    {opened.student && (
+                                        <div className="tree-items">
+                                            {renderLoading(loadingStudents)}
+                                            {students.map((s: any) => (
+                                                <div
+                                                    key={s.id}
+                                                    className="tree-row indent-4"
+                                                >
+                                                    <span className="label">
+                                                        {s.first_name} {s.last_name}
+                                                    </span>
+                                                    <button
+                                                        className="btn-circle"
+                                                        onClick={() =>
+                                                            addItem(
+                                                                'student',
+                                                                s.id,
+                                                                `${s.first_name} ${s.last_name}`
+                                                            )
+                                                        }
+                                                    >
+                                                        ＋
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </>
+                            )}
+                        </div>
+                        <div className="selected-section" style={{ flex: 1 }}>
+                            <h4>Seçilenler</h4>
+                            {selectedItems.map((item) => (
+                                <div
+                                    key={`${item.type}-${item.id}`}
+                                    className="tree-row"
+                                >
+                                    <span className="label">{item.name}</span>
+                                    <button
+                                        className="btn-circle"
+                                        onClick={() => removeItem(item.type, item.id)}
+                                    >
+                                        －
+                                    </button>
+                                </div>
                             ))}
-                        </ListGroup>
-                    </Col>
-                </Row>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={handleClear}>
-                    Temizle
-                </Button>
-                <Button variant="primary" onClick={handleSave}>
-                    Kaydet
-                </Button>
-            </Modal.Footer>
-        </Modal>
+                        </div>
+                    </div>
+                </div>
+                <div className="ta-footer">
+                    <button onClick={handleClear}>Temizle</button>
+                    <button onClick={handleSave}>Kaydet</button>
+                </div>
+            </div>
+        </div>
     );
 };
 
 export default TargetAudienceModal;
+
