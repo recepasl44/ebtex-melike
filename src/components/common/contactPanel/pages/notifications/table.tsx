@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 import ReusableTable, { ColumnDefinition } from '../../../ReusableTable';
 import FilterGroup, { FilterDefinition } from '../../component/organisms/SearchFilters';
 import { useNotificationsList } from '../../../../hooks/notifications/useList';
+import { useGroupsTable } from '../../../../hooks/group/useList';
 import { useNotificationDelete } from '../../../../hooks/notifications/useDelete';
 import type { NotificationData } from '../../../../../types/notifications/list';
 
@@ -19,6 +20,15 @@ export default function NotificationsTable() {
     const [senderId, setSenderId] = useState('');
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
+    const { groupsData = [] } = useGroupsTable({ enabled: true, pageSize: 999 });
+    const groupMap = useMemo(() => {
+        const map: Record<number, string> = {};
+        groupsData.forEach((g) => {
+            map[g.id] = g.name;
+        });
+        return map;
+    }, [groupsData]);
+
     const { deleteExistingNotification } = useNotificationDelete();
 
     const { notificationsData = [], loading, error, totalPages, totalItems } = useNotificationsList({
@@ -27,7 +37,7 @@ export default function NotificationsTable() {
         start_date: dateRange.startDate || undefined,
         end_date: dateRange.endDate || undefined,
         category_id: categoryId || undefined,
-        group_id: groupId || undefined,
+        group_id: +groupId || undefined,
         source_id: sourceId || undefined,
         sender_id: senderId || undefined,
         enabled: true,
@@ -71,7 +81,10 @@ export default function NotificationsTable() {
             {
                 key: 'group',
                 label: 'Hedef Kitle',
-                render: (n) => (n.group as any)?.name || '-'
+                render: (n) =>
+                    groupMap[n.group_id as number] ||
+                    (n.group as any)?.name ||
+                    (n.group_id ? String(n.group_id) : '-')
             },
             {
                 key: 'read',
@@ -99,7 +112,7 @@ export default function NotificationsTable() {
                 ),
             },
         ],
-        [navigate, deleteExistingNotification]
+        [navigate, deleteExistingNotification, groupMap]
     );
 
     const filters: FilterDefinition[] = useMemo(
@@ -125,13 +138,7 @@ export default function NotificationsTable() {
                 type: 'select',
                 value: groupId,
                 onChange: setGroupId,
-                options: Array.from(
-                    new Map(
-                        notificationsData
-                            .filter((n) => n.group && n.group_id != null)
-                            .map((n) => [n.group_id, { value: String(n.group_id), label: n.group.name }])
-                    ).values()
-                ),
+                options: groupsData.map((g) => ({ value: String(g.id), label: g.name })),
             },
             {
                 key: 'source_id',
@@ -156,7 +163,7 @@ export default function NotificationsTable() {
                 ),
             },
         ],
-        [dateRange, categoryId, groupId, sourceId, senderId, notificationsData]
+        [dateRange, categoryId, groupId, sourceId, senderId, notificationsData, groupsData, groupMap]
     );
 
     return (
