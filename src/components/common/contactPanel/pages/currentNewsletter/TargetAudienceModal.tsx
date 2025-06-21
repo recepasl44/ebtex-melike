@@ -95,7 +95,7 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({
                         <div className="tree-section">
                             <div className="tree-header" onClick={() => setSelectedProgram(null)}>
                                 Program{' '}
-                                <Button size="sm" onClick={() => addItem('program', -1, 'Tümü')}>
+                                <Button size="sm" className="btn-circle" onClick={() => addItem('program', -1, 'Tümü')}>
                                     +
                                 </Button>
                             </div>
@@ -105,7 +105,7 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({
                                 programs.map((p) => (
                                     <div key={p.id} className="tree-node" style={{ marginLeft: 0 }}>
                                         <span onClick={() => setSelectedProgram(p.id)}>{p.name}</span>
-                                        <Button size="sm" variant="success" onClick={() => addItem('program', p.id, p.name)}>
+                                        <Button size="sm" variant="success" className="btn-circle" onClick={() => addItem('program', p.id, p.name)}>
                                             +
                                         </Button>
                                     </div>
@@ -120,7 +120,7 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({
                                         levels.map((l) => (
                                             <div key={l.id} className="tree-node" style={{ marginLeft: 15 }}>
                                                 <span onClick={() => setSelectedLevel(l.id)}>{l.name}</span>
-                                                <Button size="sm" variant="success" onClick={() => addItem('level', l.id, l.name)}>
+                                                <Button size="sm" variant="success" className="btn-circle" onClick={() => addItem('level', l.id, l.name)}>
                                                     +
                                                 </Button>
                                             </div>
@@ -137,7 +137,7 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({
                                         classrooms.map((c) => (
                                             <div key={c.id} className="tree-node" style={{ marginLeft: 30 }}>
                                                 <span onClick={() => setSelectedClass(c.id)}>{c.name}</span>
-                                                <Button size="sm" variant="success" onClick={() => addItem('classroom', c.id, c.name)}>
+                                                <Button size="sm" variant="success" className="btn-circle" onClick={() => addItem('classroom', c.id, c.name)}>
                                                     +
                                                 </Button>
                                             </div>
@@ -154,7 +154,7 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({
                                         students.map((s) => (
                                             <div key={s.id} className="tree-node" style={{ marginLeft: 45 }}>
                                                 <span>{s.name}</span>
-                                                <Button size="sm" variant="success" onClick={() => addItem('student', s.id, s.name)}>
+                                                <Button size="sm" variant="success" className="btn-circle" onClick={() => addItem('student', s.id, s.name)}>
                                                     +
                                                 </Button>
                                             </div>
@@ -170,7 +170,7 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({
                             {items.map((item) => (
                                 <ListGroup.Item key={`${item.type}-${item.id}`} className="d-flex justify-content-between">
                                     {item.name}{' '}
-                                    <Button size="sm" variant="danger" onClick={() => removeItem(item.id, item.type)}>
+                                    <Button size="sm" variant="danger" className="btn-circle" onClick={() => removeItem(item.id, item.type)}>
                                         -
                                     </Button>
                                 </ListGroup.Item>

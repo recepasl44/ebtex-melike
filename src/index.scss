@@ -24,7 +24,7 @@
 @import "@simonwep/pickr/dist/themes/nano.min.css";
 
 .target-audience-modal .modal-dialog {
-  --bs-modal-width: 600px;
+  --bs-modal-width: 500px;
 }
 
 .tree-section {
@@ -38,6 +38,16 @@
     align-items: center;
     padding: 2px 0;
   }
+}
+
+.target-audience-modal .btn-circle {
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 
