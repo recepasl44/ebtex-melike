@@ -4,8 +4,8 @@ import { FormikValues } from 'formik';
 import ReusableModalForm, { FieldDefinition } from '../../../ReusableModalForm';
 import { useNotificationAdd } from '../../../../hooks/notifications/useAdd';
 import { useUsersTable } from '../../../../hooks/user/useList';
-import { useGroupsTable } from '../../../../hooks/group/useList';
 import { Button } from 'react-bootstrap';
+import TargetAudienceModal, { AudienceItem } from './TargetAudienceModal';
 
 interface FormData extends FormikValues {
     title: string;
@@ -21,9 +21,10 @@ interface FormData extends FormikValues {
 export default function NotificationAdd() {
     const navigate = useNavigate();
     const { addNewNotification, status, error } = useNotificationAdd();
-    const [enabled, setEnabled] = useState({ users: false, groups: false });
+    const [enabled, setEnabled] = useState({ users: false });
     const { usersData = [] } = useUsersTable({ enabled: enabled.users, pageSize: 999 });
-    const { groupsData = [] } = useGroupsTable({ enabled: enabled.groups, pageSize: 999 });
+    const [showAudienceModal, setShowAudienceModal] = useState(false);
+    const [selectedAudience, setSelectedAudience] = useState<AudienceItem[]>([]);
 
     const initialValues: FormData = {
         title: '',
@@ -72,7 +73,7 @@ export default function NotificationAdd() {
                     variant="primary-light"
                     size="sm"
                     className="btn-icon rounded-pill"
-                    onClick={() => setEnabled((e) => ({ ...e, groups: true }))}
+                    onClick={() => setShowAudienceModal(true)}
                 >
                     <i className="ti ti-eye"></i>
                 </Button>
@@ -88,6 +89,7 @@ export default function NotificationAdd() {
     const isLoading = status === 'LOADING';
 
     return (
+        <>
         <ReusableModalForm<FormData>
             show
             title="Bildirim Ekle"
@@ -102,5 +104,14 @@ export default function NotificationAdd() {
             autoGoBackOnModalClose
             mode="double"
         />
+        <TargetAudienceModal
+            show={showAudienceModal}
+            onClose={() => setShowAudienceModal(false)}
+            onSave={(items) => {
+                setSelectedAudience(items);
+                setShowAudienceModal(false);
+            }}
+        />
+        </>
     );
 }
