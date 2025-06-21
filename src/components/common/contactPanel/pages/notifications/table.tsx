@@ -20,7 +20,8 @@ export default function NotificationsTable() {
     const [senderId, setSenderId] = useState('');
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
-    const { groupsData = [] } = useGroupsTable({ enabled: true, pageSize: 999 });
+    const [groupsEnabled, setGroupsEnabled] = useState(false);
+    const { groupsData = [] } = useGroupsTable({ enabled: groupsEnabled, pageSize: 999 });
     const groupMap = useMemo(() => {
         const map: Record<number, string> = {};
         groupsData.forEach((g) => {
@@ -137,6 +138,7 @@ export default function NotificationsTable() {
                 label: 'Hedef Kitle',
                 type: 'select',
                 value: groupId,
+                onClick: () => setGroupsEnabled(true),
                 onChange: setGroupId,
                 options: groupsData.map((g) => ({ value: String(g.id), label: g.name })),
             },
