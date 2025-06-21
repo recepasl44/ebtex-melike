@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormikValues } from 'formik';
+import TargetAudienceModal, { AudienceItem } from './TargetAudienceModal';
 
 import ReusableModalForm, { FieldDefinition } from '../../../ReusableModalForm';
 import { useNotificationAdd } from '../../../../hooks/notifications/useAdd';
@@ -45,6 +46,7 @@ export default function SmsCrud() {
         group_id: '',
     });
     const [showGroupModal, setShowGroupModal] = useState(false);
+    const [selectedAudience, setSelectedAudience] = useState<AudienceItem[]>([]);
 
     useEffect(() => {
         if (mode === 'edit' && id) {
@@ -169,6 +171,7 @@ export default function SmsCrud() {
     const combinedError = mode === 'add' ? addError : updError || detailError;
 
     return (
+        <>
         <ReusableModalForm<FormData>
             show
             title={mode === 'add' ? 'SMS Ekle' : 'SMS Düzenle'}
@@ -183,5 +186,14 @@ export default function SmsCrud() {
             autoGoBackOnModalClose
             mode="double"
         />
+        <TargetAudienceModal
+            show={showGroupModal}
+            onClose={() => setShowGroupModal(false)}
+            onSave={(items) => {
+                setSelectedAudience(items);
+                setShowGroupModal(false);
+            }}
+        />
+        </>
     );
 }
