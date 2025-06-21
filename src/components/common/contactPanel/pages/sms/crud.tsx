@@ -130,11 +130,11 @@ export default function SmsCrud() {
                 ]
                 : []),
             { name: 'status', label: 'Durum', type: 'select', options: statusOptions },
-            {
-                name: 'sent_count',
-                label: 'Gönderilen Kişi Sayısı',
-                renderForm: () => <span>{values.sent_count}</span>,
-            },
+            // {
+            //     name: 'sent_count',
+            //     label: 'Gönderilen Kişi Sayısı',
+            //     renderForm: () => <span>{values.sent_count}</span>,
+            // },
             {
                 name: 'group_id',
                 label: 'Hedef Kitle',
@@ -172,28 +172,28 @@ export default function SmsCrud() {
 
     return (
         <>
-        <ReusableModalForm<FormData>
-            show
-            title={mode === 'add' ? 'SMS Ekle' : 'SMS Düzenle'}
-            fields={(values) => getFields(values as FormData)}
-            initialValues={initialValues}
-            onSubmit={handleSubmit}
-            confirmButtonLabel={mode === 'add' ? 'Gönder' : 'Güncelle'}
-            cancelButtonLabel="Vazgeç"
-            isLoading={isLoading}
-            error={combinedError || undefined}
-            onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel/sms`)}
-            autoGoBackOnModalClose
-            mode="double"
-        />
-        <TargetAudienceModal
-            show={showGroupModal}
-            onClose={() => setShowGroupModal(false)}
-            onSave={(items) => {
-                setSelectedAudience(items);
-                setShowGroupModal(false);
-            }}
-        />
+            <ReusableModalForm<FormData>
+                show
+                title={mode === 'add' ? 'SMS Ekle' : 'SMS Düzenle'}
+                fields={(values) => getFields(values as FormData)}
+                initialValues={initialValues}
+                onSubmit={handleSubmit}
+                confirmButtonLabel={mode === 'add' ? 'Gönder' : 'Güncelle'}
+                cancelButtonLabel="Vazgeç"
+                isLoading={isLoading}
+                error={combinedError || undefined}
+                onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel/sms`)}
+                autoGoBackOnModalClose
+                mode="double"
+            />
+            <TargetAudienceModal
+                show={showGroupModal}
+                onClose={() => setShowGroupModal(false)}
+                onSave={(items) => {
+                    setSelectedAudience(items);
+                    setShowGroupModal(false);
+                }}
+            />
         </>
     );
 }
