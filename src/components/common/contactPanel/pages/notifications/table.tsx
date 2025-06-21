@@ -5,7 +5,6 @@ import dayjs from 'dayjs';
 import ReusableTable, { ColumnDefinition } from '../../../ReusableTable';
 import FilterGroup, { FilterDefinition } from '../../component/organisms/SearchFilters';
 import { useNotificationsList } from '../../../../hooks/notifications/useList';
-import { useUsersTable } from '../../../../hooks/user/useList';
 import { useNotificationDelete } from '../../../../hooks/notifications/useDelete';
 import type { NotificationData } from '../../../../../types/notifications/list';
 
@@ -15,14 +14,11 @@ export default function NotificationsTable() {
     const navigate = useNavigate();
     const [dateRange, setDateRange] = useState<{ startDate: string; endDate: string }>({ startDate: '', endDate: '' });
     const [categoryId, setCategoryId] = useState('');
-    const [targetIds, setTargetIds] = useState<string[]>([]);
+    const [groupId, setGroupId] = useState('');
     const [sourceId, setSourceId] = useState('');
     const [senderId, setSenderId] = useState('');
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
-    const [enabled, setEnabled] = useState({ users: false });
-
-    const { usersData = [] } = useUsersTable({ enabled: enabled.users, pageSize: 999 });
     const { deleteExistingNotification } = useNotificationDelete();
 
     const { notificationsData = [], loading, error, totalPages, totalItems } = useNotificationsList({
@@ -31,7 +27,7 @@ export default function NotificationsTable() {
         start_date: dateRange.startDate || undefined,
         end_date: dateRange.endDate || undefined,
         category_id: categoryId || undefined,
-        group_id: targetIds.join(',') || undefined,
+        group_id: groupId || undefined,
         source_id: sourceId || undefined,
         sender_id: senderId || undefined,
         enabled: true,
@@ -126,11 +122,16 @@ export default function NotificationsTable() {
             {
                 key: 'group_id',
                 label: 'Hedef Kitle',
-                type: 'multiselect',
-                value: targetIds,
-                onClick: () => setEnabled((e) => ({ ...e, users: true })),
-                onChange: setTargetIds,
-                options: usersData.map((u) => ({ value: String(u.id), label: u.name_surname || `${u.first_name} ${u.last_name}` })),
+                type: 'select',
+                value: groupId,
+                onChange: setGroupId,
+                options: Array.from(
+                    new Map(
+                        notificationsData
+                            .filter((n) => n.group && n.group_id != null)
+                            .map((n) => [n.group_id, { value: String(n.group_id), label: n.group.name }])
+                    ).values()
+                ),
             },
             {
                 key: 'source_id',
@@ -145,12 +146,17 @@ export default function NotificationsTable() {
                 label: 'Gönderen',
                 type: 'select',
                 value: senderId,
-                onClick: () => setEnabled((e) => ({ ...e, users: true })),
                 onChange: setSenderId,
-                options: usersData.map((u) => ({ value: String(u.id), label: u.name_surname || `${u.first_name} ${u.last_name}` })),
+                options: Array.from(
+                    new Map(
+                        notificationsData
+                            .filter((n) => n.sender && n.sender_id != null)
+                            .map((n) => [n.sender_id, { value: String(n.sender_id), label: n.sender.name_surname }])
+                    ).values()
+                ),
             },
         ],
-        [dateRange, categoryId, targetIds, sourceId, senderId, usersData]
+        [dateRange, categoryId, groupId, sourceId, senderId, notificationsData]
     );
 
     return (
