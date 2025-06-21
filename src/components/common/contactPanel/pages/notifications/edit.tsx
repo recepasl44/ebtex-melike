@@ -102,9 +102,13 @@ export default function NotificationEdit() {
             name: 'group_ids',
             label: 'Hedef Kitle',
             renderForm: () => (
-                <Button variant="outline-secondary" onClick={() => setEnabled((e) => ({ ...e, groups: true }))}>
+                <button
+                    type="button"
+                    className="btn btn-icon btn-sm btn-info-light rounded-pill"
+                    onClick={() => setEnabled((e) => ({ ...e, groups: true }))}
+                >
                     <i className="ti ti-eye" />
-                </Button>
+                </button>
             ),
         },
         {

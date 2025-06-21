@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
 import { FormikValues } from 'formik';
 import ReusableModalForm, { FieldDefinition } from '../../../ReusableModalForm';
 import { useNotificationAdd } from '../../../../hooks/notifications/useAdd';
@@ -68,9 +67,13 @@ export default function NotificationAdd() {
             name: 'group_ids',
             label: 'Hedef Kitle',
             renderForm: () => (
-                <Button variant="outline-secondary" onClick={() => setEnabled((e) => ({ ...e, groups: true }))}>
+                <button
+                    type="button"
+                    className="btn btn-icon btn-sm btn-info-light rounded-pill"
+                    onClick={() => setEnabled((e) => ({ ...e, groups: true }))}
+                >
                     <i className="ti ti-eye" />
-                </Button>
+                </button>
             ),
         },
     ];
