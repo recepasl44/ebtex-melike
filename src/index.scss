@@ -1,19 +1,18 @@
-
 @forward "./assets/css/styles.css";
 @import "./assets/css/icons.css";
 
-@import "gridjs/dist/theme/mermaid.css"; 
+@import "gridjs/dist/theme/mermaid.css";
 @import 'simplebar-react/dist/simplebar.min.css';
-@import "filepond/dist/filepond.min.css"; 
+@import "filepond/dist/filepond.min.css";
 @import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 @import "suneditor/dist/css/suneditor.min.css";
 @import "leaflet/dist/leaflet.css";
 @import "react-range-slider-input/dist/style.css";
 @import "react-phone-number-input/style.css";
-@import "yet-another-react-lightbox/plugins/thumbnails.css"; 
+@import "yet-another-react-lightbox/plugins/thumbnails.css";
 @import "yet-another-react-lightbox/styles.css";
 @import "shepherd.js/dist/css/shepherd.css";
-@import "react-country-state-city/dist/react-country-state-city.css"; 
+@import "react-country-state-city/dist/react-country-state-city.css";
 
 @import "flatpickr/dist/flatpickr.css";
 
@@ -24,7 +23,7 @@
 @import "@simonwep/pickr/dist/themes/nano.min.css";
 
 .target-audience-modal .modal-dialog {
-  --bs-modal-width: 600px;
+  --bs-modal-width: 500px;
 }
 
 .tree-section {
@@ -32,6 +31,7 @@
     font-weight: 600;
     margin-top: 0.5rem;
   }
+
   .tree-node {
     display: flex;
     justify-content: space-between;
@@ -40,7 +40,12 @@
   }
 }
 
-
-
-
-
+.target-audience-modal .btn-circle {
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
