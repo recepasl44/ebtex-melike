@@ -1,5 +1,6 @@
 // file: src/components/common/contactPanel/pages/currentNewsletter/TargetAudienceModal.tsx
 import React, { useCallback, useState } from 'react';
+import { Spinner } from 'react-bootstrap';
 import { useProgramsTable as useProgramsList } from '../../../../hooks/program/useList';
 import { useLevelsTable as useLevelsList } from '../../../../hooks/levels/useList';
 import { useClassroomList as useClassroomsList } from '../../../../hooks/classrooms/useList';
@@ -40,33 +41,42 @@ const btnCircleStyle: React.CSSProperties = {
 };
 const addBtnStyle: React.CSSProperties = { ...btnCircleStyle, background: '#e6fffb', color: '#13c2c2' };
 const removeBtnStyle: React.CSSProperties = { ...btnCircleStyle, background: '#fff1f0', color: '#f5222d' };
-const treeHeaderStyle: React.CSSProperties = { fontWeight: 500, cursor: 'pointer', padding: '0.5rem 0' };
 const treeRowStyle: React.CSSProperties = { display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '0.25rem 0' };
 const indent = (level: number): React.CSSProperties => ({ paddingLeft: `${level * 1}rem` });
 
 const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({ show, onClose, onSave }) => {
-    const [opened, setOpened] = useState({ program: false, level: false, classroom: false, student: false });
-    const [selectedProgram, setSelectedProgram] = useState<number | null>(null);
-    const [selectedLevel, setSelectedLevel] = useState<number | null>(null);
-    const [selectedClassroom, setSelectedClassroom] = useState<number | null>(null);
+    const [expandedProgram, setExpandedProgram] = useState<number | null>(null);
+    const [expandedLevel, setExpandedLevel] = useState<number | null>(null);
+    const [expandedClassroom, setExpandedClassroom] = useState<number | null>(null);
     const [selectedItems, setSelectedItems] = useState<AudienceItem[]>([]);
 
-    const { programsData: programs = [], loading: lp } = useProgramsList({ enabled: opened.program });
+    const { programsData: programs = [], loading: lp } = useProgramsList({ enabled: true });
     const { levelsData: levels = [], loading: ll } = useLevelsList({
-        enabled: opened.level && selectedProgram != null,
-        program_id: selectedProgram ?? undefined,
+        enabled: expandedProgram != null,
+        program_id: expandedProgram ?? undefined,
     });
     const { classroomData: classes = [], loading: lc } = useClassroomsList({
-        enabled: opened.classroom && selectedLevel != null,
-        program_id: selectedProgram ?? undefined,
-        level_id: selectedLevel ?? undefined,
+        enabled: expandedLevel != null,
+        program_id: expandedProgram ?? undefined,
+        level_id: expandedLevel ?? undefined,
     });
     const { data: students = [], loading: ls } = useStudentsTable({
-        enabled: opened.student && selectedClassroom != null,
-        classroom_id: selectedClassroom ?? undefined,
+        enabled: expandedClassroom != null,
+        classroom_id: expandedClassroom ?? undefined,
     });
 
-    const toggle = (k: keyof typeof opened) => setOpened(prev => ({ ...prev, [k]: !prev[k] }));
+    const toggleProgram = (id: number) => {
+        setExpandedProgram(prev => (prev === id ? null : id));
+        setExpandedLevel(null);
+        setExpandedClassroom(null);
+    };
+    const toggleLevel = (id: number) => {
+        setExpandedLevel(prev => (prev === id ? null : id));
+        setExpandedClassroom(null);
+    };
+    const toggleClassroom = (id: number) => {
+        setExpandedClassroom(prev => (prev === id ? null : id));
+    };
     const addItem = useCallback((type: AudienceItemType, id: number, name: string) => {
         setSelectedItems(prev => prev.some(x => x.id === id && x.type === type) ? prev : [...prev, { type, id, name }]);
     }, []);
@@ -74,12 +84,12 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({ show, onClose
         setSelectedItems(prev => prev.filter(x => !(x.id === id && x.type === type)));
     }, []);
     const clearAll = () => {
-        setOpened({ program: false, level: false, classroom: false, student: false });
-        setSelectedProgram(null); setSelectedLevel(null); setSelectedClassroom(null);
+        setExpandedProgram(null);
+        setExpandedLevel(null);
+        setExpandedClassroom(null);
         setSelectedItems([]);
     };
     const save = () => { onSave(selectedItems); onClose(); };
-    const loadingSpan = (f: boolean) => f ? <span style={{ color: '#888' }}>Yükleniyor...</span> : null;
 
     if (!show) return null;
     return (
@@ -92,75 +102,52 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({ show, onClose
                 <div style={bodyStyle}>
                     <div style={columnsStyle}>
                         <div style={treeSectionStyle}>
-                            <div style={treeHeaderStyle} onClick={() => toggle('program')}>Program</div>
-                            {opened.program && (
-                                <>
-                                    {loadingSpan(lp)}
-                                    {programs.map(p => (
-                                        <div key={p.id} style={{ ...treeRowStyle, ...indent(1) }}>
-                                            <span onClick={() => {
-                                                setSelectedProgram(p.id);
-                                                setOpened(o => ({ ...o, level: false, classroom: false, student: false }));
-                                            }}>{p.name}</span>
-                                            <button style={addBtnStyle} onClick={() => addItem('program', p.id, p.name)}>＋</button>
-                                        </div>
-                                    ))}
-                                </>
-                            )}
-                            {selectedProgram != null && (
-                                <>
-                                    <div style={{ ...treeHeaderStyle, ...indent(1) }} onClick={() => toggle('level')}>Seviye</div>
-                                    {opened.level && (
+                            {lp && <Spinner animation="border" size="sm" />}
+                            {programs.map(p => (
+                                <React.Fragment key={p.id}>
+                                    <div style={{ ...treeRowStyle }}>
+                                        <span onClick={() => toggleProgram(p.id)}>{p.name}</span>
+                                        <button style={addBtnStyle} onClick={() => addItem('program', p.id, p.name)}>＋</button>
+                                    </div>
+                                    {expandedProgram === p.id && (
                                         <>
-                                            {loadingSpan(ll)}
+                                            {ll && <div style={{ ...indent(1) }}><Spinner animation="border" size="sm" /></div>}
                                             {levels.map(l => (
-                                                <div key={l.id} style={{ ...treeRowStyle, ...indent(2) }}>
-                                                    <span onClick={() => {
-                                                        setSelectedLevel(l.id);
-                                                        setOpened(o => ({ ...o, classroom: false, student: false }));
-                                                    }}>{l.name}</span>
-                                                    <button style={addBtnStyle} onClick={() => addItem('level', l.id, l.name)}>＋</button>
-                                                </div>
+                                                <React.Fragment key={l.id}>
+                                                    <div style={{ ...treeRowStyle, ...indent(1) }}>
+                                                        <span onClick={() => toggleLevel(l.id)}>{l.name}</span>
+                                                        <button style={addBtnStyle} onClick={() => addItem('level', l.id, l.name)}>＋</button>
+                                                    </div>
+                                                    {expandedLevel === l.id && (
+                                                        <>
+                                                            {lc && <div style={{ ...indent(2) }}><Spinner animation="border" size="sm" /></div>}
+                                                            {classes.map(c => (
+                                                                <React.Fragment key={c.id}>
+                                                                    <div style={{ ...treeRowStyle, ...indent(2) }}>
+                                                                        <span onClick={() => toggleClassroom(c.id)}>{c.name}</span>
+                                                                        <button style={addBtnStyle} onClick={() => addItem('classroom', c.id, c.name)}>＋</button>
+                                                                    </div>
+                                                                    {expandedClassroom === c.id && (
+                                                                        <>
+                                                                            {ls && <div style={{ ...indent(3) }}><Spinner animation="border" size="sm" /></div>}
+                                                                            {students.map((s: any) => (
+                                                                                <div key={s.id} style={{ ...treeRowStyle, ...indent(3) }}>
+                                                                                    <span>{s.first_name} {s.last_name}</span>
+                                                                                    <button style={addBtnStyle} onClick={() => addItem('student', s.id, `${s.first_name} ${s.last_name}`)}>＋</button>
+                                                                                </div>
+                                                                            ))}
+                                                                        </>
+                                                                    )}
+                                                                </React.Fragment>
+                                                            ))}
+                                                        </>
+                                                    )}
+                                                </React.Fragment>
                                             ))}
                                         </>
                                     )}
-                                </>
-                            )}
-                            {selectedLevel != null && (
-                                <>
-                                    <div style={{ ...treeHeaderStyle, ...indent(2) }} onClick={() => toggle('classroom')}>Sınıf</div>
-                                    {opened.classroom && (
-                                        <>
-                                            {loadingSpan(lc)}
-                                            {classes.map(c => (
-                                                <div key={c.id} style={{ ...treeRowStyle, ...indent(3) }}>
-                                                    <span onClick={() => {
-                                                        setSelectedClassroom(c.id);
-                                                        setOpened(o => ({ ...o, student: false }));
-                                                    }}>{c.name}</span>
-                                                    <button style={addBtnStyle} onClick={() => addItem('classroom', c.id, c.name)}>＋</button>
-                                                </div>
-                                            ))}
-                                        </>
-                                    )}
-                                </>
-                            )}
-                            {selectedClassroom != null && (
-                                <>
-                                    <div style={{ ...treeHeaderStyle, ...indent(3) }} onClick={() => toggle('student')}>Öğrenci</div>
-                                    {opened.student && (
-                                        <>
-                                            {loadingSpan(ls)}
-                                            {students.map((s: any) => (
-                                                <div key={s.id} style={{ ...treeRowStyle, ...indent(4) }}>
-                                                    <span>{s.first_name} {s.last_name}</span>
-                                                    <button style={addBtnStyle} onClick={() => addItem('student', s.id, `${s.first_name} ${s.last_name}`)}>＋</button>
-                                                </div>
-                                            ))}
-                                        </>
-                                    )}
-                                </>
-                            )}
+                                </React.Fragment>
+                            ))}
                         </div>
                         <div style={selectedSectionStyle}>
                             <h4 style={{ marginBottom: 8 }}>Eklentiler</h4>
