@@ -6,6 +6,11 @@ import { useLevelsTable as useLevelsList } from '../../../../hooks/levels/useLis
 import { useClassroomList as useClassroomsList } from '../../../../hooks/classrooms/useList';
 import { useListStudents as useStudentsTable } from '../../../../hooks/student/useList';
 
+import ekle from 'src/assets/images/media/ekle.svg';
+import ekleHover from 'src/assets/images/media/ekle-hover.svg';
+import cikar from 'src/assets/images/media/cikar.svg';
+import cikarHover from 'src/assets/images/media/cikar-hover.svg';
+
 export type AudienceItemType = 'program' | 'level' | 'classroom' | 'student';
 export interface AudienceItem { id: number; name: string; type: AudienceItemType; }
 
@@ -28,10 +33,37 @@ const rowStyle: React.CSSProperties = {
     alignItems: 'center',
     margin: '0.25rem 0',
 };
-const indent = (level: number): React.CSSProperties => ({
-    paddingLeft: `${level}rem`,
-    borderLeft: '2px solid #6c757d',
+const treeItemStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    position: 'relative',
+    padding: '0.25rem 0',
+};
+const lineStyle = (level: number): React.CSSProperties => ({
+    position: 'absolute',
+    left: `${level * 1.5}rem`,
+    top: 0,
+    bottom: 0,
+    width: '1px',
+    backgroundColor: '#e0e0e0',
 });
+const labelStyle = (level: number): React.CSSProperties => ({
+    marginLeft: `${level * 1.5 + 0.5}rem`,
+});
+
+const IconButton: React.FC<{ add?: boolean; onClick: () => void }> = ({ add, onClick }) => {
+    const [hover, setHover] = useState(false);
+    const src = add ? (hover ? ekleHover : ekle) : hover ? cikarHover : cikar;
+    return (
+        <img
+            src={src}
+            style={{ width: 24, height: 24, marginLeft: 'auto', cursor: 'pointer' }}
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+            onClick={onClick}
+        />
+    );
+};
 
 const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({ show, onClose, onSave }) => {
     const [expandedProgram, setExpandedProgram] = useState<number | null>(null);
@@ -100,90 +132,79 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({ show, onClose
                         {lp && <Spinner size="sm" />}
                         {programs.map(p => (
                             <React.Fragment key={p.id}>
-                                <div style={{ ...rowStyle, ...indent(0) }}>
+                                <div style={treeItemStyle}>
+                                    <div style={lineStyle(0)} />
                                     <span
                                         onClick={() => toggleProgram(p.id)}
                                         className="text-dark link-offset-2 link-underline link-underline-opacity-0-hover"
-                                        style={{ cursor: 'pointer' }}
+                                        style={labelStyle(0)}
                                     >
                                         {p.name}
                                     </span>
                                     {isSelected('program', p.id) ? (
-                                        <Button size="sm" variant="light-danger" className="btn-icon rounded-circle" onClick={() => removeItem('program', p.id)}>
-                                            <i className="ti ti-minus" />
-                                        </Button>
+                                        <IconButton onClick={() => removeItem('program', p.id)} />
                                     ) : (
-                                        <Button size="sm" variant="light-success" className="btn-icon rounded-circle" onClick={() => addItem('program', p.id, p.name)}>
-                                            <i className="ti ti-plus" />
-                                        </Button>
+                                        <IconButton add onClick={() => addItem('program', p.id, p.name)} />
                                     )}
                                 </div>
                                 {expandedProgram === p.id && (
                                     <>
-                                        {ll && <div style={{ ...indent(1) }}><Spinner size="sm" /></div>}
+                                        {ll && <div style={treeItemStyle}><div style={lineStyle(1)} /><Spinner size="sm" /></div>}
                                         {levels.map(l => (
                                             <React.Fragment key={l.id}>
-                                                <div style={{ ...rowStyle, ...indent(1) }}>
+                                                <div style={treeItemStyle}>
+                                                    <div style={lineStyle(1)} />
                                                     <span
                                                         onClick={() => toggleLevel(l.id)}
                                                         className="text-dark link-offset-2 link-underline link-underline-opacity-0-hover"
-                                                        style={{ cursor: 'pointer' }}
+                                                        style={labelStyle(1)}
                                                     >
                                                         {l.name}
                                                     </span>
                                                     {isSelected('level', l.id) ? (
-                                                        <Button size="sm" variant="light-danger" className="btn-icon rounded-circle" onClick={() => removeItem('level', l.id)}>
-                                                            <i className="ti ti-minus" />
-                                                        </Button>
+                                                        <IconButton onClick={() => removeItem('level', l.id)} />
                                                     ) : (
-                                                        <Button size="sm" variant="light-success" className="btn-icon rounded-circle" onClick={() => addItem('level', l.id, l.name)}>
-                                                            <i className="ti ti-plus" />
-                                                        </Button>
+                                                        <IconButton add onClick={() => addItem('level', l.id, l.name)} />
                                                     )}
                                                 </div>
                                                 {expandedLevel === l.id && (
                                                     <>
-                                                        {lc && <div style={{ ...indent(2) }}><Spinner size="sm" /></div>}
+                                                        {lc && <div style={treeItemStyle}><div style={lineStyle(2)} /><Spinner size="sm" /></div>}
                                                         {classes.map(c => (
                                                             <React.Fragment key={c.id}>
-                                                                <div style={{ ...rowStyle, ...indent(2) }}>
+                                                                <div style={treeItemStyle}>
+                                                                    <div style={lineStyle(2)} />
                                                                     <span
                                                                         onClick={() => toggleClassroom(c.id)}
                                                                         className="text-dark link-offset-2 link-underline link-underline-opacity-0-hover"
-                                                                        style={{ cursor: 'pointer' }}
+                                                                        style={labelStyle(2)}
                                                                     >
                                                                         {c.name}
                                                                     </span>
                                                                     {isSelected('classroom', c.id) ? (
-                                                                        <Button size="sm" variant="light-danger" className="btn-icon rounded-circle" onClick={() => removeItem('classroom', c.id)}>
-                                                                            <i className="ti ti-minus" />
-                                                                        </Button>
+                                                                        <IconButton onClick={() => removeItem('classroom', c.id)} />
                                                                     ) : (
-                                                                        <Button size="sm" variant="light-success" className="btn-icon rounded-circle" onClick={() => addItem('classroom', c.id, c.name)}>
-                                                                            <i className="ti ti-plus" />
-                                                                        </Button>
+                                                                        <IconButton add onClick={() => addItem('classroom', c.id, c.name)} />
                                                                     )}
                                                                 </div>
                                                                 {expandedClassroom === c.id && (
                                                                     <>
-                                                                        {ls && <div style={{ ...indent(3) }}><Spinner size="sm" /></div>}
+                                                                        {ls && <div style={treeItemStyle}><div style={lineStyle(3)} /><Spinner size="sm" /></div>}
                                                                         {students.map((s: any) => (
-                                                                            <div key={s.id} style={{ ...rowStyle, ...indent(3) }}>
-                                                                                <span className="text-dark">{s.first_name} {s.last_name}</span>
+                                                                            <div key={s.id} style={treeItemStyle}>
+                                                                                <div style={lineStyle(3)} />
+                                                                                <span className="text-dark" style={labelStyle(3)}>{s.first_name} {s.last_name}</span>
                                                                                 {isSelected('student', s.id) ? (
-                                                                                    <Button size="sm" variant="light-danger" className="btn-icon rounded-circle" onClick={() => removeItem('student', s.id)}>
-                                                                                        <i className="ti ti-minus" />
-                                                                                    </Button>
+                                                                                    <IconButton onClick={() => removeItem('student', s.id)} />
                                                                                 ) : (
-                                                                                    <Button size="sm" variant="light-success" className="btn-icon rounded-circle" onClick={() => {
-                                                                                        // Sınıf adını bul
-                                                                                        const cls = classes.find(c => c.id === expandedClassroom);
-                                                                                        const clsName = cls ? ` (${cls.name})` : '';
-                                                                                        // Öğrenciyi 'İsim (Sınıf)' formatında ekle
-                                                                                        addItem('student', s.id, `${s.first_name} ${s.last_name}${clsName}`);
-                                                                                    }}>
-                                                                                        <i className="ti ti-plus" />
-                                                                                    </Button>
+                                                                                    <IconButton
+                                                                                        add
+                                                                                        onClick={() => {
+                                                                                            const cls = classes.find(c => c.id === expandedClassroom);
+                                                                                            const clsName = cls ? ` (${cls.name})` : '';
+                                                                                            addItem('student', s.id, `${s.first_name} ${s.last_name}${clsName}`);
+                                                                                        }}
+                                                                                    />
                                                                                 )}
                                                                             </div>
                                                                         ))}
@@ -205,9 +226,7 @@ const TargetAudienceModal: React.FC<TargetAudienceModalProps> = ({ show, onClose
                         {selectedItems.map(it => (
                             <div key={`${it.type}-${it.id}`} style={rowStyle}>
                                 <span className="text-dark">{it.name}</span>
-                                <Button size="sm" variant="light-danger" className="btn-icon rounded-circle" onClick={() => removeItem(it.type, it.id)}>
-                                    <i className="ti ti-minus" />
-                                </Button>
+                                <IconButton onClick={() => removeItem(it.type, it.id)} />
                             </div>
                         ))}
                     </div>
