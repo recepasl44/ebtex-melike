@@ -6,10 +6,10 @@ import { useLevelsTable as useLevelsList } from '../../../../hooks/levels/useLis
 import { useClassroomList as useClassroomsList } from '../../../../hooks/classrooms/useList';
 import { useListStudents as useStudentsTable } from '../../../../hooks/student/useList';
 
-import ekle from 'src/assets/images/media/ekle.svg';
-import ekleHover from 'src/assets/images/media/ekle-hover.svg';
-import cikar from 'src/assets/images/media/cikar.svg';
-import cikarHover from 'src/assets/images/media/cikar-hover.svg';
+import ekle from '../../../../../assets/images/media/ekle.svg';
+import ekleHover from '../../../../../assets/images/media/ekle-hover.svg';
+import cikar from '../../../../../assets/images/media/cikar.svg';
+import cikarHover from '../../../../../assets/images/media/cikar-hover.svg';
 
 export type AudienceItemType = 'program' | 'level' | 'classroom' | 'student';
 export interface AudienceItem { id: number; name: string; type: AudienceItemType; }
