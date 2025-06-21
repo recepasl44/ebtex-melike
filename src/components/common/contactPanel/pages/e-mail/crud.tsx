@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import TargetAudienceModal, { AudienceItem } from './TargetAudienceModal'
 import { useNavigate, useParams } from 'react-router-dom'
 import { FormikValues } from 'formik'
 
@@ -43,6 +44,7 @@ export default function EmailCrud() {
         group_id: '',
     })
     const [showGroupModal, setShowGroupModal] = useState(false)
+    const [selectedAudience, setSelectedAudience] = useState<AudienceItem[]>([])
 
     useEffect(() => {
         if (mode === 'update' && id) {
@@ -142,19 +144,29 @@ export default function EmailCrud() {
     const combinedError = mode === 'add' ? addError : updError || detailError
 
     return (
-        <ReusableModalForm<FormData>
-            show
-            title={mode === 'add' ? 'E-posta Ekle' : 'E-posta Düzenle'}
-            fields={(values) => getFields(values as FormData)}
-            initialValues={initialValues}
-            onSubmit={handleSubmit}
-            confirmButtonLabel={mode === 'add' ? 'Gönder' : 'Tekrar Gönder'}
-            cancelButtonLabel="Vazgeç"
-            isLoading={isLoading}
-            error={combinedError || undefined}
-            onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel/e-mail`)}
-            autoGoBackOnModalClose
-            mode="double"
-        />
+        <>
+            <ReusableModalForm<FormData>
+                show
+                title={mode === 'add' ? 'E-posta Ekle' : 'E-posta Düzenle'}
+                fields={(values) => getFields(values as FormData)}
+                initialValues={initialValues}
+                onSubmit={handleSubmit}
+                confirmButtonLabel={mode === 'add' ? 'Gönder' : 'Tekrar Gönder'}
+                cancelButtonLabel="Vazgeç"
+                isLoading={isLoading}
+                error={combinedError || undefined}
+                onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel/e-mail`)}
+                autoGoBackOnModalClose
+                mode="double"
+            />
+            <TargetAudienceModal
+                show={showGroupModal}
+                onClose={() => setShowGroupModal(false)}
+                onSave={(items) => {
+                    setSelectedAudience(items)
+                    setShowGroupModal(false)
+                }}
+            />
+        </>
     )
 }
