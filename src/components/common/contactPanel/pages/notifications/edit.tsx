@@ -6,7 +6,7 @@ import ReusableModalForm, { FieldDefinition } from '../../../ReusableModalForm';
 import { useNotificationUpdate } from '../../../../hooks/notifications/useUpdate';
 import { useNotificationDetail } from '../../../../hooks/notifications/useDetail';
 import { useUsersTable } from '../../../../hooks/user/useList';
-import { useGroupsTable } from '../../../../hooks/group/useList';
+import TargetAudienceModal, { AudienceItem } from './TargetAudienceModal';
 
 interface FormData extends FormikValues {
     title: string;
@@ -25,9 +25,10 @@ export default function NotificationEdit() {
     const { id } = useParams<{ id?: string }>();
     const { notification, getNotification, status: detailStatus, error: detailError } = useNotificationDetail();
     const { updateExistingNotification, status: updStatus, error: updError } = useNotificationUpdate();
-    const [enabled, setEnabled] = useState({ users: false, groups: false });
+    const [enabled, setEnabled] = useState({ users: false });
     const { usersData = [] } = useUsersTable({ enabled: enabled.users, pageSize: 999 });
-    const { groupsData = [] } = useGroupsTable({ enabled: enabled.groups, pageSize: 999 });
+    const [showAudienceModal, setShowAudienceModal] = useState(false);
+    const [selectedAudience, setSelectedAudience] = useState<AudienceItem[]>([]);
 
     const [initialValues, setInitialValues] = useState<FormData>({
         title: '',
@@ -106,7 +107,7 @@ export default function NotificationEdit() {
                     variant="primary-light"
                     size="sm"
                     className="btn-icon rounded-pill"
-                    onClick={() => setEnabled((e) => ({ ...e, groups: true }))}
+                    onClick={() => setShowAudienceModal(true)}
                 >
                     <i className="ti ti-eye"></i>
                 </Button>
@@ -135,6 +136,7 @@ export default function NotificationEdit() {
     const combinedError = updError || detailError;
 
     return (
+        <>
         <ReusableModalForm<FormData>
             show
             title="Bildirim Detay / Düzenle"
@@ -149,5 +151,14 @@ export default function NotificationEdit() {
             autoGoBackOnModalClose
             mode="double"
         />
+        <TargetAudienceModal
+            show={showAudienceModal}
+            onClose={() => setShowAudienceModal(false)}
+            onSave={(items) => {
+                setSelectedAudience(items);
+                setShowAudienceModal(false);
+            }}
+        />
+        </>
     );
 }
