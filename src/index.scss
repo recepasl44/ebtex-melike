@@ -27,6 +27,19 @@
   --bs-modal-width: 600px;
 }
 
+.tree-section {
+  .tree-header {
+    font-weight: 600;
+    margin-top: 0.5rem;
+  }
+  .tree-node {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2px 0;
+  }
+}
+
 
 
 
