@@ -18,9 +18,16 @@ export default function CurrentNewsletterTable() {
     const [status, setStatus] = useState('');
     const [page, setPage] = useState(1);
     const [paginate, setPaginate] = useState(10);
-    const [enabled, setEnabled] = useState({ groups: false });
 
-    const { groupsData = [] } = useGroupsTable({ enabled: enabled.groups, pageSize: 999 });
+    const { groupsData = [] } = useGroupsTable({ enabled: true, pageSize: 999 });
+
+    const groupMap = useMemo(() => {
+        const map: Record<number, string> = {};
+        groupsData.forEach((g) => {
+            map[g.id] = g.name;
+        });
+        return map;
+    }, [groupsData]);
     const { deleteExistingBulletin } = useBulletinDelete();
 
     const { bulletinsData = [], loading, error, totalPages, totalItems } = useBulletinsList({
@@ -62,7 +69,7 @@ export default function CurrentNewsletterTable() {
             {
                 key: 'target',
                 label: 'Hedef Kitle',
-                render: (b) => (b as any).group?.name || '-',
+                render: (b) => groupMap[b.group_id] || (b as any).group?.name || (b.group_id ? String(b.group_id) : '-'),
             },
             {
                 key: 'status',
@@ -109,7 +116,6 @@ export default function CurrentNewsletterTable() {
                 label: 'Hedef Kitle',
                 type: 'select',
                 value: groupId,
-                onClick: () => setEnabled((e) => ({ ...e, groups: true })),
                 onChange: setGroupId,
                 options: groupsData.map((g) => ({ value: String(g.id), label: g.name })),
             },
