@@ -5,6 +5,7 @@ import dayjs from 'dayjs'
 import ReusableTable, { ColumnDefinition } from '../../../ReusableTable'
 import FilterGroup, { FilterDefinition } from '../../component/organisms/SearchFilters'
 import { useNotificationsList } from '../../../../hooks/notifications/useList'
+import { useGroupsTable } from '../../../../hooks/group/useList'
 import { useNotificationDelete } from '../../../../hooks/notifications/useDelete'
 import type { NotificationData } from '../../../../../types/notifications/list'
 
@@ -20,6 +21,15 @@ export default function EmailTable() {
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(10)
 
+    const { groupsData = [] } = useGroupsTable({ enabled: true, pageSize: 999 })
+    const groupMap = useMemo(() => {
+        const map: Record<number, string> = {}
+        groupsData.forEach((g) => {
+            map[g.id] = g.name
+        })
+        return map
+    }, [groupsData])
+
     const { deleteExistingNotification } = useNotificationDelete()
 
     const { notificationsData = [], loading, error, totalPages, totalItems } = useNotificationsList({
@@ -28,7 +38,7 @@ export default function EmailTable() {
         start_date: dateRange.startDate || undefined,
         end_date: dateRange.endDate || undefined,
         category_id: category || undefined,
-        group_id: groupId || undefined,
+        group_id: +groupId || undefined,
         sender_id: sender || undefined,
         status: status || undefined,
         enabled: true,
@@ -71,7 +81,11 @@ export default function EmailTable() {
                 label: 'Hedef Kitle',
                 render: (n) => (
                     <div className="d-flex align-items-center gap-2">
-                        <span>{(n.group as any)?.name || '-'}</span>
+                        <span>
+                            {groupMap[n.group_id as number] ||
+                                (n.group as any)?.name ||
+                                (n.group_id ? String(n.group_id) : '-')}
+                        </span>
 
                     </div>
                 ),
@@ -107,7 +121,7 @@ export default function EmailTable() {
                 ),
             },
         ],
-        [navigate, deleteExistingNotification]
+        [navigate, deleteExistingNotification, groupMap]
     )
 
     const filters: FilterDefinition[] = useMemo(
@@ -133,13 +147,7 @@ export default function EmailTable() {
                 type: 'select',
                 value: groupId,
                 onChange: setGroupId,
-                options: Array.from(
-                    new Map(
-                        notificationsData
-                            .filter((n) => n.group && n.group_id != null)
-                            .map((n) => [n.group_id, { value: String(n.group_id), label: n.group.name }])
-                    ).values()
-                ),
+                options: groupsData.map((g) => ({ value: String(g.id), label: g.name })),
             },
             {
                 key: 'sender_id',
@@ -158,7 +166,7 @@ export default function EmailTable() {
                 options: statusOptions,
             },
         ],
-        [dateRange, category, groupId, sender, status, notificationsData]
+        [dateRange, category, groupId, sender, status, groupsData]
     )
 
     return (
