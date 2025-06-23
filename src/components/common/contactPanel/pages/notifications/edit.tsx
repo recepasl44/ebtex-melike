@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
-import { FormikValues } from 'formik';
+import { FormikValues, Field } from 'formik';
 import ReusableModalForm, { FieldDefinition } from '../../../ReusableModalForm';
 import { useNotificationUpdate } from '../../../../hooks/notifications/useUpdate';
 import { useNotificationDetail } from '../../../../hooks/notifications/useDetail';
@@ -14,11 +14,11 @@ interface FormData extends FormikValues {
     category_id: string;
     source_id: string;
     sender_id: string;
-    send_date: string;
     send_time: string;
     send_sms_email?: boolean;
     status: string;
     group_ids: string[];
+    info?: string;
 }
 
 export default function NotificationEdit() {
@@ -40,11 +40,11 @@ export default function NotificationEdit() {
         category_id: '',
         source_id: '',
         sender_id: '',
-        send_date: '',
         send_time: '',
         send_sms_email: false,
         status: '1',
         group_ids: [],
+        info: '',
     });
 
     useEffect(() => {
@@ -55,18 +55,18 @@ export default function NotificationEdit() {
 
     useEffect(() => {
         if (notification) {
-            const [d, t] = (notification.send_time || '').split(' ');
+            const dt = (notification.send_time || '').replace(' ', 'T');
             setInitialValues({
                 title: notification.title ?? '',
                 message: notification.message ?? '',
                 category_id: String(notification.category_id ?? ''),
                 source_id: String(notification.source_id ?? ''),
                 sender_id: String(notification.sender_id ?? ''),
-                send_date: d ?? '',
-                send_time: t ?? '',
+                send_time: dt ?? '',
                 send_sms_email: false,
                 status: String(notification.status ?? '1'),
                 group_ids: [],
+                info: '',
             });
         }
     }, [notification]);
@@ -105,8 +105,23 @@ export default function NotificationEdit() {
             options: senderOptions,
             onClick: () => setEnabled((e) => ({ ...e, notifications: true })),
         },
-        { name: 'send_date', label: 'Gönderim Tarihi', type: 'date', required: true },
-        { name: 'send_time', label: 'Gönderim Saati', type: 'time', required: true },
+        {
+            name: 'send_time',
+            label: 'Gönderim Zamanı',
+            required: true,
+            renderForm: () => (
+                <Field name="send_time">
+                    {({ field, form }: { field: any; form: any }) => (
+                        <input
+                            type="datetime-local"
+                            className="form-control"
+                            value={field.value || ''}
+                            onChange={(e) => form.setFieldValue('send_time', e.target.value)}
+                        />
+                    )}
+                </Field>
+            ),
+        },
         { name: 'send_sms_email', label: 'SMS/E-posta ile gönderilsin mi?', type: 'checkbox' },
         { name: 'status', label: 'Durum', type: 'select', options: statusOptions },
         {
@@ -123,16 +138,7 @@ export default function NotificationEdit() {
                 </Button>
             ),
         },
-        {
-            name: 'info',
-            label: 'Gönderilen Kişi Sayısı',
-            renderForm: () => (
-                <div className="d-flex align-items-center gap-2">
-                    <span>0/0</span>
-                    <Button size="sm" variant="outline-secondary">Tekrar Gönder</Button>
-                </div>
-            ),
-        },
+        { name: 'info', label: 'Gönderilen Kişi Sayısı', type: 'number' },
     ];
 
     const handleSubmit = async (values: FormData) => {
@@ -141,7 +147,7 @@ export default function NotificationEdit() {
                 notificationId: Number(id),
                 payload: {
                     ...(values as any),
-                    send_time: `${values.send_date} ${values.send_time}`,
+                    send_time: values.send_time,
                 },
             });
         }
@@ -159,7 +165,7 @@ export default function NotificationEdit() {
                 fields={fields}
                 initialValues={initialValues}
                 onSubmit={handleSubmit}
-                confirmButtonLabel="Güncelle"
+                confirmButtonLabel="Tekrar Gönder"
                 cancelButtonLabel="Vazgeç"
                 isLoading={isLoading}
                 error={combinedError || undefined}
