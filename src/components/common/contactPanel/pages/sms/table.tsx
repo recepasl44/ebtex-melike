@@ -57,6 +57,12 @@ export default function SmsTable() {
         { value: '3', label: 'Hata' },
     ];
 
+    const senderOptions = [
+        { value: '1', label: 'Sistem' },
+        { value: '2', label: 'Yönetici' },
+        { value: '3', label: 'Öğretmen' },
+    ];
+
     const columns: ColumnDefinition<NotificationData>[] = useMemo(
         () => [
             { key: 'title', label: 'Başlık', render: (n) => n.title || '-' },
@@ -149,13 +155,7 @@ export default function SmsTable() {
                 type: 'select',
                 value: senderId,
                 onChange: setSenderId,
-                options: Array.from(
-                    new Map(
-                        notificationsData
-                            .filter((n) => n.sender && n.sender_id != null)
-                            .map((n) => [n.sender_id, { value: String(n.sender_id), label: n.sender.name_surname }])
-                    ).values()
-                ),
+                options: senderOptions,
             },
             {
                 key: 'status',
@@ -166,7 +166,7 @@ export default function SmsTable() {
                 options: statusOptions,
             },
         ],
-        [dateRange, categoryId, groupId, senderId, status, notificationsData, groupsData, groupMap]
+        [dateRange, categoryId, groupId, senderId, status, groupsData, groupMap]
     );
 
     return (
