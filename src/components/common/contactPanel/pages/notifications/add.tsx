@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FormikValues } from 'formik';
 import ReusableModalForm, { FieldDefinition } from '../../../ReusableModalForm';
 import { useNotificationAdd } from '../../../../hooks/notifications/useAdd';
@@ -21,6 +21,7 @@ interface FormData extends FormikValues {
 
 export default function NotificationAdd() {
     const navigate = useNavigate();
+    const [, setSearchParams] = useSearchParams();
     const { addNewNotification, status, error } = useNotificationAdd();
     const [enabled, setEnabled] = useState({ notifications: false });
     const { notificationsData = [] } = useNotificationsList({
@@ -95,7 +96,8 @@ export default function NotificationAdd() {
             send_time: `${values.send_date} ${values.send_time}`,
             group_ids: selectedAudience.map((a) => a.id),
         });
-        navigate(`${import.meta.env.BASE_URL}contact-panel/notifications`);
+        navigate(`${import.meta.env.BASE_URL}contact-panel`, { replace: true });
+        setSearchParams({ tab: 'notifications' });
     };
 
     const isLoading = status === 'LOADING';
@@ -114,7 +116,10 @@ export default function NotificationAdd() {
                 cancelButtonLabel="Vazgeç"
                 isLoading={isLoading}
                 error={error || undefined}
-                onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel/notifications`)}
+                onClose={() => {
+                    navigate(`${import.meta.env.BASE_URL}contact-panel`, { replace: true });
+                    setSearchParams({ tab: 'notifications' });
+                }}
                 autoGoBackOnModalClose
                 mode="double"
             />

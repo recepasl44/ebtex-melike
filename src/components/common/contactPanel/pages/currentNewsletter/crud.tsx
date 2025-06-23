@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { FormikValues, Field } from 'formik';
 import TargetAudienceModal, { AudienceItem } from './TargetAudienceModal';
 
@@ -26,6 +26,7 @@ interface FormData extends FormikValues {
 
 export default function CurrentNewsletterCrud() {
     const navigate = useNavigate();
+    const [, setSearchParams] = useSearchParams();
     const { id } = useParams<{ id?: string }>();
     const mode: 'add' | 'update' = id ? 'update' : 'add';
 
@@ -196,7 +197,8 @@ export default function CurrentNewsletterCrud() {
                 payload,
             });
         }
-        navigate(`${import.meta.env.BASE_URL}contact-panel?tab=current-newsletter`);
+        navigate(`${import.meta.env.BASE_URL}contact-panel`, { replace: true });
+        setSearchParams({ tab: 'current-newsletter' });
     };
 
     return (
@@ -211,7 +213,10 @@ export default function CurrentNewsletterCrud() {
                 cancelButtonLabel="Vazgeç"
                 isLoading={isLoading}
                 error={combinedError || undefined}
-                onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel?tab=current-newsletter`)}
+                onClose={() => {
+                    navigate(`${import.meta.env.BASE_URL}contact-panel`, { replace: true });
+                    setSearchParams({ tab: 'current-newsletter' });
+                }}
                 autoGoBackOnModalClose
                 mode="double"
             />
