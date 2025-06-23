@@ -140,11 +140,8 @@ export default function NotificationEdit() {
                 },
             });
         }
-        navigate(
-            `${import.meta.env.BASE_URL}contact-panel/notifications`,
-            { replace: true }
-        );
-        setSearchParams({});
+        navigate(`${import.meta.env.BASE_URL}contact-panel`, { replace: true });
+        setSearchParams({ tab: 'notifications' });
     };
 
     const isLoading = updStatus === 'LOADING' || detailStatus === 'LOADING';

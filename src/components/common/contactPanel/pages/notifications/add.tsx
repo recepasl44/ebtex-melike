@@ -96,11 +96,8 @@ export default function NotificationAdd() {
             send_time: `${values.send_date} ${values.send_time}`,
             group_ids: selectedAudience.map((a) => a.id),
         });
-        navigate(
-            `${import.meta.env.BASE_URL}contact-panel/notifications`,
-            { replace: true }
-        );
-        setSearchParams({});
+        navigate(`${import.meta.env.BASE_URL}contact-panel`, { replace: true });
+        setSearchParams({ tab: 'notifications' });
     };
 
     const isLoading = status === 'LOADING';
