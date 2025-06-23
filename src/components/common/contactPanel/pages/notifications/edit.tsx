@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
-import { FormikValues, Field } from 'formik';
+import { FormikValues } from 'formik';
 import ReusableModalForm, { FieldDefinition } from '../../../ReusableModalForm';
 import { useNotificationUpdate } from '../../../../hooks/notifications/useUpdate';
 import { useNotificationDetail } from '../../../../hooks/notifications/useDetail';
@@ -14,6 +14,7 @@ interface FormData extends FormikValues {
     category_id: string;
     source_id: string;
     sender_id: string;
+    send_date: string;
     send_time: string;
     send_sms_email?: boolean;
     status: string;
@@ -40,6 +41,7 @@ export default function NotificationEdit() {
         category_id: '',
         source_id: '',
         sender_id: '',
+        send_date: '',
         send_time: '',
         send_sms_email: false,
         status: '1',
@@ -55,14 +57,15 @@ export default function NotificationEdit() {
 
     useEffect(() => {
         if (notification) {
-            const dt = (notification.send_time || '').replace(' ', 'T');
+            const [d, t] = (notification.send_time || '').split(' ');
             setInitialValues({
                 title: notification.title ?? '',
                 message: notification.message ?? '',
                 category_id: String(notification.category_id ?? ''),
                 source_id: String(notification.source_id ?? ''),
                 sender_id: String(notification.sender_id ?? ''),
-                send_time: dt ?? '',
+                send_date: d ?? '',
+                send_time: t ?? '',
                 send_sms_email: false,
                 status: String(notification.status ?? '1'),
                 group_ids: [],
@@ -105,23 +108,8 @@ export default function NotificationEdit() {
             options: senderOptions,
             onClick: () => setEnabled((e) => ({ ...e, notifications: true })),
         },
-        {
-            name: 'send_time',
-            label: 'Gönderim Zamanı',
-            required: true,
-            renderForm: () => (
-                <Field name="send_time">
-                    {({ field, form }: { field: any; form: any }) => (
-                        <input
-                            type="datetime-local"
-                            className="form-control"
-                            value={field.value || ''}
-                            onChange={(e) => form.setFieldValue('send_time', e.target.value)}
-                        />
-                    )}
-                </Field>
-            ),
-        },
+        { name: 'send_date', label: 'Gönderim Tarihi', type: 'date', required: true },
+        { name: 'send_time', label: 'Gönderim Saati', type: 'time', required: true },
         { name: 'send_sms_email', label: 'SMS/E-posta ile gönderilsin mi?', type: 'checkbox' },
         { name: 'status', label: 'Durum', type: 'select', options: statusOptions },
         {
@@ -147,11 +135,11 @@ export default function NotificationEdit() {
                 notificationId: Number(id),
                 payload: {
                     ...(values as any),
-                    send_time: values.send_time,
+                    send_time: `${values.send_date} ${values.send_time}`,
                 },
             });
         }
-        navigate(`${import.meta.env.BASE_URL}contact-panel?tab=notifications`);
+        navigate(`${import.meta.env.BASE_URL}contact-panel/notifications`);
     };
 
     const isLoading = updStatus === 'LOADING' || detailStatus === 'LOADING';
@@ -169,7 +157,7 @@ export default function NotificationEdit() {
                 cancelButtonLabel="Vazgeç"
                 isLoading={isLoading}
                 error={combinedError || undefined}
-                onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel?tab=notifications`)}
+                onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel/notifications`)}
                 autoGoBackOnModalClose
                 mode="double"
             />

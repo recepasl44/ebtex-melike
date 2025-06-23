@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FormikValues, Field } from 'formik';
+import { FormikValues } from 'formik';
 import ReusableModalForm, { FieldDefinition } from '../../../ReusableModalForm';
 import { useNotificationAdd } from '../../../../hooks/notifications/useAdd';
 import { useNotificationsList } from '../../../../hooks/notifications/useList';
@@ -13,6 +13,7 @@ interface FormData extends FormikValues {
     category_id: string;
     source_id: string;
     sender_id: string;
+    send_date: string;
     send_time: string;
     send_sms_email?: boolean;
     group_ids: string[];
@@ -35,6 +36,7 @@ export default function NotificationAdd() {
         category_id: '',
         source_id: '',
         sender_id: '',
+        send_date: '',
         send_time: '',
         send_sms_email: false,
         group_ids: [],
@@ -68,23 +70,8 @@ export default function NotificationAdd() {
             options: senderOptions,
             onClick: () => setEnabled((e) => ({ ...e, notifications: true })),
         },
-        {
-            name: 'send_time',
-            label: 'Gönderim Zamanı',
-            required: true,
-            renderForm: () => (
-                <Field name="send_time">
-                    {({ field, form }: { field: any; form: any }) => (
-                        <input
-                            type="datetime-local"
-                            className="form-control"
-                            value={field.value || ''}
-                            onChange={(e) => form.setFieldValue('send_time', e.target.value)}
-                        />
-                    )}
-                </Field>
-            ),
-        },
+        { name: 'send_date', label: 'Gönderim Tarihi', type: 'date', required: true },
+        { name: 'send_time', label: 'Gönderim Saati', type: 'time', required: true },
         { name: 'send_sms_email', label: 'SMS/E-posta ile gönderilsin mi?', type: 'checkbox' },
         {
             name: 'group_ids',
@@ -105,10 +92,10 @@ export default function NotificationAdd() {
     const handleSubmit = async (values: FormData) => {
         await addNewNotification({
             ...(values as any),
-            send_time: values.send_time,
+            send_time: `${values.send_date} ${values.send_time}`,
             group_ids: selectedAudience.map((a) => a.id),
         });
-        navigate(`${import.meta.env.BASE_URL}contact-panel?tab=notifications`);
+        navigate(`${import.meta.env.BASE_URL}contact-panel/notifications`);
     };
 
     const isLoading = status === 'LOADING';
@@ -127,7 +114,7 @@ export default function NotificationAdd() {
                 cancelButtonLabel="Vazgeç"
                 isLoading={isLoading}
                 error={error || undefined}
-                onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel?tab=notifications`)}
+                onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel/notifications`)}
                 autoGoBackOnModalClose
                 mode="double"
             />
