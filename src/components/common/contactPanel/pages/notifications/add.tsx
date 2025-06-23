@@ -87,36 +87,40 @@ export default function NotificationAdd() {
     ];
 
     const handleSubmit = async (values: FormData) => {
-        await addNewNotification({ ...(values as any) });
+        await addNewNotification({
+            ...(values as any),
+            group_ids: selectedAudience.map((a) => a.id),
+        });
         navigate(`${import.meta.env.BASE_URL}contact-panel/notifications`);
     };
 
     const isLoading = status === 'LOADING';
 
+
     return (
         <>
-        <ReusableModalForm<FormData>
-            show
-            title="Bildirim Ekle"
-            fields={fields}
-            initialValues={initialValues}
-            onSubmit={handleSubmit}
-            confirmButtonLabel="Gönder"
-            cancelButtonLabel="Vazgeç"
-            isLoading={isLoading}
-            error={error || undefined}
-            onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel/notifications`)}
-            autoGoBackOnModalClose
-            mode="double"
-        />
-        <TargetAudienceModal
-            show={showAudienceModal}
-            onClose={() => setShowAudienceModal(false)}
-            onSave={(items) => {
-                setSelectedAudience(items);
-                setShowAudienceModal(false);
-            }}
-        />
+            <ReusableModalForm<FormData>
+                show
+                title="Bildirim Ekle"
+                fields={fields}
+                initialValues={initialValues}
+                onSubmit={handleSubmit}
+                confirmButtonLabel="Gönder"
+                cancelButtonLabel="Vazgeç"
+                isLoading={isLoading}
+                error={error || undefined}
+                onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel/notifications`)}
+                autoGoBackOnModalClose
+                mode="double"
+            />
+            <TargetAudienceModal
+                show={showAudienceModal}
+                onClose={() => setShowAudienceModal(false)}
+                onSave={(items) => {
+                    setSelectedAudience(items);
+                    setShowAudienceModal(false);
+                }}
+            />
         </>
     );
 }
