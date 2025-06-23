@@ -115,7 +115,9 @@ export default function CompensationTab({
       <ReusableTable<Compensation>
         columns={columns}
         data={data}
-        onAdd={() => navigate("/personelCompensationCrud")}
+        onAdd={() =>
+          navigate("/personelCompensationCrud", { state: { personelId: actualId } })
+        }
         tableMode="single"
         loading={loading}
         error={error || deleteError}

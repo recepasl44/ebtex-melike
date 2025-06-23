@@ -155,7 +155,9 @@ export default function KesintiTab({ personelId, enabled = true }: KesintiTabPro
 
       <ReusableTable<Interruption>
         columns={columns}
-        onAdd={() => navigate("/personelKesintiCrud")}
+        onAdd={() =>
+          navigate("/personelKesintiCrud", { state: { personelId: actualId } })
+        }
         data={data}
         loading={loading}
         tableMode="single"

@@ -100,7 +100,9 @@ export default function PersonelPrimTab({
       </div>
 
       <ReusableTable<Primler>
-        onAdd={() => navigate("/personelPrimlerCrud")}
+        onAdd={() =>
+          navigate("/personelPrimlerCrud", { state: { personelId: actualId } })
+        }
         columns={columns}
         tableMode="single"
         data={data}
