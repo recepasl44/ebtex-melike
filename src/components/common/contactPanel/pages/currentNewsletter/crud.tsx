@@ -26,6 +26,7 @@ interface FormData extends FormikValues {
 
 export default function CurrentNewsletterCrud() {
     const navigate = useNavigate();
+
     const [, setSearchParams] = useSearchParams();
     const { id } = useParams<{ id?: string }>();
     const mode: 'add' | 'update' = id ? 'update' : 'add';
@@ -198,7 +199,7 @@ export default function CurrentNewsletterCrud() {
             });
         }
         navigate(`${import.meta.env.BASE_URL}contact-panel`, { replace: true });
-        setSearchParams({ tab: 'current-newsletter' });
+        setSearchParams({ tab: 'current-newsletter' }, { replace: true });
     };
 
     return (
