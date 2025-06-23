@@ -102,6 +102,7 @@ export const SCHOOLCATEGORIES = '/schoolcategories';
 export const SERVICETYPES = '/servicetypes';
 export const PAYMENT_METHODS = '/paymentmethods';
 export const SMS_PROVIDERS = '/smsproviders';
+export const SMS_LOGS = '/smslogs';
 export const ENROLLMENTS = '/enrollments';
 export const AGREEMENTS = '/agreements';
 
