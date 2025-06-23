@@ -5,6 +5,8 @@ export interface Primler {
   personel_id: number;
   vade: string;
   miktar: string;
+  /** Prim tarihi */
+  tarih?: string;
   aciklama: string;
   updated_at: string;
   created_At: string;
