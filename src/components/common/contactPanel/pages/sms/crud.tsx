@@ -7,7 +7,7 @@ import ReusableModalForm, { FieldDefinition } from '../../../ReusableModalForm';
 import { useNotificationAdd } from '../../../../hooks/notifications/useAdd';
 import { useNotificationUpdate } from '../../../../hooks/notifications/useUpdate';
 import { useNotificationDetail } from '../../../../hooks/notifications/useDetail';
-import { useUsersTable } from '../../../../hooks/user/useList';
+import { useNotificationsList } from '../../../../hooks/notifications/useList';
 import { Button } from 'react-bootstrap';
 
 interface FormData extends FormikValues {
@@ -31,7 +31,8 @@ export default function SmsCrud() {
     const { addNewNotification, status: addStatus, error: addError } = useNotificationAdd();
     const { updateExistingNotification, status: updStatus, error: updError } = useNotificationUpdate();
     const { notification, status: detailStatus, error: detailError, getNotification } = useNotificationDetail();
-    const { usersData = [] } = useUsersTable({ enabled: true, pageSize: 999 });
+    const [enabled, setEnabled] = useState({ notifications: false });
+    const { notificationsData = [] } = useNotificationsList({ enabled: enabled.notifications, pageSize: 999 });
 
     const [initialValues, setInitialValues] = useState<FormData>({
         title: '',
@@ -84,7 +85,9 @@ export default function SmsCrud() {
         { value: '3', label: 'Hata' },
     ];
 
-    const userOptions = usersData.map((u) => ({ value: String(u.id), label: u.name_surname || `${u.first_name} ${u.last_name}` }));
+    const senderOptions = notificationsData
+        .map((n) => ({ value: String(n.sender_id), label: (n as any).sender?.name_surname || '-' }))
+        .filter((opt, idx, arr) => arr.findIndex((o) => o.value === opt.value) === idx);
 
     const getFields = (values: FormData): FieldDefinition[] => {
         return [
@@ -95,7 +98,8 @@ export default function SmsCrud() {
                 name: 'sender_id',
                 label: 'Gönderen',
                 type: 'select',
-                options: userOptions,
+                options: senderOptions,
+                onClick: () => setEnabled((e) => ({ ...e, notifications: true })),
                 required: true,
             },
             {

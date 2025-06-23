@@ -153,28 +153,28 @@ export default function NotificationEdit() {
 
     return (
         <>
-        <ReusableModalForm<FormData>
-            show
-            title="Bildirim Detay / Düzenle"
-            fields={fields}
-            initialValues={initialValues}
-            onSubmit={handleSubmit}
-            confirmButtonLabel="Güncelle"
-            cancelButtonLabel="Vazgeç"
-            isLoading={isLoading}
-            error={combinedError || undefined}
-            onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel/notifications`)}
-            autoGoBackOnModalClose
-            mode="double"
-        />
-        <TargetAudienceModal
-            show={showAudienceModal}
-            onClose={() => setShowAudienceModal(false)}
-            onSave={(items) => {
-                setSelectedAudience(items);
-                setShowAudienceModal(false);
-            }}
-        />
+            <ReusableModalForm<FormData>
+                show
+                title="Bildirim Detay / Düzenle"
+                fields={fields}
+                initialValues={initialValues}
+                onSubmit={handleSubmit}
+                confirmButtonLabel="Güncelle"
+                cancelButtonLabel="Vazgeç"
+                isLoading={isLoading}
+                error={combinedError || undefined}
+                onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel/notifications`)}
+                autoGoBackOnModalClose
+                mode="double"
+            />
+            <TargetAudienceModal
+                show={showAudienceModal}
+                onClose={() => setShowAudienceModal(false)}
+                onSave={(items) => {
+                    setSelectedAudience(items);
+                    setShowAudienceModal(false);
+                }}
+            />
         </>
     );
 }
