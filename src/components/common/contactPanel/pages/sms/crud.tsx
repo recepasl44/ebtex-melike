@@ -158,9 +158,12 @@ export default function SmsCrud() {
     };
 
     const handleSubmit = async (values: FormData) => {
-        const payload = { ...(values as any) };
+        const payload: any = { ...(values as any) };
         if (values.send_option === 'schedule') {
             payload.send_time = `${values.send_date} ${values.send_time}`;
+        } else {
+            delete payload.send_time;
+            delete payload.send_date;
         }
         if (mode === 'add') {
             await addNewNotification(payload as any);
