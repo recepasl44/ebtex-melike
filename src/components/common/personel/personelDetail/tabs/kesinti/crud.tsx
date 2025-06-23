@@ -7,9 +7,9 @@ import { useInterruptionUpdate } from "../../../../../hooks/employee/interruptio
 import { Interruption } from "../../../../../../types/employee/interruption/list";
 
 type FormValues = {
-  vade: string;
+  donem: string;
   miktar: string;
-  odeme_sekli: string;
+  tarih: string;
   aciklama: string;
 };
 
@@ -25,18 +25,18 @@ export default function PersonelKesintiCrud() {
   const { updateExistingInterruption, loading: updateLoading, error: updateError } = useInterruptionUpdate();
 
   const [initialValues, setInitialValues] = useState<FormValues>({
-    vade: "",
+    donem: "",
     miktar: "",
-    odeme_sekli: "",
+    tarih: "",
     aciklama: "",
   });
 
   useEffect(() => {
     if (mode === "update" && selectedKesinti) {
       setInitialValues({
-        vade: selectedKesinti.vade || "",
+        donem: selectedKesinti.vade || "",
         miktar: selectedKesinti.miktar,
-        odeme_sekli: selectedKesinti.odeme_sekli || "",
+        tarih: selectedKesinti.created_at || "",
         aciklama: selectedKesinti.aciklama || "",
       });
     }
@@ -44,26 +44,22 @@ export default function PersonelKesintiCrud() {
 
   const getFields = (): FieldDefinition[] => [
     {
-      name: "vade",
-      label: "Vade",
+      name: "donem",
+      label: "Dönem",
       type: "date",
       required: true,
     },
     {
       name: "miktar",
-      label: "Miktar",
+      label: "Kesinti Tutarı (₺)",
       type: "currency",
       required: true,
     },
     {
-      name: "odeme_sekli",
-      label: "Ödeme Şekli",
-      type: "select",
+      name: "tarih",
+      label: "Tarih",
+      type: "date",
       required: true,
-      options: [
-        { label: "Nakit", value: "Nakit" },
-        { label: "Banka", value: "Banka" },
-      ],
     },
     {
       name: "aciklama",
@@ -78,18 +74,18 @@ export default function PersonelKesintiCrud() {
     if (mode === "add") {
       await addNewInterruption({
         personel_id: personelId,
-        vade: vals.vade,
+        vade: vals.donem,
         miktar: vals.miktar,
-        odeme_sekli: vals.odeme_sekli,
+        odeme_sekli: "",
         aciklama: vals.aciklama,
       });
     } else if (id) {
       await updateExistingInterruption({
         interruptionId: Number(id),
         payload: {
-          vade: vals.vade,
+          vade: vals.donem,
           miktar: vals.miktar,
-          odeme_sekli: vals.odeme_sekli,
+          odeme_sekli: "",
           aciklama: vals.aciklama,
         },
       });
@@ -114,6 +110,61 @@ export default function PersonelKesintiCrud() {
       error={error || null}
       onClose={() => navigate(-1)}
       autoGoBackOnModalClose
+      mode="double"
+    />
+  );
+}
+
+export interface PaymentValues {
+  odeme_sekli: string;
+  alinan: string;
+  banka_hesap_adi: string;
+}
+
+export function KesintiPaymentModal({
+  show,
+  onClose,
+  onSubmit,
+}: {
+  show: boolean;
+  onClose: () => void;
+  onSubmit?: (vals: PaymentValues) => void;
+}) {
+  const initial: PaymentValues = {
+    odeme_sekli: "",
+    alinan: "",
+    banka_hesap_adi: "",
+  };
+
+  const fields: FieldDefinition[] = [
+    {
+      name: "odeme_sekli",
+      label: "Ödeme Şekli",
+      type: "select",
+      options: [
+        { label: "Nakit", value: "Nakit" },
+        { label: "Banka", value: "Banka" },
+      ],
+      required: true,
+    },
+    { name: "alinan", label: "Alınan Tutar", type: "currency", required: true },
+    { name: "banka_hesap_adi", label: "Banka Hesap Adı", type: "text" },
+  ];
+
+  function handleSubmit(values: PaymentValues) {
+    onSubmit?.(values);
+    onClose();
+  }
+
+  return (
+    <ReusableModalForm<PaymentValues>
+      show={show}
+      onClose={onClose}
+      title="Ödeme Al"
+      fields={fields}
+      initialValues={initial}
+      onSubmit={handleSubmit}
+      confirmButtonLabel="Kaydet"
       mode="double"
     />
   );

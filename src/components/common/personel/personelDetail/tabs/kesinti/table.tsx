@@ -3,6 +3,10 @@ import { useEffect, useState, useMemo } from "react";
 import { Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable";
+import odemeAl from "../../../../../assets/images/media/ödeme-al.svg";
+import odemeAlHover from "../../../../../assets/images/media/ödeme-al-hover.svg";
+import { KesintiPaymentModal } from "./crud";
+import darkcontrol from "../../../../../utils/darkmodecontroller";
 import { useInterruptionShow } from "../../../../../hooks/employee/interruption/useInterruptionShow";
 import { useInterruptionDelete } from "../../../../../hooks/employee/interruption/useInterruptionDelete";
 import { Interruption } from "../../../../../../types/employee/interruption/list";
@@ -17,6 +21,8 @@ export default function KesintiTab({ personelId, enabled = true }: KesintiTabPro
   const actualId = personelId ?? (id ? Number(id) : 0);
   const navigate = useNavigate();
   const [data, setData] = useState<Interruption[]>([]);
+  const [showPayment, setShowPayment] = useState(false);
+  const [selected, setSelected] = useState<Interruption | null>(null);
   const { getInterruption, loading, error } = useInterruptionShow();
   const { deleteExistingInterruption, error: deleteError } = useInterruptionDelete();
 
@@ -32,18 +38,41 @@ export default function KesintiTab({ personelId, enabled = true }: KesintiTabPro
   const columns: ColumnDefinition<Interruption>[] = useMemo(() => [
     {
       key: "vade",
-      label: "Vade",
+      label: "Dönem",
       render: row => row.vade || "-",
     },
     {
       key: "miktar",
-      label: "Miktar",
-      render: row => row.miktar ? `${Number(row.miktar).toLocaleString()} ₺` : "0,00 ₺",
+      label: "Kesinti Tutarı (₺)",
+      render: row =>
+        row.miktar ? `${Number(row.miktar).toLocaleString()} ₺` : "0,00 ₺",
+    },
+    {
+      key: "created_at",
+      label: "Tarih",
+      render: row => row.created_at || "-",
     },
     {
       key: "odeme_sekli",
-      label: "Ödeme Şekli",
+      label: "Ödeme Şekli",
       render: row => row.odeme_sekli || "-",
+    },
+    {
+      key: "alinan",
+      label: "Alınan Tutar",
+      render: row =>
+        row.alinan ? `${Number(row.alinan).toLocaleString()} ₺` : "0,00 ₺",
+    },
+    {
+      key: "kalan",
+      label: "Kalan Tutar",
+      render: row =>
+        `${(Number(row.miktar || 0) - Number(row.alinan || 0)).toLocaleString()} ₺`,
+    },
+    {
+      key: "banka_hesap_adi",
+      label: "Banka Hesap Adı",
+      render: row => row.banka_hesap_adi || "-",
     },
     {
       key: "aciklama",
@@ -75,6 +104,27 @@ export default function KesintiTab({ personelId, enabled = true }: KesintiTabPro
             onClick={() => openDeleteModal?.(row)}
           >
             <i className="ti ti-trash" />
+          </Button>{" "}
+          <Button
+            onClick={() => {
+              setSelected(row);
+              setShowPayment(true);
+            }}
+            style={{ padding: 0 }}
+            variant=""
+          >
+            <img
+              src={odemeAl}
+              alt="Ödeme Al"
+              width={24}
+              height={24}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLImageElement).src = odemeAlHover;
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLImageElement).src = odemeAl;
+              }}
+            />
           </Button>
         </>
       ),
@@ -85,6 +135,17 @@ export default function KesintiTab({ personelId, enabled = true }: KesintiTabPro
     if (!row.id) return;
     deleteExistingInterruption(row.id);
   }
+
+  const textColor = darkcontrol.dataThemeMode === "dark" ? "#fff" : "#000";
+  const totalKesinti = data.reduce((acc, r) => acc + Number(r.miktar || 0), 0);
+  const totalAlinan = data.reduce((acc, r) => acc + Number(r.alinan || 0), 0);
+  const totalKalan = totalKesinti - totalAlinan;
+
+  const footer = (
+    <div className="d-flex justify-content-end fw-bold me-3" style={{ color: textColor }}>
+      Toplam Kesinti: {totalKesinti.toLocaleString()} ₺ | Toplam Alınan: {totalAlinan.toLocaleString()} ₺ | Toplam Kalan: {totalKalan.toLocaleString()} ₺
+    </div>
+  );
 
   return (
     <div>
@@ -114,7 +175,16 @@ export default function KesintiTab({ personelId, enabled = true }: KesintiTabPro
         exportFileName="kesintiler"
         showExportButtons
         onDeleteRow={handleDeleteRow}
+        customFooter={footer}
       />
+
+      {showPayment && selected && (
+        <KesintiPaymentModal
+          show={showPayment}
+          onClose={() => setShowPayment(false)}
+          onSubmit={() => setShowPayment(false)}
+        />
+      )}
     </div>
   );
 }
