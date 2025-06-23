@@ -14,6 +14,7 @@ interface FormData extends FormikValues {
     category_id: string;
     source_id: string;
     sender_id: string;
+    send_date: string;
     send_time: string;
     send_sms_email?: boolean;
     status: string;
@@ -39,6 +40,7 @@ export default function NotificationEdit() {
         category_id: '',
         source_id: '',
         sender_id: '',
+        send_date: '',
         send_time: '',
         send_sms_email: false,
         status: '1',
@@ -53,13 +55,15 @@ export default function NotificationEdit() {
 
     useEffect(() => {
         if (notification) {
+            const [d, t] = (notification.send_time || '').split(' ');
             setInitialValues({
                 title: notification.title ?? '',
                 message: notification.message ?? '',
                 category_id: String(notification.category_id ?? ''),
                 source_id: String(notification.source_id ?? ''),
                 sender_id: String(notification.sender_id ?? ''),
-                send_time: notification.send_time ?? '',
+                send_date: d ?? '',
+                send_time: t ?? '',
                 send_sms_email: false,
                 status: String(notification.status ?? '1'),
                 group_ids: [],
@@ -101,7 +105,8 @@ export default function NotificationEdit() {
             options: senderOptions,
             onClick: () => setEnabled((e) => ({ ...e, notifications: true })),
         },
-        { name: 'send_time', label: 'Gönderim Zamanı', type: 'date', required: true },
+        { name: 'send_date', label: 'Gönderim Tarihi', type: 'date', required: true },
+        { name: 'send_time', label: 'Gönderim Saati', type: 'time', required: true },
         { name: 'send_sms_email', label: 'SMS/E-posta ile gönderilsin mi?', type: 'checkbox' },
         { name: 'status', label: 'Durum', type: 'select', options: statusOptions },
         {
@@ -132,7 +137,13 @@ export default function NotificationEdit() {
 
     const handleSubmit = async (values: FormData) => {
         if (id) {
-            await updateExistingNotification({ notificationId: Number(id), payload: { ...(values as any) } });
+            await updateExistingNotification({
+                notificationId: Number(id),
+                payload: {
+                    ...(values as any),
+                    send_time: `${values.send_date} ${values.send_time}`,
+                },
+            });
         }
         navigate(`${import.meta.env.BASE_URL}contact-panel/notifications`);
     };
