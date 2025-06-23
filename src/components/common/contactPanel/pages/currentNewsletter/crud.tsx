@@ -7,7 +7,7 @@ import ReusableModalForm, { FieldDefinition } from '../../../ReusableModalForm';
 import { useBulletinAdd } from '../../../../hooks/bulletin/useAdd';
 import { useBulletinUpdate } from '../../../../hooks/bulletin/useUpdate';
 import { useBulletinShow } from '../../../../hooks/bulletin/useDetail';
-import { useUsersTable } from '../../../../hooks/user/useList';
+import { useBulletinsList } from '../../../../hooks/bulletin/useBulletinsList';
 import { Button } from 'react-bootstrap';
 
 interface FormData extends FormikValues {
@@ -35,8 +35,8 @@ export default function CurrentNewsletterCrud() {
     const { updateExistingBulletin, status: updStatus, error: updError } =
         useBulletinUpdate();
 
-    const [enabled, setEnabled] = useState({ users: false });
-    const { usersData = [] } = useUsersTable({ enabled: enabled.users, pageSize: 999 });
+    const [enabled, setEnabled] = useState({ bulletins: false });
+    const { bulletinsData = [] } = useBulletinsList({ enabled: enabled.bulletins, pageSize: 999 });
 
     const [initialValues, setInitialValues] = useState<FormData>({
         title: '',
@@ -88,7 +88,9 @@ export default function CurrentNewsletterCrud() {
         { value: '2', label: 'Topluluk' },
     ];
 
-    const userOptions = usersData.map((u) => ({ value: String(u.id), label: u.name_surname || `${u.first_name} ${u.last_name}` }));
+    const userOptions = bulletinsData
+        .map((b) => ({ value: String(b.created_by), label: (b as any).createdby?.name_surname || '-' }))
+        .filter((opt, idx, arr) => arr.findIndex((o) => o.value === opt.value) === idx);
 
     const getFields = (): FieldDefinition[] => {
         if (mode === 'add') {
@@ -107,7 +109,7 @@ export default function CurrentNewsletterCrud() {
                     label: 'Gönderen',
                     type: 'select',
                     options: userOptions,
-                    onClick: () => setEnabled((e) => ({ ...e, users: true })),
+                    onClick: () => setEnabled((e) => ({ ...e, bulletins: true })),
                 },
                 { name: 'start_date', label: 'Yayın Tarihi', type: 'date', required: true },
                 { name: 'send_time', label: 'Gönderim Saati', type: 'time', required: true },
@@ -145,7 +147,7 @@ export default function CurrentNewsletterCrud() {
                 label: 'Gönderen',
                 type: 'select',
                 options: userOptions,
-                onClick: () => setEnabled((e) => ({ ...e, users: true })),
+                onClick: () => setEnabled((e) => ({ ...e, bulletins: true })),
             },
             { name: 'start_date', label: 'Yayın Tarihi', type: 'date', required: true },
             { name: 'send_time', label: 'Gönderim Saati', type: 'time', required: true },
