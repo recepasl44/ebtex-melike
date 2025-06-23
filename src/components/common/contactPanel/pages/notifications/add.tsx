@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FormikValues } from 'formik';
 import ReusableModalForm, { FieldDefinition } from '../../../ReusableModalForm';
 import { useNotificationAdd } from '../../../../hooks/notifications/useAdd';
-import { useUsersTable } from '../../../../hooks/user/useList';
+import { useNotificationsList } from '../../../../hooks/notifications/useList';
 import { Button } from 'react-bootstrap';
 import TargetAudienceModal, { AudienceItem } from './TargetAudienceModal';
 
@@ -21,8 +21,11 @@ interface FormData extends FormikValues {
 export default function NotificationAdd() {
     const navigate = useNavigate();
     const { addNewNotification, status, error } = useNotificationAdd();
-    const [enabled, setEnabled] = useState({ users: false });
-    const { usersData = [] } = useUsersTable({ enabled: enabled.users, pageSize: 999 });
+    const [enabled, setEnabled] = useState({ notifications: false });
+    const { notificationsData = [] } = useNotificationsList({
+        enabled: enabled.notifications,
+        pageSize: 999,
+    });
     const [showAudienceModal, setShowAudienceModal] = useState(false);
     const [selectedAudience, setSelectedAudience] = useState<AudienceItem[]>([]);
 
@@ -49,7 +52,9 @@ export default function NotificationAdd() {
         { value: '2', label: 'Manuel' },
     ];
 
-    const userOptions = usersData.map((u) => ({ value: String(u.id), label: u.name_surname || `${u.first_name} ${u.last_name}` }));
+    const senderOptions = notificationsData
+        .map((n) => ({ value: String(n.sender_id), label: (n as any).sender?.name_surname || '-' }))
+        .filter((opt, idx, arr) => arr.findIndex((o) => o.value === opt.value) === idx);
 
     const fields: FieldDefinition[] = [
         { name: 'title', label: 'Başlık', type: 'text', required: true },
@@ -60,8 +65,8 @@ export default function NotificationAdd() {
             name: 'sender_id',
             label: 'Gönderen',
             type: 'select',
-            options: userOptions,
-            onClick: () => setEnabled((e) => ({ ...e, users: true })),
+            options: senderOptions,
+            onClick: () => setEnabled((e) => ({ ...e, notifications: true })),
         },
         { name: 'send_time', label: 'Gönderim Zamanı', type: 'date', required: true },
         { name: 'send_sms_email', label: 'SMS/E-posta ile gönderilsin mi?', type: 'checkbox' },
