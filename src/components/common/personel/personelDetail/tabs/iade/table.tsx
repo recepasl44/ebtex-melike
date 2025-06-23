@@ -28,30 +28,32 @@ export default function IadeTab({ personelId, enabled = true }: IadeTabProps) {
     })();
   }, [enabled, actualId]);
 
-  const columns: ColumnDefinition<Refund>[] = useMemo(() => [
-    {
-      key: "tarih",
-      label: "Tarih",
-      render: row => row.tarih || "-",
-    },
-    {
-      key: "miktar",
-      label: "Miktar",
-      render: row => row.miktar ? `${Number(row.miktar).toLocaleString()} ₺` : "0,00 ₺",
-    },
-    {
-      key: "odeme_sekli",
-      label: "Ödeme Şekli",
-      render: row => row.odeme_sekli || "-",
-    },
-    {
-      key: "aciklama",
-      label: "Açıklama",
-      render: row => row.aciklama || "-",
-    },
-    {
-      key: "actions",
-      label: "İşlemler",
+  const columns: ColumnDefinition<Refund>[] = useMemo(
+    () => [
+      {
+        key: "donem",
+        label: "Dönem",
+        render: (row) => (row as any).donem || (row as any).vade || "-",
+      },
+      {
+        key: "miktar",
+        label: "Prim Tutarı (₺)",
+        render: (row) =>
+          row.miktar ? `${Number(row.miktar).toLocaleString()} ₺` : "0,00 ₺",
+      },
+      {
+        key: "tarih",
+        label: "Tarih",
+        render: (row) => (row as any).tarih || "-",
+      },
+      {
+        key: "aciklama",
+        label: "Açıklama",
+        render: (row) => row.aciklama || "-",
+      },
+      {
+        key: "actions",
+        label: "İşlemler",
       render: (row, openDeleteModal) => (
         <>
           <Button
@@ -79,6 +81,17 @@ export default function IadeTab({ personelId, enabled = true }: IadeTabProps) {
       ),
     },
   ], [navigate, actualId, data]);
+
+  const totalMiktar = useMemo(
+    () => data.reduce((acc, cur) => acc + Number((cur as any).miktar || 0), 0),
+    [data]
+  );
+
+  const footer = (
+    <div className="text-end fw-bold">
+      Toplam: {totalMiktar.toLocaleString()} ₺
+    </div>
+  );
 
   function handleDeleteRow(row: Refund) {
     if (!row.id) return;
@@ -113,6 +126,7 @@ export default function IadeTab({ personelId, enabled = true }: IadeTabProps) {
         exportFileName="iadeler"
         showExportButtons
         onDeleteRow={handleDeleteRow}
+        customFooter={footer}
       />
     </div>
 );
