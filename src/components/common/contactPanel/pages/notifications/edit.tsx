@@ -145,7 +145,7 @@ export default function NotificationEdit() {
                 },
             });
         }
-        navigate(`${import.meta.env.BASE_URL}contact-panel/notifications`);
+        navigate(`${import.meta.env.BASE_URL}contact-panel?tab=notifications`);
     };
 
     const isLoading = updStatus === 'LOADING' || detailStatus === 'LOADING';
@@ -163,7 +163,7 @@ export default function NotificationEdit() {
                 cancelButtonLabel="Vazgeç"
                 isLoading={isLoading}
                 error={combinedError || undefined}
-                onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel/notifications`)}
+                onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel?tab=notifications`)}
                 autoGoBackOnModalClose
                 mode="double"
             />

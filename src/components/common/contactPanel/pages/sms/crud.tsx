@@ -170,7 +170,7 @@ export default function SmsCrud() {
         } else if (mode === 'edit' && id) {
             await updateExistingNotification({ notificationId: Number(id), payload: payload as any });
         }
-        navigate(`${import.meta.env.BASE_URL}contact-panel`);
+        navigate(`${import.meta.env.BASE_URL}contact-panel?tab=sms`);
     };
 
     const isLoading =
@@ -190,7 +190,7 @@ export default function SmsCrud() {
                 cancelButtonLabel="Vazgeç"
                 isLoading={isLoading}
                 error={combinedError || undefined}
-                onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel/sms`)}
+                onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel?tab=sms`)}
                 autoGoBackOnModalClose
                 mode="double"
             />

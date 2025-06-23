@@ -95,7 +95,7 @@ export default function NotificationAdd() {
             send_time: `${values.send_date} ${values.send_time}`,
             group_ids: selectedAudience.map((a) => a.id),
         });
-        navigate(`${import.meta.env.BASE_URL}contact-panel/notifications`);
+        navigate(`${import.meta.env.BASE_URL}contact-panel?tab=notifications`);
     };
 
     const isLoading = status === 'LOADING';
@@ -114,7 +114,7 @@ export default function NotificationAdd() {
                 cancelButtonLabel="Vazgeç"
                 isLoading={isLoading}
                 error={error || undefined}
-                onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel/notifications`)}
+                onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel?tab=notifications`)}
                 autoGoBackOnModalClose
                 mode="double"
             />
