@@ -6,6 +6,7 @@ export interface RefundAddPayload {
   personel_id : number;
   miktar: string;
   odeme_sekli: string;
+  banka_hesap_adi: string;
   aciklama: string;
 }
 

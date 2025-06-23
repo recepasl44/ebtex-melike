@@ -8,8 +8,9 @@ import { Refund } from "../../../../../../types/employee/refund/list";
 
 type FormValues = {
   tarih: string;
-  miktar: string;
   odeme_sekli: string;
+  miktar: string;
+  banka_hesap_adi: string;
   aciklama: string;
 };
 
@@ -26,8 +27,9 @@ export default function PersonelIadeCrud() {
 
   const [initialValues, setInitialValues] = useState<FormValues>({
     tarih: "",
-    miktar: "",
     odeme_sekli: "",
+    miktar: "",
+    banka_hesap_adi: "",
     aciklama: "",
   });
 
@@ -35,8 +37,9 @@ export default function PersonelIadeCrud() {
     if (mode === "update" && selectedIade) {
       setInitialValues({
         tarih: selectedIade.tarih || "",
-        miktar: selectedIade.miktar,
         odeme_sekli: selectedIade.odeme_sekli || "",
+        miktar: selectedIade.miktar,
+        banka_hesap_adi: selectedIade.banka_hesap_adi || "",
         aciklama: selectedIade.aciklama || "",
       });
     }
@@ -50,20 +53,25 @@ export default function PersonelIadeCrud() {
       required: true,
     },
     {
-      name: "miktar",
-      label: "Miktar",
-      type: "currency",
-      required: true,
-    },
-    {
       name: "odeme_sekli",
-      label: "Ödeme Şekli",
+      label: "Ödeme Şekli",
       type: "select",
       required: true,
       options: [
         { label: "Nakit", value: "Nakit" },
         { label: "Banka", value: "Banka" },
       ],
+    },
+    {
+      name: "miktar",
+      label: "Alınan Tutar (₺)",
+      type: "currency",
+      required: true,
+    },
+    {
+      name: "banka_hesap_adi",
+      label: "Banka Hesap Adı",
+      type: "text",
     },
     {
       name: "aciklama",
@@ -79,8 +87,9 @@ export default function PersonelIadeCrud() {
       await addNewRefund({
         personel_id: personelId,
         tarih: vals.tarih,
-        miktar: vals.miktar,
         odeme_sekli: vals.odeme_sekli,
+        miktar: vals.miktar,
+        banka_hesap_adi: vals.banka_hesap_adi,
         aciklama: vals.aciklama,
       });
     } else if (id) {
@@ -88,8 +97,9 @@ export default function PersonelIadeCrud() {
         refundId: Number(id),
         payload: {
           tarih: vals.tarih,
-          miktar: vals.miktar,
           odeme_sekli: vals.odeme_sekli,
+          miktar: vals.miktar,
+          banka_hesap_adi: vals.banka_hesap_adi,
           aciklama: vals.aciklama,
         },
       });

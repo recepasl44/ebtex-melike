@@ -7,6 +7,7 @@ export interface RefundUpdatePayload {
     tarih: string;
     miktar: string;
     odeme_sekli: string;
+    banka_hesap_adi: string;
     aciklama: string;
   };
 }

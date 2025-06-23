@@ -31,20 +31,25 @@ export default function IadeTab({ personelId, enabled = true }: IadeTabProps) {
   const columns: ColumnDefinition<Refund>[] = useMemo(
     () => [
       {
-        key: "donem",
-        label: "Dönem",
-        render: (row) => (row as any).donem || (row as any).vade || "-",
+        key: "tarih",
+        label: "Tarih",
+        render: (row) => row.tarih || "-",
+      },
+      {
+        key: "odeme_sekli",
+        label: "Ödeme Şekli",
+        render: (row) => row.odeme_sekli || "-",
       },
       {
         key: "miktar",
-        label: "Prim Tutarı (₺)",
+        label: "Alınan Tutar (₺)",
         render: (row) =>
           row.miktar ? `${Number(row.miktar).toLocaleString()} ₺` : "0,00 ₺",
       },
       {
-        key: "tarih",
-        label: "Tarih",
-        render: (row) => (row as any).tarih || "-",
+        key: "banka_hesap_adi",
+        label: "Banka Hesap Adı",
+        render: (row) => row.banka_hesap_adi || "-",
       },
       {
         key: "aciklama",
