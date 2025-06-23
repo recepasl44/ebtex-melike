@@ -6,8 +6,9 @@ import { usePrimlerUpdate } from "../../../../../hooks/employee/prim/usePrimlerU
 import { Primler } from "../../../../../../types/employee/primler/list";
 
 type FormValues = {
-  vade: string;
-  miktar: string;
+  donem: string;
+  prim_tutari: string;
+  tarih: string;
   aciklama: string;
 };
 
@@ -34,16 +35,18 @@ export default function PersonelPrimlerCrud() {
   } = usePrimlerUpdate();
 
   const [initialValues, setInitialValues] = useState<FormValues>({
-    vade: "",
-    miktar: "",
+    donem: "",
+    prim_tutari: "",
+    tarih: "",
     aciklama: "",
   });
 
   useEffect(() => {
     if (mode === "update" && selectedPrimler) {
       setInitialValues({
-        vade: selectedPrimler.vade || "",
-        miktar: selectedPrimler.miktar,
+        donem: (selectedPrimler as any).donem || selectedPrimler.vade || "",
+        prim_tutari: (selectedPrimler as any).prim_tutari || selectedPrimler.miktar,
+        tarih: (selectedPrimler as any).tarih || "",
         aciklama: selectedPrimler.aciklama || "",
       });
     }
@@ -51,15 +54,21 @@ export default function PersonelPrimlerCrud() {
 
   const getFields = (): FieldDefinition[] => [
     {
-      name: "vade",
-      label: "Vade",
+      name: "donem",
+      label: "Dönem",
       type: "date",
       required: true,
     },
     {
-      name: "miktar",
-      label: "Prim Miktarı",
+      name: "prim_tutari",
+      label: "Prim Tutarı (₺)",
       type: "currency",
+      required: true,
+    },
+    {
+      name: "tarih",
+      label: "Tarih",
+      type: "date",
       required: true,
     },
     {
@@ -75,19 +84,21 @@ export default function PersonelPrimlerCrud() {
     if (mode === "add") {
       await addNewPrimler({
         personel_id: personelId,
-        vade: vals.vade,
-        miktar: vals.miktar,
+        vade: vals.donem,
+        miktar: vals.prim_tutari,
+        tarih: vals.tarih,
         aciklama: vals.aciklama,
-      });
+      } as any);
     } else if (id) {
       await updateExistingPrimler({
         primlerId: Number(id),
         payload: {
-          vade: vals.vade,
-          miktar: vals.miktar,
+          vade: vals.donem,
+          miktar: vals.prim_tutari,
+          tarih: vals.tarih,
           aciklama: vals.aciklama,
-        },
-      });
+        } as any,
+      } as any);
     }
 
     navigate(-1);
