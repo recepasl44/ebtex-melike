@@ -13,6 +13,7 @@ interface FormData extends FormikValues {
     category_id: string;
     source_id: string;
     sender_id: string;
+    send_date: string;
     send_time: string;
     send_sms_email?: boolean;
     group_ids: string[];
@@ -35,6 +36,7 @@ export default function NotificationAdd() {
         category_id: '',
         source_id: '',
         sender_id: '',
+        send_date: '',
         send_time: '',
         send_sms_email: false,
         group_ids: [],
@@ -68,7 +70,8 @@ export default function NotificationAdd() {
             options: senderOptions,
             onClick: () => setEnabled((e) => ({ ...e, notifications: true })),
         },
-        { name: 'send_time', label: 'Gönderim Zamanı', type: 'date', required: true },
+        { name: 'send_date', label: 'Gönderim Tarihi', type: 'date', required: true },
+        { name: 'send_time', label: 'Gönderim Saati', type: 'time', required: true },
         { name: 'send_sms_email', label: 'SMS/E-posta ile gönderilsin mi?', type: 'checkbox' },
         {
             name: 'group_ids',
@@ -89,6 +92,7 @@ export default function NotificationAdd() {
     const handleSubmit = async (values: FormData) => {
         await addNewNotification({
             ...(values as any),
+            send_time: `${values.send_date} ${values.send_time}`,
             group_ids: selectedAudience.map((a) => a.id),
         });
         navigate(`${import.meta.env.BASE_URL}contact-panel/notifications`);
