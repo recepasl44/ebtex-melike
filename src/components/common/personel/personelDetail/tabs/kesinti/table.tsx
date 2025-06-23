@@ -3,10 +3,10 @@ import { useEffect, useState, useMemo } from "react";
 import { Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable";
-import odemeAl from "../../../../../assets/images/media/ödeme-al.svg";
-import odemeAlHover from "../../../../../assets/images/media/ödeme-al-hover.svg";
+import odemeAl from "../../../../../../assets/images/media/ödeme-al.svg";
+import odemeAlHover from "../../../../../../assets/images/media/ödeme-al-hover.svg";
 import { KesintiPaymentModal } from "./crud";
-import darkcontrol from "../../../../../utils/darkmodecontroller";
+import darkcontrol from "../../../../../../utils/darkmodecontroller";
 import { useInterruptionShow } from "../../../../../hooks/employee/interruption/useInterruptionShow";
 import { useInterruptionDelete } from "../../../../../hooks/employee/interruption/useInterruptionDelete";
 import { Interruption } from "../../../../../../types/employee/interruption/list";
@@ -150,28 +150,22 @@ export default function KesintiTab({ personelId, enabled = true }: KesintiTabPro
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h6>Kesintiler</h6>
-        <Button
-          variant="success"
-          onClick={() =>
-            navigate("/personelKesintiCrud", { state: { personelId: actualId } })
-          }
-        >
-          Ekle
-        </Button>
+
       </div>
 
       <ReusableTable<Interruption>
         columns={columns}
+        onAdd={() => navigate("/personelKesintiCrud")}
         data={data}
         loading={loading}
+        tableMode="single"
         error={error || deleteError}
         currentPage={1}
         totalPages={1}
         totalItems={data.length}
         pageSize={data.length}
-        onPageChange={() => {}}
-        onPageSizeChange={() => {}}
+        onPageChange={() => { }}
+        onPageSizeChange={() => { }}
         exportFileName="kesintiler"
         showExportButtons
         onDeleteRow={handleDeleteRow}
