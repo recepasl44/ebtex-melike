@@ -96,6 +96,7 @@ export default function SmsCrud() {
                 label: 'Gönderen',
                 type: 'select',
                 options: userOptions,
+                required: true,
             },
             {
                 name: 'send_option',
