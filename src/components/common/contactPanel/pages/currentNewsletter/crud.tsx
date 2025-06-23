@@ -198,8 +198,11 @@ export default function CurrentNewsletterCrud() {
                 payload,
             });
         }
-        navigate(`${import.meta.env.BASE_URL}contact-panel`, { replace: true });
-        setSearchParams({ tab: 'current-newsletter' }, { replace: true });
+        navigate(
+            `${import.meta.env.BASE_URL}contact-panel/current-newsletter`,
+            { replace: true }
+        );
+        setSearchParams({});
     };
 
     return (
@@ -215,8 +218,11 @@ export default function CurrentNewsletterCrud() {
                 isLoading={isLoading}
                 error={combinedError || undefined}
                 onClose={() => {
-                    navigate(`${import.meta.env.BASE_URL}contact-panel`, { replace: true });
-                    setSearchParams({ tab: 'current-newsletter' });
+                    navigate(
+                        `${import.meta.env.BASE_URL}contact-panel/current-newsletter`,
+                        { replace: true }
+                    );
+                    setSearchParams({});
                 }}
                 autoGoBackOnModalClose
                 mode="double"
