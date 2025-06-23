@@ -170,7 +170,7 @@ export default function SmsCrud() {
         } else if (mode === 'edit' && id) {
             await updateExistingNotification({ notificationId: Number(id), payload: payload as any });
         }
-        navigate(`${import.meta.env.BASE_URL}contact-panel/sms`);
+        navigate(`${import.meta.env.BASE_URL}contact-panel`);
     };
 
     const isLoading =
