@@ -1,9 +1,9 @@
 
-import { useEffect, useState, useMemo } from "react";
+import { useMemo } from "react";
 import { Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable";
-import { usePrimlerShow } from "../../../../../hooks/employee/prim/usePrimlerShow";
+import { usePrimlerList } from "../../../../../hooks/employee/prim/usePrimlerList";
 import { usePrimlerDelete } from "../../../../../hooks/employee/prim/usePrimlerDelete";
 import { Primler } from "../../../../../../types/employee/primler/list";
 
@@ -12,27 +12,16 @@ interface PersonelPrimTabProps {
   enabled?: boolean;
 }
 
-export default function PersonelPrimTab({
-  personelId,
-  enabled = true,
-}: PersonelPrimTabProps) {
+export default function PersonelPrimTab({ personelId }: PersonelPrimTabProps) {
   const { id } = useParams<{ id?: string }>();
   const actualId = personelId ?? (id ? Number(id) : 0);
   const navigate = useNavigate();
-  const [data, setData] = useState<Primler[]>([]);
 
-  const { getPrimler, loading, error } = usePrimlerShow();
+  const { primler: primlerData, loading, error } = usePrimlerList({
+    enabled: true,
+    personel_id: actualId,
+  });
   const { deleteExistingPrimler, error: deleteError } = usePrimlerDelete();
-
-  useEffect(() => {
-    if (!enabled) return;
-    (async () => {
-      const res = await getPrimler(actualId);
-      // show endpoint dönen array’i normalize et
-      const arr = Array.isArray(res) ? res : res ? [res] : [];
-      setData(arr);
-    })();
-  }, [enabled, actualId]);
 
   const columns: ColumnDefinition<Primler>[] = useMemo(
     () => [
@@ -66,7 +55,7 @@ export default function PersonelPrimTab({
                 navigate(`/personelPrimlerCrud/${row.id}`, {
                   state: {
                     personelId: actualId,
-                    selectedPrimler: data.find((d) => d.id === row.id),
+                    selectedPrimler: primlerData.find((d) => d.id === row.id),
                   },
                 })
               }
@@ -84,7 +73,7 @@ export default function PersonelPrimTab({
         ),
       },
     ],
-    [navigate, actualId, data]
+    [navigate, actualId, primlerData]
   );
 
   function handleDeleteRow(row: Primler) {
@@ -105,13 +94,13 @@ export default function PersonelPrimTab({
         }
         columns={columns}
         tableMode="single"
-        data={data}
+        data={primlerData}
         loading={loading}
         error={error || deleteError}
         currentPage={1}
         totalPages={1}
-        totalItems={data.length}
-        pageSize={data.length}
+        totalItems={primlerData.length}
+        pageSize={primlerData.length}
         onPageChange={() => { }}
         onPageSizeChange={() => { }}
         exportFileName="primler"
