@@ -196,7 +196,7 @@ export default function CurrentNewsletterCrud() {
                 payload,
             });
         }
-        navigate(`${import.meta.env.BASE_URL}contact-panel/current-newsletter`);
+        navigate(`${import.meta.env.BASE_URL}contact-panel`);
     };
 
     return (
@@ -211,7 +211,7 @@ export default function CurrentNewsletterCrud() {
                 cancelButtonLabel="Vazgeç"
                 isLoading={isLoading}
                 error={combinedError || undefined}
-                onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel/current-newsletter`)}
+                onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel`)}
                 autoGoBackOnModalClose
                 mode="double"
             />
