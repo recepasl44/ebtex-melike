@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { FormikValues } from 'formik';
 import TargetAudienceModal, { AudienceItem } from './TargetAudienceModal';
 
@@ -25,7 +25,6 @@ interface FormData extends FormikValues {
 
 export default function SmsCrud() {
     const navigate = useNavigate();
-    const [, setSearchParams] = useSearchParams();
     const { id } = useParams<{ id?: string }>();
     const mode: 'add' | 'edit' = id ? 'edit' : 'add';
 
@@ -172,7 +171,6 @@ export default function SmsCrud() {
             await updateExistingNotification({ notificationId: Number(id), payload: payload as any });
         }
         navigate(`${import.meta.env.BASE_URL}contact-panel`, { replace: true });
-        setSearchParams({ tab: 'sms' });
     };
 
     const isLoading =
@@ -196,7 +194,6 @@ export default function SmsCrud() {
                     navigate(`${import.meta.env.BASE_URL}contact-panel`, {
                         replace: true,
                     });
-                    setSearchParams({ tab: 'sms' });
                 }}
                 autoGoBackOnModalClose
                 mode="double"

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { FormikValues } from 'formik';
 import ReusableModalForm, { FieldDefinition } from '../../../ReusableModalForm';
@@ -24,7 +24,6 @@ interface FormData extends FormikValues {
 
 export default function NotificationEdit() {
     const navigate = useNavigate();
-    const [, setSearchParams] = useSearchParams();
     const { id } = useParams<{ id?: string }>();
     const { notification, getNotification, status: detailStatus, error: detailError } = useNotificationDetail();
     const { updateExistingNotification, status: updStatus, error: updError } = useNotificationUpdate();
@@ -141,7 +140,6 @@ export default function NotificationEdit() {
             });
         }
         navigate(`${import.meta.env.BASE_URL}contact-panel`, { replace: true });
-        setSearchParams({ tab: 'notifications' });
     };
 
     const isLoading = updStatus === 'LOADING' || detailStatus === 'LOADING';
@@ -162,7 +160,6 @@ export default function NotificationEdit() {
                     navigate(`${import.meta.env.BASE_URL}contact-panel`, {
                         replace: true,
                     });
-                    setSearchParams({ tab: 'notifications' });
                 }}
                 autoGoBackOnModalClose
                 mode="double"

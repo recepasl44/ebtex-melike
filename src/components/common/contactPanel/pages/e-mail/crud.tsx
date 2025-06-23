@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { FormikValues } from 'formik'
 
 import ReusableModalForm, { FieldDefinition } from '../../../ReusableModalForm'
@@ -24,7 +24,6 @@ interface FormData extends FormikValues {
 
 export default function EmailCrud() {
     const navigate = useNavigate()
-    const [, setSearchParams] = useSearchParams()
     const { id } = useParams<{ id?: string }>()
     const mode: 'add' | 'update' = id ? 'update' : 'add'
 
@@ -137,7 +136,6 @@ export default function EmailCrud() {
             await updateExistingNotification({ notificationId: Number(id), payload })
         }
         navigate(`${import.meta.env.BASE_URL}contact-panel`, { replace: true })
-        setSearchParams({ tab: 'e-mail' })
     }
 
     const isLoading =
@@ -161,7 +159,6 @@ export default function EmailCrud() {
                     navigate(`${import.meta.env.BASE_URL}contact-panel`, {
                         replace: true,
                     })
-                    setSearchParams({ tab: 'e-mail' })
                 }}
                 autoGoBackOnModalClose
                 mode="double"
