@@ -135,7 +135,7 @@ export default function EmailCrud() {
         } else if (mode === 'update' && id) {
             await updateExistingNotification({ notificationId: Number(id), payload })
         }
-        navigate(`${import.meta.env.BASE_URL}contact-panel/e-mail`)
+        navigate(`${import.meta.env.BASE_URL}contact-panel?tab=e-mail`)
     }
 
     const isLoading =
@@ -155,7 +155,7 @@ export default function EmailCrud() {
                 cancelButtonLabel="Vazgeç"
                 isLoading={isLoading}
                 error={combinedError || undefined}
-                onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel/e-mail`)}
+                onClose={() => navigate(`${import.meta.env.BASE_URL}contact-panel?tab=e-mail`)}
                 autoGoBackOnModalClose
                 mode="double"
             />
