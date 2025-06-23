@@ -4,6 +4,7 @@ import CompensationListStatus from "../../../enums/employee/compensation/list";
 export interface CompensationUpdatePayload {
   compensationId: number;
   payload: {
+    tarih: string;
     tazminat_turu: string;
     odeme_sekli: string;
     miktar: string;

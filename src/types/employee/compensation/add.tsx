@@ -3,6 +3,7 @@ import { Compensation } from "./list";
 
 export interface compensationAddPayload {
   personel_id : number;
+  tarih: string;
   tazminat_turu: string;
   odeme_sekli: string;
   miktar: string;

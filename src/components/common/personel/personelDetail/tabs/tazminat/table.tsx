@@ -2,54 +2,71 @@ import { useEffect, useMemo, useState } from "react";
 import { Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable";
-import { WeeklyLessonCount } from "../../../../../../types/employee/weekly_lesson_count/list";
-import { useWeeklyLessonCountShow } from "../../../../../hooks/employee/weekly_lesson_count/useWeeklyLessonCountShow";
-import { useWeeklyLessonCountDelete } from "../../../../../hooks/employee/weekly_lesson_count/useWeeklyLessonCountDelete";
+import { Compensation } from "../../../../../../types/employee/compensation/list";
+import { useCompensationShow } from "../../../../../hooks/employee/compensation/useDetail";
+import { useCompensationDelete } from "../../../../../hooks/employee/compensation/useDelete";
 
-interface WeeklyLessonTabProps {
+interface CompensationTabProps {
   personelId?: number;
   enabled?: boolean;
 }
 
-export default function WeeklyLessonCountTab({
+export default function CompensationTab({
   personelId,
   enabled = true,
-}: WeeklyLessonTabProps) {
+}: CompensationTabProps) {
   const { id } = useParams<{ id?: string }>();
   const actualId = personelId ?? (id ? Number(id) : 0);
   const navigate = useNavigate();
-  const [data, setData] = useState<WeeklyLessonCount[]>([]);
+  const [data, setData] = useState<Compensation[]>([]);
 
-  const {  getWeeklyLessonCount, loading, error } =
-    useWeeklyLessonCountShow();
-
-  const { deleteExistingWeeklyLessonCount, error: deleteError } =
-    useWeeklyLessonCountDelete();
+  const { getCompensation, loading, error } = useCompensationShow();
+  const { deleteExistingCompensation, error: deleteError } =
+    useCompensationDelete();
 
   useEffect(() => {
     if (!enabled) return;
 
     (async () => {
-      const res = await getWeeklyLessonCount(actualId);
+      const res = await getCompensation(actualId);
       const arr = Array.isArray(res) ? res : res ? [res] : [];
       setData(arr);
     })();
   }, [enabled, actualId]);
 
-  const columns: ColumnDefinition<WeeklyLessonCount>[] = useMemo(
+  const columns: ColumnDefinition<Compensation>[] = useMemo(
     () => [
       {
-        key: "hafta_kac_gun",
-        label: "Hafta Kaç Gün",
-        render: (row) => row.hafta_kac_gun,
+        key: "tarih",
+        label: "Tarih",
+        render: (row) =>
+          ((row as any).tarih || row.created_at)?.split("T")[0] || "-",
       },
       {
-        key: "gunluk_ucret",
-        label: "Günlük Ücret",
+        key: "tazminat_turu",
+        label: "Tazminat Türü",
+        render: (row) => row.tazminat_turu || "-",
+      },
+      {
+        key: "odeme_sekli",
+        label: "Ödeme Şekli",
+        render: (row) => row.odeme_sekli || "-",
+      },
+      {
+        key: "miktar",
+        label: "Ödenen Tutar (₺)",
         render: (row) =>
-          row.gunluk_ucret
-            ? `${Number(row.gunluk_ucret).toLocaleString()} ₺`
-            : "0,00 ₺",
+          row.miktar ? `${Number(row.miktar).toLocaleString()} ₺` : "0,00 ₺",
+      },
+      {
+        key: "banka_hesap_adi",
+        label: "Banka Hesap Adı",
+        render: (row) => row.banka_hesap_adi || "-",
+      },
+      {
+        key: "aciklama",
+        label: "Açıklama",
+        render: (row) => row.aciklama || "-",
       },
       {
         key: "actions",
@@ -60,10 +77,10 @@ export default function WeeklyLessonCountTab({
               size="sm"
               variant="primary"
               onClick={() =>
-                navigate(`/personelWeeklyLessonCrud/${row.id}`, {
+                navigate(`/personelCompensationCrud/${row.id}`, {
                   state: {
                     personelId: actualId,
-                    selectedWeekly: data.find((d) => d.id === row.id),
+                    selectedCompensation: data.find((d) => d.id === row.id),
                   },
                 })
               }
@@ -84,19 +101,19 @@ export default function WeeklyLessonCountTab({
     [navigate, actualId, data]
   );
 
-  function handleDeleteRow(row: WeeklyLessonCount) {
+  function handleDeleteRow(row: Compensation) {
     if (!row.id) return;
-    deleteExistingWeeklyLessonCount(row.id);
+    deleteExistingCompensation(row.id);
   }
 
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h6>Haftalık Ders Bilgisi</h6>
+        <h6>Tazminatlar</h6>
         <Button
           variant="success"
           onClick={() =>
-            navigate("/personelWeeklyLessonCrud", {
+            navigate("/personelCompensationCrud", {
               state: { personelId: actualId },
             })
           }
@@ -105,7 +122,7 @@ export default function WeeklyLessonCountTab({
         </Button>
       </div>
 
-      <ReusableTable<WeeklyLessonCount>
+      <ReusableTable<Compensation>
         columns={columns}
         data={data}
         loading={loading}
@@ -116,7 +133,7 @@ export default function WeeklyLessonCountTab({
         pageSize={data.length}
         onPageChange={() => {}}
         onPageSizeChange={() => {}}
-        exportFileName="haftalik-ders"
+        exportFileName="tazminat"
         showExportButtons
         onDeleteRow={handleDeleteRow}
       />
