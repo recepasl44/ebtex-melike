@@ -116,6 +116,7 @@ export default function NotificationEdit() {
         {
             name: 'group_ids',
             label: 'Hedef Kitle',
+            type: 'multiselect',
             renderForm: () => (
                 <Button
                     variant="primary-light"
