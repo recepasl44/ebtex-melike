@@ -281,13 +281,8 @@ export const MENUITEMS: any = [
             },
             {
               title: "Ekstra İşlemler",
-              type: "sub",
-              children: [
-                { title: "Prim", path: "/personel/:id/prim", type: "link" },
-                { title: "Kesinti", path: "/personel/:id/kesinti", type: "link" },
-                { title: "Tazminat", path: "/personel/:id/tazminat", type: "link" },
-                { title: "İade", path: "/personel/:id/iade", type: "link" },
-              ],
+              path: "extraOperations/index",
+              type: "link",
             },
           ],
         },

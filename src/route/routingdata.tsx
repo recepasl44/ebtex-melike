@@ -241,6 +241,9 @@ const PersonelSalaryPaymentCrud = lazy(
 const PersonelPrimlerCrud = lazy(
   () => import("../components/common/personel/personelDetail/tabs/prim/crud")
 );
+const ExtraOperationsIndex = lazy(
+  () => import("../components/common/extraOperations/index")
+);
 // Service Management
 const ServiceManagement = lazy(
   () => import("../components/common/student/service_management/index")
@@ -949,6 +952,11 @@ export const Routedata = [
     id: 10,
     path: `${import.meta.env.BASE_URL}personel/:id/iade`,
     element: <IadeTab />,
+  },
+  {
+    id: 10,
+    path: `${import.meta.env.BASE_URL}extraOperations/index`,
+    element: <ExtraOperationsIndex />,
   },
 
   {
