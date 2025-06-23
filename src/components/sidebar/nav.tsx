@@ -265,32 +265,27 @@ export const MENUITEMS: any = [
         path: "/checkManagement",
         type: "link",
       },
-        {
-          title: "Personel Yönetimi",
-          type: "sub",
-          children: [
-            { title: "Ders & Ek Ücretler", path: "/lesson-oct-fee", type: "link" },
-            {
-              title: "Çalışma ve Hakediş",
-              type: "sub",
-              children: [
-                { title: "Sözleşme", path: "/personelWeeklyLessonCrud", type: "link" },
-                { title: "Hakkedişler", path: "/personelCompensationCrud", type: "link" },
-                { title: "Ödeme Kayıtları", path: "/personelSalaryPaymentCrud", type: "link" },
-              ],
-            },
-            {
-              title: "Ekstra İşlemler",
-              type: "sub",
-              children: [
-                { title: "Prim", path: "/personel/:id/prim", type: "link" },
-                { title: "Kesinti", path: "/personel/:id/kesinti", type: "link" },
-                { title: "Tazminat", path: "/personel/:id/tazminat", type: "link" },
-                { title: "İade", path: "/personel/:id/iade", type: "link" },
-              ],
-            },
-          ],
-        },
+      {
+        title: "Personel Yönetimi",
+        type: "sub",
+        children: [
+          { title: "Ders & Ek Ücretler", path: "/lesson-oct-fee", type: "link" },
+          {
+            title: "Çalışma ve Hakediş",
+            type: "sub",
+            children: [
+              { title: "Sözleşme", path: "/personelWeeklyLessonCrud", type: "link" },
+              { title: "Hakkedişler", path: "/personelCompensationCrud", type: "link" },
+              { title: "Ödeme Kayıtları", path: "/personelSalaryPaymentCrud", type: "link" },
+            ],
+          },
+          {
+            title: "Ekstra İşlemler",
+            path: "extraOperations/index",
+            type: "link",
+          },
+        ],
+      },
       {
         title: "Fatura Yönetimi",
         type: "sub",

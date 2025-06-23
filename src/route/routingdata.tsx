@@ -535,7 +535,9 @@ import ClassListTable from "../components/common/listManagement/students/pages/c
 import StudentListCrud from "../components/common/listManagement/students/pages/classList/crud";
 import PlanCalenderCrud from "../components/common/guidance/workSchedule/Tab5/crud";
 
-
+const ExtraOperationsIndex = lazy(
+  () => import("../components/common/extraOperations/index")
+);
 
 const FinanceNotesTable = lazy(
   () => import("../components/common/financeNotes/table")
@@ -2357,7 +2359,12 @@ export const Routedata = [
     element: <EmailCrud />,
   },
 
-
+  //ekstra işlemler
+  {
+    id: 6710,
+    path: `${import.meta.env.BASE_URL}extraOperations/index`,
+    element: <ExtraOperationsIndex />,
+  },
 
 
 ];

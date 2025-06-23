@@ -44,7 +44,7 @@ export default function PersonelPrimTab({
       {
         key: "miktar",
         label: "Prim Miktarı",
-        render: (row) =>
+        render: (row: { miktar: any; }) =>
           row.miktar
             ? `${Number(row.miktar).toLocaleString()} ₺`
             : "0,00 ₺",
@@ -95,19 +95,14 @@ export default function PersonelPrimTab({
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h6>Primler</h6>
-        <Button
-          variant="success"
-          onClick={() =>
-            navigate("/personelPrimlerCrud", { state: { personelId: actualId } })
-          }
-        >
-          Ekle
-        </Button>
+
+
       </div>
 
       <ReusableTable<Primler>
+        onAdd={() => navigate("/personelPrimlerCrud")}
         columns={columns}
+        tableMode="single"
         data={data}
         loading={loading}
         error={error || deleteError}
@@ -115,8 +110,8 @@ export default function PersonelPrimTab({
         totalPages={1}
         totalItems={data.length}
         pageSize={data.length}
-        onPageChange={() => {}}
-        onPageSizeChange={() => {}}
+        onPageChange={() => { }}
+        onPageSizeChange={() => { }}
         exportFileName="primler"
         showExportButtons
         onDeleteRow={handleDeleteRow}
