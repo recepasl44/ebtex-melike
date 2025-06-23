@@ -5,6 +5,7 @@ export interface PrimlerAddPayload {
   vade: string;
   personel_id : number
   miktar: string;
+  tarih: string;
   aciklama: string;
 }
 

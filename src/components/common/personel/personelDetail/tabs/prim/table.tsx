@@ -38,16 +38,21 @@ export default function PersonelPrimTab({
     () => [
       {
         key: "vade",
-        label: "Vade",
+        label: "D\u00F6nem",
         render: (row) => row.vade || "-",
       },
       {
         key: "miktar",
-        label: "Prim Miktarı",
-        render: (row: { miktar: any; }) =>
+        label: "Prim Tutarı (₺)",
+        render: (row: { miktar: any }) =>
           row.miktar
             ? `${Number(row.miktar).toLocaleString()} ₺`
             : "0,00 ₺",
+      },
+      {
+        key: "tarih",
+        label: "Tarih",
+        render: (row: any) => row.tarih || "-",
       },
       {
         key: "aciklama",
@@ -87,6 +92,17 @@ export default function PersonelPrimTab({
     [navigate, actualId, data]
   );
 
+  const totalMiktar = useMemo(
+    () => data.reduce((acc, cur) => acc + Number((cur as any).miktar || 0), 0),
+    [data]
+  );
+
+  const footer = (
+    <div className="text-end fw-bold">
+      Toplam: {totalMiktar.toLocaleString()} ₺
+    </div>
+  );
+
   function handleDeleteRow(row: Primler) {
     if (!row.id) return;
     deleteExistingPrimler(row.id);
@@ -115,6 +131,7 @@ export default function PersonelPrimTab({
         exportFileName="primler"
         showExportButtons
         onDeleteRow={handleDeleteRow}
+        customFooter={footer}
       />
     </div>
   );
