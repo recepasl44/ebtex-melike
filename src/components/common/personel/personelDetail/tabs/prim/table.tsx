@@ -1,21 +1,23 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable";
 import { usePrimlerShow } from "../../../../../hooks/employee/prim/usePrimlerShow";
 import { usePrimlerDelete } from "../../../../../hooks/employee/prim/usePrimlerDelete";
 import { Primler } from "../../../../../../types/employee/primler/list";
 
 interface PersonelPrimTabProps {
-  personelId: number;
-  enabled: boolean;
+  personelId?: number;
+  enabled?: boolean;
 }
 
 export default function PersonelPrimTab({
   personelId,
-  enabled,
+  enabled = true,
 }: PersonelPrimTabProps) {
+  const { id } = useParams<{ id?: string }>();
+  const actualId = personelId ?? (id ? Number(id) : 0);
   const navigate = useNavigate();
   const [data, setData] = useState<Primler[]>([]);
 
@@ -25,12 +27,12 @@ export default function PersonelPrimTab({
   useEffect(() => {
     if (!enabled) return;
     (async () => {
-      const res = await getPrimler(personelId);
+      const res = await getPrimler(actualId);
       // show endpoint dönen array’i normalize et
       const arr = Array.isArray(res) ? res : res ? [res] : [];
       setData(arr);
     })();
-  }, [enabled, personelId]);
+  }, [enabled, actualId]);
 
   const columns: ColumnDefinition<Primler>[] = useMemo(
     () => [
@@ -63,7 +65,7 @@ export default function PersonelPrimTab({
               onClick={() =>
                 navigate(`/personelPrimlerCrud/${row.id}`, {
                   state: {
-                    personelId,
+                    personelId: actualId,
                     selectedPrimler: data.find((d) => d.id === row.id),
                   },
                 })
@@ -82,7 +84,7 @@ export default function PersonelPrimTab({
         ),
       },
     ],
-    [navigate, personelId, data]
+    [navigate, actualId, data]
   );
 
   function handleDeleteRow(row: Primler) {
@@ -97,7 +99,7 @@ export default function PersonelPrimTab({
         <Button
           variant="success"
           onClick={() =>
-            navigate("/personelPrimlerCrud", { state: { personelId } })
+            navigate("/personelPrimlerCrud", { state: { personelId: actualId } })
           }
         >
           Ekle
