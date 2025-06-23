@@ -77,6 +77,7 @@ export default function NotificationAdd() {
         {
             name: 'group_ids',
             label: 'Hedef Kitle',
+            type: 'multiselect',
             renderForm: () => (
                 <Button
                     variant="primary-light"
