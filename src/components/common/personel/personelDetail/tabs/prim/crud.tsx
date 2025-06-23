@@ -55,8 +55,8 @@ export default function PersonelPrimlerCrud() {
   const getFields = (): FieldDefinition[] => [
     {
       name: "donem",
-      label: "Dönem",
-      type: "date",
+      label: "Dönem ",
+      type: "number",
       required: true,
     },
     {
