@@ -87,7 +87,10 @@ export default function NotificationAdd() {
     ];
 
     const handleSubmit = async (values: FormData) => {
-        await addNewNotification({ ...(values as any) });
+        await addNewNotification({
+            ...(values as any),
+            group_ids: selectedAudience.map((a) => a.id),
+        });
         navigate(`${import.meta.env.BASE_URL}contact-panel/notifications`);
     };
 

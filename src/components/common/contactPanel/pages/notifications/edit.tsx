@@ -132,7 +132,13 @@ export default function NotificationEdit() {
 
     const handleSubmit = async (values: FormData) => {
         if (id) {
-            await updateExistingNotification({ notificationId: Number(id), payload: { ...(values as any) } });
+            await updateExistingNotification({
+                notificationId: Number(id),
+                payload: {
+                    ...(values as any),
+                    group_ids: selectedAudience.map((a) => a.id),
+                },
+            });
         }
         navigate(`${import.meta.env.BASE_URL}contact-panel/notifications`);
     };
