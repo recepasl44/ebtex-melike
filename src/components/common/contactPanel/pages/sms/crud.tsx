@@ -196,11 +196,10 @@ export default function SmsCrud() {
                 isLoading={isLoading}
                 error={combinedError || undefined}
                 onClose={() => {
-                    navigate(
-                        `${import.meta.env.BASE_URL}contact-panel/sms`,
-                        { replace: true }
-                    );
-                    setSearchParams({});
+                    navigate(`${import.meta.env.BASE_URL}contact-panel`, {
+                        replace: true,
+                    });
+                    setSearchParams({ tab: 'sms' });
                 }}
                 autoGoBackOnModalClose
                 mode="double"
