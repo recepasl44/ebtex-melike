@@ -377,6 +377,11 @@ import smsProviderAddSlice from '../slices/smsproviders/add/reducer'
 import smsProviderDeleteSlice from '../slices/smsproviders/delete/reducer'
 import smsProviderDetailSlice from '../slices/smsproviders/detail/reducer'
 import smsProviderUpdateSlice from '../slices/smsproviders/update/reducer'
+import smsLogsListSlice from '../slices/smslogs/list/reducer'
+import smsLogAddSlice from '../slices/smslogs/add/reducer'
+import smsLogDeleteSlice from '../slices/smslogs/delete/reducer'
+import smsLogDetailSlice from '../slices/smslogs/detail/reducer'
+import smsLogUpdateSlice from '../slices/smslogs/update/reducer'
 
 import enrollmentUpdateSlice from '../slices/enrollments/update/reducer'
 import enrollmentListSlice from '../slices/enrollments/list/reducer'
@@ -1046,6 +1051,11 @@ const combinedReducer = combineReducers({
   smsProviderDelete: smsProviderDeleteSlice,
   smsProviderDetail: smsProviderDetailSlice,
   smsProviderUpdate: smsProviderUpdateSlice,
+  smsLogsList: smsLogsListSlice,
+  smsLogAdd: smsLogAddSlice,
+  smsLogDelete: smsLogDeleteSlice,
+  smsLogDetail: smsLogDetailSlice,
+  smsLogUpdate: smsLogUpdateSlice,
 
   enrollmentUpdate: enrollmentUpdateSlice,
   enrollmentList: enrollmentListSlice,
