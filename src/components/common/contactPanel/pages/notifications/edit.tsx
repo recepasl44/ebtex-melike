@@ -140,8 +140,11 @@ export default function NotificationEdit() {
                 },
             });
         }
-        navigate(`${import.meta.env.BASE_URL}contact-panel`, { replace: true });
-        setSearchParams({ tab: 'notifications' });
+        navigate(
+            `${import.meta.env.BASE_URL}contact-panel/notifications`,
+            { replace: true }
+        );
+        setSearchParams({});
     };
 
     const isLoading = updStatus === 'LOADING' || detailStatus === 'LOADING';
@@ -160,8 +163,11 @@ export default function NotificationEdit() {
                 isLoading={isLoading}
                 error={combinedError || undefined}
                 onClose={() => {
-                    navigate(`${import.meta.env.BASE_URL}contact-panel`, { replace: true });
-                    setSearchParams({ tab: 'notifications' });
+                    navigate(
+                        `${import.meta.env.BASE_URL}contact-panel/notifications`,
+                        { replace: true }
+                    );
+                    setSearchParams({});
                 }}
                 autoGoBackOnModalClose
                 mode="double"

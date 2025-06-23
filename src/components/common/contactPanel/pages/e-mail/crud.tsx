@@ -136,8 +136,11 @@ export default function EmailCrud() {
         } else if (mode === 'update' && id) {
             await updateExistingNotification({ notificationId: Number(id), payload })
         }
-        navigate(`${import.meta.env.BASE_URL}contact-panel`, { replace: true })
-        setSearchParams({ tab: 'e-mail' })
+        navigate(
+            `${import.meta.env.BASE_URL}contact-panel/e-mail`,
+            { replace: true }
+        )
+        setSearchParams({})
     }
 
     const isLoading =
@@ -158,8 +161,11 @@ export default function EmailCrud() {
                 isLoading={isLoading}
                 error={combinedError || undefined}
                 onClose={() => {
-                    navigate(`${import.meta.env.BASE_URL}contact-panel`, { replace: true })
-                    setSearchParams({ tab: 'e-mail' })
+                    navigate(
+                        `${import.meta.env.BASE_URL}contact-panel/e-mail`,
+                        { replace: true }
+                    )
+                    setSearchParams({})
                 }}
                 autoGoBackOnModalClose
                 mode="double"
