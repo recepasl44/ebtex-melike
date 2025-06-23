@@ -184,12 +184,16 @@ export default function CurrentNewsletterCrud() {
                 : null;
 
     const handleSubmit = async (values: FormData) => {
+        const payload = {
+            ...(values as any),
+            end_date: values.end_date || values.start_date,
+        };
         if (mode === 'add') {
-            await addNewBulletin({ ...(values as any) });
+            await addNewBulletin(payload);
         } else if (mode === 'update' && id) {
             await updateExistingBulletin({
                 bulletinId: Number(id),
-                payload: { ...(values as any) },
+                payload,
             });
         }
         navigate(`${import.meta.env.BASE_URL}contact-panel/current-newsletter`);
