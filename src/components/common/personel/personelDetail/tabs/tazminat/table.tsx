@@ -109,30 +109,22 @@ export default function CompensationTab({
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h6>Tazminatlar</h6>
-        <Button
-          variant="success"
-          onClick={() =>
-            navigate("/personelCompensationCrud", {
-              state: { personelId: actualId },
-            })
-          }
-        >
-          Ekle
-        </Button>
+
       </div>
 
       <ReusableTable<Compensation>
         columns={columns}
         data={data}
+        onAdd={() => navigate("/personelCompensationCrud")}
+        tableMode="single"
         loading={loading}
         error={error || deleteError}
         currentPage={1}
         totalPages={1}
         totalItems={data.length}
         pageSize={data.length}
-        onPageChange={() => {}}
-        onPageSizeChange={() => {}}
+        onPageChange={() => { }}
+        onPageSizeChange={() => { }}
         exportFileName="tazminat"
         showExportButtons
         onDeleteRow={handleDeleteRow}
