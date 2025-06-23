@@ -1,20 +1,22 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable";
 import { WeeklyLessonCount } from "../../../../../../types/employee/weekly_lesson_count/list";
 import { useWeeklyLessonCountShow } from "../../../../../hooks/employee/weekly_lesson_count/useWeeklyLessonCountShow";
 import { useWeeklyLessonCountDelete } from "../../../../../hooks/employee/weekly_lesson_count/useWeeklyLessonCountDelete";
 
 interface WeeklyLessonTabProps {
-  personelId: number;
-  enabled: boolean;
+  personelId?: number;
+  enabled?: boolean;
 }
 
 export default function WeeklyLessonCountTab({
   personelId,
-  enabled,
+  enabled = true,
 }: WeeklyLessonTabProps) {
+  const { id } = useParams<{ id?: string }>();
+  const actualId = personelId ?? (id ? Number(id) : 0);
   const navigate = useNavigate();
   const [data, setData] = useState<WeeklyLessonCount[]>([]);
 
@@ -28,11 +30,11 @@ export default function WeeklyLessonCountTab({
     if (!enabled) return;
 
     (async () => {
-      const res = await getWeeklyLessonCount(personelId);
+      const res = await getWeeklyLessonCount(actualId);
       const arr = Array.isArray(res) ? res : res ? [res] : [];
       setData(arr);
     })();
-  }, [enabled, personelId]);
+  }, [enabled, actualId]);
 
   const columns: ColumnDefinition<WeeklyLessonCount>[] = useMemo(
     () => [
@@ -60,7 +62,7 @@ export default function WeeklyLessonCountTab({
               onClick={() =>
                 navigate(`/personelWeeklyLessonCrud/${row.id}`, {
                   state: {
-                    personelId,
+                    personelId: actualId,
                     selectedWeekly: data.find((d) => d.id === row.id),
                   },
                 })
@@ -79,7 +81,7 @@ export default function WeeklyLessonCountTab({
         ),
       },
     ],
-    [navigate, personelId, data]
+    [navigate, actualId, data]
   );
 
   function handleDeleteRow(row: WeeklyLessonCount) {
@@ -95,7 +97,7 @@ export default function WeeklyLessonCountTab({
           variant="success"
           onClick={() =>
             navigate("/personelWeeklyLessonCrud", {
-              state: { personelId },
+              state: { personelId: actualId },
             })
           }
         >

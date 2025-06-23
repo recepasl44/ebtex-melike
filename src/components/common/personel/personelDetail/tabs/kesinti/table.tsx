@@ -1,18 +1,20 @@
 // src/components/common/personel/personelDetail/tabs/kesinti/table.tsx
 import { useEffect, useState, useMemo } from "react";
 import { Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable";
 import { useInterruptionShow } from "../../../../../hooks/employee/interruption/useInterruptionShow";
 import { useInterruptionDelete } from "../../../../../hooks/employee/interruption/useInterruptionDelete";
 import { Interruption } from "../../../../../../types/employee/interruption/list";
 
 interface KesintiTabProps {
-  personelId: number;
-  enabled: boolean;
+  personelId?: number;
+  enabled?: boolean;
 }
 
-export default function KesintiTab({ personelId, enabled }: KesintiTabProps) {
+export default function KesintiTab({ personelId, enabled = true }: KesintiTabProps) {
+  const { id } = useParams<{ id?: string }>();
+  const actualId = personelId ?? (id ? Number(id) : 0);
   const navigate = useNavigate();
   const [data, setData] = useState<Interruption[]>([]);
   const { getInterruption, loading, error } = useInterruptionShow();
@@ -21,11 +23,11 @@ export default function KesintiTab({ personelId, enabled }: KesintiTabProps) {
   useEffect(() => {
     if (!enabled) return;
     (async () => {
-      const res = await getInterruption(personelId);
+      const res = await getInterruption(actualId);
       const arr = Array.isArray(res) ? res : res ? [res] : [];
       setData(arr);
     })();
-  }, [enabled, personelId]);
+  }, [enabled, actualId]);
 
   const columns: ColumnDefinition<Interruption>[] = useMemo(() => [
     {
@@ -59,7 +61,7 @@ export default function KesintiTab({ personelId, enabled }: KesintiTabProps) {
             onClick={() =>
               navigate(`/personelKesintiCrud/${row.id}`, {
                 state: {
-                  personelId,
+                  personelId: actualId,
                   selectedKesinti: data.find(d => d.id === row.id),
                 },
               })
@@ -77,7 +79,7 @@ export default function KesintiTab({ personelId, enabled }: KesintiTabProps) {
         </>
       ),
     },
-  ], [navigate, personelId, data]);
+  ], [navigate, actualId, data]);
 
   function handleDeleteRow(row: Interruption) {
     if (!row.id) return;
@@ -91,7 +93,7 @@ export default function KesintiTab({ personelId, enabled }: KesintiTabProps) {
         <Button
           variant="success"
           onClick={() =>
-            navigate("/personelKesintiCrud", { state: { personelId } })
+            navigate("/personelKesintiCrud", { state: { personelId: actualId } })
           }
         >
           Ekle

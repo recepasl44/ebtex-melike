@@ -276,6 +276,21 @@ const PersonelKesintiCrud = lazy(
 const PersonelIadeCrud = lazy(
   () => import("../components/common/personel/personelDetail/tabs/iade/crud")
 );
+const PersonelPrimTab = lazy(
+  () =>
+    import("../components/common/personel/personelDetail/tabs/prim/table")
+);
+const KesintiTab = lazy(
+  () =>
+    import("../components/common/personel/personelDetail/tabs/kesinti/table")
+);
+const WeeklyLessonCountTab = lazy(
+  () =>
+    import("../components/common/personel/personelDetail/tabs/tazminat/table")
+);
+const IadeTab = lazy(
+  () => import("../components/common/personel/personelDetail/tabs/iade/table")
+);
 
 const ExpenseSummary = lazy(
   () => import("../components/common/expences/summary/table")
@@ -914,6 +929,26 @@ export const Routedata = [
     id: 10,
     path: `${import.meta.env.BASE_URL}personelKesintiCrud/:id?`,
     element: <PersonelKesintiCrud />,
+  },
+  {
+    id: 10,
+    path: `${import.meta.env.BASE_URL}personel/:id/prim`,
+    element: <PersonelPrimTab />,
+  },
+  {
+    id: 10,
+    path: `${import.meta.env.BASE_URL}personel/:id/kesinti`,
+    element: <KesintiTab />,
+  },
+  {
+    id: 10,
+    path: `${import.meta.env.BASE_URL}personel/:id/tazminat`,
+    element: <WeeklyLessonCountTab />,
+  },
+  {
+    id: 10,
+    path: `${import.meta.env.BASE_URL}personel/:id/iade`,
+    element: <IadeTab />,
   },
 
   {

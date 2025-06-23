@@ -1,17 +1,19 @@
 import { useEffect, useState, useMemo } from "react";
 import { Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable";
 import { useRefundShow } from "../../../../../hooks/employee/refund/useRefundShow";
 import { useRefundDelete } from "../../../../../hooks/employee/refund/useRefundDelete";
 import { Refund } from "../../../../../../types/employee/refund/list";
 
 interface IadeTabProps {
-  personelId: number;
-  enabled: boolean;
+  personelId?: number;
+  enabled?: boolean;
 }
 
-export default function IadeTab({ personelId, enabled }: IadeTabProps) {
+export default function IadeTab({ personelId, enabled = true }: IadeTabProps) {
+  const { id } = useParams<{ id?: string }>();
+  const actualId = personelId ?? (id ? Number(id) : 0);
   const navigate = useNavigate();
   const [data, setData] = useState<Refund[]>([]);
   const {  getRefund, loading, error } = useRefundShow();
@@ -20,11 +22,11 @@ export default function IadeTab({ personelId, enabled }: IadeTabProps) {
   useEffect(() => {
     if (!enabled) return;
     (async () => {
-      const res = await getRefund(personelId);
+      const res = await getRefund(actualId);
       const arr = Array.isArray(res) ? res : res ? [res] : [];
       setData(arr);
     })();
-  }, [enabled, personelId]);
+  }, [enabled, actualId]);
 
   const columns: ColumnDefinition<Refund>[] = useMemo(() => [
     {
@@ -58,7 +60,7 @@ export default function IadeTab({ personelId, enabled }: IadeTabProps) {
             onClick={() =>
               navigate(`/personelIadeCrud/${row.id}`, {
                 state: {
-                  personelId,
+                  personelId: actualId,
                   selectedIade: data.find(d => d.id === row.id),
                 },
               })
@@ -76,7 +78,7 @@ export default function IadeTab({ personelId, enabled }: IadeTabProps) {
         </>
       ),
     },
-  ], [navigate, personelId, data]);
+  ], [navigate, actualId, data]);
 
   function handleDeleteRow(row: Refund) {
     if (!row.id) return;
@@ -90,7 +92,7 @@ export default function IadeTab({ personelId, enabled }: IadeTabProps) {
         <Button
           variant="success"
           onClick={() =>
-            navigate("/personelIadeCrud", { state: { personelId } })
+            navigate("/personelIadeCrud", { state: { personelId: actualId } })
           }
         >
           Ekle

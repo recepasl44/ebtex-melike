@@ -93,6 +93,22 @@ const Landinglayout = lazy(() => import("./pages/landinglayout.tsx"));
 const Login = lazy(() => import("./authentication/login/index.tsx"));
 const Auth = lazy(() => import("./authentication/auth.tsx"));
 const Signup = lazy(() => import("./authentication/signup.tsx"));
+import { Outlet } from "react-router-dom";
+const PersonelPrimTab = lazy(
+  () =>
+    import("./components/common/personel/personelDetail/tabs/prim/table")
+);
+const KesintiTab = lazy(
+  () =>
+    import("./components/common/personel/personelDetail/tabs/kesinti/table")
+);
+const WeeklyLessonCountTab = lazy(
+  () =>
+    import("./components/common/personel/personelDetail/tabs/tazminat/table")
+);
+const IadeTab = lazy(
+  () => import("./components/common/personel/personelDetail/tabs/iade/table")
+);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -116,6 +132,12 @@ createRoot(document.getElementById("root")!).render(
                 {Routedata.map((route: any) => (
                   <Route key={route.id} path={route.path} element={route.element} />
                 ))}
+                <Route path="personel/:id" element={<Outlet />}>
+                  <Route path="prim" element={<PersonelPrimTab />} />
+                  <Route path="kesinti" element={<KesintiTab />} />
+                  <Route path="tazminat" element={<WeeklyLessonCountTab />} />
+                  <Route path="iade" element={<IadeTab />} />
+                </Route>
               </Route>
 
               <Route
