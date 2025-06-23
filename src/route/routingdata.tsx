@@ -284,7 +284,7 @@ const KesintiTab = lazy(
   () =>
     import("../components/common/personel/personelDetail/tabs/kesinti/table")
 );
-const WeeklyLessonCountTab = lazy(
+const PersonelCompensationTab = lazy(
   () =>
     import("../components/common/personel/personelDetail/tabs/tazminat/table")
 );
@@ -945,7 +945,7 @@ export const Routedata = [
   {
     id: 10,
     path: `${import.meta.env.BASE_URL}personel/:id/tazminat`,
-    element: <WeeklyLessonCountTab />,
+    element: <PersonelCompensationTab />,
   },
   {
     id: 10,

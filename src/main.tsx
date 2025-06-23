@@ -102,7 +102,7 @@ const KesintiTab = lazy(
   () =>
     import("./components/common/personel/personelDetail/tabs/kesinti/table")
 );
-const WeeklyLessonCountTab = lazy(
+const PersonelCompensationTab = lazy(
   () =>
     import("./components/common/personel/personelDetail/tabs/tazminat/table")
 );
@@ -135,7 +135,7 @@ createRoot(document.getElementById("root")!).render(
                 <Route path="personel/:id" element={<Outlet />}>
                   <Route path="prim" element={<PersonelPrimTab />} />
                   <Route path="kesinti" element={<KesintiTab />} />
-                  <Route path="tazminat" element={<WeeklyLessonCountTab />} />
+                  <Route path="tazminat" element={<PersonelCompensationTab />} />
                   <Route path="iade" element={<IadeTab />} />
                 </Route>
               </Route>

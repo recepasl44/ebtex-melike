@@ -6,6 +6,7 @@ import { useCompensationUpdate } from "../../../../../hooks/employee/compensatio
 import { Compensation } from "../../../../../../types/employee/compensation/list";
 
 type FormValues = {
+  tarih: string;
   tazminat_turu: string;
   odeme_sekli: string;
   miktar: string;
@@ -38,6 +39,7 @@ export default function PersonelCompensationCrud() {
   } = useCompensationUpdate();
 
   const [initialValues, setInitialValues] = useState<FormValues>({
+    tarih: "",
     tazminat_turu: "",
     odeme_sekli: "",
     miktar: "",
@@ -48,6 +50,7 @@ export default function PersonelCompensationCrud() {
   useEffect(() => {
     if (mode === "update" && selectedCompensation) {
       setInitialValues({
+        tarih: (selectedCompensation as any).tarih || "",
         tazminat_turu: selectedCompensation.tazminat_turu || "",
         odeme_sekli: selectedCompensation.odeme_sekli || "",
         miktar: selectedCompensation.miktar || "",
@@ -59,13 +62,20 @@ export default function PersonelCompensationCrud() {
 
   const getFields = (): FieldDefinition[] => [
     {
+      name: "tarih",
+      label: "Tarih",
+      type: "date",
+      required: true,
+    },
+    {
       name: "tazminat_turu",
       label: "Tazminat Türü",
       type: "select",
       required: true,
       options: [
-        { label: "İhbar Tazminatı", value: "İhbar Tazminatı" },
         { label: "Kıdem Tazminatı", value: "Kıdem Tazminatı" },
+        { label: "İhbar Tazminatı", value: "İhbar Tazminatı" },
+        { label: "Diğer Tazminat", value: "Diğer Tazminat" },
       ],
     },
     {
@@ -104,6 +114,7 @@ export default function PersonelCompensationCrud() {
     if (mode === "add") {
       await addNewCompensation({
         personel_id: personelId!,
+        tarih: values.tarih,
         tazminat_turu: values.tazminat_turu,
         odeme_sekli: values.odeme_sekli,
         miktar: values.miktar,
@@ -114,6 +125,7 @@ export default function PersonelCompensationCrud() {
       await updateExistingCompensation({
         compensationId: Number(id),
         payload: {
+          tarih: values.tarih,
           tazminat_turu: values.tazminat_turu,
           odeme_sekli: values.odeme_sekli,
           miktar: values.miktar,
