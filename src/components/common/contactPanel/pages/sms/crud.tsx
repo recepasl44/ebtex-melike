@@ -172,7 +172,7 @@ export default function SmsCrud() {
             await updateExistingNotification({ notificationId: Number(id), payload: payload as any });
         }
         navigate(`${import.meta.env.BASE_URL}contact-panel`, { replace: true });
-        setSearchParams({ tab: 'sms' });
+        setSearchParams({ tab: 'sms' }, { replace: true });
     };
 
     const isLoading =
@@ -194,7 +194,7 @@ export default function SmsCrud() {
                 error={combinedError || undefined}
                 onClose={() => {
                     navigate(`${import.meta.env.BASE_URL}contact-panel`, { replace: true });
-                    setSearchParams({ tab: 'sms' });
+                    setSearchParams({ tab: 'sms' }, { replace: true });
                 }}
                 autoGoBackOnModalClose
                 mode="double"

@@ -198,7 +198,7 @@ export default function CurrentNewsletterCrud() {
             });
         }
         navigate(`${import.meta.env.BASE_URL}contact-panel`, { replace: true });
-        setSearchParams({ tab: 'current-newsletter' });
+        setSearchParams({ tab: 'current-newsletter' }, { replace: true });
     };
 
     return (
@@ -215,7 +215,7 @@ export default function CurrentNewsletterCrud() {
                 error={combinedError || undefined}
                 onClose={() => {
                     navigate(`${import.meta.env.BASE_URL}contact-panel`, { replace: true });
-                    setSearchParams({ tab: 'current-newsletter' });
+                    setSearchParams({ tab: 'current-newsletter' }, { replace: true });
                 }}
                 autoGoBackOnModalClose
                 mode="double"
