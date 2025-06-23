@@ -335,7 +335,7 @@ export default function ReusableModalForm<T extends FormikValues>({
                     <Button
                       variant="outline-primary"
                       type="submit"
-                      disabled={isLoading || !formik.isValid}
+                      disabled={isLoading}
                     >
                       {isLoading ? "İşlem yapılıyor..." : confirmButtonLabel}
                     </Button>
@@ -429,7 +429,7 @@ export default function ReusableModalForm<T extends FormikValues>({
                     <Button
                       variant="outline-secondary"
                       type="submit"
-                      disabled={isLoading || !formik.isValid}
+                      disabled={isLoading}
                       className="ms-2"
                     >
                       {isLoading ? "İşlem yapılıyor..." : confirmButtonLabel}
