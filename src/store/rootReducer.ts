@@ -372,6 +372,12 @@ import paymentMethodDetailSlice from '../slices/paymentMethods/detail/reducer'
 import paymentMethodsDeleteSlice from '../slices/paymentMethods/delete/reducer'
 import paymentMethodAddSlice from '../slices/paymentMethods/add/reducer'
 
+import smsProvidersListSlice from '../slices/smsproviders/list/reducer'
+import smsProviderAddSlice from '../slices/smsproviders/add/reducer'
+import smsProviderDeleteSlice from '../slices/smsproviders/delete/reducer'
+import smsProviderDetailSlice from '../slices/smsproviders/detail/reducer'
+import smsProviderUpdateSlice from '../slices/smsproviders/update/reducer'
+
 import enrollmentUpdateSlice from '../slices/enrollments/update/reducer'
 import enrollmentListSlice from '../slices/enrollments/list/reducer'
 import enrollmentDetailSlice from '../slices/enrollments/detail/reducer'
@@ -1035,6 +1041,11 @@ const combinedReducer = combineReducers({
   paymentMethodDetail: paymentMethodDetailSlice,
   paymentMethodsDelete: paymentMethodsDeleteSlice,
   paymentMethodAdd: paymentMethodAddSlice,
+  smsProvidersList: smsProvidersListSlice,
+  smsProviderAdd: smsProviderAddSlice,
+  smsProviderDelete: smsProviderDeleteSlice,
+  smsProviderDetail: smsProviderDetailSlice,
+  smsProviderUpdate: smsProviderUpdateSlice,
 
   enrollmentUpdate: enrollmentUpdateSlice,
   enrollmentList: enrollmentListSlice,
