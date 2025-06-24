@@ -83,31 +83,38 @@ export default function PersonelIadeCrud() {
   ];
 
   async function handleSubmit(vals: FormValues) {
-    if (!personelId) return;
+    if (!personelId) {
+      alert("Personel ID bulunamadı");
+      return;
+    }
 
-    if (mode === "add") {
-      await addNewRefund({
-        personel_id: personelId,
-        tarih: vals.tarih,
-        odeme_sekli: vals.odeme_sekli,
-        miktar: vals.miktar,
-        banka_hesap_adi: vals.banka_hesap_adi,
-        aciklama: vals.aciklama,
-      });
-    } else if (id) {
-      await updateExistingRefund({
-        refundId: Number(id),
-        payload: {
+    try {
+      if (mode === "add") {
+        await addNewRefund({
+          personel_id: personelId,
           tarih: vals.tarih,
           odeme_sekli: vals.odeme_sekli,
           miktar: vals.miktar,
           banka_hesap_adi: vals.banka_hesap_adi,
           aciklama: vals.aciklama,
-        },
-      });
-    }
+        });
+      } else if (id) {
+        await updateExistingRefund({
+          refundId: Number(id),
+          payload: {
+            tarih: vals.tarih,
+            odeme_sekli: vals.odeme_sekli,
+            miktar: vals.miktar,
+            banka_hesap_adi: vals.banka_hesap_adi,
+            aciklama: vals.aciklama,
+          },
+        });
+      }
 
-    navigate(-1);
+      navigate(-1);
+    } catch (error) {
+      console.error("İade formu kaydetme hatası:", error);
+    }
   }
 
   const isLoading = addLoading || updateLoading;

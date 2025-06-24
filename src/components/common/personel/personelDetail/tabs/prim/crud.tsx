@@ -81,29 +81,36 @@ export default function PersonelPrimlerCrud() {
   ];
 
   async function handleSubmit(vals: FormValues) {
-    if (!personelId) return;
+    if (!personelId) {
+      alert("Personel ID bulunamadı");
+      return;
+    }
 
-    if (mode === "add") {
-      await addNewPrimler({
-        personel_id: personelId,
-        vade: vals.donem,
-        miktar: vals.prim_tutari,
-        tarih: vals.tarih,
-        aciklama: vals.aciklama,
-      } as any);
-    } else if (id) {
-      await updateExistingPrimler({
-        primlerId: Number(id),
-        payload: {
+    try {
+      if (mode === "add") {
+        await addNewPrimler({
+          personel_id: personelId,
           vade: vals.donem,
           miktar: vals.prim_tutari,
           tarih: vals.tarih,
           aciklama: vals.aciklama,
-        } as any,
-      } as any);
-    }
+        } as any);
+      } else if (id) {
+        await updateExistingPrimler({
+          primlerId: Number(id),
+          payload: {
+            vade: vals.donem,
+            miktar: vals.prim_tutari,
+            tarih: vals.tarih,
+            aciklama: vals.aciklama,
+          } as any,
+        } as any);
+      }
 
-    navigate(-1);
+      navigate(-1);
+    } catch (error) {
+      console.error("Primler formu kaydetme hatası:", error);
+    }
   }
 
   const isLoading = addLoading || updateLoading;

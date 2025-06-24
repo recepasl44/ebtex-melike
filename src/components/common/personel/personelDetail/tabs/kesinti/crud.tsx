@@ -71,29 +71,36 @@ export default function PersonelKesintiCrud() {
   ];
 
   async function handleSubmit(vals: FormValues) {
-    if (!personelId) return;
+    if (!personelId) {
+      alert("Personel ID bulunamadı");
+      return;
+    }
 
-    if (mode === "add") {
-      await addNewInterruption({
-        personel_id: personelId,
-        vade: vals.donem,
-        miktar: vals.miktar,
-        odeme_sekli: "",
-        aciklama: vals.aciklama,
-      });
-    } else if (id) {
-      await updateExistingInterruption({
-        interruptionId: Number(id),
-        payload: {
+    try {
+      if (mode === "add") {
+        await addNewInterruption({
+          personel_id: personelId,
           vade: vals.donem,
           miktar: vals.miktar,
           odeme_sekli: "",
           aciklama: vals.aciklama,
-        },
-      });
-    }
+        });
+      } else if (id) {
+        await updateExistingInterruption({
+          interruptionId: Number(id),
+          payload: {
+            vade: vals.donem,
+            miktar: vals.miktar,
+            odeme_sekli: "",
+            aciklama: vals.aciklama,
+          },
+        });
+      }
 
-    navigate(-1);
+      navigate(-1);
+    } catch (error) {
+      console.error("Kesinti formu kaydetme hatası:", error);
+    }
   }
 
   const isLoading = addLoading || updateLoading;

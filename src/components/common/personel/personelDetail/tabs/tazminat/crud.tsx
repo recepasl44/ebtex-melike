@@ -110,33 +110,40 @@ export default function PersonelCompensationCrud() {
   ];
 
   async function handleSubmit(values: FormValues) {
-    if (!personelId && mode === "add") return;
+    if (!personelId && mode === "add") {
+      alert("Personel ID bulunamadı");
+      return;
+    }
 
-    if (mode === "add") {
-      await addNewCompensation({
-        personel_id: personelId!,
-        tarih: values.tarih,
-        tazminat_turu: values.tazminat_turu,
-        odeme_sekli: values.odeme_sekli,
-        miktar: values.miktar,
-        banka_hesap_adi: values.banka_hesap_adi,
-        aciklama: values.aciklama,
-      });
-    } else if (id) {
-      await updateExistingCompensation({
-        compensationId: Number(id),
-        payload: {
+    try {
+      if (mode === "add") {
+        await addNewCompensation({
+          personel_id: personelId!,
           tarih: values.tarih,
           tazminat_turu: values.tazminat_turu,
           odeme_sekli: values.odeme_sekli,
           miktar: values.miktar,
           banka_hesap_adi: values.banka_hesap_adi,
           aciklama: values.aciklama,
-        },
-      });
-    }
+        });
+      } else if (id) {
+        await updateExistingCompensation({
+          compensationId: Number(id),
+          payload: {
+            tarih: values.tarih,
+            tazminat_turu: values.tazminat_turu,
+            odeme_sekli: values.odeme_sekli,
+            miktar: values.miktar,
+            banka_hesap_adi: values.banka_hesap_adi,
+            aciklama: values.aciklama,
+          },
+        });
+      }
 
-    navigate(-1);
+      navigate(-1);
+    } catch (error) {
+      console.error("Tazminat formu kaydetme hatası:", error);
+    }
   }
 
   const isLoading = addLoading || updateLoading;
