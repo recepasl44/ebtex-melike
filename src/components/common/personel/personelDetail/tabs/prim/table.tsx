@@ -50,8 +50,8 @@ export default function PersonelPrimTab({ personelId }: PersonelPrimTabProps) {
         render: (row, openDeleteModal) => (
           <>
             <button
-              onClick={() =>
-                navigate(`/personelPrimlerCrud/${row.id}`, {
+            onClick={() =>
+                navigate(`/personelPrimlerCrud/${row.id}?personelId=${actualId}`, {
                   state: {
                     personelId: actualId,
                     selectedPrimler: primlerData.find((d) => d.id === row.id),
@@ -91,7 +91,9 @@ export default function PersonelPrimTab({ personelId }: PersonelPrimTabProps) {
 
       <ReusableTable<Primler>
         onAdd={() =>
-          navigate("/personelPrimlerCrud", { state: { personelId: actualId } })
+          navigate(`/personelPrimlerCrud?personelId=${actualId}`, {
+            state: { personelId: actualId },
+          })
         }
         columns={columns}
         tableMode="single"

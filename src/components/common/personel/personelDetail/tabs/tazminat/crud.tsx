@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import ReusableModalForm, { FieldDefinition } from "../../../../ReusableModalForm";
 import { useCompensationAdd } from "../../../../../hooks/employee/compensation/useAdd";
 import { useCompensationUpdate } from "../../../../../hooks/employee/compensation/useUpdate";
@@ -22,8 +22,9 @@ export default function PersonelCompensationCrud() {
   const { state } = useLocation() as {
     state?: { personelId?: number; selectedCompensation?: Compensation };
   };
-
-  const personelId = state?.personelId;
+  const [searchParams] = useSearchParams();
+  const personelIdParam = searchParams.get("personelId");
+  const personelId = state?.personelId ?? (personelIdParam ? Number(personelIdParam) : undefined);
   const selectedCompensation = state?.selectedCompensation;
 
   const {

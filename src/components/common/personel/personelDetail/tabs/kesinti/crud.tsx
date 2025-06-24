@@ -1,6 +1,6 @@
 // src/components/common/personel/personelDetail/tabs/kesinti/crud.tsx
 import { useEffect, useState } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams, useLocation, useSearchParams } from "react-router-dom";
 import ReusableModalForm, { FieldDefinition } from "../../../../ReusableModalForm";
 import { useInterruptionAdd } from "../../../../../hooks/employee/interruption/useInterruptionAdd";
 import { useInterruptionUpdate } from "../../../../../hooks/employee/interruption/useInterruptionUpdate";
@@ -18,7 +18,9 @@ export default function PersonelKesintiCrud() {
   const { id } = useParams<{ id?: string }>();
   const mode = id ? "update" : "add";
   const { state } = useLocation() as { state?: { personelId?: number; selectedKesinti?: Interruption } };
-  const personelId = state?.personelId;
+  const [searchParams] = useSearchParams();
+  const personelIdParam = searchParams.get("personelId");
+  const personelId = state?.personelId ?? (personelIdParam ? Number(personelIdParam) : undefined);
   const selectedKesinti = state?.selectedKesinti;
 
   const { addNewInterruption, loading: addLoading, error: addError } = useInterruptionAdd();

@@ -78,12 +78,14 @@ export default function KesintiTab({ personelId, enabled = true }: KesintiTabPro
       render: (row, openDeleteModal) => (
         <>
           <button
-            onClick={() => navigate(`/personelKesintiCrud/${row.id}`, {
-              state: {
-                personelId: actualId,
-                selectedKesinti: data.find(d => d.id === row.id),
-              },
-            })}
+            onClick={() =>
+              navigate(`/personelKesintiCrud/${row.id}?personelId=${actualId}`, {
+                state: {
+                  personelId: actualId,
+                  selectedKesinti: data.find(d => d.id === row.id),
+                },
+              })
+            }
             className="btn btn-icon btn-sm btn-info-light rounded-pill me-1"
             title="Düzenle"
           >
@@ -146,7 +148,9 @@ export default function KesintiTab({ personelId, enabled = true }: KesintiTabPro
       <ReusableTable<Interruption>
         columns={columns}
         onAdd={() =>
-          navigate("/personelKesintiCrud", { state: { personelId: actualId } })
+          navigate(`/personelKesintiCrud?personelId=${actualId}`, {
+            state: { personelId: actualId },
+          })
         }
         data={data}
         loading={loading}
