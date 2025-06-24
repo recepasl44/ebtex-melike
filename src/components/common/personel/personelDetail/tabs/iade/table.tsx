@@ -1,22 +1,47 @@
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
+import {
+  useNavigate,
+  useLocation,
+  useSearchParams,
+  useParams,
+} from "react-router-dom";
 import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable";
 import { useRefundDelete } from "../../../../../hooks/employee/refund/useRefundDelete";
-import { useRefundList } from "../../../../../hooks/employee/refund/useRefundList";
+import { useIadeList } from "../../../../../hooks/employee/iade/useIadeList";
 import { Refund } from "../../../../../../types/employee/refund/list";
+import PersonnelModal from "./personnelModal";
 
 interface IadeTabProps {
   personelId?: number;
   enabled?: boolean;
 }
 
-export default function IadeTab({ personelId, enabled = true }: IadeTabProps) {
-  const { id } = useParams<{ id?: string }>();
-  const actualId = personelId ?? (id ? Number(id) : 0);
+export default function IadeTab({ personelId }: IadeTabProps) {
   const navigate = useNavigate();
-  const { refunds: data, loading, error } = useRefundList({
-    enabled: true,
+  const location = useLocation() as { state?: { personelId?: number } };
+  const [searchParams] = useSearchParams();
+  const { id } = useParams<{ id?: string }>();
+
+  const paramId = searchParams.get("personel_id");
+  const derivedId =
+    location.state?.personelId ??
+    (paramId ? Number(paramId) : undefined) ??
+    personelId ??
+    (id ? Number(id) : undefined);
+
+  const [showModal, setShowModal] = useState(
+    derivedId === undefined || derivedId === 0
+  );
+
+  useEffect(() => {
+    setShowModal(derivedId === undefined || derivedId === 0);
+  }, [derivedId]);
+
+  const actualId = derivedId ?? 0;
+
+  const { refunds: data, loading, error } = useIadeList({
+    enabled: !!derivedId,
     personel_id: actualId,
   });
   const { deleteExistingRefund, error: deleteError } = useRefundDelete();
@@ -96,11 +121,22 @@ export default function IadeTab({ personelId, enabled = true }: IadeTabProps) {
     deleteExistingRefund(row.id);
   }
 
+  if (showModal) {
+    return (
+      <PersonnelModal
+        show
+        onClose={() => setShowModal(false)}
+        onSelect={(pid) => {
+          navigate('.', { state: { personelId: pid } });
+          setShowModal(false);
+        }}
+      />
+    );
+  }
+
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center mb-3">
-
-      </div>
+      <div className="d-flex justify-content-between align-items-center mb-3"></div>
 
       <ReusableTable<Refund>
         onAdd={() =>
