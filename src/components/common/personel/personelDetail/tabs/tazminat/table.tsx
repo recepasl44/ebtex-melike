@@ -65,7 +65,7 @@ export default function CompensationTab({
           <>
             <button
               onClick={() =>
-                navigate(`/personelCompensationCrud/${row.id}`, {
+                navigate(`/personelCompensationCrud/${row.id}?personelId=${actualId}`, {
                   state: {
                     personelId: actualId,
                     selectedCompensation: data.find((d) => d.id === row.id),
@@ -106,7 +106,9 @@ export default function CompensationTab({
         columns={columns}
         data={data}
         onAdd={() =>
-          navigate("/personelCompensationCrud", { state: { personelId: actualId } })
+          navigate(`/personelCompensationCrud?personelId=${actualId}`, {
+            state: { personelId: actualId },
+          })
         }
         tableMode="single"
         loading={loading}

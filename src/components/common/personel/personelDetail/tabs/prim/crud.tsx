@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams, useLocation, useSearchParams } from "react-router-dom";
 import ReusableModalForm, { FieldDefinition } from "../../../../ReusableModalForm";
 import { usePrimlerAdd } from "../../../../../hooks/employee/prim/usePrimlerAdd";
 import { usePrimlerUpdate } from "../../../../../hooks/employee/prim/usePrimlerUpdate";
@@ -20,7 +20,9 @@ export default function PersonelPrimlerCrud() {
   const { state } = useLocation() as {
     state?: { personelId?: number; selectedPrimler?: Primler };
   };
-  const personelId = state?.personelId;
+  const [searchParams] = useSearchParams();
+  const personelIdParam = searchParams.get("personelId");
+  const personelId = state?.personelId ?? (personelIdParam ? Number(personelIdParam) : undefined);
   const selectedPrimler = state?.selectedPrimler;
 
   const {

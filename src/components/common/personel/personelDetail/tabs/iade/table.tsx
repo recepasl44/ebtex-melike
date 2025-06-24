@@ -56,7 +56,7 @@ export default function IadeTab({ personelId, enabled = true }: IadeTabProps) {
           <>
             <button
               onClick={() =>
-                navigate(`/personelIadeCrud/${row.id}`, {
+                navigate(`/personelIadeCrud/${row.id}?personelId=${actualId}`, {
                   state: {
                     personelId: actualId,
                     selectedIade: data.find((d) => d.id === row.id),
@@ -104,7 +104,9 @@ export default function IadeTab({ personelId, enabled = true }: IadeTabProps) {
 
       <ReusableTable<Refund>
         onAdd={() =>
-          navigate("/personelIadeCrud", { state: { personelId: actualId } })
+          navigate(`/personelIadeCrud?personelId=${actualId}`, {
+            state: { personelId: actualId },
+          })
         }
         columns={columns}
         data={data}

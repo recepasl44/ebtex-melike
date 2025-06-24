@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams, useLocation, useSearchParams } from "react-router-dom";
 import ReusableModalForm, { FieldDefinition } from "../../../../ReusableModalForm";
 import { useRefundAdd } from "../../../../../hooks/employee/refund/useRefundAdd";
 import { useRefundUpdate } from "../../../../../hooks/employee/refund/useRefundUpdate";
@@ -19,7 +19,9 @@ export default function PersonelIadeCrud() {
   const { id } = useParams<{ id?: string }>();
   const mode = id ? "update" : "add";
   const { state } = useLocation() as { state?: { personelId?: number; selectedIade?: Refund } };
-  const personelId = state?.personelId;
+  const [searchParams] = useSearchParams();
+  const personelIdParam = searchParams.get("personelId");
+  const personelId = state?.personelId ?? (personelIdParam ? Number(personelIdParam) : undefined);
   const selectedIade = state?.selectedIade;
 
   const { addNewRefund, loading: addLoading, error: addError } = useRefundAdd();
