@@ -1,9 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable";
 import { Compensation } from "../../../../../../types/employee/compensation/list";
-import { useCompensationShow } from "../../../../../hooks/employee/compensation/useDetail";
 import { useCompensationDelete } from "../../../../../hooks/employee/compensation/useDelete";
 import { useCompensationList } from "../../../../../hooks/employee/compensation/useList";
 
@@ -19,21 +18,11 @@ export default function CompensationTab({
   const { id } = useParams<{ id?: string }>();
   const actualId = personelId ?? (id ? Number(id) : 0);
   const navigate = useNavigate();
-  const [data, setData] = useState<Compensation[]>([]);
-
-  const { getCompensation, loading, error } = useCompensationShow();
-  const { deleteExistingCompensation, error: deleteError } =
-    useCompensationDelete();
-
-  useEffect(() => {
-    if (!enabled) return;
-
-    (async () => {
-      const res = await getCompensation(actualId);
-      const arr = Array.isArray(res) ? res : res ? [res] : [];
-      setData(arr);
-    })();
-  }, [enabled, actualId]);
+  const { compensations: data, loading, error } = useCompensationList({
+    enabled: true,
+    personel_id: actualId,
+  });
+  const { deleteExistingCompensation, error: deleteError } = useCompensationDelete();
 
   const columns: ColumnDefinition<Compensation>[] = useMemo(
     () => [

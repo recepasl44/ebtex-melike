@@ -1,8 +1,7 @@
-import { useEffect, useState, useMemo } from "react";
+import { useMemo } from "react";
 import { Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable";
-import { useRefundShow } from "../../../../../hooks/employee/refund/useRefundShow";
 import { useRefundDelete } from "../../../../../hooks/employee/refund/useRefundDelete";
 import { useRefundList } from "../../../../../hooks/employee/refund/useRefundList";
 import { Refund } from "../../../../../../types/employee/refund/list";
@@ -16,18 +15,11 @@ export default function IadeTab({ personelId, enabled = true }: IadeTabProps) {
   const { id } = useParams<{ id?: string }>();
   const actualId = personelId ?? (id ? Number(id) : 0);
   const navigate = useNavigate();
-  const [data, setData] = useState<Refund[]>([]);
-  const { getRefund, loading, error } = useRefundShow();
+  const { refunds: data, loading, error } = useRefundList({
+    enabled: true,
+    personel_id: actualId,
+  });
   const { deleteExistingRefund, error: deleteError } = useRefundDelete();
-
-  useEffect(() => {
-    if (!enabled) return;
-    (async () => {
-      const res = await getRefund(actualId);
-      const arr = Array.isArray(res) ? res : res ? [res] : [];
-      setData(arr);
-    })();
-  }, [enabled, actualId]);
 
   const columns: ColumnDefinition<Refund>[] = useMemo(
     () => [
@@ -111,7 +103,9 @@ export default function IadeTab({ personelId, enabled = true }: IadeTabProps) {
       </div>
 
       <ReusableTable<Refund>
-        onAdd={() => navigate("/personelIadeCrud")}
+        onAdd={() =>
+          navigate("/personelIadeCrud", { state: { personelId: actualId } })
+        }
         columns={columns}
         data={data}
         tableMode="single"
