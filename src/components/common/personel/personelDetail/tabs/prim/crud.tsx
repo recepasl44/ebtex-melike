@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams, useLocation, useSearchParams } from "react-router-dom";
+import {
+  useNavigate,
+  useParams,
+  useLocation,
+  useSearchParams,
+} from "react-router-dom";
 import ReusableModalForm, { FieldDefinition } from "../../../../ReusableModalForm";
 import { usePrimlerAdd } from "../../../../../hooks/employee/prim/usePrimlerAdd";
 import { usePrimlerUpdate } from "../../../../../hooks/employee/prim/usePrimlerUpdate";
 import { Primler } from "../../../../../../types/employee/primler/list";
 
 type FormValues = {
-  donem: string;
-  prim_tutari: string;
-  tarih: string;
+  donem: string;        // sayısal dönem / açıklama
+  prim_tutari: string;  // para miktarı
+  tarih: string;        // vade tarihi
   aciklama: string;
 };
 
@@ -17,12 +22,16 @@ export default function PersonelPrimlerCrud() {
   const { id } = useParams<{ id?: string }>();
   const mode = id ? "update" : "add";
 
+  // State üzerinden veya ?personel_id=123 query’sinden al
   const { state } = useLocation() as {
     state?: { personelId?: number; selectedPrimler?: Primler };
   };
   const [searchParams] = useSearchParams();
-  const personelIdParam = searchParams.get("personelId");
-  const personelId = state?.personelId ?? (personelIdParam ? Number(personelIdParam) : undefined);
+  const personelIdParam = searchParams.get("personel_id");
+  const personelId =
+    state?.personelId ??
+    (personelIdParam ? Number(personelIdParam) : undefined);
+
   const selectedPrimler = state?.selectedPrimler;
 
   const {
@@ -46,8 +55,14 @@ export default function PersonelPrimlerCrud() {
   useEffect(() => {
     if (mode === "update" && selectedPrimler) {
       setInitialValues({
-        donem: (selectedPrimler as any).donem || selectedPrimler.vade || "",
-        prim_tutari: (selectedPrimler as any).prim_tutari || selectedPrimler.miktar,
+        donem:
+          (selectedPrimler as any).donem ||
+          selectedPrimler.vade.toString() ||
+          "",
+        prim_tutari:
+          (selectedPrimler as any).prim_tutari ||
+          selectedPrimler.miktar.toString() ||
+          "",
         tarih: (selectedPrimler as any).tarih || "",
         aciklama: selectedPrimler.aciklama || "",
       });
@@ -57,7 +72,7 @@ export default function PersonelPrimlerCrud() {
   const getFields = (): FieldDefinition[] => [
     {
       name: "donem",
-      label: "Dönem ",
+      label: "Dönem",
       type: "number",
       required: true,
     },
@@ -69,7 +84,7 @@ export default function PersonelPrimlerCrud() {
     },
     {
       name: "tarih",
-      label: "Tarih",
+      label: "Vade Tarihi",
       type: "date",
       required: true,
     },
@@ -81,25 +96,28 @@ export default function PersonelPrimlerCrud() {
   ];
 
   async function handleSubmit(vals: FormValues) {
-    if (!personelId) return;
+    console.log("▶ handleSubmit:", { vals, personelId, mode });
+
+    // Sadece gerçekten eksikse engelle (0 geçerli)
+    if (personelId == null) {
+      console.warn("‼ personelId bulunamadı, işlem iptal edildi");
+      return;
+    }
+
+    // API’ye gönderilecek payload
+    const payload: any = {
+      personel_id: personelId,
+      vade: vals.tarih,             // artık tarih stringi
+      miktar: vals.prim_tutari,
+      aciklama: vals.aciklama,
+    };
 
     if (mode === "add") {
-      await addNewPrimler({
-        personel_id: personelId,
-        vade: vals.donem,
-        miktar: vals.prim_tutari,
-        tarih: vals.tarih,
-        aciklama: vals.aciklama,
-      } as any);
+      await addNewPrimler(payload);
     } else if (id) {
       await updateExistingPrimler({
         primlerId: Number(id),
-        payload: {
-          vade: vals.donem,
-          miktar: vals.prim_tutari,
-          tarih: vals.tarih,
-          aciklama: vals.aciklama,
-        } as any,
+        payload,
       } as any);
     }
 
@@ -111,7 +129,7 @@ export default function PersonelPrimlerCrud() {
 
   return (
     <ReusableModalForm<FormValues>
-      show={true}
+      show
       title={mode === "add" ? "Prim Ekle" : "Prim Güncelle"}
       fields={getFields()}
       initialValues={initialValues}
