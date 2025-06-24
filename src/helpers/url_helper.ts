@@ -2,7 +2,7 @@
 export const LOGIN_USER = "/auth/login";
 
 
-export const DEFAULT_URL = "http://213.202.223.158:8000/api/v1";
+export const DEFAULT_URL = "https://api.ebtex.com.tr";
 export const BRANCHES = '/branches';
 export const CITIES = '/cities';
 export const CLASSROOMS = '/classrooms';

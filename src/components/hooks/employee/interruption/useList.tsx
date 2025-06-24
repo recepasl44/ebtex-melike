@@ -1,3 +1,5 @@
+// F:\xintra_react_ts\src\components\hooks\employee\interruption\useInterruptionList.tsx
+
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../../../store";
@@ -17,10 +19,15 @@ export function useInterruptionList(params: UseInterruptionListArgs) {
     (state: RootState) => state.interruptionList
   );
 
+
+  const { enabled = true, ...filters } = params;
+
+  const filtersKey = JSON.stringify(filters);
+
   useEffect(() => {
-    if (params.enabled === false) return;
-    dispatch(fetchInterruptionList(params));
-  }, [params, dispatch]);
+    if (!enabled) return;
+    dispatch(fetchInterruptionList(filters));
+  }, [dispatch, enabled, filtersKey]);
 
   const interruptions: Interruption[] = data || [];
   const loading = status === InterruptionListStatus.LOADING;

@@ -7,6 +7,7 @@ import odemeAl from "../../../../../../assets/images/media/ödeme-al.svg";
 import odemeAlHover from "../../../../../../assets/images/media/ödeme-al-hover.svg";
 import { KesintiPaymentModal } from "./crud";
 import darkcontrol from "../../../../../../utils/darkmodecontroller";
+import { useInterruptionList } from "../../../../../hooks/employee/interruption/useList";
 import { useInterruptionShow } from "../../../../../hooks/employee/interruption/useInterruptionShow";
 import { useInterruptionDelete } from "../../../../../hooks/employee/interruption/useInterruptionDelete";
 import { Interruption } from "../../../../../../types/employee/interruption/list";

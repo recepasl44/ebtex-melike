@@ -9,26 +9,21 @@ import { Compensation, CompensationListArgs } from "../../../../types/employee/c
 
 export function useCompensationList(params: CompensationListArgs) {
   const dispatch = useDispatch<AppDispatch>();
+  const { data, status, error } = useSelector((state: RootState) => state.compensationList);
 
-  const { data, status, error } = useSelector(
-    (state: RootState) => state.compensationList
-  );
+  const [filter, setFilter] = useState<any>(null);
+  const { enabled = false, ...otherParams } = params || {};
 
- const [filter, setFilter] = useState<any>(null);
- 
-   const { enabled = false, ...otherParams } = params || {};
- 
-   useEffect(() => {
-     if (!enabled) return;
- 
-     dispatch(
-      fetchCompensationList({
-         ...otherParams,
-         filter,
-         enabled: false,
-       })
-     );
-   }, [enabled, filter, dispatch]);
+  // otherParams'i ve filter'ı JSON.stringify ile tek bir bağımlılığa indiriyoruz
+  const depsKey = JSON.stringify(otherParams);
+
+  useEffect(() => {
+    if (!enabled) return;
+    dispatch(fetchCompensationList({
+      ...otherParams,
+      filter,
+    }));
+  }, [dispatch, enabled, filter, depsKey]);
 
   const compensations: Compensation[] = data || [];
   const loading = status === CompensationListStatus.LOADING;

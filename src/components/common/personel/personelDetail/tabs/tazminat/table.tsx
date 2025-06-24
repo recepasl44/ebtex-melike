@@ -5,6 +5,7 @@ import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable";
 import { Compensation } from "../../../../../../types/employee/compensation/list";
 import { useCompensationShow } from "../../../../../hooks/employee/compensation/useDetail";
 import { useCompensationDelete } from "../../../../../hooks/employee/compensation/useDelete";
+import { useCompensationList } from "../../../../../hooks/employee/compensation/useList";
 
 interface CompensationTabProps {
   personelId?: number;

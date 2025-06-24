@@ -1,6 +1,6 @@
 // F:\xintra_react_ts\src\components\hooks\employee\primler\usePrimlerList.tsx
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../store/rootReducer";
 import { AppDispatch } from "../../../../store";
@@ -8,28 +8,23 @@ import { fetchPrimlerList } from "../../../../slices/employee/primler/list/thunk
 import { Primler } from "../../../../types/employee/primler/list";
 import PrimlerListStatus from "../../../../enums/employee/primler/list";
 
-export function usePrimlerList(params: { enabled?: boolean; [key: string]: any }) {
+interface UsePrimlerListParams {
+  enabled?: boolean;
+  personel_id?: number;
+}
+
+export function usePrimlerList({ enabled = true, personel_id }: UsePrimlerListParams) {
   const dispatch = useDispatch<AppDispatch>();
-  const { data, status, error } = useSelector(
-    (state: RootState) => state.primlerList
-  );
-  const [filter] = useState<any>(null);
-  const { enabled, ...otherParams } = params;
+  const { data, status, error } = useSelector((state: RootState) => state.primlerList);
+
   useEffect(() => {
-    if (!enabled) return;
-
-    dispatch(fetchPrimlerList({
-      ...otherParams,
-      filter,
-    }));
-  }, [enabled, filter, dispatch, otherParams]);
-
-  const primler: Primler[] = data || [];
-  const loading = status === PrimlerListStatus.LOADING;
+    if (!enabled || personel_id == null) return;
+    dispatch(fetchPrimlerList({ personel_id }));
+  }, [enabled, personel_id, dispatch]);
 
   return {
-    primler,
-    loading,
+    primler: data || [],
+    loading: status === PrimlerListStatus.LOADING,
     error,
   };
 }

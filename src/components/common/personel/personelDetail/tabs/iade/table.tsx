@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable";
 import { useRefundShow } from "../../../../../hooks/employee/refund/useRefundShow";
 import { useRefundDelete } from "../../../../../hooks/employee/refund/useRefundDelete";
+import { useRefundList } from "../../../../../hooks/employee/refund/useRefundList";
 import { Refund } from "../../../../../../types/employee/refund/list";
 
 interface IadeTabProps {
@@ -16,7 +17,7 @@ export default function IadeTab({ personelId, enabled = true }: IadeTabProps) {
   const actualId = personelId ?? (id ? Number(id) : 0);
   const navigate = useNavigate();
   const [data, setData] = useState<Refund[]>([]);
-  const {  getRefund, loading, error } = useRefundShow();
+  const { getRefund, loading, error } = useRefundShow();
   const { deleteExistingRefund, error: deleteError } = useRefundDelete();
 
   useEffect(() => {
@@ -59,33 +60,33 @@ export default function IadeTab({ personelId, enabled = true }: IadeTabProps) {
       {
         key: "actions",
         label: "İşlemler",
-      render: (row, openDeleteModal) => (
-        <>
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() =>
-              navigate(`/personelIadeCrud/${row.id}`, {
-                state: {
-                  personelId: actualId,
-                  selectedIade: data.find(d => d.id === row.id),
-                },
-              })
-            }
-          >
-            <i className="ti ti-pencil" />
-          </Button>{" "}
-          <Button
-            variant="danger"
-            size="sm"
-            onClick={() => openDeleteModal?.(row)}
-          >
-            <i className="ti ti-trash" />
-          </Button>
-        </>
-      ),
-    },
-  ], [navigate, actualId, data]);
+        render: (row, openDeleteModal) => (
+          <>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() =>
+                navigate(`/personelIadeCrud/${row.id}`, {
+                  state: {
+                    personelId: actualId,
+                    selectedIade: data.find(d => d.id === row.id),
+                  },
+                })
+              }
+            >
+              <i className="ti ti-pencil" />
+            </Button>{" "}
+            <Button
+              variant="danger"
+              size="sm"
+              onClick={() => openDeleteModal?.(row)}
+            >
+              <i className="ti ti-trash" />
+            </Button>
+          </>
+        ),
+      },
+    ], [navigate, actualId, data]);
 
   const totalMiktar = useMemo(
     () => data.reduce((acc, cur) => acc + Number((cur as any).miktar || 0), 0),
@@ -106,33 +107,27 @@ export default function IadeTab({ personelId, enabled = true }: IadeTabProps) {
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h6>İadeler</h6>
-        <Button
-          variant="success"
-          onClick={() =>
-            navigate("/personelIadeCrud", { state: { personelId: actualId } })
-          }
-        >
-          Ekle
-        </Button>
+
       </div>
 
       <ReusableTable<Refund>
+        onAdd={() => navigate("/personelIadeCrud")}
         columns={columns}
         data={data}
+        tableMode="single"
         loading={loading}
         error={error || deleteError}
         currentPage={1}
         totalPages={1}
         totalItems={data.length}
         pageSize={data.length}
-        onPageChange={() => {}}
-        onPageSizeChange={() => {}}
+        onPageChange={() => { }}
+        onPageSizeChange={() => { }}
         exportFileName="iadeler"
         showExportButtons
         onDeleteRow={handleDeleteRow}
         customFooter={footer}
       />
     </div>
-);
+  );
 }
