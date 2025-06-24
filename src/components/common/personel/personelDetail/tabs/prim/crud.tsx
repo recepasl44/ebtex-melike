@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate, useParams, useLocation, useSearchParams } from "react-router-dom";
 import ReusableModalForm, { FieldDefinition } from "../../../../ReusableModalForm";
 import { usePrimlerAdd } from "../../../../../hooks/employee/prim/usePrimlerAdd";
 import { usePrimlerUpdate } from "../../../../../hooks/employee/prim/usePrimlerUpdate";
+import { fetchPrimlerList } from "../../../../../../slices/employee/primler/list/thunk";
+import { AppDispatch } from "../../../../../../store";
 import { Primler } from "../../../../../../types/employee/primler/list";
 
 type FormValues = {
@@ -14,6 +17,7 @@ type FormValues = {
 
 export default function PersonelPrimlerCrud() {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
   const { id } = useParams<{ id?: string }>();
   const mode = id ? "update" : "add";
 
@@ -91,6 +95,7 @@ export default function PersonelPrimlerCrud() {
         tarih: vals.tarih,
         aciklama: vals.aciklama,
       } as any);
+      dispatch(fetchPrimlerList({ personel_id: personelId }));
     } else if (id) {
       await updateExistingPrimler({
         primlerId: Number(id),
@@ -101,6 +106,7 @@ export default function PersonelPrimlerCrud() {
           aciklama: vals.aciklama,
         } as any,
       } as any);
+      dispatch(fetchPrimlerList({ personel_id: personelId }));
     }
 
     navigate(-1);
@@ -116,7 +122,7 @@ export default function PersonelPrimlerCrud() {
       fields={getFields()}
       initialValues={initialValues}
       onSubmit={handleSubmit}
-      confirmButtonLabel={mode === "add" ? "Kaydet" : "Güncelle"}
+      confirmButtonLabel={mode === "add" ? "Ekle" : "Güncelle"}
       cancelButtonLabel="İptal"
       isLoading={isLoading}
       error={error || null}

@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import ReusableModalForm, { FieldDefinition } from "../../../../ReusableModalForm";
 import { useCompensationAdd } from "../../../../../hooks/employee/compensation/useAdd";
 import { useCompensationUpdate } from "../../../../../hooks/employee/compensation/useUpdate";
+import { fetchCompensationList } from "../../../../../../slices/employee/compensation/list/thunk";
+import { AppDispatch } from "../../../../../../store";
 import { Compensation } from "../../../../../../types/employee/compensation/list";
 
 type FormValues = {
@@ -16,6 +19,7 @@ type FormValues = {
 
 export default function PersonelCompensationCrud() {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
   const { id } = useParams<{ id?: string }>();
   const mode = id ? "update" : "add";
 
@@ -122,6 +126,7 @@ export default function PersonelCompensationCrud() {
         banka_hesap_adi: values.banka_hesap_adi,
         aciklama: values.aciklama,
       });
+      dispatch(fetchCompensationList({ personel_id: personelId! }));
     } else if (id) {
       await updateExistingCompensation({
         compensationId: Number(id),
@@ -134,6 +139,7 @@ export default function PersonelCompensationCrud() {
           aciklama: values.aciklama,
         },
       });
+      dispatch(fetchCompensationList({ personel_id: personelId! }));
     }
 
     navigate(-1);
@@ -149,7 +155,7 @@ export default function PersonelCompensationCrud() {
       fields={getFields()}
       initialValues={initialValues}
       onSubmit={handleSubmit}
-      confirmButtonLabel={mode === "add" ? "Kaydet" : "Güncelle"}
+      confirmButtonLabel={mode === "add" ? "Ekle" : "Güncelle"}
       cancelButtonLabel="İptal"
       isLoading={isLoading}
       error={error || null}

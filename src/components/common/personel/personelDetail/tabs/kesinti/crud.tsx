@@ -1,9 +1,12 @@
 // src/components/common/personel/personelDetail/tabs/kesinti/crud.tsx
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, useLocation, useSearchParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import ReusableModalForm, { FieldDefinition } from "../../../../ReusableModalForm";
 import { useInterruptionAdd } from "../../../../../hooks/employee/interruption/useInterruptionAdd";
 import { useInterruptionUpdate } from "../../../../../hooks/employee/interruption/useInterruptionUpdate";
+import { fetchInterruptionList } from "../../../../../../slices/employee/interruption/list/thunk";
+import { AppDispatch } from "../../../../../../store";
 import { Interruption } from "../../../../../../types/employee/interruption/list";
 
 type FormValues = {
@@ -15,6 +18,7 @@ type FormValues = {
 
 export default function PersonelKesintiCrud() {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
   const { id } = useParams<{ id?: string }>();
   const mode = id ? "update" : "add";
   const { state } = useLocation() as { state?: { personelId?: number; selectedKesinti?: Interruption } };
@@ -81,6 +85,7 @@ export default function PersonelKesintiCrud() {
         odeme_sekli: "",
         aciklama: vals.aciklama,
       });
+      dispatch(fetchInterruptionList({ personel_id: personelId }));
     } else if (id) {
       await updateExistingInterruption({
         interruptionId: Number(id),
@@ -91,6 +96,7 @@ export default function PersonelKesintiCrud() {
           aciklama: vals.aciklama,
         },
       });
+      dispatch(fetchInterruptionList({ personel_id: personelId }));
     }
 
     navigate(-1);
@@ -106,7 +112,7 @@ export default function PersonelKesintiCrud() {
       fields={getFields()}
       initialValues={initialValues}
       onSubmit={handleSubmit}
-      confirmButtonLabel={mode === "add" ? "Kaydet" : "Güncelle"}
+      confirmButtonLabel={mode === "add" ? "Ekle" : "Güncelle"}
       cancelButtonLabel="İptal"
       isLoading={isLoading}
       error={error || null}

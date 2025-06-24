@@ -1,9 +1,12 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, useLocation, useSearchParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import ReusableModalForm, { FieldDefinition } from "../../../../ReusableModalForm";
 import { useRefundAdd } from "../../../../../hooks/employee/refund/useRefundAdd";
 import { useRefundUpdate } from "../../../../../hooks/employee/refund/useRefundUpdate";
+import { fetchRefundList } from "../../../../../../slices/employee/refund/list/thunk";
+import { AppDispatch } from "../../../../../../store";
 import { Refund } from "../../../../../../types/employee/refund/list";
 
 type FormValues = {
@@ -16,6 +19,7 @@ type FormValues = {
 
 export default function PersonelIadeCrud() {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
   const { id } = useParams<{ id?: string }>();
   const mode = id ? "update" : "add";
   const { state } = useLocation() as { state?: { personelId?: number; selectedIade?: Refund } };
@@ -98,6 +102,7 @@ export default function PersonelIadeCrud() {
           banka_hesap_adi: vals.banka_hesap_adi,
           aciklama: vals.aciklama,
         });
+        dispatch(fetchRefundList({ personel_id: personelId }));
       } else if (id) {
         await updateExistingRefund({
           refundId: Number(id),
@@ -109,6 +114,7 @@ export default function PersonelIadeCrud() {
             aciklama: vals.aciklama,
           },
         });
+        dispatch(fetchRefundList({ personel_id: personelId }));
       }
 
       navigate(-1);
@@ -127,7 +133,7 @@ export default function PersonelIadeCrud() {
       fields={getFields()}
       initialValues={initialValues}
       onSubmit={handleSubmit}
-      confirmButtonLabel={mode === "add" ? "Kaydet" : "Güncelle"}
+      confirmButtonLabel={mode === "add" ? "Ekle" : "Güncelle"}
       cancelButtonLabel="İptal"
       isLoading={isLoading}
       error={error || null}
