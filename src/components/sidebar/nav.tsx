@@ -333,6 +333,12 @@ export const MENUITEMS: any = [
     path: "/contact-panel",
     type: "link",
   },
+  {
+    title: "Mesajlar",
+    icon: Dashboardicon,
+    path: "/contact-panel/messages",
+    type: "link",
+  },
 
   //  ----- WEB APPS -----
   {
