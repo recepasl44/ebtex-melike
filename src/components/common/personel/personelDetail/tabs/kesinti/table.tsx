@@ -1,5 +1,5 @@
 // src/components/common/personel/personelDetail/tabs/kesinti/table.tsx
-import { useEffect, useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable";
@@ -8,7 +8,6 @@ import odemeAlHover from "../../../../../../assets/images/media/ödeme-al-hover.
 import { KesintiPaymentModal } from "./crud";
 import darkcontrol from "../../../../../../utils/darkmodecontroller";
 import { useInterruptionList } from "../../../../../hooks/employee/interruption/useList";
-import { useInterruptionShow } from "../../../../../hooks/employee/interruption/useInterruptionShow";
 import { useInterruptionDelete } from "../../../../../hooks/employee/interruption/useInterruptionDelete";
 import { Interruption } from "../../../../../../types/employee/interruption/list";
 
@@ -21,20 +20,13 @@ export default function KesintiTab({ personelId, enabled = true }: KesintiTabPro
   const { id } = useParams<{ id?: string }>();
   const actualId = personelId ?? (id ? Number(id) : 0);
   const navigate = useNavigate();
-  const [data, setData] = useState<Interruption[]>([]);
   const [showPayment, setShowPayment] = useState(false);
   const [selected, setSelected] = useState<Interruption | null>(null);
-  const { getInterruption, loading, error } = useInterruptionShow();
+  const { interruptions: data, loading, error } = useInterruptionList({
+    enabled: true,
+    personel_id: actualId,
+  });
   const { deleteExistingInterruption, error: deleteError } = useInterruptionDelete();
-
-  useEffect(() => {
-    if (!enabled) return;
-    (async () => {
-      const res = await getInterruption(actualId);
-      const arr = Array.isArray(res) ? res : res ? [res] : [];
-      setData(arr);
-    })();
-  }, [enabled, actualId]);
 
   const columns: ColumnDefinition<Interruption>[] = useMemo(() => [
     {
