@@ -63,9 +63,7 @@ export default function CompensationTab({
         label: "İşlemler",
         render: (row, openDeleteModal) => (
           <>
-            <Button
-              size="sm"
-              variant="primary"
+            <button
               onClick={() =>
                 navigate(`/personelCompensationCrud/${row.id}`, {
                   state: {
@@ -74,16 +72,18 @@ export default function CompensationTab({
                   },
                 })
               }
+              className="btn btn-icon btn-sm btn-info-light rounded-pill me-1"
+              title="Düzenle"
             >
               <i className="ti ti-pencil" />
-            </Button>{" "}
-            <Button
-              size="sm"
-              variant="danger"
+            </button>
+            <button
               onClick={() => openDeleteModal?.(row)}
+              className="btn btn-icon btn-sm btn-danger-light rounded-pill"
+              title="Sil"
             >
               <i className="ti ti-trash" />
-            </Button>
+            </button>
           </>
         ),
       },
