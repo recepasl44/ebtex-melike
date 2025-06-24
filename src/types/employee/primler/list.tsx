@@ -1,6 +1,7 @@
 import PrimlerListStatus from "../../../enums/employee/primler/list";
 
 export interface Primler {
+  created_at: string;
   id: number;
   personel_id: number;
   vade: string;
@@ -8,6 +9,7 @@ export interface Primler {
   /** Prim tarihi */
   tarih?: string;
   aciklama: string;
+  odeme_sekli?: string;
   updated_at: string;
   created_At: string;
   platform_id: number;

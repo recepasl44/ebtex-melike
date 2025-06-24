@@ -2,6 +2,7 @@ import CompensationListStatus from "../../../enums/employee/compensation/list";
 import { Personel } from "../personel/list";
 
 export interface Compensation {
+  tarih: string;
   id: number;
   personel_id: number;
   tazminat_turu: string;

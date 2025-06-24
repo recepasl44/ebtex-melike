@@ -1,4 +1,3 @@
-// src/components/common/personel/personelDetail/tabs/kesinti/crud.tsx
 import { useEffect, useState } from "react";
 import {
   useNavigate,
@@ -8,27 +7,28 @@ import {
 } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import ReusableModalForm, { FieldDefinition } from "../../../../ReusableModalForm";
-import { useInterruptionAdd } from "../../../../../hooks/employee/interruption/useInterruptionAdd";
-import { useInterruptionUpdate } from "../../../../../hooks/employee/interruption/useInterruptionUpdate";
-import { fetchInterruptionList } from "../../../../../../slices/employee/interruption/list/thunk";
+import { usePrimlerAdd } from "../../../../../hooks/employee/prim/usePrimlerAdd";
+import { usePrimlerUpdate } from "../../../../../hooks/employee/prim/usePrimlerUpdate";
+import { fetchPrimlerList } from "../../../../../../slices/employee/primler/list/thunk";
 import { AppDispatch } from "../../../../../../store";
-import { Interruption } from "../../../../../../types/employee/interruption/list";
+import { Primler } from "../../../../../../types/employee/primler/list";
 
 type FormValues = {
   donem: string;
   miktar: string;
   tarih: string;
+  odeme_sekli: string;
   aciklama: string;
 };
 
-export default function PersonelKesintiCrud() {
+export default function PersonelPrimCrud() {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { id } = useParams<{ id?: string }>();
   const mode = id ? "update" : "add";
 
   const { state } = useLocation() as {
-    state?: { personelId?: number; selectedKesinti?: Interruption };
+    state?: { personelId?: number; selectedPrim?: Primler };
   };
   const [searchParams] = useSearchParams();
   const rawParam = searchParams.get("personel_id");
@@ -37,36 +37,38 @@ export default function PersonelKesintiCrud() {
     state?.personelId ??
     (paramId && paramId > 0 ? paramId : undefined);
 
-  const selectedKesinti = state?.selectedKesinti;
+  const selectedPrim = state?.selectedPrim;
 
   const {
-    addNewInterruption,
+    addNewPrimler,
     loading: addLoading,
     error: addError,
-  } = useInterruptionAdd();
+  } = usePrimlerAdd();
   const {
-    updateExistingInterruption,
+    updateExistingPrimler,
     loading: updateLoading,
     error: updateError,
-  } = useInterruptionUpdate();
+  } = usePrimlerUpdate();
 
   const [initialValues, setInitialValues] = useState<FormValues>({
     donem: "",
     miktar: "",
     tarih: "",
+    odeme_sekli: "",
     aciklama: "",
   });
 
   useEffect(() => {
-    if (mode === "update" && selectedKesinti) {
+    if (mode === "update" && selectedPrim) {
       setInitialValues({
-        donem: selectedKesinti.vade,
-        miktar: selectedKesinti.miktar,
-        tarih: selectedKesinti.created_at,
-        aciklama: selectedKesinti.aciklama,
+        donem: selectedPrim.vade,
+        miktar: selectedPrim.miktar,
+        tarih: selectedPrim.created_at,
+        aciklama: selectedPrim.aciklama,
+        odeme_sekli: (selectedPrim as any).odeme_sekli || "",
       });
     }
-  }, [mode, selectedKesinti]);
+  }, [mode, selectedPrim]);
 
   // Tüm alanlar ekle modunda opsiyonel, güncelleme modunda zorunlu
   const getFields = (): FieldDefinition[] => [
@@ -77,8 +79,18 @@ export default function PersonelKesintiCrud() {
       required: mode === "update",
     },
     {
+      name: "odeme_sekli",
+      label: "Ödeme Şekli",
+      type: "select",
+      required: true,
+      options: [
+        { label: "Nakit", value: "Nakit" },
+        { label: "Banka", value: "Banka" },
+      ],
+    },
+    {
       name: "miktar",
-      label: "Kesinti Tutarı (₺)",
+      label: "Prim Miktarı (₺)",
       type: "currency",
       required: mode === "update",
     },
@@ -106,20 +118,21 @@ export default function PersonelKesintiCrud() {
       personel_id: personelId,
       vade: vals.donem,
       miktar: vals.miktar,
-      odeme_sekli: "",  // gereken yerde ekleyebilirsiniz
+      tarih: vals.tarih,
+      odeme_sekli: vals.odeme_sekli,
       aciklama: vals.aciklama,
     };
 
     if (mode === "add") {
-      await addNewInterruption(payload);
+      await addNewPrimler(payload);
     } else {
-      await updateExistingInterruption({
-        interruptionId: Number(id),
+      await updateExistingPrimler({
+        primlerId: Number(id),
         payload,
       });
     }
 
-    dispatch(fetchInterruptionList({ personel_id: personelId }));
+    dispatch(fetchPrimlerList({ personel_id: personelId }));
     navigate(-1);
   }
 
@@ -129,7 +142,7 @@ export default function PersonelKesintiCrud() {
   return (
     <ReusableModalForm<FormValues>
       show
-      title={mode === "add" ? "Kesinti Ekle" : "Kesinti Güncelle"}
+      title={mode === "add" ? "Prim Ekle" : "Prim Güncelle"}
       fields={getFields()}
       initialValues={initialValues}
       onSubmit={handleSubmit}

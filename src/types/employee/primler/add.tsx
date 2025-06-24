@@ -3,10 +3,11 @@ import PrimlerListStatus from "../../../enums/employee/primler/list";
 
 export interface PrimlerAddPayload {
   vade: string;
-  personel_id : number
+  personel_id: number
   miktar: string;
   tarih: string;
   aciklama: string;
+  odeme_sekli: string;
 }
 
 export interface PrimlerAddState {

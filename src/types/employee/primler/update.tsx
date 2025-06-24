@@ -7,6 +7,7 @@ export interface PrimlerUpdatePayload {
     vade: string;
     miktar: string;
     tarih: string;
+    odeme_sekli: string;
     aciklama: string;
   };
 }

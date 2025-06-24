@@ -13,6 +13,7 @@ type FormValues = {
   donem: string;
   miktar: string;
   tarih: string;
+  odeme_sekli: string;
   aciklama: string;
 };
 
@@ -34,6 +35,7 @@ export default function PersonelKesintiCrud() {
     donem: "",
     miktar: "",
     tarih: "",
+    odeme_sekli: "",
     aciklama: "",
   });
 
@@ -44,6 +46,7 @@ export default function PersonelKesintiCrud() {
         miktar: selectedKesinti.miktar,
         tarih: selectedKesinti.created_at || "",
         aciklama: selectedKesinti.aciklama || "",
+        odeme_sekli: selectedKesinti.odeme_sekli || "",
       });
     }
   }, [mode, selectedKesinti]);
@@ -54,6 +57,16 @@ export default function PersonelKesintiCrud() {
       label: "Dönem",
       type: "date",
       required: true,
+    },
+    {
+      name: "odeme_sekli",
+      label: "Ödeme Şekli",
+      type: "select",
+      required: true,
+      options: [
+        { label: "Nakit", value: "Nakit" },
+        { label: "Banka", value: "Banka" },
+      ],
     },
     {
       name: "miktar",
@@ -87,7 +100,7 @@ export default function PersonelKesintiCrud() {
         personel_id: personelId,
         vade: vals.donem,
         miktar: vals.miktar,
-        odeme_sekli: "",
+        odeme_sekli: vals.odeme_sekli,
         aciklama: vals.aciklama,
       });
       dispatch(fetchInterruptionList({ personel_id: personelId }));
@@ -97,7 +110,7 @@ export default function PersonelKesintiCrud() {
         payload: {
           vade: vals.donem,
           miktar: vals.miktar,
-          odeme_sekli: "",
+          odeme_sekli: vals.odeme_sekli,
           aciklama: vals.aciklama,
         },
       });
