@@ -1,10 +1,16 @@
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable";
 import { Compensation } from "../../../../../../types/employee/compensation/list";
 import { useCompensationDelete } from "../../../../../hooks/employee/compensation/useDelete";
 import { useCompensationList } from "../../../../../hooks/employee/compensation/useList";
+import PersonnelModal from "./personnelModal";
 
 interface CompensationTabProps {
   personelId?: number;
@@ -15,24 +21,34 @@ export default function CompensationTab({
   personelId,
   enabled = true,
 }: CompensationTabProps) {
-  const { id } = useParams<{ id?: string }>();
-  const actualId = personelId ?? (id ? Number(id) : 0);
   const navigate = useNavigate();
+  const location = useLocation() as { state?: { personelId?: number } };
+  const [searchParams] = useSearchParams();
+  const { id } = useParams<{ id?: string }>();
+
+  const paramId = searchParams.get("personel_id");
+  const derivedId =
+    location.state?.personelId ??
+    (paramId ? Number(paramId) : undefined) ??
+    personelId ??
+    (id ? Number(id) : undefined);
+
+  const [showModal, setShowModal] = useState(
+    derivedId === undefined || derivedId === 0
+  );
+
+  useEffect(() => {
+    setShowModal(derivedId === undefined || derivedId === 0);
+  }, [derivedId]);
+
+  const actualId = derivedId ?? 0;
+
   const { compensations: data, loading, error } = useCompensationList({
-    enabled: true,
+    enabled: !!derivedId,
     personel_id: actualId,
   });
-  const { deleteExistingCompensation, error: deleteError } = useCompensationDelete();
-  const { state } = useLocation() as {
-    state?: { personelId?: number };
-  };
-  if (!state?.personelId) {
-
-    return;
-    <>
-
-    </>
-  }
+  const { deleteExistingCompensation, error: deleteError } =
+    useCompensationDelete();
   const columns: ColumnDefinition<Compensation>[] = useMemo(
     () => [
       {
@@ -103,6 +119,19 @@ export default function CompensationTab({
   function handleDeleteRow(row: Compensation) {
     if (!row.id) return;
     deleteExistingCompensation(row.id);
+  }
+
+  if (showModal) {
+    return (
+      <PersonnelModal
+        show
+        onClose={() => setShowModal(false)}
+        onSelect={(pid) => {
+          navigate('.', { state: { personelId: pid } });
+          setShowModal(false);
+        }}
+      />
+    );
   }
 
   return (
