@@ -1,7 +1,7 @@
 // src/components/common/personel/personelDetail/tabs/kesinti/table.tsx
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation, useSearchParams } from "react-router-dom";
 import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable";
 import odemeAl from "../../../../../../assets/images/media/ödeme-al.svg";
 import odemeAlHover from "../../../../../../assets/images/media/ödeme-al-hover.svg";
@@ -10,6 +10,7 @@ import darkcontrol from "../../../../../../utils/darkmodecontroller";
 import { useInterruptionList } from "../../../../../hooks/employee/interruption/useList";
 import { useInterruptionDelete } from "../../../../../hooks/employee/interruption/useInterruptionDelete";
 import { Interruption } from "../../../../../../types/employee/interruption/list";
+import PersonnelModal from "./personnelModal";
 
 interface KesintiTabProps {
   personelId?: number;
@@ -17,13 +18,29 @@ interface KesintiTabProps {
 }
 
 export default function KesintiTab({ personelId, enabled = true }: KesintiTabProps) {
-  const { id } = useParams<{ id?: string }>();
-  const actualId = personelId ?? (id ? Number(id) : 0);
   const navigate = useNavigate();
+  const location = useLocation() as { state?: { personelId?: number } };
+  const [searchParams] = useSearchParams();
+  const { id } = useParams<{ id?: string }>();
+
+  const paramId = searchParams.get("personel_id");
+  const derivedId =
+    personelId ??
+    location.state?.personelId ??
+    (paramId ? Number(paramId) : undefined) ??
+    (id ? Number(id) : undefined);
+
+  const [showModal, setShowModal] = useState(derivedId === undefined || derivedId === 0);
+
+  useEffect(() => {
+    setShowModal(derivedId === undefined || derivedId === 0);
+  }, [derivedId]);
+
+  const actualId = derivedId ?? 0;
   const [showPayment, setShowPayment] = useState(false);
   const [selected, setSelected] = useState<Interruption | null>(null);
   const { interruptions: data, loading, error } = useInterruptionList({
-    enabled: true,
+    enabled: !!derivedId,
     personel_id: actualId,
   });
   const { deleteExistingInterruption, error: deleteError } = useInterruptionDelete();
@@ -138,6 +155,19 @@ export default function KesintiTab({ personelId, enabled = true }: KesintiTabPro
       Toplam Kesinti: {totalKesinti.toLocaleString()} ₺ | Toplam Alınan: {totalAlinan.toLocaleString()} ₺ | Toplam Kalan: {totalKalan.toLocaleString()} ₺
     </div>
   );
+
+  if (showModal) {
+    return (
+      <PersonnelModal
+        show
+        onClose={() => setShowModal(false)}
+        onSelect={(pid) => {
+          navigate('.', { state: { personelId: pid } });
+          setShowModal(false);
+        }}
+      />
+    );
+  }
 
   return (
     <div>
