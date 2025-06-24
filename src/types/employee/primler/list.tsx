@@ -7,6 +7,7 @@ export interface Primler {
   miktar: string;
   /** Prim tarihi */
   tarih?: string;
+  odeme_sekli?: string;
   aciklama: string;
   updated_at: string;
   created_At: string;
