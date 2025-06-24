@@ -4,6 +4,7 @@
 import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable";
+import darkcontrol from "../../../../../../utils/darkmodecontroller";
 import { usePrimlerList } from "../../../../../hooks/employee/prim/usePrimlerList";
 import { usePrimlerDelete } from "../../../../../hooks/employee/prim/usePrimlerDelete";
 import { Primler } from "../../../../../../types/employee/primler/list";
@@ -23,6 +24,17 @@ export default function PersonelPrimTab({ personelId }: PersonelPrimTabProps) {
     personel_id: actualId,
   });
   const { deleteExistingPrimler, error: deleteError } = usePrimlerDelete();
+
+  const totalAmount = useMemo(
+    () => primlerData.reduce((acc, cur) => acc + Number(cur.miktar || 0), 0),
+    [primlerData]
+  );
+  const textColor = darkcontrol.dataThemeMode === "dark" ? "#fff" : "#000";
+  const footer = (
+    <div className="d-flex justify-content-end fw-bold me-3" style={{ color: textColor }}>
+      Toplam: {totalAmount.toLocaleString()} ₺
+    </div>
+  );
 
   const columns: ColumnDefinition<Primler>[] = useMemo(
     () => [
@@ -109,6 +121,7 @@ export default function PersonelPrimTab({ personelId }: PersonelPrimTabProps) {
         exportFileName="primler"
         showExportButtons
         onDeleteRow={handleDeleteRow}
+        customFooter={footer}
       />
     </div>
   );
