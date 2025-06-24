@@ -88,9 +88,9 @@ export default function PersonelCompensationCrud() {
         { label: "Nakit", value: "Nakit" },
         { label: "Banka", value: "Banka" },
       ],
-    
+
     },
-    
+
     {
       name: "miktar",
       label: "Miktar",

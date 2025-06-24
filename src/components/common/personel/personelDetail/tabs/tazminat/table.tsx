@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Button } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable";
 import { Compensation } from "../../../../../../types/employee/compensation/list";
 import { useCompensationDelete } from "../../../../../hooks/employee/compensation/useDelete";
@@ -23,7 +23,16 @@ export default function CompensationTab({
     personel_id: actualId,
   });
   const { deleteExistingCompensation, error: deleteError } = useCompensationDelete();
+  const { state } = useLocation() as {
+    state?: { personelId?: number };
+  };
+  if (!state?.personelId) {
 
+    return;
+    <>
+
+    </>
+  }
   const columns: ColumnDefinition<Compensation>[] = useMemo(
     () => [
       {
@@ -67,7 +76,7 @@ export default function CompensationTab({
               onClick={() =>
                 navigate(`/personelCompensationCrud/${row.id}?personelId=${actualId}`, {
                   state: {
-                    personelId: actualId,
+                    personelId: row.personel_id,
                     selectedCompensation: data.find((d) => d.id === row.id),
                   },
                 })

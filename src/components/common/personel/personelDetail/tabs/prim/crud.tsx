@@ -1,3 +1,4 @@
+// src/components/common/personel/personelDetail/tabs/kesinti/crud.tsx
 import { useEffect, useState } from "react";
 import {
   useNavigate,
@@ -5,123 +6,120 @@ import {
   useLocation,
   useSearchParams,
 } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import ReusableModalForm, { FieldDefinition } from "../../../../ReusableModalForm";
-import { usePrimlerAdd } from "../../../../../hooks/employee/prim/usePrimlerAdd";
-import { usePrimlerUpdate } from "../../../../../hooks/employee/prim/usePrimlerUpdate";
-import { Primler } from "../../../../../../types/employee/primler/list";
+import { useInterruptionAdd } from "../../../../../hooks/employee/interruption/useInterruptionAdd";
+import { useInterruptionUpdate } from "../../../../../hooks/employee/interruption/useInterruptionUpdate";
+import { fetchInterruptionList } from "../../../../../../slices/employee/interruption/list/thunk";
+import { AppDispatch } from "../../../../../../store";
+import { Interruption } from "../../../../../../types/employee/interruption/list";
 
 type FormValues = {
-  donem: string;        // sayısal dönem / açıklama
-  prim_tutari: string;  // para miktarı
-  tarih: string;        // vade tarihi
+  donem: string;
+  miktar: string;
+  tarih: string;
   aciklama: string;
 };
 
-export default function PersonelPrimlerCrud() {
+export default function PersonelKesintiCrud() {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
   const { id } = useParams<{ id?: string }>();
   const mode = id ? "update" : "add";
 
-  // State üzerinden veya ?personel_id=123 / ?personelId=123 query'sinden al
   const { state } = useLocation() as {
-    state?: { personelId?: number; selectedPrimler?: Primler };
+    state?: { personelId?: number; selectedKesinti?: Interruption };
   };
   const [searchParams] = useSearchParams();
-  const personelIdParam =
-    searchParams.get("personel_id") ?? searchParams.get("personelId");
+  const rawParam = searchParams.get("personel_id");
+  const paramId = rawParam ? Number(rawParam) : undefined;
   const personelId =
     state?.personelId ??
-    (personelIdParam ? Number(personelIdParam) : undefined);
+    (paramId && paramId > 0 ? paramId : undefined);
 
-  const selectedPrimler = state?.selectedPrimler;
+  const selectedKesinti = state?.selectedKesinti;
 
   const {
-    addNewPrimler,
+    addNewInterruption,
     loading: addLoading,
     error: addError,
-  } = usePrimlerAdd();
+  } = useInterruptionAdd();
   const {
-    updateExistingPrimler,
+    updateExistingInterruption,
     loading: updateLoading,
     error: updateError,
-  } = usePrimlerUpdate();
+  } = useInterruptionUpdate();
 
   const [initialValues, setInitialValues] = useState<FormValues>({
     donem: "",
-    prim_tutari: "",
+    miktar: "",
     tarih: "",
     aciklama: "",
   });
 
   useEffect(() => {
-    if (mode === "update" && selectedPrimler) {
+    if (mode === "update" && selectedKesinti) {
       setInitialValues({
-        donem:
-          (selectedPrimler as any).donem ||
-          selectedPrimler.vade.toString() ||
-          "",
-        prim_tutari:
-          (selectedPrimler as any).prim_tutari ||
-          selectedPrimler.miktar.toString() ||
-          "",
-        tarih: (selectedPrimler as any).tarih || "",
-        aciklama: selectedPrimler.aciklama || "",
+        donem: selectedKesinti.vade,
+        miktar: selectedKesinti.miktar,
+        tarih: selectedKesinti.created_at,
+        aciklama: selectedKesinti.aciklama,
       });
     }
-  }, [mode, selectedPrimler]);
+  }, [mode, selectedKesinti]);
 
+  // Tüm alanlar ekle modunda opsiyonel, güncelleme modunda zorunlu
   const getFields = (): FieldDefinition[] => [
     {
       name: "donem",
       label: "Dönem",
-      type: "number",
-      required: true,
+      type: "date",
+      required: mode === "update",
     },
     {
-      name: "prim_tutari",
-      label: "Prim Tutarı (₺)",
+      name: "miktar",
+      label: "Kesinti Tutarı (₺)",
       type: "currency",
-      required: true,
+      required: mode === "update",
     },
     {
       name: "tarih",
-      label: "Vade Tarihi",
+      label: "Tarih",
       type: "date",
-      required: true,
+      required: mode === "update",
     },
     {
       name: "aciklama",
       label: "Açıklama",
       type: "textarea",
+      required: false,
     },
   ];
 
   async function handleSubmit(vals: FormValues) {
-    console.log("▶ handleSubmit:", { vals, personelId, mode });
-
-    // personelId yoksa veya geçersizse işleme devam etme
-    if (!personelId || personelId <= 0) {
-      console.warn("‼ personelId bulunamadı veya geçersiz, işlem iptal edildi");
+    if (!personelId) {
+      console.warn("‼ Geçerli bir personel_id bulunamadı, işlem iptal edildi");
       return;
     }
 
-    // API’ye gönderilecek payload
-    const payload: any = {
+    const payload = {
       personel_id: personelId,
-      vade: vals.tarih,             // artık tarih stringi
-      miktar: vals.prim_tutari,
+      vade: vals.donem,
+      miktar: vals.miktar,
+      odeme_sekli: "",  // gereken yerde ekleyebilirsiniz
       aciklama: vals.aciklama,
     };
 
     if (mode === "add") {
-      await addNewPrimler(payload);
-    } else if (id) {
-      await updateExistingPrimler({
-        primlerId: Number(id),
+      await addNewInterruption(payload);
+    } else {
+      await updateExistingInterruption({
+        interruptionId: Number(id),
         payload,
-      } as any);
+      });
     }
 
+    dispatch(fetchInterruptionList({ personel_id: personelId }));
     navigate(-1);
   }
 
@@ -131,11 +129,11 @@ export default function PersonelPrimlerCrud() {
   return (
     <ReusableModalForm<FormValues>
       show
-      title={mode === "add" ? "Prim Ekle" : "Prim Güncelle"}
+      title={mode === "add" ? "Kesinti Ekle" : "Kesinti Güncelle"}
       fields={getFields()}
       initialValues={initialValues}
       onSubmit={handleSubmit}
-      confirmButtonLabel={mode === "add" ? "Kaydet" : "Güncelle"}
+      confirmButtonLabel={mode === "add" ? "Ekle" : "Güncelle"}
       cancelButtonLabel="İptal"
       isLoading={isLoading}
       error={error || null}

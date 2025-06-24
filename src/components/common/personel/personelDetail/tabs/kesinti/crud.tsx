@@ -75,7 +75,12 @@ export default function PersonelKesintiCrud() {
   ];
 
   async function handleSubmit(vals: FormValues) {
-    if (!personelId) return;
+    console.log("▶ handleSubmit Kesinti tetiklendi:", { vals, personelId, mode });
+
+    if (!personelId) {
+      console.warn("‼ personelId eksik, ekleme işlemi iptal edildi");
+      return;
+    }
 
     if (mode === "add") {
       await addNewInterruption({
@@ -160,6 +165,7 @@ export function KesintiPaymentModal({
   ];
 
   function handleSubmit(values: PaymentValues) {
+    console.log("▶ KesintiPaymentModal submit:", values);
     onSubmit?.(values);
     onClose();
   }
