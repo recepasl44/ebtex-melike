@@ -22,12 +22,13 @@ export default function PersonelPrimlerCrud() {
   const { id } = useParams<{ id?: string }>();
   const mode = id ? "update" : "add";
 
-  // State üzerinden veya ?personel_id=123 query’sinden al
+  // State üzerinden veya ?personel_id=123 / ?personelId=123 query'sinden al
   const { state } = useLocation() as {
     state?: { personelId?: number; selectedPrimler?: Primler };
   };
   const [searchParams] = useSearchParams();
-  const personelIdParam = searchParams.get("personel_id");
+  const personelIdParam =
+    searchParams.get("personel_id") ?? searchParams.get("personelId");
   const personelId =
     state?.personelId ??
     (personelIdParam ? Number(personelIdParam) : undefined);
@@ -98,9 +99,9 @@ export default function PersonelPrimlerCrud() {
   async function handleSubmit(vals: FormValues) {
     console.log("▶ handleSubmit:", { vals, personelId, mode });
 
-    // Sadece gerçekten eksikse engelle (0 geçerli)
-    if (personelId == null) {
-      console.warn("‼ personelId bulunamadı, işlem iptal edildi");
+    // personelId yoksa veya geçersizse işleme devam etme
+    if (!personelId || personelId <= 0) {
+      console.warn("‼ personelId bulunamadı veya geçersiz, işlem iptal edildi");
       return;
     }
 
