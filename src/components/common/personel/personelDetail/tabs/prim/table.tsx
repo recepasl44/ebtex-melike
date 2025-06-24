@@ -1,13 +1,19 @@
 
 
 
-import { useMemo } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useMemo, useState, useEffect } from "react";
+import {
+  useNavigate,
+  useParams,
+  useLocation,
+  useSearchParams,
+} from "react-router-dom";
 import ReusableTable, { ColumnDefinition } from "../../../../ReusableTable";
 import darkcontrol from "../../../../../../utils/darkmodecontroller";
 import { usePrimlerList } from "../../../../../hooks/employee/prim/usePrimlerList";
 import { usePrimlerDelete } from "../../../../../hooks/employee/prim/usePrimlerDelete";
 import { Primler } from "../../../../../../types/employee/primler/list";
+import PersonnelModal from "./personnelModal";
 
 interface PersonelPrimTabProps {
   personelId?: number;
@@ -15,12 +21,28 @@ interface PersonelPrimTabProps {
 }
 
 export default function PersonelPrimTab({ personelId }: PersonelPrimTabProps) {
-  const { id } = useParams<{ id?: string }>();
-  const actualId = personelId ?? (id ? Number(id) : 0);
   const navigate = useNavigate();
+  const location = useLocation() as { state?: { personelId?: number } };
+  const [searchParams] = useSearchParams();
+  const { id } = useParams<{ id?: string }>();
+
+  const paramId = searchParams.get("personel_id");
+  const derivedId =
+    personelId ??
+    location.state?.personelId ??
+    (paramId ? Number(paramId) : undefined) ??
+    (id ? Number(id) : undefined);
+
+  const [showModal, setShowModal] = useState(derivedId === undefined);
+
+  useEffect(() => {
+    setShowModal(derivedId === undefined);
+  }, [derivedId]);
+
+  const actualId = derivedId ?? 0;
 
   const { primler: primlerData, loading, error } = usePrimlerList({
-    enabled: true,
+    enabled: !!derivedId,
     personel_id: actualId,
   });
   const { deleteExistingPrimler, error: deleteError } = usePrimlerDelete();
@@ -92,6 +114,19 @@ export default function PersonelPrimTab({ personelId }: PersonelPrimTabProps) {
   function handleDeleteRow(row: Primler) {
     if (!row.id) return;
     deleteExistingPrimler(row.id);
+  }
+
+  if (showModal) {
+    return (
+      <PersonnelModal
+        show
+        onClose={() => setShowModal(false)}
+        onSelect={(pid) => {
+          navigate('.', { state: { personelId: pid } });
+          setShowModal(false);
+        }}
+      />
+    );
   }
 
   return (
