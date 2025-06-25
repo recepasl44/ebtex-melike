@@ -6,10 +6,12 @@ import CurrentNewsletterTable from './pages/currentNewsletter/table';
 import NotificationsTable from './pages/notifications/table';
 import SmsTable from './pages/sms/table';
 import EmailTable from './pages/e-mail/table';
+import MessagesPage from './pages/messages';
 
 const ContactPanelIndex: React.FC = () => {
 
     const tabs = [
+
         {
             label: 'G\u00fcncel B\u00fclten',
             content: <CurrentNewsletterTable />,
