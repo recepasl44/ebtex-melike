@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Form, InputGroup, Nav, Spinner } from 'react-bootstrap'
+import { Form, InputGroup, Nav, Spinner, Offcanvas } from 'react-bootstrap'
 import SimpleBar from 'simplebar-react'
 import dayjs from 'dayjs'
 import { useConversationsList } from '../../../../hooks/conversations/useList'
@@ -21,19 +21,21 @@ export default function Conversations({ onSelect }: Props) {
   const [activeTab, setActiveTab] = useState<'sohbet' | 'grup' | 'kisiler'>('sohbet')
   const [search, setSearch] = useState('')
   const [selectedId, setSelectedId] = useState<number | null>(null)
+  const [showGroupOffcanvas, setShowGroupOffcanvas] = useState(false)
 
   const { conversationsData = [], loading, error } = useConversationsList({
-    type: activeTab === 'sohbet' ? 'personal' : activeTab === 'grup' ? 'group' : 'contacts',
+    type:
+      activeTab === 'sohbet'
+        ? 'personal'
+        : activeTab === 'grup'
+          ? 'group'
+          : 'contacts',
     search,
     enabled: true,
-  }) as unknown as {
-    conversationsData: ConversationItem[]
-    loading: boolean
-    error: boolean
-  }
+  })
 
   return (
-    <div className="chat-info flex-shrink-0 border d-flex flex-column">
+    <div className="chat-info d-flex flex-column border">
       <InputGroup className="p-3 border-bottom">
         <Form.Control
           placeholder="Kişiler Ara…"
@@ -65,9 +67,14 @@ export default function Conversations({ onSelect }: Props) {
 
       {activeTab === 'sohbet' && <p className="fs-12 px-3 mt-2">Sohbetler</p>}
       {activeTab === 'grup' && (
-        <div className="d-flex justify-content-between px-3 mt-2">
-          <p>Gruplar</p>
-          <button className="btn btn-sm btn-primary">Grup Oluştur</button>
+        <div className="d-flex justify-content-between align-items-center px-3 mt-2">
+          <p className="mb-0 fs-12">Gruplar</p>
+          <button
+            className="btn btn-sm btn-primary"
+            onClick={() => setShowGroupOffcanvas(true)}
+          >
+            Grup Oluştur
+          </button>
         </div>
       )}
       {activeTab === 'kisiler' && <p className="fs-12 px-3 mt-2">Kişiler</p>}
@@ -77,7 +84,7 @@ export default function Conversations({ onSelect }: Props) {
           <Spinner size="sm" />
         </div>
       )}
-      {error && <div className="text-danger text-center">Yükleme hatası</div>}
+      {error && <div className="text-danger text-center p-2">Yükleme hatası</div>}
 
       <SimpleBar className="flex-fill">
         <ul className="list-unstyled mb-0">
@@ -106,6 +113,35 @@ export default function Conversations({ onSelect }: Props) {
           ))}
         </ul>
       </SimpleBar>
+
+      {/* Offcanvas: Add group members */}
+      <Offcanvas
+        show={showGroupOffcanvas}
+        onHide={() => setShowGroupOffcanvas(false)}
+        placement="end"
+      >
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title>Gruba Üye Ekleyin</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
+          <InputGroup className="mb-3">
+            <Form.Control placeholder="Kişi Ara…" />
+            <InputGroup.Text className="btn-icon">
+              <i className="ti ti-search" />
+            </InputGroup.Text>
+          </InputGroup>
+          <SimpleBar style={{ maxHeight: 400 }}>
+            <ul className="list-unstyled mb-0">
+              {/* alphabetically grouped contacts */}
+              {/* example: */}
+              <li>
+                <span className="text-default fw-semibold">A</span>
+              </li>
+              {/* ...map your contacts */}
+            </ul>
+          </SimpleBar>
+        </Offcanvas.Body>
+      </Offcanvas>
     </div>
   )
 }
