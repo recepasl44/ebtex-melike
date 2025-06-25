@@ -1,3 +1,5 @@
+import { ReactNode } from "react"
+
 // file: src/types/conversations/list.tsx
 export interface ConversationUser {
     id: number
@@ -25,6 +27,11 @@ export interface ConversationUser {
 }
 
 export interface ConversationData {
+    lastMessage: ReactNode
+    unreadCount: ReactNode
+    isTyping: any
+    lastTimestamp(lastTimestamp: any): unknown
+    avatarUrl: string | undefined
     id: number
     name: string
     type_id: string

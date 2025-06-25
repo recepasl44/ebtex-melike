@@ -102,13 +102,15 @@ export default function Conversations({ onSelect }: Props) {
               <div className="flex-fill">
                 <div className="d-flex justify-content-between">
                   <span className="fw-medium">{c.name}</span>
-                  <span className="fs-11 text-muted">{dayjs(c.lastTimestamp).format('HH:mm')}</span>
+                  <span className="fs-11 text-muted">{c.lastTimestamp ? dayjs(c.lastTimestamp as unknown as string | number | Date | null | undefined).format('HH:mm') : ''}</span>
                 </div>
                 <div className="fs-12 text-truncate">
                   {c.isTyping ? <span className="text-success">Yazıyor…</span> : c.lastMessage}
                 </div>
               </div>
-              {c.unreadCount! > 0 && <span className="badge bg-danger rounded-circle">{c.unreadCount}</span>}
+              {typeof c.unreadCount === 'number' && c.unreadCount > 0 && (
+                <span className="badge bg-danger rounded-circle">{c.unreadCount}</span>
+              )}
             </li>
           ))}
         </ul>
