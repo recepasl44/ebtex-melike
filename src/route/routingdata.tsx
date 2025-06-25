@@ -95,7 +95,6 @@ const SmsTable = lazy(() => import("../components/common/contactPanel/pages/sms/
 const SmsCrud = lazy(() => import("../components/common/contactPanel/pages/sms/crud"));
 const EmailTable = lazy(() => import("../components/common/contactPanel/pages/e-mail/table"));
 const EmailCrud = lazy(() => import("../components/common/contactPanel/pages/e-mail/crud"));
-const ContactPanelIndex = lazy(() => import("../components/common/contactPanel"));
 
 
 const OverduePaymentDetailPage = lazy(
@@ -544,7 +543,7 @@ const FinanceNotesTable = lazy(
   () => import("../components/common/financeNotes/table")
 );
 
-
+const ContactPanelIndex = lazy(() => import("../components/common/contactPanel"));
 
 export const Routedata = [
   //**** Dashboards ****//

@@ -3,7 +3,7 @@ import { Offcanvas, Button, InputGroup, Form } from 'react-bootstrap';
 import SimpleBar from 'simplebar-react';
 import EmojiPicker from 'emoji-picker-react';
 import dayjs from 'dayjs';
-import axiosInstance from '../../../../services/axiosClient';
+import axiosInstance from '../../../../../services/axiosClient';
 import { ChatMessage, ChatUser } from './types';
 
 interface Props {
