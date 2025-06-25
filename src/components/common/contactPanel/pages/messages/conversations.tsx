@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { Form, Nav, Spinner } from 'react-bootstrap';
-import SimpleBar from 'simplebar-react';
-import dayjs from 'dayjs';
-import { useConversationsList } from '../../../../hooks/conversations/useList';
-import { ChatUser } from '../../../../../types/messages/chat';
+import React, { useState } from "react";
+import { Form, Nav, Spinner } from "react-bootstrap";
+import SimpleBar from "simplebar-react";
+import dayjs from "dayjs";
+import { useConversationsList } from "../../../../hooks/conversations/useList";
+import { MessageConversation } from "../../../../../types/messages/list";
 
 interface Props {
-  onSelect: (user: ChatUser, conversationId: string) => void;
+  onSelect: (conversation: MessageConversation) => void;
 }
 
 const Conversations: React.FC<Props> = ({ onSelect }) => {
@@ -14,7 +14,11 @@ const Conversations: React.FC<Props> = ({ onSelect }) => {
   const [search, setSearch] = useState('');
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const { data = [], isLoading, isError } = useConversations({ type: activeTab, search });
+  const {
+    conversationsData: data = [],
+    loading: isLoading,
+    error: isError,
+  } = useConversationsList({ type: activeTab, search, enabled: true });
 
   return (
     <div className="chat-info flex-shrink-0 border">
@@ -46,25 +50,21 @@ const Conversations: React.FC<Props> = ({ onSelect }) => {
       {isError && <div className="text-danger text-center p-2">Yükleme hatası</div>}
       <SimpleBar className={`${activeTab === 'personal' ? 'chat-users-tab' : 'chat-groups-tab'} list-unstyled mb-0`}>
         <ul className="list-unstyled mb-0">
-          {data.map((c: ChatUser) => (
+          {data.map((c: MessageConversation) => (
             <li
               key={c.id}
               onClick={() => {
-                setSelectedId(c.id);
-                onSelect(c, c.id);
+                setSelectedId(String(c.id));
+                onSelect(c);
               }}
-              className={`${selectedId === c.id ? 'active' : ''}`}
+              className={`${selectedId === String(c.id) ? 'active' : ''}`}
             >
               <div className="d-flex align-items-center">
-                <span className="avatar avatar-sm avatar-rounded me-2">
-                  <img src={c.imageUrl} alt="" />
-                </span>
                 <div className="flex-fill">
                   <div className="d-flex justify-content-between">
                     <span className="fw-semibold">{c.name}</span>
-                    <span className="fs-12 text-muted">{dayjs(c.lastTimestamp).format('HH:mm')}</span>
+                    <span className="fs-12 text-muted">{dayjs(c.created_at).format('HH:mm')}</span>
                   </div>
-                  <span className="chat-msg text-truncate">{c.lastMessage}</span>
                 </div>
               </div>
             </li>

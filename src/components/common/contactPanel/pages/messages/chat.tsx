@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { Form, Offcanvas, Spinner } from 'react-bootstrap';
-import SimpleBar from 'simplebar-react';
-import EmojiPicker from 'emoji-picker-react';
-import dayjs from 'dayjs';
-import { useMessagesList } from '../../../../hooks/messages/useList';
-import { ChatUser, ChatMessage } from '../../../../../types/messages/chat';
+import React, { useState } from "react";
+import { Form, Offcanvas, Spinner } from "react-bootstrap";
+import SimpleBar from "simplebar-react";
+import EmojiPicker from "emoji-picker-react";
+import dayjs from "dayjs";
+import { useMessagesList } from "../../../../hooks/messages/useList";
+import { useMessageAdd } from "../../../../hooks/messages/useAdd";
+import { ChatUser, ChatMessage } from "../../../../../types/messages/chat";
 
 interface Props {
   conversationId: string;
@@ -13,17 +14,31 @@ interface Props {
 }
 
 const Chat: React.FC<Props> = ({ conversationId, currentUserId, user }) => {
-  const { data: messages = [], isLoading } = useMessages(conversationId);
-  const [sendMessage] = useSendMessage();
+  const {
+    messagesData = [],
+    loading: isLoading,
+    refetch,
+  } = useMessagesList({
+    enabled: Boolean(conversationId),
+    conversation_id: Number(conversationId),
+    page: 1,
+    pageSize: 50,
+  });
+  const { addNewMessage } = useMessageAdd();
   const [text, setText] = useState('');
   const [showEmoji, setShowEmoji] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!text.trim()) return;
-    sendMessage({ conversationId, text });
+    await addNewMessage({
+      conversation_id: Number(conversationId),
+      sender_id: Number(currentUserId),
+      body: text,
+    });
     setText('');
     setShowEmoji(false);
+    refetch();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -56,7 +71,12 @@ const Chat: React.FC<Props> = ({ conversationId, currentUserId, user }) => {
               <Spinner animation="border" size="sm" />
             </li>
           )}
-          {messages.map((msg: ChatMessage) => (
+          {messagesData.map((m): ChatMessage => ({
+            id: String(m.id),
+            senderId: String(m.sender_id),
+            text: m.body,
+            timestamp: (m as any).created_at || "",
+          })).map((msg: ChatMessage) => (
             <li key={msg.id} className={msg.senderId === currentUserId ? 'chat-item-end' : 'chat-item-start'}>
               <div className="chat-list-inner">
                 <div className="main-chat-msg">
