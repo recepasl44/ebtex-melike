@@ -5,7 +5,22 @@ import EmojiPicker from "emoji-picker-react";
 import dayjs from "dayjs";
 import { useMessagesList } from "../../../../hooks/messages/useList";
 import { useMessageAdd } from "../../../../hooks/messages/useAdd";
-import { ChatUser, ChatMessage } from "../../../../../types/messages/list";
+interface ChatUser {
+  id: string;
+  name: string;
+  imageUrl: string;
+  status: string;
+  isGroup?: boolean;
+  lastMessage?: string;
+  lastTimestamp?: string;
+}
+
+interface ChatMessage {
+  id: string;
+  senderId: string;
+  text: string;
+  timestamp: string;
+}
 
 interface Props {
   conversationId: string;
@@ -18,6 +33,7 @@ const Chat: React.FC<Props> = ({ conversationId, currentUserId, user }) => {
     messagesData = [],
     loading: isLoading,
     refetch,
+
   } = useMessagesList({
     enabled: Boolean(conversationId),
     conversation_id: Number(conversationId),

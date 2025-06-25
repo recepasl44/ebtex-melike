@@ -1,8 +1,17 @@
 import React, { useState } from "react";
 import Conversations from "./conversations";
 import Chat from "./chat";
-import { ChatUser } from "../../../../../types/messages/list";
+
 import { MessageConversation } from "../../../../../types/messages/list";
+interface ChatUser {
+  id: string;
+  name: string;
+  imageUrl: string;
+  status: string;
+  isGroup?: boolean;
+  lastMessage?: string;
+  lastTimestamp?: string;
+}
 
 const MessagesIndex: React.FC<{ currentUserId: string }> = ({ currentUserId }) => {
   const [activeConversation, setActiveConversation] = useState<MessageConversation | null>(null);

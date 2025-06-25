@@ -9,7 +9,7 @@ import { ConversationListStatus } from '../../../enums/conversations/list'
 
 export function useConversationsList(params: ListConversationArg) {
     const dispatch = useDispatch<AppDispatch>()
-    const {
+    const { order,
         enabled = true,
         page: initialPage = 1,
         pageSize: initialSize = 10,
@@ -30,8 +30,7 @@ export function useConversationsList(params: ListConversationArg) {
         filter,
         paginate: page,
         per_page: pageSize,
-        orderBy: 'created_at',
-        sortBy: 'desc'
+        orderBy: 'desc',
     }), [restKey, filter, page, pageSize])
 
     useEffect(() => {

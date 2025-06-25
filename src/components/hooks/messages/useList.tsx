@@ -30,8 +30,8 @@ export function useMessagesList(params: ListMessageArg) {
         conversation_id: restParams.conversation_id,
         paginate: page,
         per_page: pageSize,
-        orderBy: 'created_at',
-        sortBy: 'desc'
+        orderBy: 'desc',
+        // sortBy: 'desc'
     }), [restParams.conversation_id, page, pageSize])
 
     useEffect(() => {
