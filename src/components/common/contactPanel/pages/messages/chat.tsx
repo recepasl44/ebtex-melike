@@ -19,7 +19,7 @@ export default function Chat({ conversationId, currentUserId, user }: Props) {
     conversation_id: Number(conversationId),
     page: 1,
     pageSize: 50,
-  }) as { messagesData: MessageData[]; loading: boolean; error: boolean; refetch: () => void }
+  }) as unknown as { messagesData: MessageData[]; loading: boolean; error: boolean; refetch: () => void }
 
   const { addNewMessage } = useMessageAdd()
   const [text, setText] = useState('')
@@ -72,7 +72,7 @@ export default function Chat({ conversationId, currentUserId, user }: Props) {
           {loading && <li className="text-center py-4"><Spinner size="sm" /></li>}
           {error && <li className="text-danger text-center py-4">Mesajlar yüklenemedi</li>}
           {messagesData.map((m) => {
-            const ts = m.created_at || ''
+            const ts = m.read_at || ''
             return (
               <li key={m.id} className={m.sender_id === +currentUserId ? 'chat-item-end' : 'chat-item-start'}>
                 <div className="main-chat-msg">
@@ -96,7 +96,7 @@ export default function Chat({ conversationId, currentUserId, user }: Props) {
           </button>
           {showEmoji && (
             <div className="position-absolute bottom-100 z-3">
-              <EmojiPicker onEmojiClick={(_, emoji) => setText(t => t + emoji.emoji)} />
+              <EmojiPicker onEmojiClick={(emojiData) => setText(t => t + emojiData.emoji)} />
             </div>
           )}
         </div>
