@@ -23,8 +23,13 @@ const Chat: React.FC<Props> = ({ conversationId, currentUserId, user }) => {
 
   const fetchMessages = async () => {
     try {
-      const resp = await axiosInstance.get(`/conversations/${conversationId}/messages`);
-      setMessages(resp.data || []);
+      const resp = await axiosInstance.get(`/api/conversations/${conversationId}/messages`);
+      const arr = Array.isArray(resp.data)
+        ? resp.data
+        : Array.isArray(resp.data?.data)
+        ? resp.data.data
+        : [];
+      setMessages(arr);
     } catch (err) {
       // ignore for now
     }
@@ -42,7 +47,7 @@ const Chat: React.FC<Props> = ({ conversationId, currentUserId, user }) => {
     const text = messageText.trim();
     if (!text) return;
     try {
-      await axiosInstance.post(`/conversations/${conversationId}/messages`, { text });
+      await axiosInstance.post(`/api/conversations/${conversationId}/messages`, { text });
       setMessageText('');
       await fetchMessages();
     } catch (err) {
