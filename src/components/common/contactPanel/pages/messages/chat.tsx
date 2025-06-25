@@ -1,137 +1,117 @@
-import React, { useState } from "react";
-import { Form, Offcanvas, Spinner } from "react-bootstrap";
-import SimpleBar from "simplebar-react";
-import EmojiPicker from "emoji-picker-react";
-import dayjs from "dayjs";
-import { useMessagesList } from "../../../../hooks/messages/useList";
-import { useMessageAdd } from "../../../../hooks/messages/useAdd";
-import { ChatUser, ChatMessage } from "../../../../../types/messages/chat";
+import { useEffect, useRef, useState } from 'react'
+import { Button, Form, Spinner } from 'react-bootstrap'
+import SimpleBar from 'simplebar-react'
+import EmojiPicker from 'emoji-picker-react'
+import dayjs from 'dayjs'
+import { useMessagesList } from '../../../../hooks/messages/useList'
+import { useMessageAdd } from '../../../../hooks/messages/useAdd'
+import { MessageConversation, MessageData } from '../../../../../types/messages/list'
 
 interface Props {
-  conversationId: string;
-  currentUserId: string;
-  user: ChatUser;
+  conversationId: string
+  currentUserId: string
+  user: MessageConversation & { avatarUrl?: string; status?: 'online' | 'offline' }
 }
 
-const Chat: React.FC<Props> = ({ conversationId, currentUserId, user }) => {
-  const {
-    messagesData = [],
-    loading: isLoading,
-    refetch,
-  } = useMessagesList({
+export default function Chat({ conversationId, currentUserId, user }: Props) {
+  const { messagesData = [], loading, error, refetch } = useMessagesList({
     enabled: Boolean(conversationId),
     conversation_id: Number(conversationId),
     page: 1,
     pageSize: 50,
-  });
-  const { addNewMessage } = useMessageAdd();
-  const [text, setText] = useState('');
-  const [showEmoji, setShowEmoji] = useState(false);
-  const [showInfo, setShowInfo] = useState(false);
+  }) as { messagesData: MessageData[]; loading: boolean; error: boolean; refetch: () => void }
+
+  const { addNewMessage } = useMessageAdd()
+  const [text, setText] = useState('')
+  const [showEmoji, setShowEmoji] = useState(false)
+  const [showInfo, setShowInfo] = useState(false)
+  const bottomRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messagesData])
 
   const handleSend = async () => {
-    if (!text.trim()) return;
+    if (!text.trim()) return
     await addNewMessage({
       conversation_id: Number(conversationId),
       sender_id: Number(currentUserId),
       body: text,
-    });
-    setText('');
-    setShowEmoji(false);
-    refetch();
-  };
+    })
+    setText('')
+    setShowEmoji(false)
+    refetch()
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      e.preventDefault();
-      handleSend();
+      e.preventDefault()
+      handleSend()
     }
-  };
+  }
 
   return (
-    <div className="main-chat-area border position-relative flex-fill">
-      <div className="main-chat-head d-flex align-items-center justify-content-between border-bottom">
+    <div className="main-chat-area border position-relative d-flex flex-column flex-fill">
+      <div className="main-chat-head d-flex align-items-center justify-content-between border-bottom p-2">
         <div className="d-flex align-items-center">
           <span className="avatar avatar-md avatar-rounded me-2">
-            <img src={user.imageUrl} alt="" />
+            <img src={user.avatarUrl} alt="" />
           </span>
           <div>
-            <div className="chatnameperson">{user.name}</div>
-            <span className="fs-12 text-muted">{user.status}</span>
+            <p className="mb-0 fw-medium">{user.name}</p>
+            <span className="fs-11 text-muted">{user.status}</span>
           </div>
         </div>
-        <button className="btn btn-icon btn-sm btn-outline-light" onClick={() => setShowInfo(true)}>
+        <Button variant="light" className="btn-icon btn-sm" onClick={() => setShowInfo(true)}>
           <i className="ti ti-info-circle" />
-        </button>
+        </Button>
       </div>
-      <SimpleBar className="chat-content">
+
+      <SimpleBar className="chat-content flex-grow-1">
         <ul className="list-unstyled mb-0">
-          {isLoading && (
-            <li className="text-center py-4">
-              <Spinner animation="border" size="sm" />
-            </li>
-          )}
-          {messagesData.map((m): ChatMessage => ({
-            id: String(m.id),
-            senderId: String(m.sender_id),
-            text: m.body,
-            timestamp: (m as any).created_at || "",
-          })).map((msg: ChatMessage) => (
-            <li key={msg.id} className={msg.senderId === currentUserId ? 'chat-item-end' : 'chat-item-start'}>
-              <div className="chat-list-inner">
+          {loading && <li className="text-center py-4"><Spinner size="sm" /></li>}
+          {error && <li className="text-danger text-center py-4">Mesajlar yüklenemedi</li>}
+          {messagesData.map((m) => {
+            const ts = m.created_at || ''
+            return (
+              <li key={m.id} className={m.sender_id === +currentUserId ? 'chat-item-end' : 'chat-item-start'}>
                 <div className="main-chat-msg">
-                  <div>
-                    <p className="mb-0">{msg.text}</p>
-                  </div>
-                  <span className="msg-sent-time">{dayjs(msg.timestamp).format('HH:mm')}</span>
+                  <p className="mb-0">{m.body}</p>
                 </div>
-              </div>
-            </li>
-          ))}
+                <div className="fs-11 text-muted mt-1">{dayjs(ts).format('HH:mm DD.MM.YYYY')}</div>
+              </li>
+            )
+          })}
+          <div ref={bottomRef} />
         </ul>
       </SimpleBar>
-      <div className="chat-footer">
+
+      <div className="chat-footer d-flex align-items-center p-2 border-top">
         <button className="btn btn-icon btn-sm btn-outline-light me-2">
           <i className="ti ti-paperclip" />
         </button>
         <div className="position-relative me-2">
-          <button className="btn btn-icon btn-sm btn-outline-light" onClick={() => setShowEmoji(!showEmoji)}>
+          <button className="btn btn-icon btn-sm btn-outline-light" onClick={() => setShowEmoji(v => !v)}>
             <i className="ti ti-mood-smile" />
           </button>
           {showEmoji && (
             <div className="position-absolute bottom-100 z-3">
-              <EmojiPicker onEmojiClick={(e) => setText((t) => t + e.emoji)} />
+              <EmojiPicker onEmojiClick={(_, emoji) => setText(t => t + emoji.emoji)} />
             </div>
           )}
         </div>
         <Form.Control
           type="text"
-          className="flex-fill me-2"
+          placeholder="Mesaj yazın…"
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Mesaj yaz..."
+          className="me-2"
         />
-        <button className="btn btn-icon btn-primary btn-send" onClick={handleSend}>
-          <i className="ri-send-plane-2-line" />
+        <button className="btn btn-icon btn-primary" onClick={handleSend}>
+          <i className="ti ti-send" />
         </button>
       </div>
-      <Offcanvas placement="end" show={showInfo} onHide={() => setShowInfo(false)} className="chat-user-details">
-        <Offcanvas.Header closeButton>
-          <Offcanvas.Title>{user.name}</Offcanvas.Title>
-        </Offcanvas.Header>
-        <Offcanvas.Body>
-          <div className="text-center">
-            <span className="avatar avatar-xl avatar-rounded mb-2">
-              <img src={user.imageUrl} alt="" />
-            </span>
-            <p className="mb-0 fw-semibold">{user.name}</p>
-            <p className="text-muted fs-12">{user.status}</p>
-          </div>
-        </Offcanvas.Body>
-      </Offcanvas>
     </div>
-  );
-};
-
-export default Chat;
+  )
+}
