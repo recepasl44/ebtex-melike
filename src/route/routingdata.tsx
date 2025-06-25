@@ -2359,6 +2359,11 @@ export const Routedata = [
     path: `${import.meta.env.BASE_URL}contact-panel/e-mail/edit/:id`,
     element: <EmailCrud />,
   },
+  {
+    id: 788,
+    path: `${import.meta.env.BASE_URL}contact/messages`,
+    element: <ContactPanelIndex />,
+  },
 
   //ekstra işlemler
   {

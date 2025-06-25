@@ -330,7 +330,7 @@ export const MENUITEMS: any = [
   {
     title: "İletişim Paneli",
     icon: Dashboardicon,
-    path: "/contact-panel",
+    path: "/contact/messages",
     type: "link",
   },
 
