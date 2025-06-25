@@ -18,7 +18,11 @@ const Conversations: React.FC<Props> = ({ onSelect }) => {
     conversationsData: data = [],
     loading: isLoading,
     error: isError,
-  } = useConversationsList({ type: activeTab, search, enabled: true });
+  } = useConversationsList({ type: activeTab, search, enabled: true }) as unknown as {
+    conversationsData: MessageConversation[];
+    loading: boolean;
+    error: boolean;
+  };
 
   return (
     <div className="chat-info flex-shrink-0 border">
