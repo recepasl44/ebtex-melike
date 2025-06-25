@@ -6,7 +6,6 @@ import CurrentNewsletterTable from './pages/currentNewsletter/table';
 import NotificationsTable from './pages/notifications/table';
 import SmsTable from './pages/sms/table';
 import EmailTable from './pages/e-mail/table';
-import MessagesPage from './pages/messages';
 
 const ContactPanelIndex: React.FC = () => {
 
@@ -39,14 +38,6 @@ const ContactPanelIndex: React.FC = () => {
         {
             label: 'E-Posta',
             content: <EmailTable />,
-            activeBgColor: '#5C67F7',
-            activeTextColor: '#FFFFFF',
-            passiveBgColor: '#5C67F726',
-            passiveTextColor: '#5C67F7',
-        },
-        {
-            label: 'Mesajlar',
-            content: <MessagesPage />,
             activeBgColor: '#5C67F7',
             activeTextColor: '#FFFFFF',
             passiveBgColor: '#5C67F726',
