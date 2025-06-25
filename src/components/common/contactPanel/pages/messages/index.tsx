@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import Conversations from './conversations';
 import Chat from './chat';
-import { ChatUser } from 'src/types/messages/chat';
+// Update the import path below to the correct relative path if needed
+import { ChatUser } from '../../../../../types/messages/chat';
 
 const MessagesIndex: React.FC<{ currentUserId: string }> = ({ currentUserId }) => {
   const [activeUser, setActiveUser] = useState<ChatUser | null>(null);

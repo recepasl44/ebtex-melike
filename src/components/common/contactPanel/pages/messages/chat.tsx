@@ -3,8 +3,8 @@ import { Form, Offcanvas, Spinner } from 'react-bootstrap';
 import SimpleBar from 'simplebar-react';
 import EmojiPicker from 'emoji-picker-react';
 import dayjs from 'dayjs';
-import { useMessages, useSendMessage } from 'src/components/hooks/messages';
-import { ChatUser, ChatMessage } from 'src/types/messages/chat';
+import { useMessagesList } from '../../../../hooks/messages/useList';
+import { ChatUser, ChatMessage } from '../../../../../types/messages/chat';
 
 interface Props {
   conversationId: string;

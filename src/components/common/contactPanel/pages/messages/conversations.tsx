@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Form, Nav, Spinner } from 'react-bootstrap';
 import SimpleBar from 'simplebar-react';
 import dayjs from 'dayjs';
-import { useConversations } from 'src/components/hooks/conversations';
-import { ChatUser } from 'src/types/messages/chat';
+import { useConversationsList } from '../../../../hooks/conversations/useList';
+import { ChatUser } from '../../../../../types/messages/chat';
 
 interface Props {
   onSelect: (user: ChatUser, conversationId: string) => void;
@@ -44,7 +44,7 @@ const Conversations: React.FC<Props> = ({ onSelect }) => {
         </div>
       )}
       {isError && <div className="text-danger text-center p-2">Yükleme hatası</div>}
-      <SimpleBar className={`${activeTab === 'personal' ? 'chat-users-tab' : 'chat-groups-tab'} list-unstyled mb-0`}> 
+      <SimpleBar className={`${activeTab === 'personal' ? 'chat-users-tab' : 'chat-groups-tab'} list-unstyled mb-0`}>
         <ul className="list-unstyled mb-0">
           {data.map((c: ChatUser) => (
             <li

@@ -48,7 +48,7 @@ const ContactPanelIndex: React.FC = () => {
         },
         {
             label: 'Mesajlar',
-            content: <MessagesIndex currentUserId={loggedInUserId} />,
+            content: <MessagesIndex currentUserId={loggedInUserId.toString()} />,
             activeBgColor: '#5C67F7',
             activeTextColor: '#FFF',
             passiveBgColor: '#5C67F726',
