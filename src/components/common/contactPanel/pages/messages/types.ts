@@ -4,6 +4,8 @@ export interface ChatUser {
   imageUrl: string;
   status: 'online' | 'offline';
   isGroup: boolean;
+  lastMessage: string;
+  lastTimestamp: string;
 }
 
 export interface ChatMessage {
