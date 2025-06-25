@@ -27,13 +27,12 @@ export function useMessagesList(params: ListMessageArg) {
     const restKey = JSON.stringify(restParams)
 
     const buildQuery = useCallback((): ListMessageArg => ({
-        enabled,
-        ...restParams,
-        filter,
-        page,
-        pageSize,
-        per_page: pageSize
-    }), [enabled, restKey, filter, page, pageSize])
+        conversation_id: restParams.conversation_id,
+        paginate: page,
+        per_page: pageSize,
+        orderBy: 'created_at',
+        sortBy: 'desc'
+    }), [restParams.conversation_id, page, pageSize])
 
     useEffect(() => {
         if (!enabled) return

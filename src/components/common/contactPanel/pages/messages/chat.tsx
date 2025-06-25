@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Button, Form, Spinner } from 'react-bootstrap'
+import { Button, Form, Spinner, Offcanvas } from 'react-bootstrap'
 import SimpleBar from 'simplebar-react'
 import EmojiPicker from 'emoji-picker-react'
 import dayjs from 'dayjs'
@@ -19,7 +19,7 @@ export default function Chat({ conversationId, currentUserId, user }: Props) {
     conversation_id: Number(conversationId),
     page: 1,
     pageSize: 50,
-  }) as unknown as { messagesData: MessageData[]; loading: boolean; error: boolean; refetch: () => void }
+  })
 
   const { addNewMessage } = useMessageAdd()
   const [text, setText] = useState('')
@@ -112,6 +112,15 @@ export default function Chat({ conversationId, currentUserId, user }: Props) {
           <i className="ti ti-send" />
         </button>
       </div>
+
+      <Offcanvas show={showInfo} onHide={() => setShowInfo(false)} placement="end">
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title>Sohbet Bilgisi</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
+          {/* conversation info */}
+        </Offcanvas.Body>
+      </Offcanvas>
     </div>
   )
 }

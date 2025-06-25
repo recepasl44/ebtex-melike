@@ -28,9 +28,10 @@ export function useConversationsList(params: ListConversationArg) {
     const buildQuery = useCallback((): ListConversationArg => ({
         ...restParams,
         filter,
-        page,
-        pageSize,
-        per_page: pageSize
+        paginate: page,
+        per_page: pageSize,
+        orderBy: 'created_at',
+        sortBy: 'desc'
     }), [restKey, filter, page, pageSize])
 
     useEffect(() => {
