@@ -1,175 +1,82 @@
-import { useState } from 'react'
-import { Form, InputGroup, Nav, Spinner, Offcanvas } from 'react-bootstrap'
-import SimpleBar from 'simplebar-react'
-import dayjs from 'dayjs'
-import { useConversationsList } from '../../../../hooks/conversations/useList'
-import { useUsersTable } from '../../../../hooks/user/useList'
-import { MessageConversation } from '../../../../../types/messages/list'
-import { UserData } from '../../../../../types/user/list'
+import React, { useState } from "react";
+import { Form, Nav, Spinner } from "react-bootstrap";
+import SimpleBar from "simplebar-react";
+import dayjs from "dayjs";
+import { useConversationsList } from "../../../../hooks/conversations/useList";
+import { MessageConversation } from "../../../../../types/messages/list";
 
 interface Props {
-  onSelect: (c: MessageConversation) => void
+  onSelect: (conversation: MessageConversation) => void;
 }
 
-interface ConversationItem extends MessageConversation {
-  avatarUrl?: string
-  lastTimestamp?: string
-  isTyping?: boolean
-  lastMessage?: string
-  unreadCount?: number
-}
-
-export default function Conversations({ onSelect }: Props) {
-  const [activeTab, setActiveTab] = useState<'sohbet' | 'grup' | 'kisiler'>('sohbet')
-  const [search, setSearch] = useState('')
-  const [selectedId, setSelectedId] = useState<number | null>(null)
-  const [showGroupOffcanvas, setShowGroupOffcanvas] = useState(false)
-
-  const { conversationsData = [], loading: convLoading, error: convError } =
-    useConversationsList({
-      type:
-        activeTab === 'sohbet'
-          ? 'personal'
-          : activeTab === 'grup'
-            ? 'group'
-            : 'contacts',
-      search,
-      enabled: activeTab !== 'kisiler',
-    })
+const Conversations: React.FC<Props> = ({ onSelect }) => {
+  const [activeTab, setActiveTab] = useState<'personal' | 'group'>('personal');
+  const [search, setSearch] = useState('');
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const {
-    usersData = [],
-    loading: usersLoading,
-    error: usersError,
-  } = useUsersTable({ enabled: activeTab === 'kisiler', search })
-
-  const loading = activeTab === 'kisiler' ? usersLoading : convLoading
-  const error = activeTab === 'kisiler' ? usersError : convError
-
-  const items: ConversationItem[] =
-    activeTab === 'kisiler'
-      ? usersData.map((u: UserData) => ({
-          id: u.id,
-          name: u.name_surname || u.name || `${u.first_name} ${u.last_name}`,
-          type_id: 0,
-          user_one_id: 0,
-          user_two_id: u.id,
-          avatarUrl: u.picture,
-        }))
-      : (conversationsData as unknown as ConversationItem[])
+    conversationsData: data = [],
+    loading: isLoading,
+    error: isError,
+  } = useConversationsList({ type: activeTab, search, enabled: true }) as unknown as {
+    conversationsData: MessageConversation[];
+    loading: boolean;
+    error: boolean;
+  };
 
   return (
-    <div className="chat-info d-flex flex-column border">
-      <InputGroup className="p-3 border-bottom">
+    <div className="chat-info flex-shrink-0 border">
+      <div className="p-3 border-bottom">
         <Form.Control
-          placeholder="Kişiler Ara…"
+          type="search"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          placeholder="Kişiler Ara…"
         />
-        <InputGroup.Text className="btn-icon">
-          <i className="ti ti-search" />
-        </InputGroup.Text>
-      </InputGroup>
-
+      </div>
       <Nav variant="tabs" className="tab-style-6 px-3">
         <Nav.Item>
-          <Nav.Link active={activeTab === 'sohbet'} onClick={() => setActiveTab('sohbet')}>
-            Sohbetler
+          <Nav.Link active={activeTab === 'personal'} onClick={() => setActiveTab('personal')}>
+            Kişisel
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link active={activeTab === 'grup'} onClick={() => setActiveTab('grup')}>
+          <Nav.Link active={activeTab === 'group'} onClick={() => setActiveTab('group')}>
             Gruplar
           </Nav.Link>
         </Nav.Item>
-        <Nav.Item>
-          <Nav.Link active={activeTab === 'kisiler'} onClick={() => setActiveTab('kisiler')}>
-            Kişiler
-          </Nav.Link>
-        </Nav.Item>
       </Nav>
-
-      {activeTab === 'sohbet' && <p className="fs-12 px-3 mt-2">Sohbetler</p>}
-      {activeTab === 'grup' && (
-        <div className="d-flex justify-content-between align-items-center px-3 mt-2">
-          <p className="mb-0 fs-12">Gruplar</p>
-          <button
-            className="btn btn-sm btn-primary"
-            onClick={() => setShowGroupOffcanvas(true)}
-          >
-            Grup Oluştur
-          </button>
+      {isLoading && (
+        <div className="text-center p-2">
+          <Spinner animation="border" size="sm" />
         </div>
       )}
-      {activeTab === 'kisiler' && <p className="fs-12 px-3 mt-2">Kişiler</p>}
-
-      {loading && (
-        <div className="flex-fill d-flex justify-content-center align-items-center">
-          <Spinner size="sm" />
-        </div>
-      )}
-      {error && <div className="text-danger text-center p-2">Yükleme hatası</div>}
-
-        <SimpleBar className="flex-fill">
-          <ul className="list-unstyled mb-0">
-            {items.map((c) => (
-              <li
-                key={c.id}
-                onClick={() => {
-                  setSelectedId(c.id)
-                  if (activeTab !== 'kisiler') {
-                    onSelect(c as unknown as MessageConversation)
-                  }
-                }}
-                className={`d-flex p-2 align-items-center ${c.id === selectedId ? 'active' : ''}`}
-                style={c.id === selectedId ? { background: '#f8eafd', borderLeft: '4px solid #6c5dd3' } : {}}
-              >
-                <img src={c.avatarUrl} className="avatar avatar-md me-2" alt="" />
+      {isError && <div className="text-danger text-center p-2">Yükleme hatası</div>}
+      <SimpleBar className={`${activeTab === 'personal' ? 'chat-users-tab' : 'chat-groups-tab'} list-unstyled mb-0`}>
+        <ul className="list-unstyled mb-0">
+          {data.map((c: MessageConversation) => (
+            <li
+              key={c.id}
+              onClick={() => {
+                setSelectedId(String(c.id));
+                onSelect(c);
+              }}
+              className={`${selectedId === String(c.id) ? 'active' : ''}`}
+            >
+              <div className="d-flex align-items-center">
                 <div className="flex-fill">
                   <div className="d-flex justify-content-between">
-                    <span className="fw-medium">{c.name}</span>
-                    <span className="fs-11 text-muted">{c.lastTimestamp ? dayjs(c.lastTimestamp as unknown as string | number | Date | null | undefined).format('HH:mm') : ''}</span>
-                  </div>
-                  <div className="fs-12 text-truncate">
-                    {c.isTyping ? <span className="text-success">Yazıyor…</span> : c.lastMessage}
+                    <span className="fw-semibold">{c.name}</span>
+                    <span className="fs-12 text-muted">{dayjs(c.created_at).format('HH:mm')}</span>
                   </div>
                 </div>
-                {typeof c.unreadCount === 'number' && c.unreadCount > 0 && (
-                  <span className="badge bg-danger rounded-circle">{c.unreadCount}</span>
-                )}
-              </li>
-            ))}
-          </ul>
-        </SimpleBar>
-
-      {/* Offcanvas: Add group members */}
-      <Offcanvas
-        show={showGroupOffcanvas}
-        onHide={() => setShowGroupOffcanvas(false)}
-        placement="end"
-      >
-        <Offcanvas.Header closeButton>
-          <Offcanvas.Title>Gruba Üye Ekleyin</Offcanvas.Title>
-        </Offcanvas.Header>
-        <Offcanvas.Body>
-          <InputGroup className="mb-3">
-            <Form.Control placeholder="Kişi Ara…" />
-            <InputGroup.Text className="btn-icon">
-              <i className="ti ti-search" />
-            </InputGroup.Text>
-          </InputGroup>
-          <SimpleBar style={{ maxHeight: 400 }}>
-            <ul className="list-unstyled mb-0">
-              {/* alphabetically grouped contacts */}
-              {/* example: */}
-              <li>
-                <span className="text-default fw-semibold">A</span>
-              </li>
-              {/* ...map your contacts */}
-            </ul>
-          </SimpleBar>
-        </Offcanvas.Body>
-      </Offcanvas>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </SimpleBar>
     </div>
-  )
-}
+  );
+};
+
+export default Conversations;

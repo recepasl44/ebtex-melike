@@ -1,27 +1,38 @@
-import { useState } from 'react'
-import Conversations from './conversations'
-import Chat from './chat'
-import { MessageConversation } from '../../../../../types/messages/list'
+import React, { useState } from "react";
+import Conversations from "./conversations";
+import Chat from "./chat";
+import { ChatUser } from "../../../../../types/messages/chat";
+import { MessageConversation } from "../../../../../types/messages/list";
 
-interface Props { currentUserId: string }
-
-export default function MessagesIndex({ currentUserId }: Props) {
-  const [activeConversation, setActiveConversation] = useState<(MessageConversation & { avatarUrl?: string; status?: 'online' | 'offline' }) | null>(null)
+const MessagesIndex: React.FC<{ currentUserId: string }> = ({ currentUserId }) => {
+  const [activeConversation, setActiveConversation] = useState<MessageConversation | null>(null);
+  const [activeUser, setActiveUser] = useState<ChatUser | null>(null);
 
   return (
     <div className="main-chart-wrapper d-lg-flex gap-2">
       <Conversations
         onSelect={(conv: MessageConversation) => {
-          setActiveConversation({ ...conv, avatarUrl: '', status: 'online' })
+          setActiveConversation(conv);
+          setActiveUser({
+            id: String(conv.id),
+            name: conv.name,
+            imageUrl: "",
+            status: "online",
+            isGroup: conv.type_id !== 0,
+            lastMessage: "",
+            lastTimestamp: conv.created_at || "",
+          });
         }}
       />
-      {activeConversation && (
+      {activeConversation && activeUser && (
         <Chat
           conversationId={String(activeConversation.id)}
           currentUserId={currentUserId}
-          user={activeConversation}
+          user={activeUser}
         />
       )}
     </div>
-  )
-}
+  );
+};
+
+export default MessagesIndex;
