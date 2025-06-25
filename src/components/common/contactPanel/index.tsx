@@ -13,9 +13,17 @@ const ContactPanelIndex: React.FC = () => {
     const loggedInUserId = 1; // TODO: replace with auth user id
 
     const tabs = [
+        {
+            label: 'Mesajlar',
+            content: <MessagesIndex currentUserId={loggedInUserId.toString()} />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
 
         {
-            label: 'G\u00fcncel B\u00fclten',
+            label: 'Güncel Bülten',
             content: <CurrentNewsletterTable />,
             activeBgColor: '#5C67F7',
             activeTextColor: '#FFFFFF',
@@ -46,14 +54,7 @@ const ContactPanelIndex: React.FC = () => {
             passiveBgColor: '#5C67F726',
             passiveTextColor: '#5C67F7',
         },
-        {
-            label: 'Mesajlar',
-            content: <MessagesIndex currentUserId={loggedInUserId.toString()} />,
-            activeBgColor: '#5C67F7',
-            activeTextColor: '#FFF',
-            passiveBgColor: '#5C67F726',
-            passiveTextColor: '#5C67F7',
-        },
+
     ];
 
     const [activeIdx, setActiveIdx] = useState<number>(0);

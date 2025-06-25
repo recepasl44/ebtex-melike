@@ -5,12 +5,12 @@ export interface ChatUser {
   status: 'online' | 'offline';
   isGroup: boolean;
   lastMessage: string;
-  lastTimestamp: string; // ISO string
+  lastTimestamp: string;
 }
 
 export interface ChatMessage {
   id: string;
   senderId: string;
   text: string;
-  timestamp: string; // ISO string
+  timestamp: string;
 }
