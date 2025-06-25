@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Conversations from "./conversations";
 import Chat from "./chat";
-import { ChatUser } from "../../../../../types/messages/chat";
+import { ChatUser } from "../../../../../types/messages/list";
 import { MessageConversation } from "../../../../../types/messages/list";
 
 const MessagesIndex: React.FC<{ currentUserId: string }> = ({ currentUserId }) => {
