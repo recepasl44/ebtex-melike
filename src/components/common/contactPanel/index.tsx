@@ -44,6 +44,14 @@ const ContactPanelIndex: React.FC = () => {
             passiveBgColor: '#5C67F726',
             passiveTextColor: '#5C67F7',
         },
+        {
+            label: 'Mesajlar',
+            content: <MessagesPage />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
     ];
 
     const [activeIdx, setActiveIdx] = useState<number>(0);
