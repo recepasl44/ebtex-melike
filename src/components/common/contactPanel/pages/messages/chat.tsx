@@ -3,8 +3,8 @@ import { Offcanvas, Button, InputGroup, Form } from 'react-bootstrap';
 import SimpleBar from 'simplebar-react';
 import EmojiPicker from 'emoji-picker-react';
 import dayjs from 'dayjs';
-import axiosInstance from '../../../../../services/axiosClient';
-import { ChatMessage, ChatUser } from './types';
+import { useGetMessages, useSendMessage } from '../../../../../services/hooks';
+import { ChatUser } from './types';
 
 interface Props {
   conversationId: string;
@@ -15,39 +15,21 @@ interface Props {
 const formatTime = (iso: string) => dayjs(iso).format('HH:mm');
 
 const Chat: React.FC<Props> = ({ conversationId, currentUserId, user }) => {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [messageText, setMessageText] = useState('');
+  const { data: messages, isLoading } = useGetMessages(conversationId);
+  const [sendMessage] = useSendMessage(conversationId);
+  const [text, setText] = useState('');
   const [showPicker, setShowPicker] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
-
-  const fetchMessages = async () => {
-    try {
-      const resp = await axiosInstance.get(`/conversations/${conversationId}/messages`);
-      setMessages(resp.data || []);
-    } catch (err) {
-      // ignore for now
-    }
-  };
-
-  useEffect(() => {
-    fetchMessages();
-  }, [conversationId]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   const handleSend = async () => {
-    const text = messageText.trim();
-    if (!text) return;
-    try {
-      await axiosInstance.post(`/conversations/${conversationId}/messages`, { text });
-      setMessageText('');
-      await fetchMessages();
-    } catch (err) {
-      // handle error silently
-    }
+    if (!text.trim()) return;
+    await sendMessage({ text: text.trim() });
+    setText('');
   };
 
   return (
@@ -66,9 +48,10 @@ const Chat: React.FC<Props> = ({ conversationId, currentUserId, user }) => {
           </Button>
         </div>
       </div>
-      <SimpleBar className="chat-content px-3" style={{ maxHeight: 500 }}>
+      <SimpleBar className="chat-content px-3" style={{ maxHeight: 'calc(100vh - 240px)' }}>
         <ul className="list-unstyled mb-0">
-          {messages.map((msg) => (
+          {isLoading && <li>Yükleniyor…</li>}
+          {(messages || []).map((msg) => (
             <li
               key={msg.id}
               className={msg.senderId === currentUserId ? 'chat-item-end mb-2' : 'chat-item-start mb-2'}
@@ -85,7 +68,7 @@ const Chat: React.FC<Props> = ({ conversationId, currentUserId, user }) => {
       <div className="chat-footer p-2 border-top">
         {showPicker && (
           <div className="mb-2">
-            <EmojiPicker onEmojiClick={(e) => setMessageText((t) => t + e.emoji)} />
+            <EmojiPicker onEmojiClick={(_, emoji) => setText((t) => t + emoji)} />
           </div>
         )}
         <InputGroup>
@@ -96,8 +79,8 @@ const Chat: React.FC<Props> = ({ conversationId, currentUserId, user }) => {
             <i className="ti ti-mood-smile" />
           </Button>
           <Form.Control
-            value={messageText}
-            onChange={(e) => setMessageText(e.target.value)}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 e.preventDefault();

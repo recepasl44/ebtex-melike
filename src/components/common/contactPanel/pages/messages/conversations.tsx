@@ -1,45 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { Tab, Nav, Form, InputGroup, Spinner } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Tab, Nav, InputGroup, Form, Spinner } from 'react-bootstrap';
 import SimpleBar from 'simplebar-react';
-import axiosInstance from '../../../../../services/axiosClient';
-import dayjs from 'dayjs';
+import { useGetConversations } from '../../../../../services/hooks';
 import { ChatUser } from './types';
 
-interface ConversationItem extends ChatUser {
-    lastMessage: string;
-    lastTimestamp: string;
-}
-
 interface Props {
-    onSelect: (user: ChatUser, conversationId: string) => void;
+  onSelect: (user: ChatUser, conversationId: string) => void;
 }
-
-const formatTime = (iso: string) => dayjs(iso).format('HH:mm');
 
 const Conversations: React.FC<Props> = ({ onSelect }) => {
-    const [data, setData] = useState<ConversationItem[]>([]);
     const [activeTab, setActiveTab] = useState<'personal' | 'groups'>('personal');
     const [selectedId, setSelectedId] = useState<string>('');
     const [search, setSearch] = useState('');
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const resp = await axiosInstance.get('/conversations');
-                const convs = resp.data?.data ?? resp.data;
-                setData(Array.isArray(convs) ? convs : []);
-            } catch (err: any) {
-                setError(err.response?.data?.message || 'Fetch failed');
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchData();
-    }, []);
+    const { data, isLoading, isError } = useGetConversations({
+        type: activeTab,
+        search,
+    });
 
-    const filtered = data.filter((c) =>
+    const filtered = (data || []).filter((c) =>
         c.name.toLowerCase().includes(search.toLowerCase()) &&
         c.isGroup === (activeTab === 'groups')
     );
@@ -67,8 +46,8 @@ const Conversations: React.FC<Props> = ({ onSelect }) => {
                 </Nav>
                 <Tab.Content className="chat-content">
                     <Tab.Pane eventKey="personal">
-                        {loading && <Spinner animation="border" size="sm" />}
-                        {error && <div className="text-danger">{error}</div>}
+                        {isLoading && <Spinner animation="border" />}
+                        {isError && <div className="text-danger">Yükleme hatası</div>}
                         <SimpleBar style={{ maxHeight: 400 }}>
                             <ul className="list-unstyled mb-0">
                                 {filtered.map((c) => (
@@ -85,7 +64,9 @@ const Conversations: React.FC<Props> = ({ onSelect }) => {
                                         <div className="flex-grow-1">
                                             <p className="mb-0 fw-medium">
                                                 {c.name}
-                                                <span className="float-end fs-11 text-muted">{formatTime(c.lastTimestamp)}</span>
+                                                <span className="float-end fs-11 text-muted">
+                                                    {new Date(c.lastTimestamp).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
+                                                </span>
                                             </p>
                                             <p className="fs-12 text-truncate mb-0">{c.lastMessage}</p>
                                         </div>
@@ -95,8 +76,8 @@ const Conversations: React.FC<Props> = ({ onSelect }) => {
                         </SimpleBar>
                     </Tab.Pane>
                     <Tab.Pane eventKey="groups">
-                        {loading && <Spinner animation="border" size="sm" />}
-                        {error && <div className="text-danger">{error}</div>}
+                        {isLoading && <Spinner animation="border" />}
+                        {isError && <div className="text-danger">Yükleme hatası</div>}
                         <SimpleBar style={{ maxHeight: 400 }}>
                             <ul className="list-unstyled mb-0">
                                 {filtered.map((c) => (
@@ -113,7 +94,9 @@ const Conversations: React.FC<Props> = ({ onSelect }) => {
                                         <div className="flex-grow-1">
                                             <p className="mb-0 fw-medium">
                                                 {c.name}
-                                                <span className="float-end fs-11 text-muted">{formatTime(c.lastTimestamp)}</span>
+                                                <span className="float-end fs-11 text-muted">
+                                                    {new Date(c.lastTimestamp).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
+                                                </span>
                                             </p>
                                             <p className="fs-12 text-truncate mb-0">{c.lastMessage}</p>
                                         </div>
