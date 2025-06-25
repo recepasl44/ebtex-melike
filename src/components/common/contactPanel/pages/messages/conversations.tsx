@@ -3,7 +3,9 @@ import { Form, InputGroup, Nav, Spinner, Offcanvas } from 'react-bootstrap'
 import SimpleBar from 'simplebar-react'
 import dayjs from 'dayjs'
 import { useConversationsList } from '../../../../hooks/conversations/useList'
+import { useUsersTable } from '../../../../hooks/user/useList'
 import { MessageConversation } from '../../../../../types/messages/list'
+import { UserData } from '../../../../../types/user/list'
 
 interface Props {
   onSelect: (c: MessageConversation) => void
@@ -23,16 +25,38 @@ export default function Conversations({ onSelect }: Props) {
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [showGroupOffcanvas, setShowGroupOffcanvas] = useState(false)
 
-  const { conversationsData = [], loading, error } = useConversationsList({
-    type:
-      activeTab === 'sohbet'
-        ? 'personal'
-        : activeTab === 'grup'
-          ? 'group'
-          : 'contacts',
-    search,
-    enabled: true,
-  })
+  const { conversationsData = [], loading: convLoading, error: convError } =
+    useConversationsList({
+      type:
+        activeTab === 'sohbet'
+          ? 'personal'
+          : activeTab === 'grup'
+            ? 'group'
+            : 'contacts',
+      search,
+      enabled: activeTab !== 'kisiler',
+    })
+
+  const {
+    usersData = [],
+    loading: usersLoading,
+    error: usersError,
+  } = useUsersTable({ enabled: activeTab === 'kisiler', search })
+
+  const loading = activeTab === 'kisiler' ? usersLoading : convLoading
+  const error = activeTab === 'kisiler' ? usersError : convError
+
+  const items: ConversationItem[] =
+    activeTab === 'kisiler'
+      ? usersData.map((u: UserData) => ({
+          id: u.id,
+          name: u.name_surname || u.name || `${u.first_name} ${u.last_name}`,
+          type_id: 0,
+          user_one_id: 0,
+          user_two_id: u.id,
+          avatarUrl: u.picture,
+        }))
+      : (conversationsData as unknown as ConversationItem[])
 
   return (
     <div className="chat-info d-flex flex-column border">
@@ -86,35 +110,37 @@ export default function Conversations({ onSelect }: Props) {
       )}
       {error && <div className="text-danger text-center p-2">Yükleme hatası</div>}
 
-      <SimpleBar className="flex-fill">
-        <ul className="list-unstyled mb-0">
-          {conversationsData.map((c) => (
-            <li
-              key={c.id}
-              onClick={() => {
-                setSelectedId(c.id)
-                onSelect(c)
-              }}
-              className={`d-flex p-2 align-items-center ${c.id === selectedId ? 'active' : ''}`}
-              style={c.id === selectedId ? { background: '#f8eafd', borderLeft: '4px solid #6c5dd3' } : {}}
-            >
-              <img src={c.avatarUrl} className="avatar avatar-md me-2" alt="" />
-              <div className="flex-fill">
-                <div className="d-flex justify-content-between">
-                  <span className="fw-medium">{c.name}</span>
-                  <span className="fs-11 text-muted">{c.lastTimestamp ? dayjs(c.lastTimestamp as unknown as string | number | Date | null | undefined).format('HH:mm') : ''}</span>
+        <SimpleBar className="flex-fill">
+          <ul className="list-unstyled mb-0">
+            {items.map((c) => (
+              <li
+                key={c.id}
+                onClick={() => {
+                  setSelectedId(c.id)
+                  if (activeTab !== 'kisiler') {
+                    onSelect(c as unknown as MessageConversation)
+                  }
+                }}
+                className={`d-flex p-2 align-items-center ${c.id === selectedId ? 'active' : ''}`}
+                style={c.id === selectedId ? { background: '#f8eafd', borderLeft: '4px solid #6c5dd3' } : {}}
+              >
+                <img src={c.avatarUrl} className="avatar avatar-md me-2" alt="" />
+                <div className="flex-fill">
+                  <div className="d-flex justify-content-between">
+                    <span className="fw-medium">{c.name}</span>
+                    <span className="fs-11 text-muted">{c.lastTimestamp ? dayjs(c.lastTimestamp as unknown as string | number | Date | null | undefined).format('HH:mm') : ''}</span>
+                  </div>
+                  <div className="fs-12 text-truncate">
+                    {c.isTyping ? <span className="text-success">Yazıyor…</span> : c.lastMessage}
+                  </div>
                 </div>
-                <div className="fs-12 text-truncate">
-                  {c.isTyping ? <span className="text-success">Yazıyor…</span> : c.lastMessage}
-                </div>
-              </div>
-              {typeof c.unreadCount === 'number' && c.unreadCount > 0 && (
-                <span className="badge bg-danger rounded-circle">{c.unreadCount}</span>
-              )}
-            </li>
-          ))}
-        </ul>
-      </SimpleBar>
+                {typeof c.unreadCount === 'number' && c.unreadCount > 0 && (
+                  <span className="badge bg-danger rounded-circle">{c.unreadCount}</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </SimpleBar>
 
       {/* Offcanvas: Add group members */}
       <Offcanvas
