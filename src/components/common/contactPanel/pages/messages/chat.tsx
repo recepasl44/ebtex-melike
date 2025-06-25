@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Offcanvas, Spinner } from "react-bootstrap";
+import { Form, Offcanvas, Spinner, Button } from "react-bootstrap";
 import SimpleBar from "simplebar-react";
 import EmojiPicker from "emoji-picker-react";
 import dayjs from "dayjs";
@@ -151,3 +151,4 @@ const Chat: React.FC<Props> = ({ conversationId, currentUserId, user }) => {
 };
 
 export default Chat;
+

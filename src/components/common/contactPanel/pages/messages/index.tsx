@@ -14,14 +14,15 @@ interface ChatUser {
 }
 
 const MessagesIndex: React.FC<{ currentUserId: string }> = ({ currentUserId }) => {
-  const [activeConversation, setActiveConversation] = useState<MessageConversation | null>(null);
+  const [selectedConversation, setSelectedConversation] = useState<MessageConversation | null>(null);
   const [activeUser, setActiveUser] = useState<ChatUser | null>(null);
 
   return (
     <div className="main-chart-wrapper d-lg-flex gap-2">
       <Conversations
+        currentUserId={currentUserId}
         onSelect={(conv: MessageConversation) => {
-          setActiveConversation(conv);
+          setSelectedConversation(conv);
           setActiveUser({
             id: String(conv.id),
             name: conv.name,
@@ -33,9 +34,9 @@ const MessagesIndex: React.FC<{ currentUserId: string }> = ({ currentUserId }) =
           });
         }}
       />
-      {activeConversation && activeUser && (
+      {selectedConversation && activeUser && (
         <Chat
-          conversationId={String(activeConversation.id)}
+          conversationId={String(selectedConversation.id)}
           currentUserId={currentUserId}
           user={activeUser}
         />
