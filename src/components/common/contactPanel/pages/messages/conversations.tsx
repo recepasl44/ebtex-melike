@@ -28,7 +28,8 @@ const Conversations: React.FC<Props> = ({ onSelect }) => {
         const fetchData = async () => {
             try {
                 const resp = await axiosInstance.get('/conversations');
-                setData(resp.data || []);
+                const convs = resp.data?.data ?? resp.data;
+                setData(Array.isArray(convs) ? convs : []);
             } catch (err: any) {
                 setError(err.response?.data?.message || 'Fetch failed');
             } finally {
