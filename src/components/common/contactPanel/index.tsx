@@ -6,9 +6,11 @@ import CurrentNewsletterTable from './pages/currentNewsletter/table';
 import NotificationsTable from './pages/notifications/table';
 import SmsTable from './pages/sms/table';
 import EmailTable from './pages/e-mail/table';
+import MessagesIndex from './pages/messages';
 
 
 const ContactPanelIndex: React.FC = () => {
+    const loggedInUserId = 1; // TODO: replace with auth user id
 
     const tabs = [
 
@@ -41,6 +43,14 @@ const ContactPanelIndex: React.FC = () => {
             content: <EmailTable />,
             activeBgColor: '#5C67F7',
             activeTextColor: '#FFFFFF',
+            passiveBgColor: '#5C67F726',
+            passiveTextColor: '#5C67F7',
+        },
+        {
+            label: 'Mesajlar',
+            content: <MessagesIndex currentUserId={loggedInUserId} />,
+            activeBgColor: '#5C67F7',
+            activeTextColor: '#FFF',
             passiveBgColor: '#5C67F726',
             passiveTextColor: '#5C67F7',
         },
