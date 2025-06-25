@@ -1,24 +1,32 @@
-import React, { useState } from 'react';
-import Conversations from './conversations';
-import Chat from './chat';
-// Update the import path below to the correct relative path if needed
-import { ChatUser } from '../../../../../types/messages/chat';
+import React, { useState } from "react";
+import Conversations from "./conversations";
+import Chat from "./chat";
+import { ChatUser } from "../../../../../types/messages/chat";
+import { MessageConversation } from "../../../../../types/messages/list";
 
 const MessagesIndex: React.FC<{ currentUserId: string }> = ({ currentUserId }) => {
+  const [activeConversation, setActiveConversation] = useState<MessageConversation | null>(null);
   const [activeUser, setActiveUser] = useState<ChatUser | null>(null);
-  const [convId, setConvId] = useState<string | null>(null);
 
   return (
     <div className="main-chart-wrapper d-lg-flex gap-2">
       <Conversations
-        onSelect={(user, id) => {
-          setActiveUser(user);
-          setConvId(id);
+        onSelect={(conv: MessageConversation) => {
+          setActiveConversation(conv);
+          setActiveUser({
+            id: String(conv.id),
+            name: conv.name,
+            imageUrl: "",
+            status: "online",
+            isGroup: conv.type_id !== 0,
+            lastMessage: "",
+            lastTimestamp: conv.created_at || "",
+          });
         }}
       />
-      {activeUser && convId && (
+      {activeConversation && activeUser && (
         <Chat
-          conversationId={convId}
+          conversationId={String(activeConversation.id)}
           currentUserId={currentUserId}
           user={activeUser}
         />
