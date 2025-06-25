@@ -5,7 +5,7 @@ import EmojiPicker from "emoji-picker-react";
 import dayjs from "dayjs";
 import { useMessagesList } from "../../../../hooks/messages/useList";
 import { useMessageAdd } from "../../../../hooks/messages/useAdd";
-import { ChatUser, ChatMessage } from "../../../../../types/messages/chat";
+import { ChatUser, ChatMessage } from "../../../../../types/messages/list";
 
 interface Props {
   conversationId: string;
