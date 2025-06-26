@@ -1,18 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Form, Offcanvas, Spinner } from "react-bootstrap";
+import React, { useEffect, useRef, useState } from "react";
+import { Form, Spinner } from "react-bootstrap";
 import SimpleBar from "simplebar-react";
-import EmojiPicker from "emoji-picker-react";
-import dayjs from "dayjs";
 import { useMessagesList } from "../../../../hooks/messages/useList";
 import { useMessageAdd } from "../../../../hooks/messages/useAdd";
-interface ChatUser {
-  id: string;
-  name: string;
-  imageUrl: string;
-  status: string;
-  isGroup?: boolean;
-  lastMessage?: string;
-  lastTimestamp?: string;
+import { ChatUser } from "../../../../../types/messages/list";
+
+interface Props {
+  conversationId: string;
+  currentUserId: string;
+  user: ChatUser;
 }
 
 interface ChatMessage {
@@ -22,33 +18,18 @@ interface ChatMessage {
   timestamp: string;
 }
 
-const formatTime = (timestamp: string) => {
-  const d = dayjs(timestamp);
-  return d.isValid() ? d.format('HH:mm') : dayjs().format('HH:mm');
-};
-
-interface Props {
-  conversationId: string;
-  currentUserId: string;
-  user: ChatUser;
-}
-
 const Chat: React.FC<Props> = ({ conversationId, currentUserId, user }) => {
-  const {
-    messagesData = [],
-    loading: isLoading,
-  } = useMessagesList({
-    enabled: Boolean(conversationId),
+  const { messagesData = [], loading } = useMessagesList({
+    enabled: !!conversationId,
     conversation_id: Number(conversationId),
     page: 1,
     pageSize: 50,
   });
+
   const { addNewMessage } = useMessageAdd();
-  const [text, setText] = useState('');
-  const [showEmoji, setShowEmoji] = useState(false);
-  const [showInfo, setShowInfo] = useState(false);
+  const [text, setText] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const chatContainerRef = useRef<HTMLDivElement | null>(null);
+  const chatRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const mapped = messagesData.map((m): ChatMessage => ({
@@ -61,34 +42,30 @@ const Chat: React.FC<Props> = ({ conversationId, currentUserId, user }) => {
   }, [messagesData]);
 
   useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    if (chatRef.current) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight;
     }
   }, [messages]);
 
   const handleSend = async () => {
     if (!text.trim()) return;
-
-    const optimisticMessage: ChatMessage = {
+    const optimistic: ChatMessage = {
       id: `temp-${Date.now()}`,
       senderId: currentUserId,
       text,
       timestamp: new Date().toISOString(),
     };
-
-    setMessages((prev) => [...prev, optimisticMessage]);
-
+    setMessages((prev) => [...prev, optimistic]);
     await addNewMessage({
       conversation_id: Number(conversationId),
       sender_id: Number(currentUserId),
       body: text,
     });
-    setText('');
-    setShowEmoji(false);
+    setText("");
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       handleSend();
     }
@@ -96,7 +73,7 @@ const Chat: React.FC<Props> = ({ conversationId, currentUserId, user }) => {
 
   return (
     <div className="main-chat-area border position-relative flex-fill">
-      <div className="main-chat-head d-flex align-items-center justify-content-between border-bottom">
+      <div className="main-chat-head d-flex align-items-center border-bottom">
         <div className="d-flex align-items-center">
           <span className="avatar avatar-md avatar-rounded me-2">
             <img src={user.imageUrl} alt="" />
@@ -106,25 +83,25 @@ const Chat: React.FC<Props> = ({ conversationId, currentUserId, user }) => {
             <span className="fs-12 text-muted">{user.status}</span>
           </div>
         </div>
-        <button className="btn btn-icon btn-sm btn-outline-light" onClick={() => setShowInfo(true)}>
-          <i className="ti ti-info-circle" />
-        </button>
       </div>
-      <SimpleBar className="chat-content" scrollableNodeProps={{ ref: chatContainerRef }}>
+      <SimpleBar className="chat-content" scrollableNodeProps={{ ref: chatRef }}>
         <ul className="list-unstyled mb-0">
-          {isLoading && (
+          {loading && (
             <li className="text-center py-4">
               <Spinner animation="border" size="sm" />
             </li>
           )}
-          {messages.map((msg: ChatMessage) => (
-            <li key={msg.id} className={msg.senderId === currentUserId ? 'chat-item-end' : 'chat-item-start'}>
+          {messages.map((msg) => (
+            <li
+              key={msg.id}
+              className={msg.senderId === currentUserId ? "chat-item-end" : "chat-item-start"}
+            >
               <div className="chat-list-inner">
                 <div className="main-chat-msg">
                   <div>
                     <p className="mb-0">{msg.text}</p>
                   </div>
-                  <span className="msg-sent-time">{formatTime(msg.timestamp)}</span>
+                  <span className="msg-sent-time">{msg.timestamp}</span>
                 </div>
               </div>
             </li>
@@ -132,19 +109,6 @@ const Chat: React.FC<Props> = ({ conversationId, currentUserId, user }) => {
         </ul>
       </SimpleBar>
       <div className="chat-footer">
-        <button className="btn btn-icon btn-sm btn-outline-light me-2">
-          <i className="ti ti-paperclip" />
-        </button>
-        <div className="position-relative me-2">
-          <button className="btn btn-icon btn-sm btn-outline-light" onClick={() => setShowEmoji(!showEmoji)}>
-            <i className="ti ti-mood-smile" />
-          </button>
-          {showEmoji && (
-            <div className="position-absolute bottom-100 z-3">
-              <EmojiPicker onEmojiClick={(e) => setText((t) => t + e.emoji)} />
-            </div>
-          )}
-        </div>
         <Form.Control
           type="text"
           className="flex-fill me-2"
@@ -157,23 +121,8 @@ const Chat: React.FC<Props> = ({ conversationId, currentUserId, user }) => {
           <i className="ri-send-plane-2-line" />
         </button>
       </div>
-      <Offcanvas placement="end" show={showInfo} onHide={() => setShowInfo(false)} className="chat-user-details">
-        <Offcanvas.Header closeButton>
-          <Offcanvas.Title>{user.name}</Offcanvas.Title>
-        </Offcanvas.Header>
-        <Offcanvas.Body>
-          <div className="text-center">
-            <span className="avatar avatar-xl avatar-rounded mb-2">
-              <img src={user.imageUrl} alt="" />
-            </span>
-            <p className="mb-0 fw-semibold">{user.name}</p>
-            <p className="text-muted fs-12">{user.status}</p>
-          </div>
-        </Offcanvas.Body>
-      </Offcanvas>
     </div>
   );
 };
 
 export default Chat;
-
