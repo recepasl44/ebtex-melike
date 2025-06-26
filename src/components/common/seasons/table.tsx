@@ -6,6 +6,7 @@ import ReusableTable, { ColumnDefinition } from "../ReusableTable";
 import { useSeasonsList } from "../../hooks/season/useSeasonsList";
 import { useSeasonDelete } from "../../hooks/season/useSeasonsDelete";
 import { Season } from "../../../types/seasons/list";
+import Pageheader from "../../page-header/pageheader";
 
 export default function SeasonsListPage() {
     const navigate = useNavigate();
@@ -63,31 +64,31 @@ export default function SeasonsListPage() {
     );
 
     return (
-
-
-        <ReusableTable<Season>
-            pageTitle="Sezon Tipleri"
-            columns={columns}
-            data={seasonsData}
-            loading={loading}
-            showModal={false}
-            showExportButtons
-            tableMode="single"
-            error={error}
-            filters={[]}
-            currentPage={page}
-            totalPages={totalPages}
-            totalItems={totalItems}
-            onAdd={() => navigate("/seasons/crud")}
-            pageSize={paginate}
-            onPageChange={setPage}
-            onPageSizeChange={(newSize) => {
-                setPaginate(newSize);
-                setPage(1);
-            }}
-            exportFileName="seasons"
-            onDeleteRow={(row) => deleteExistingSeason(row.id)}
-        />
+        <div className="container-fluid mt-3">
+            <Pageheader title="Sezon Yönetimi" currentpage="Sezonlar" />
+            <ReusableTable<Season>
+                columns={columns}
+                data={seasonsData}
+                loading={loading}
+                showModal={false}
+                showExportButtons
+                tableMode="single"
+                error={error}
+                filters={[]}
+                currentPage={page}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                onAdd={() => navigate("/seasons/crud")}
+                pageSize={paginate}
+                onPageChange={setPage}
+                onPageSizeChange={(newSize) => {
+                    setPaginate(newSize);
+                    setPage(1);
+                }}
+                exportFileName="seasons"
+                onDeleteRow={(row) => deleteExistingSeason(row.id)}
+            />
+        </div>
 
     );
 }
