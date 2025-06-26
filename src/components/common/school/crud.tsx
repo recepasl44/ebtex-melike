@@ -128,7 +128,15 @@ const SchoolModal: React.FC<ISchoolModalProps> = ({
   }, [mode, fetchedSchool]);
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name.includes(".")) {
+      const [parent, child] = name.split(".");
+      setFormData((prev) => ({
+        ...prev,
+        [parent]: { ...(prev as any)[parent], [child]: value },
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -178,10 +186,10 @@ const SchoolModal: React.FC<ISchoolModalProps> = ({
             <Form.Label>Ülke</Form.Label>
             <Form.Control
               type="text"
-              name="name"
+              name="country.name"
               value={formData.country?.name}
               onChange={handleChange}
-              placeholder="Okul adını giriniz"
+              placeholder="Ülke adını giriniz"
               required
             />
           </Form.Group>
@@ -189,10 +197,10 @@ const SchoolModal: React.FC<ISchoolModalProps> = ({
             <Form.Label>Şehir</Form.Label>
             <Form.Control
               type="text"
-              name="name"
+              name="city.name"
               value={formData.city?.name}
               onChange={handleChange}
-              placeholder="Okul adını giriniz"
+              placeholder="Şehir adını giriniz"
               required
             />
           </Form.Group>
@@ -200,10 +208,10 @@ const SchoolModal: React.FC<ISchoolModalProps> = ({
             <Form.Label>İlçe</Form.Label>
             <Form.Control
               type="text"
-              name="name"
+              name="county.name"
               value={formData.county?.name}
               onChange={handleChange}
-              placeholder="Okul adını giriniz"
+              placeholder="İlçe adını giriniz"
               required
             />
           </Form.Group>
@@ -211,10 +219,10 @@ const SchoolModal: React.FC<ISchoolModalProps> = ({
             <Form.Label>Okul Tipi</Form.Label>
             <Form.Control
               type="text"
-              name="name"
+              name="type.name"
               value={formData.type?.name}
               onChange={handleChange}
-              placeholder="Okul adını giriniz"
+              placeholder="Okul tipi giriniz"
               required
             />
           </Form.Group>
