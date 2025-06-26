@@ -13,6 +13,7 @@ interface ISchoolModalProps {
 
 interface ISchoolFormData {
   name: string;
+  country_id?: number;
   country?: {
     id: number;
     name: string;
@@ -54,6 +55,7 @@ const SchoolModal: React.FC<ISchoolModalProps> = ({
 
   const [formData, setFormData] = useState<ISchoolFormData>({
     name: "",
+    country_id: undefined,
     country: {
       id: 0,
       name: "",
@@ -109,6 +111,7 @@ const SchoolModal: React.FC<ISchoolModalProps> = ({
     if (mode === "update" && fetchedSchool) {
       setFormData({
         name: fetchedSchool.name,
+        country_id: fetchedSchool.country_id,
         country: fetchedSchool.country,
         city_id: fetchedSchool.city_id,
         city: fetchedSchool.city,
@@ -141,10 +144,24 @@ const SchoolModal: React.FC<ISchoolModalProps> = ({
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    const payload = {
+      name: formData.name,
+      country_id: formData.country_id ?? formData.country?.id,
+      city_id: formData.city_id,
+      county_id: formData.county_id,
+      code: formData.code,
+      website: formData.website,
+      address: formData.address,
+      phone: formData.phone,
+      email: formData.email,
+      fax: formData.fax,
+      additional_information: formData.additional_information,
+      type_id: formData.type_id ?? formData.type?.id,
+    };
     if (mode === "add") {
-      await addNewSchool(formData);
+      await addNewSchool(payload);
     } else if (mode === "update" && id) {
-      await updateExistingSchool({ schoolId: Number(id), payload: formData });
+      await updateExistingSchool({ schoolId: Number(id), payload });
     }
     onRefresh();
     onClose();
