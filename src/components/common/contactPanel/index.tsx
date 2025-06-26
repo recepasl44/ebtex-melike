@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Pageheader from '../../page-header/pageheader';
 import TabsContainer from './component/organisms/TabsContainer';
 
@@ -57,7 +58,20 @@ const ContactPanelIndex: React.FC = () => {
 
     ];
 
-    const [activeIdx, setActiveIdx] = useState<number>(0);
+    const location = useLocation();
+    const navigate = useNavigate();
+    const getTabFromSearch = () => {
+        const params = new URLSearchParams(location.search);
+        const tab = params.get('tab');
+        return tab ? parseInt(tab, 10) : 0;
+    };
+
+    const [activeIdx, setActiveIdx] = useState<number>(getTabFromSearch());
+
+    useEffect(() => {
+        setActiveIdx(getTabFromSearch());
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [location.search]);
 
     return (
         <div>
@@ -67,7 +81,14 @@ const ContactPanelIndex: React.FC = () => {
             />
             <TabsContainer
                 tabs={tabs}
-                onTabChange={(parentIdx) => setActiveIdx(parentIdx)}
+                onTabChange={(parentIdx) => {
+                    setActiveIdx(parentIdx);
+                    const params = new URLSearchParams(location.search);
+                    params.set('tab', parentIdx.toString());
+                    navigate(`${location.pathname}?${params.toString()}`, {
+                        replace: true,
+                    });
+                }}
             />
         </div>
     );
