@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import Pageheader from "../../page-header/pageheader";
 import ReusableTable, {
   ColumnDefinition,
   FilterDefinition,
@@ -98,8 +99,10 @@ export default function SchoolListPage() {
   );
 
   return (
-    <ReusableTable<ISchool>
-      pageTitle="Okul Listesi"
+    <div className="px-4">
+      <Pageheader title="Okul Yönetimi" currentpage="Okullar" />
+      <ReusableTable<ISchool>
+        pageTitle="Okullar"
       columns={columns}
       data={schoolData}
       filters={filters}
@@ -120,5 +123,6 @@ export default function SchoolListPage() {
       showExportButtons
       exportFileName="schools"
     />
+    </div>
   );
 }

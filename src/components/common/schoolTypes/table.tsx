@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
 import ReusableTable, { ColumnDefinition } from "../ReusableTable";
+import Pageheader from "../../page-header/pageheader";
 import { useSchoolTypesList } from "../../hooks/schoolTypes/useSchoolTypesList";
 import { useSchoolTypeDelete } from "../../hooks/schoolTypes/useSchoolTypesDelete";
 import { ISchoolType } from "../../../types/schoolTypes/list";
@@ -59,12 +60,11 @@ export default function SchoolTypeListPage() {
     );
 
     return (
-
-
-        <ReusableTable<ISchoolType>
-            pageTitle="Okul Tipleri"
-
-            columns={columns}
+        <div className="px-4">
+            <Pageheader title="Okul Yönetimi" currentpage="Okul Tipleri" />
+            <ReusableTable<ISchoolType>
+                pageTitle="Okul Tipleri"
+                columns={columns}
             data={schoolTypesData}
             loading={loading}
             showModal={false}
@@ -85,6 +85,7 @@ export default function SchoolTypeListPage() {
             exportFileName="school-types"
             onDeleteRow={(row) => removeSchoolType(row.id)}
         />
+        </div>
 
     );
 }
