@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import { useConversationsList } from "../../../../hooks/conversations/useList";
 import { useUsersTable } from "../../../../hooks/user/useList";
 import { MessageConversation } from "../../../../../types/messages/list";
+import { ConversationData } from "../../../../../types/conversations/list";
 import { UserData } from "../../../../../types/user/list";
 
 interface Props {
@@ -27,7 +28,7 @@ const Conversations: React.FC<Props> = ({ currentUserId, onSelect }) => {
     loading: isConvLoading,
     error: isConvError,
   } = useConversationsList(conversationParams) as unknown as {
-    conversationsData: MessageConversation[];
+    conversationsData: ConversationData[];
     loading: boolean;
     error: boolean;
   };
@@ -60,18 +61,13 @@ const Conversations: React.FC<Props> = ({ currentUserId, onSelect }) => {
 
   return (
     <div className="chat-info flex-shrink-0 border">
-      <div className="p-3 border-bottom d-flex justify-content-between align-items-center">
+      <div className="p-3 border-bottom">
         <Form.Control
           type="search"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder={searchPlaceholder}
         />
-        {activeTab === 'groups' && (
-          <Button size="sm" className="ms-2" onClick={() => setShowGroupModal(true)}>
-            Grup Oluştur
-          </Button>
-        )}
       </div>
       <Tab.Container activeKey={activeTab} onSelect={(k) => setActiveTab(k as 'chats' | 'groups' | 'users')}>
         <Nav variant="tabs" className="tab-style-6 px-3">
@@ -86,11 +82,19 @@ const Conversations: React.FC<Props> = ({ currentUserId, onSelect }) => {
           </Nav.Item>
         </Nav>
       </Tab.Container>
-      <div className="small text-muted px-3 pt-2">
-        {activeTab === 'chats' && 'Sohbetler'}
-        {activeTab === 'groups' && 'Grup Sohbetleri'}
-        {activeTab === 'users' && 'Kişiler'}
-      </div>
+      {activeTab === 'groups' ? (
+        <div className="d-flex justify-content-between align-items-center px-3 pt-2 pb-2 border-bottom">
+          <span className="fw-semibold">Grup Sohbetleri</span>
+          <Button size="sm" onClick={() => setShowGroupModal(true)}>
+            Grup Oluştur
+          </Button>
+        </div>
+      ) : (
+        <div className="small text-muted px-3 pt-2 pb-2 border-bottom">
+          {activeTab === 'chats' && 'Sohbetler'}
+          {activeTab === 'users' && 'Kişiler'}
+        </div>
+      )}
       {(isConvLoading || isUsersLoading) && (
         <div className="text-center p-2">
           <Spinner animation="border" size="sm" />
@@ -99,23 +103,58 @@ const Conversations: React.FC<Props> = ({ currentUserId, onSelect }) => {
       {(isConvError || isUsersError) && (
         <div className="text-danger text-center p-2">Yükleme hatası</div>
       )}
-      <SimpleBar className="list-unstyled mb-0">
+      <SimpleBar
+        className={`${
+          activeTab === 'chats'
+            ? 'chat-contacts-tab'
+            : activeTab === 'groups'
+            ? 'chat-groups-tab'
+            : 'chat-users-tab'
+        } list-unstyled mb-0`}
+      >
         <ul className="list-unstyled mb-0">
           {activeTab !== 'users' &&
-            conversations.map((c: MessageConversation) => (
+            conversations.map((c: ConversationData) => (
               <li
                 key={c.id}
                 onClick={() => {
                   setSelectedId(String(c.id));
-                  onSelect(c);
+                  onSelect(c as unknown as MessageConversation);
                 }}
-                className={`${selectedId === String(c.id) ? 'active' : ''}`}
+                className={`${
+                  selectedId === String(c.id) ? 'active' : ''
+                } ${
+                  (c as any).unreadCount ? 'chat-msg-unread' : ''
+                } ${
+                  (c as any).isTyping ? 'chat-msg-typing' : ''
+                }`}
               >
                 <div className="d-flex align-items-center">
+                  <span className="avatar avatar-sm avatar-rounded me-2">
+                    <img src={(c as any).avatarUrl || ''} alt="" />
+                  </span>
                   <div className="flex-fill">
                     <div className="d-flex justify-content-between">
                       <span className="fw-semibold">{c.name}</span>
-                      <span className="fs-12 text-muted">{dayjs(c.created_at).format('HH:mm')}</span>
+                      <span className="fs-12 text-muted">
+                        {dayjs((c as any).lastTimestamp || c.created_at).format('HH:mm')}
+                      </span>
+                    </div>
+                    <div className="d-flex justify-content-between align-items-center">
+                      <span className="chat-msg">
+                        {(c as any).isTyping
+                          ? `${(c as any).isTyping} Yazıyor…`
+                          : `${(c as any).lastSender || ''}${(c as any).lastSender ? ': ' : ''}${(c as any).lastMessage || ''}`}
+                      </span>
+                      {(c as any).unreadCount ? (
+                        <span className="badge bg-danger rounded-pill">
+                          {(c as any).unreadCount}
+                        </span>
+                      ) : (
+                        <span className="chat-read-icon">
+                          <i className="ri-check-line" />
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
