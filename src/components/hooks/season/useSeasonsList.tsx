@@ -47,7 +47,8 @@ export function useSeasonsList(params: any) {
     const loading = status === SeasonListStatus.LOADING;
     const seasonsData = data || [];
     const totalPages = meta ? meta.last_page : 1;
-    const totalItems = meta ? meta.total : 0;
+    // Eğer meta bilgisi yoksa toplam kayıt sayısını eldeki veri uzunluğundan hesapla
+    const totalItems = meta ? meta.total : seasonsData.length;
 
     return {
         seasonsData,
