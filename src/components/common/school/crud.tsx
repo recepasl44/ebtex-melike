@@ -20,6 +20,7 @@ interface ISchoolFormData {
   };
   city_id?: number;
   city?: {
+    id: number;
     country_id: number;
     country: {
       id: number;
@@ -62,6 +63,7 @@ const SchoolModal: React.FC<ISchoolModalProps> = ({
     },
     city_id: undefined,
     city: {
+      id: 0,
       country_id: 0,
       country: {
         id: 0,
@@ -147,8 +149,8 @@ const SchoolModal: React.FC<ISchoolModalProps> = ({
     const payload = {
       name: formData.name,
       country_id: formData.country_id ?? formData.country?.id,
-      city_id: formData.city_id,
-      county_id: formData.county_id,
+      city_id: formData.city_id ?? formData.city?.id,
+      county_id: formData.county_id ?? formData.county?.id,
       code: formData.code,
       website: formData.website,
       address: formData.address,
@@ -207,6 +209,17 @@ const SchoolModal: React.FC<ISchoolModalProps> = ({
               value={formData.country?.name}
               onChange={handleChange}
               placeholder="Ülke adını giriniz"
+              required
+            />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Şehir ID</Form.Label>
+            <Form.Control
+              type="number"
+              name="city.id"
+              value={formData.city?.id}
+              onChange={handleChange}
+              placeholder="Şehir ID'sini giriniz"
               required
             />
           </Form.Group>
