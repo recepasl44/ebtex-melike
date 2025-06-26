@@ -157,8 +157,8 @@ const SchoolModal: React.FC<SchoolModalProps> = ({ show, onClose, onRefresh }) =
     mode === "add"
       ? addError
       : mode === "update"
-      ? updateError || showError
-      : null;
+        ? updateError || showError
+        : null;
 
   return (
     <ReusableModalForm<ISchoolForm>
@@ -173,7 +173,7 @@ const SchoolModal: React.FC<SchoolModalProps> = ({ show, onClose, onRefresh }) =
       error={error || null}
       autoGoBackOnModalClose={true}
       onClose={onClose}
-      mode="single"
+      mode="double"
     />
   );
 };

@@ -631,9 +631,8 @@ export const Routedata = [
     element: (
       <SchoolModal
         show={true}
-        token={""}
         onClose={() => window.history.back()}
-        onRefresh={() => {}}
+        onRefresh={() => { }}
       />
     ),
   },

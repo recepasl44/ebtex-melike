@@ -20,8 +20,8 @@ export default function SchoolListPage() {
     totalItems,
     setPage,
     setPaginate,
-    setSearchTerm,  // you can remove this if it’s only used for the filter
-    searchTerm,     // likewise remove if unused elsewhere
+    setSearchTerm,
+    searchTerm,
   } = useSchoolTable({ enabled: true });
 
   const columns: ColumnDefinition<ISchool>[] = useMemo(
