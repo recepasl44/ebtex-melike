@@ -27,6 +27,7 @@ export interface ConversationUser {
 }
 
 export interface ConversationData {
+    created_at: any
     lastMessage: ReactNode
     unreadCount: ReactNode
     isTyping: any

@@ -117,13 +117,12 @@ const Conversations: React.FC<Props> = ({ currentUserId, onSelect }) => {
         <div className="text-danger text-center p-2">Yükleme hatası</div>
       )}
       <SimpleBar
-        className={`${
-          activeTab === 'chats'
+        className={`${activeTab === 'chats'
             ? 'chat-contacts-tab'
             : activeTab === 'groups'
-            ? 'chat-groups-tab'
-            : 'chat-users-tab'
-        } list-unstyled mb-0`}
+              ? 'chat-groups-tab'
+              : 'chat-users-tab'
+          } list-unstyled mb-0`}
       >
         <ul className="list-unstyled mb-0">
           {activeTab !== 'users' &&
@@ -134,13 +133,10 @@ const Conversations: React.FC<Props> = ({ currentUserId, onSelect }) => {
                   setSelectedId(String(c.id));
                   onSelect(c as unknown as MessageConversation);
                 }}
-                className={`${
-                  selectedId === String(c.id) ? 'active' : ''
-                } ${
-                  (c as any).unreadCount ? 'chat-msg-unread' : ''
-                } ${
-                  (c as any).isTyping ? 'chat-msg-typing' : ''
-                }`}
+                className={`${selectedId === String(c.id) ? 'active' : ''
+                  } ${(c as any).unreadCount ? 'chat-msg-unread' : ''
+                  } ${(c as any).isTyping ? 'chat-msg-typing' : ''
+                  }`}
               >
                 <div className="d-flex align-items-center">
                   <span className="avatar avatar-sm avatar-rounded me-2">
