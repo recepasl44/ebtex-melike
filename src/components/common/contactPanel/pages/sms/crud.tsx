@@ -171,7 +171,9 @@ export default function SmsCrud() {
         } else if (mode === 'edit' && id) {
             await updateExistingNotification({ notificationId: Number(id), payload: payload as any });
         }
-        navigate(`${import.meta.env.BASE_URL}contact-panel`, { replace: true });
+        navigate(`${import.meta.env.BASE_URL}contact-panel/sms`, {
+            replace: true,
+        });
     };
 
     const isLoading =
@@ -192,7 +194,7 @@ export default function SmsCrud() {
                 isLoading={isLoading}
                 error={combinedError || undefined}
                 onClose={() => {
-                    navigate(`${import.meta.env.BASE_URL}contact-panel`, {
+                    navigate(`${import.meta.env.BASE_URL}contact-panel/sms`, {
                         replace: true,
                     });
 

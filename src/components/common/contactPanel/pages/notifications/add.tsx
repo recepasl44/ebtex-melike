@@ -97,7 +97,9 @@ export default function NotificationAdd() {
             send_time: `${values.send_date} ${values.send_time}`,
             group_ids: selectedAudience.map((a) => a.id),
         });
-        navigate(`${import.meta.env.BASE_URL}contact-panel`, { replace: true });
+        navigate(`${import.meta.env.BASE_URL}contact-panel/notifications`, {
+            replace: true,
+        });
     };
 
     const isLoading = status === 'LOADING';
@@ -117,7 +119,7 @@ export default function NotificationAdd() {
                 isLoading={isLoading}
                 error={error || undefined}
                 onClose={() => {
-                    navigate(`${import.meta.env.BASE_URL}contact-panel`, {
+                    navigate(`${import.meta.env.BASE_URL}contact-panel/notifications`, {
                         replace: true,
                     });
 
