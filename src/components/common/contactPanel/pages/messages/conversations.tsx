@@ -21,7 +21,7 @@ const Conversations: React.FC<Props> = ({ currentUserId, onSelect }) => {
   const [groupSearch, setGroupSearch] = useState('');
 
   const conversationParams: any = { search, enabled: activeTab !== 'users' };
-  if (activeTab === 'groups') conversationParams.type = 'group';
+  if (activeTab === 'groups') conversationParams.type_id = 1;
   if (activeTab === 'chats') conversationParams.user_id = currentUserId;
 
   const {
@@ -42,7 +42,7 @@ const Conversations: React.FC<Props> = ({ currentUserId, onSelect }) => {
     enabled: activeTab === 'users' || (activeTab === 'groups' && showGroupPanel),
     search: activeTab === 'users' ? search : groupSearch,
     page: 1,
-    paginate: 50,
+    perPage: 50,
   }) as unknown as {
     usersData: UserData[];
     loading: boolean;
