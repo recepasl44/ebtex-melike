@@ -10,6 +10,7 @@ export interface ISchool {
   };
   city_id?: number;
   city?: {
+    id: number;
     country_id: number;
     country: {
       id: number;
