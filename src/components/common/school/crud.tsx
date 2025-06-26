@@ -1,8 +1,6 @@
 import React, { useState, useEffect, FormEvent, ChangeEvent } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import axiosInstance from "../../../services/axiosClient";
-import { SCHOOLS } from "../../../helpers/url_helper";
 import { useSchoolAdd } from "../../hooks/school/useSchoolAdd";
 import { useSchoolUpdate } from "../../hooks/school/useSchoolUpdate";
 import { useSchoolShow } from "../../hooks/school/useSchoolShow";
@@ -15,9 +13,24 @@ interface ISchoolModalProps {
 
 interface ISchoolFormData {
   name: string;
-  country_id: number;
-  city_id: number;
-  county_id: number;
+  country?: {
+    id: number;
+    name: string;
+  };
+  city_id?: number;
+  city?: {
+    country_id: number;
+    country: {
+      id: number;
+      name: string;
+    };
+    name: string;
+  };
+  county_id?: number;
+  county?: {
+    id: number;
+    name: string;
+  };
   code: string;
   website: string;
   address: string;
@@ -26,6 +39,10 @@ interface ISchoolFormData {
   fax: string;
   additional_information: string;
   type_id: number;
+  type?: {
+    id: number;
+    name: string;
+  };
 }
 const SchoolModal: React.FC<ISchoolModalProps> = ({
   show,
@@ -37,9 +54,24 @@ const SchoolModal: React.FC<ISchoolModalProps> = ({
 
   const [formData, setFormData] = useState<ISchoolFormData>({
     name: "",
-    country_id: 0,
-    city_id: 0,
-    county_id: 0,
+    country: {
+      id: 0,
+      name: "",
+    },
+    city_id: undefined,
+    city: {
+      country_id: 0,
+      country: {
+        id: 0,
+        name: "",
+      },
+      name: "",
+    },
+    county_id: undefined,
+    county: {
+      id: 0,
+      name: "",
+    },
     code: "",
     website: "",
     address: "",
@@ -48,25 +80,24 @@ const SchoolModal: React.FC<ISchoolModalProps> = ({
     fax: "",
     additional_information: "",
     type_id: 0,
+    type: {
+      id: 0,
+      name: "",
+    },
   });
 
-  const [loading, setLoading] = useState(false);
-  const [generalError, setGeneralError] = useState<string | null>(null);
-  const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof ISchoolFormData, string>>>({});
-  const { addNewSchool } = useSchoolAdd();
-  const { updateExistingSchool } = useSchoolUpdate();
+  const { addNewSchool, status: addStatus, error: addError } = useSchoolAdd();
+  const {
+    updateExistingSchool,
+    status: updateStatus,
+    error: updateError,
+  } = useSchoolUpdate();
   const {
     school: fetchedSchool,
     status: showStatus,
     error: showError,
     getSchool,
   } = useSchoolShow();
-
-  const handleClose = () => {
-    setGeneralError(null);
-    setFieldErrors({});
-    onClose();
-  };
 
   useEffect(() => {
     if (mode === "update" && id) {
@@ -78,9 +109,11 @@ const SchoolModal: React.FC<ISchoolModalProps> = ({
     if (mode === "update" && fetchedSchool) {
       setFormData({
         name: fetchedSchool.name,
-        country_id: fetchedSchool.country_id || 0,
-        city_id: fetchedSchool.city_id || 0,
-        county_id: fetchedSchool.county_id || 0,
+        country: fetchedSchool.country,
+        city_id: fetchedSchool.city_id,
+        city: fetchedSchool.city,
+        county_id: fetchedSchool.county_id,
+        county: fetchedSchool.county,
         code: fetchedSchool.code || "",
         website: fetchedSchool.website || "",
         address: fetchedSchool.address || "",
@@ -89,64 +122,48 @@ const SchoolModal: React.FC<ISchoolModalProps> = ({
         fax: fetchedSchool.fax || "",
         additional_information: fetchedSchool.additional_information || "",
         type_id: fetchedSchool.type_id || 0,
+        type: fetchedSchool.type,
       });
     }
   }, [mode, fetchedSchool]);
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name.includes(".")) {
+      const [parent, child] = name.split(".");
+      setFormData((prev) => ({
+        ...prev,
+        [parent]: { ...(prev as any)[parent], [child]: value },
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setGeneralError(null);
-    setFieldErrors({});
-    setLoading(true);
-    const payload = {
-      name: formData.name,
-      country_id: Number(formData.country_id) || 0,
-      city_id: Number(formData.city_id) || 0,
-      county_id: Number(formData.county_id) || 0,
-      code: formData.code,
-      website: formData.website,
-      address: formData.address,
-      phone: formData.phone,
-      email: formData.email,
-      fax: formData.fax,
-      additional_information: formData.additional_information,
-      type_id: Number(formData.type_id) || 0,
-    };
-
-    try {
-      if (mode === "add") {
-        await axiosInstance.post(SCHOOLS, payload);
-        // Also update redux state via hook
-        await addNewSchool(payload);
-      } else if (mode === "update" && id) {
-        await axiosInstance.put(`${SCHOOLS}/${id}`, payload);
-        await updateExistingSchool({ schoolId: Number(id), payload });
-      }
-      onRefresh();
-      handleClose();
-    } catch (err: any) {
-      if (err.response?.status === 422) {
-        const data = err.response.data.error || {};
-        setGeneralError(data.message || "");
-        setFieldErrors(data.details || {});
-      } else {
-        setGeneralError(err.response?.data?.message || err.message);
-      }
-    } finally {
-      setLoading(false);
+    if (mode === "add") {
+      await addNewSchool(formData);
+    } else if (mode === "update" && id) {
+      await updateExistingSchool({ schoolId: Number(id), payload: formData });
     }
+    onRefresh();
+    onClose();
   };
 
-  const isLoading = loading || showStatus === "LOADING";
-  const error = showError || generalError;
+  const loading =
+    mode === "add"
+      ? addStatus === "LOADING"
+      : updateStatus === "LOADING" || showStatus === "LOADING";
+  const error =
+    mode === "add"
+      ? addError
+      : mode === "update"
+        ? updateError || showError
+        : null;
 
   return (
-    <Modal show={show} onHide={handleClose} centered>
-      <Modal.Header closeButton onHide={handleClose}>
+    <Modal show={show} onHide={onClose} centered>
+      <Modal.Header closeButton>
         <Modal.Title>
           {mode === "add" ? "Okul Ekle" : "Okul Güncelle"}
         </Modal.Title>
@@ -166,76 +183,56 @@ const SchoolModal: React.FC<ISchoolModalProps> = ({
             />
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Ülke ID</Form.Label>
+            <Form.Label>Ülke</Form.Label>
             <Form.Control
-              type="number"
-              name="country_id"
-              value={formData.country_id}
+              type="text"
+              name="country.name"
+              value={formData.country?.name}
               onChange={handleChange}
-              placeholder="Ülke ID giriniz"
+              placeholder="Ülke adını giriniz"
               required
             />
-            {fieldErrors.country_id && (
-              <Form.Text className="text-danger">
-                {fieldErrors.country_id}
-              </Form.Text>
-            )}
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Şehir ID</Form.Label>
+            <Form.Label>Şehir</Form.Label>
             <Form.Control
-              type="number"
-              name="city_id"
-              value={formData.city_id}
+              type="text"
+              name="city.name"
+              value={formData.city?.name}
               onChange={handleChange}
-              placeholder="Şehir ID giriniz"
+              placeholder="Şehir adını giriniz"
               required
             />
-            {fieldErrors.city_id && (
-              <Form.Text className="text-danger">
-                {fieldErrors.city_id}
-              </Form.Text>
-            )}
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>İlçe ID</Form.Label>
+            <Form.Label>İlçe</Form.Label>
             <Form.Control
-              type="number"
-              name="county_id"
-              value={formData.county_id}
+              type="text"
+              name="county.name"
+              value={formData.county?.name}
               onChange={handleChange}
-              placeholder="İlçe ID giriniz"
+              placeholder="İlçe adını giriniz"
               required
             />
-            {fieldErrors.county_id && (
-              <Form.Text className="text-danger">
-                {fieldErrors.county_id}
-              </Form.Text>
-            )}
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Okul Tipi ID</Form.Label>
+            <Form.Label>Okul Tipi</Form.Label>
             <Form.Control
-              type="number"
-              name="type_id"
-              value={formData.type_id}
+              type="text"
+              name="type.name"
+              value={formData.type?.name}
               onChange={handleChange}
-              placeholder="Okul tipi ID giriniz"
+              placeholder="Okul tipi giriniz"
               required
             />
-            {fieldErrors.type_id && (
-              <Form.Text className="text-danger">
-                {fieldErrors.type_id}
-              </Form.Text>
-            )}
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose} disabled={isLoading}>
+          <Button variant="secondary" onClick={onClose} disabled={loading}>
             Vazgeç
           </Button>
-          <Button variant="primary" type="submit" disabled={isLoading}>
-            {isLoading
+          <Button variant="primary" type="submit" disabled={loading}>
+            {loading
               ? "İşlem yapılıyor..."
               : mode === "add"
                 ? "Ekle"
