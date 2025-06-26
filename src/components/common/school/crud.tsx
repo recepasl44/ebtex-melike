@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { useSchoolAdd } from "../../hooks/school/useSchoolAdd";
 import { useSchoolUpdate } from "../../hooks/school/useSchoolUpdate";
 import { useSchoolShow } from "../../hooks/school/useSchoolShow";
+
 interface ISchoolModalProps {
   show: boolean;
   token: string;

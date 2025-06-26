@@ -1,10 +1,7 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Pageheader from "../../page-header/pageheader";
-import ReusableTable, {
-  ColumnDefinition,
-  FilterDefinition,
-} from "../ReusableTable";
+import ReusableTable, { ColumnDefinition } from "../ReusableTable";
 import { useSchoolTable } from "../../hooks/school/useSchoolList";
 import { useSchoolDelete } from "../../hooks/school/useSchoolDelete";
 import { ISchool } from "../../../types/schools/list";
@@ -23,25 +20,9 @@ export default function SchoolListPage() {
     totalItems,
     setPage,
     setPaginate,
-    setSearchTerm,
-    searchTerm,
+    setSearchTerm,  // you can remove this if it’s only used for the filter
+    searchTerm,     // likewise remove if unused elsewhere
   } = useSchoolTable({ enabled: true });
-
-  const filters: FilterDefinition[] = useMemo(
-    () => [
-      {
-        key: "name",
-        label: "Okul Adı",
-        type: "text",
-        value: searchTerm,
-        onChange: (val: string) => {
-          setSearchTerm(val);
-          setPage(1);
-        },
-      },
-    ],
-    [searchTerm, setSearchTerm, setPage]
-  );
 
   const columns: ColumnDefinition<ISchool>[] = useMemo(
     () => [
@@ -71,7 +52,6 @@ export default function SchoolListPage() {
         label: "Okul Tipi",
         render: (row) => row.type?.name || "-",
       },
-
       {
         key: "actions",
         label: "İşlemler",
@@ -84,7 +64,6 @@ export default function SchoolListPage() {
             >
               <i className="ti ti-trash" />
             </button>
-
             <button
               onClick={() => navigate(`/schoolcrud/${row.id}`)}
               className="btn btn-icon btn-sm btn-info-light rounded-pill"
@@ -102,10 +81,8 @@ export default function SchoolListPage() {
     <div className="px-4">
       <Pageheader title="Okul Yönetimi" currentpage="Okullar" />
       <ReusableTable<ISchool>
-        // pageTitle="Okullar"
         columns={columns}
         data={schoolData}
-        filters={filters}
         loading={loading}
         error={error}
         currentPage={page}
