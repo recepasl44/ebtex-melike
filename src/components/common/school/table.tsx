@@ -102,27 +102,27 @@ export default function SchoolListPage() {
     <div className="px-4">
       <Pageheader title="Okul Yönetimi" currentpage="Okullar" />
       <ReusableTable<ISchool>
-        pageTitle="Okullar"
-      columns={columns}
-      data={schoolData}
-      filters={filters}
-      loading={loading}
-      error={error}
-      currentPage={page}
-      totalPages={totalPages}
-      totalItems={totalItems}
-      pageSize={paginate}
-      onPageChange={(newPage) => setPage(newPage)}
-      onPageSizeChange={(newSize) => {
-        setPaginate(newSize);
-        setPage(1);
-      }}
-      onAdd={() => navigate("/schoolcrud")}
-      onDeleteRow={(row) => removeSchool(row.id)}
-      tableMode="single"
-      showExportButtons
-      exportFileName="schools"
-    />
+        // pageTitle="Okullar"
+        columns={columns}
+        data={schoolData}
+        filters={filters}
+        loading={loading}
+        error={error}
+        currentPage={page}
+        totalPages={totalPages}
+        totalItems={totalItems}
+        pageSize={paginate}
+        onPageChange={(newPage) => setPage(newPage)}
+        onPageSizeChange={(newSize) => {
+          setPaginate(newSize);
+          setPage(1);
+        }}
+        onAdd={() => navigate("/schoolcrud")}
+        onDeleteRow={(row) => removeSchool(row.id)}
+        tableMode="single"
+        showExportButtons
+        exportFileName="schools"
+      />
     </div>
   );
 }
