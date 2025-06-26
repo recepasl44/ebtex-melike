@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Form, Offcanvas, Spinner, Button } from "react-bootstrap";
+import React, { useState, useEffect, useRef } from "react";
+import { Form, Offcanvas, Spinner } from "react-bootstrap";
 import SimpleBar from "simplebar-react";
 import EmojiPicker from "emoji-picker-react";
 import dayjs from "dayjs";
@@ -22,6 +22,11 @@ interface ChatMessage {
   timestamp: string;
 }
 
+const formatTime = (timestamp: string) => {
+  const d = dayjs(timestamp);
+  return d.isValid() ? d.format('HH:mm') : dayjs().format('HH:mm');
+};
+
 interface Props {
   conversationId: string;
   currentUserId: string;
@@ -32,8 +37,6 @@ const Chat: React.FC<Props> = ({ conversationId, currentUserId, user }) => {
   const {
     messagesData = [],
     loading: isLoading,
-    refetch,
-
   } = useMessagesList({
     enabled: Boolean(conversationId),
     conversation_id: Number(conversationId),
@@ -44,9 +47,37 @@ const Chat: React.FC<Props> = ({ conversationId, currentUserId, user }) => {
   const [text, setText] = useState('');
   const [showEmoji, setShowEmoji] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const chatContainerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const mapped = messagesData.map((m): ChatMessage => ({
+      id: String(m.id),
+      senderId: String(m.sender_id),
+      text: m.body,
+      timestamp: (m as any).created_at || "",
+    }));
+    setMessages(mapped);
+  }, [messagesData]);
+
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   const handleSend = async () => {
     if (!text.trim()) return;
+
+    const optimisticMessage: ChatMessage = {
+      id: `temp-${Date.now()}`,
+      senderId: currentUserId,
+      text,
+      timestamp: new Date().toISOString(),
+    };
+
+    setMessages((prev) => [...prev, optimisticMessage]);
+
     await addNewMessage({
       conversation_id: Number(conversationId),
       sender_id: Number(currentUserId),
@@ -54,7 +85,6 @@ const Chat: React.FC<Props> = ({ conversationId, currentUserId, user }) => {
     });
     setText('');
     setShowEmoji(false);
-    refetch();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -80,26 +110,21 @@ const Chat: React.FC<Props> = ({ conversationId, currentUserId, user }) => {
           <i className="ti ti-info-circle" />
         </button>
       </div>
-      <SimpleBar className="chat-content">
+      <SimpleBar className="chat-content" scrollableNodeProps={{ ref: chatContainerRef }}>
         <ul className="list-unstyled mb-0">
           {isLoading && (
             <li className="text-center py-4">
               <Spinner animation="border" size="sm" />
             </li>
           )}
-          {messagesData.map((m): ChatMessage => ({
-            id: String(m.id),
-            senderId: String(m.sender_id),
-            text: m.body,
-            timestamp: (m as any).created_at || "",
-          })).map((msg: ChatMessage) => (
+          {messages.map((msg: ChatMessage) => (
             <li key={msg.id} className={msg.senderId === currentUserId ? 'chat-item-end' : 'chat-item-start'}>
               <div className="chat-list-inner">
                 <div className="main-chat-msg">
                   <div>
                     <p className="mb-0">{msg.text}</p>
                   </div>
-                  <span className="msg-sent-time">{dayjs(msg.timestamp).format('HH:mm')}</span>
+                  <span className="msg-sent-time">{formatTime(msg.timestamp)}</span>
                 </div>
               </div>
             </li>
