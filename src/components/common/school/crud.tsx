@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { useSchoolAdd } from "../../hooks/school/useSchoolAdd";
 import { useSchoolUpdate } from "../../hooks/school/useSchoolUpdate";
 import { useSchoolShow } from "../../hooks/school/useSchoolShow";
+import { useCityTable } from "../../hooks/city/useList";
 interface ISchoolModalProps {
   show: boolean;
   token: string;
@@ -90,6 +91,8 @@ const SchoolModal: React.FC<ISchoolModalProps> = ({
     },
   });
 
+  const { cityData } = useCityTable({ enabled: true, page: 1, pageSize: 999 });
+
   const { addNewSchool, status: addStatus, error: addError } = useSchoolAdd();
   const {
     updateExistingSchool,
@@ -142,6 +145,16 @@ const SchoolModal: React.FC<ISchoolModalProps> = ({
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
+  };
+
+  const handleCitySelect = (e: ChangeEvent<HTMLSelectElement>) => {
+    const selectedId = Number(e.target.value);
+    const selectedCity = cityData?.find((c) => c.id === selectedId);
+    setFormData((prev) => ({
+      ...prev,
+      city_id: selectedId,
+      city: selectedCity || prev.city,
+    }));
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -213,26 +226,20 @@ const SchoolModal: React.FC<ISchoolModalProps> = ({
             />
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Şehir ID</Form.Label>
-            <Form.Control
-              type="number"
-              name="city.id"
-              value={formData.city?.id}
-              onChange={handleChange}
-              placeholder="Şehir ID'sini giriniz"
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
             <Form.Label>Şehir</Form.Label>
-            <Form.Control
-              type="text"
-              name="city.name"
-              value={formData.city?.name}
-              onChange={handleChange}
-              placeholder="Şehir adını giriniz"
+            <Form.Select
+              name="city_id"
+              value={formData.city_id ?? formData.city?.id ?? ""}
+              onChange={handleCitySelect}
               required
-            />
+            >
+              <option value="">Seçiniz</option>
+              {cityData?.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </Form.Select>
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>İlçe</Form.Label>
