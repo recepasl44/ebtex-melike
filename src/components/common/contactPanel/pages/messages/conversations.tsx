@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from "react";
-import { Form, Nav, Spinner, Tab, Modal, Button } from "react-bootstrap";
+import React, { useMemo, useState, useEffect } from "react";
+import { Form, Nav, Spinner, Tab, Button, Collapse } from "react-bootstrap";
 import SimpleBar from "simplebar-react";
 import dayjs from "dayjs";
 import { useConversationsList } from "../../../../hooks/conversations/useList";
@@ -17,7 +17,8 @@ const Conversations: React.FC<Props> = ({ currentUserId, onSelect }) => {
   const [activeTab, setActiveTab] = useState<'chats' | 'groups' | 'users'>('chats');
   const [search, setSearch] = useState('');
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [showGroupModal, setShowGroupModal] = useState(false);
+  const [showGroupPanel, setShowGroupPanel] = useState(false);
+  const [groupSearch, setGroupSearch] = useState('');
 
   const conversationParams: any = { search, enabled: activeTab !== 'users' };
   if (activeTab === 'groups') conversationParams.type = 'group';
@@ -37,7 +38,12 @@ const Conversations: React.FC<Props> = ({ currentUserId, onSelect }) => {
     usersData: users = [],
     loading: isUsersLoading,
     error: isUsersError,
-  } = useUsersTable({ enabled: activeTab === 'users', search, page: 1, paginate: 50 }) as unknown as {
+  } = useUsersTable({
+    enabled: activeTab === 'users' || (activeTab === 'groups' && showGroupPanel),
+    search: activeTab === 'users' ? search : groupSearch,
+    page: 1,
+    paginate: 50,
+  }) as unknown as {
     usersData: UserData[];
     loading: boolean;
     error: boolean;
@@ -57,6 +63,13 @@ const Conversations: React.FC<Props> = ({ currentUserId, onSelect }) => {
     if (activeTab === 'chats') return 'Sohbet Ara…';
     if (activeTab === 'groups') return 'Gruplar Ara…';
     return 'Kişiler Ara…';
+  }, [activeTab]);
+
+  useEffect(() => {
+    if (activeTab !== 'groups') {
+      setShowGroupPanel(false);
+      setGroupSearch('');
+    }
   }, [activeTab]);
 
   return (
@@ -85,7 +98,7 @@ const Conversations: React.FC<Props> = ({ currentUserId, onSelect }) => {
       {activeTab === 'groups' ? (
         <div className="d-flex justify-content-between align-items-center px-3 pt-2 pb-2 border-bottom">
           <span className="fw-semibold">Grup Sohbetleri</span>
-          <Button size="sm" onClick={() => setShowGroupModal(true)}>
+          <Button size="sm" onClick={() => setShowGroupPanel(true)}>
             Grup Oluştur
           </Button>
         </div>
@@ -181,26 +194,57 @@ const Conversations: React.FC<Props> = ({ currentUserId, onSelect }) => {
               ))}
         </ul>
       </SimpleBar>
-      <Modal show={showGroupModal} onHide={() => setShowGroupModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Grup Oluştur</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {/* Grup oluşturma formu - placeholder */}
-          <Form.Group className="mb-3">
-            <Form.Label>Grup Adı</Form.Label>
-            <Form.Control type="text" placeholder="Grup adı" />
-          </Form.Group>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowGroupModal(false)}>
-            Kapat
-          </Button>
-          <Button variant="primary" onClick={() => setShowGroupModal(false)}>
-            Oluştur
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      {activeTab === 'groups' && (
+        <Collapse in={showGroupPanel}>
+          <div className="border-bottom">
+            <div className="d-flex justify-content-between align-items-center px-3 pt-2 pb-2 border-top">
+              <span className="fw-semibold">Gruba Üye Ekleyin</span>
+              <Button variant="link" size="sm" className="p-0" onClick={() => setShowGroupPanel(false)}>
+                <i className="ri-close-line"></i>
+              </Button>
+            </div>
+            <div className="px-3 pb-2">
+              <Form className="d-flex">
+                <Form.Control
+                  type="search"
+                  placeholder="Kişi Ara…"
+                  value={groupSearch}
+                  onChange={(e) => setGroupSearch(e.target.value)}
+                  className="me-2"
+                />
+                <Button variant="primary" type="submit">
+                  <i className="ri-search-line"></i>
+                </Button>
+              </Form>
+            </div>
+            <SimpleBar className="chat-users-tab list-unstyled mb-0" style={{ maxHeight: '200px' }}>
+              <ul className="list-unstyled mb-0">
+                {Object.keys(groupedUsers)
+                  .sort()
+                  .map((letter) => (
+                    <React.Fragment key={letter}>
+                      <li className="px-3 py-1 text-muted fw-semibold">{letter}</li>
+                      {groupedUsers[letter].map((u) => (
+                        <li key={u.id} className="px-3 py-1">
+                          <div className="d-flex align-items-center">
+                            <span className="avatar avatar-sm avatar-rounded me-2">
+                              <img src={u.picture} alt="" />
+                            </span>
+                            <div className="flex-fill">
+                              <span className="fw-semibold">
+                                {u.first_name} {u.last_name}
+                              </span>
+                            </div>
+                          </div>
+                        </li>
+                      ))}
+                    </React.Fragment>
+                  ))}
+              </ul>
+            </SimpleBar>
+          </div>
+        </Collapse>
+      )}
     </div>
   );
 };
