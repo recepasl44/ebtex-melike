@@ -199,7 +199,7 @@ export default function CurrentNewsletterCrud() {
                 payload,
             });
         }
-        navigate(`${import.meta.env.BASE_URL}contact-panel/current-newsletter`, {
+        navigate(`${import.meta.env.BASE_URL}contact/messages?tab=1`, {
             replace: true,
         });
 
@@ -219,7 +219,7 @@ export default function CurrentNewsletterCrud() {
                 error={combinedError || undefined}
                 onClose={() => {
                     navigate(
-                        `${import.meta.env.BASE_URL}contact-panel/current-newsletter`,
+                        `${import.meta.env.BASE_URL}contact/messages?tab=1`,
                         {
                             replace: true,
                         }

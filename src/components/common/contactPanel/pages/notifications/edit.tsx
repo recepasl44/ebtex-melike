@@ -141,7 +141,7 @@ export default function NotificationEdit() {
                 },
             });
         }
-        navigate(`${import.meta.env.BASE_URL}contact-panel/notifications`, {
+        navigate(`${import.meta.env.BASE_URL}contact/messages?tab=2`, {
             replace: true,
         });
     };
@@ -161,7 +161,7 @@ export default function NotificationEdit() {
                 isLoading={isLoading}
                 error={combinedError || undefined}
                 onClose={() => {
-                    navigate(`${import.meta.env.BASE_URL}contact-panel/notifications`, {
+                    navigate(`${import.meta.env.BASE_URL}contact/messages?tab=2`, {
                         replace: true,
                     });
 
