@@ -1,18 +1,18 @@
-import React, { useState, useEffect, FormEvent, ChangeEvent } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { FormikHelpers } from "formik";
+import ReusableModalForm, { FieldDefinition } from "../ReusableModalForm";
 import { useSchoolAdd } from "../../hooks/school/useSchoolAdd";
 import { useSchoolUpdate } from "../../hooks/school/useSchoolUpdate";
 import { useSchoolShow } from "../../hooks/school/useSchoolShow";
 
-interface ISchoolModalProps {
+interface SchoolModalProps {
   show: boolean;
-  token: string;
   onClose: () => void;
   onRefresh: () => void;
 }
 
-interface ISchoolFormData {
+interface ISchoolForm {
   name: string;
   country_id?: number;
   country?: {
@@ -47,36 +47,24 @@ interface ISchoolFormData {
     name: string;
   };
 }
-const SchoolModal: React.FC<ISchoolModalProps> = ({
-  show,
-  onClose,
-  onRefresh,
-}) => {
+
+const SchoolModal: React.FC<SchoolModalProps> = ({ show, onClose, onRefresh }) => {
   const { id } = useParams<{ id?: string }>();
   const mode = id ? "update" : "add";
 
-  const [formData, setFormData] = useState<ISchoolFormData>({
+  const [initialValues, setInitialValues] = useState<ISchoolForm>({
     name: "",
     country_id: undefined,
-    country: {
-      id: 0,
-      name: "",
-    },
+    country: { id: 0, name: "" },
     city_id: undefined,
     city: {
       id: 0,
       country_id: 0,
-      country: {
-        id: 0,
-        name: "",
-      },
+      country: { id: 0, name: "" },
       name: "",
     },
     county_id: undefined,
-    county: {
-      id: 0,
-      name: "",
-    },
+    county: { id: 0, name: "" },
     code: "",
     website: "",
     address: "",
@@ -85,18 +73,12 @@ const SchoolModal: React.FC<ISchoolModalProps> = ({
     fax: "",
     additional_information: "",
     type_id: 0,
-    type: {
-      id: 0,
-      name: "",
-    },
+    type: { id: 0, name: "" },
   });
 
   const { addNewSchool, status: addStatus, error: addError } = useSchoolAdd();
-  const {
-    updateExistingSchool,
-    status: updateStatus,
-    error: updateError,
-  } = useSchoolUpdate();
+  const { updateExistingSchool, status: updateStatus, error: updateError } =
+    useSchoolUpdate();
   const {
     school: fetchedSchool,
     status: showStatus,
@@ -112,7 +94,7 @@ const SchoolModal: React.FC<ISchoolModalProps> = ({
 
   useEffect(() => {
     if (mode === "update" && fetchedSchool) {
-      setFormData({
+      setInitialValues({
         name: fetchedSchool.name,
         country_id: fetchedSchool.country_id,
         country: fetchedSchool.country,
@@ -132,35 +114,32 @@ const SchoolModal: React.FC<ISchoolModalProps> = ({
       });
     }
   }, [mode, fetchedSchool]);
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    if (name.includes(".")) {
-      const [parent, child] = name.split(".");
-      setFormData((prev) => ({
-        ...prev,
-        [parent]: { ...(prev as any)[parent], [child]: value },
-      }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
-  };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const fields: FieldDefinition[] = [
+    { name: "name", label: "Okul Adı", type: "text", required: true },
+    { name: "country.name", label: "Ülke", type: "text", required: true },
+    { name: "city.id", label: "Şehir ID", type: "number", required: true },
+    { name: "city.name", label: "Şehir", type: "text", required: true },
+    { name: "county.name", label: "İlçe", type: "text", required: true },
+    { name: "type.name", label: "Okul Tipi", type: "text", required: true },
+  ];
+
+  async function handleSubmit(values: ISchoolForm, _helpers: FormikHelpers<ISchoolForm>) {
     const payload = {
-      name: formData.name,
-      country_id: formData.country_id ?? formData.country?.id,
-      city_id: formData.city_id ?? formData.city?.id,
-      county_id: formData.county_id ?? formData.county?.id,
-      code: formData.code,
-      website: formData.website,
-      address: formData.address,
-      phone: formData.phone,
-      email: formData.email,
-      fax: formData.fax,
-      additional_information: formData.additional_information,
-      type_id: formData.type_id ?? formData.type?.id,
+      name: values.name,
+      country_id: values.country_id ?? values.country?.id,
+      city_id: values.city_id ?? values.city?.id,
+      county_id: values.county_id ?? values.county?.id,
+      code: values.code,
+      website: values.website,
+      address: values.address,
+      phone: values.phone,
+      email: values.email,
+      fax: values.fax,
+      additional_information: values.additional_information,
+      type_id: values.type_id ?? values.type?.id,
     };
+
     if (mode === "add") {
       await addNewSchool(payload);
     } else if (mode === "update" && id) {
@@ -168,7 +147,7 @@ const SchoolModal: React.FC<ISchoolModalProps> = ({
     }
     onRefresh();
     onClose();
-  };
+  }
 
   const loading =
     mode === "add"
@@ -178,100 +157,24 @@ const SchoolModal: React.FC<ISchoolModalProps> = ({
     mode === "add"
       ? addError
       : mode === "update"
-        ? updateError || showError
-        : null;
+      ? updateError || showError
+      : null;
 
   return (
-    <Modal show={show} onHide={onClose} centered>
-      <Modal.Header closeButton>
-        <Modal.Title>
-          {mode === "add" ? "Okul Ekle" : "Okul Güncelle"}
-        </Modal.Title>
-      </Modal.Header>
-      <Form onSubmit={handleSubmit}>
-        <Modal.Body>
-          {error && <div className="alert alert-danger">{error}</div>}
-          <Form.Group className="mb-3">
-            <Form.Label>Okul Adı</Form.Label>
-            <Form.Control
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Okul adını giriniz"
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Ülke</Form.Label>
-            <Form.Control
-              type="text"
-              name="country.name"
-              value={formData.country?.name}
-              onChange={handleChange}
-              placeholder="Ülke adını giriniz"
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Şehir ID</Form.Label>
-            <Form.Control
-              type="number"
-              name="city.id"
-              value={formData.city?.id}
-              onChange={handleChange}
-              placeholder="Şehir ID'sini giriniz"
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Şehir</Form.Label>
-            <Form.Control
-              type="text"
-              name="city.name"
-              value={formData.city?.name}
-              onChange={handleChange}
-              placeholder="Şehir adını giriniz"
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>İlçe</Form.Label>
-            <Form.Control
-              type="text"
-              name="county.name"
-              value={formData.county?.name}
-              onChange={handleChange}
-              placeholder="İlçe adını giriniz"
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Okul Tipi</Form.Label>
-            <Form.Control
-              type="text"
-              name="type.name"
-              value={formData.type?.name}
-              onChange={handleChange}
-              placeholder="Okul tipi giriniz"
-              required
-            />
-          </Form.Group>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={onClose} disabled={loading}>
-            Vazgeç
-          </Button>
-          <Button variant="primary" type="submit" disabled={loading}>
-            {loading
-              ? "İşlem yapılıyor..."
-              : mode === "add"
-                ? "Ekle"
-                : "Güncelle"}
-          </Button>
-        </Modal.Footer>
-      </Form>
-    </Modal>
+    <ReusableModalForm<ISchoolForm>
+      show={show}
+      title={mode === "add" ? "Okul Ekle" : "Okul Güncelle"}
+      fields={fields}
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
+      confirmButtonLabel={mode === "add" ? "Ekle" : "Güncelle"}
+      cancelButtonLabel="Vazgeç"
+      isLoading={loading}
+      error={error || null}
+      autoGoBackOnModalClose={true}
+      onClose={onClose}
+      mode="single"
+    />
   );
 };
 
