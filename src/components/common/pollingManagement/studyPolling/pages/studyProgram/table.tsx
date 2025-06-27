@@ -108,7 +108,7 @@ export default function StudyProgramTable() {
                 <div className="d-flex gap-1 justify-content-center">
                     <Button variant=""
                         className="btn btn-icon btn-sm btn-primary-light rounded-pill"
-                        onClick={() => navigate(`${ROOT}/details/${row.id}`)}>
+                        onClick={() => navigate(`${ROOT}/crud/${row.id}`)}>
                         <i className="ti ti-eye" />
                     </Button>
 
