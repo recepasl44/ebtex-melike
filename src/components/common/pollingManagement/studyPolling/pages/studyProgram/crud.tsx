@@ -207,6 +207,7 @@ export default function StudyProgramCrud() {
                 tableMode="single"
                 onCloseModal={() => navigate(-1)}
                 showExportButtons={false}
+                modalTitle=""
             />
         );
     }
