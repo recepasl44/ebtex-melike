@@ -234,7 +234,7 @@ export default function CurrentNewsletterCrud() {
                     );
 
                 }}
-                autoGoBackOnModalClose
+                // autoGoBackOnModalClose
                 mode="double"
             />
             <TargetAudienceModal
