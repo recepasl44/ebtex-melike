@@ -27,7 +27,7 @@ interface FormData extends FormikValues {
 export default function CurrentNewsletterCrud() {
     const navigate = useNavigate();
     const location = useLocation();
-    const tab = new URLSearchParams(location.search).get('tab') || '1';
+    const tab = new URLSearchParams(location.search).get('tab') || '0';
 
 
     const { id } = useParams<{ id?: string }>();
@@ -201,7 +201,7 @@ export default function CurrentNewsletterCrud() {
                 payload,
             });
         }
-        navigate(`${import.meta.env.BASE_URL}contact/messages?tab=${tab}`, {
+        navigate(`/contact/messages?tab=${tab}`, {
             replace: true,
         });
 
@@ -226,12 +226,9 @@ export default function CurrentNewsletterCrud() {
                 isLoading={isLoading}
                 error={combinedError || undefined}
                 onClose={() => {
-                    navigate(
-                        `${import.meta.env.BASE_URL}contact/messages?tab=${tab}`,
-                        {
-                            replace: true,
-                        }
-                    );
+                    navigate(`/contact/messages?tab=${tab}`, {
+                        replace: true,
+                    });
 
                 }}
                 autoGoBackOnModalClose

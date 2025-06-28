@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { FormikValues } from 'formik';
 import ReusableModalForm, { FieldDefinition } from '../../../ReusableModalForm';
@@ -24,6 +24,8 @@ interface FormData extends FormikValues {
 
 export default function NotificationEdit() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const tab = new URLSearchParams(location.search).get('tab') || '0';
 
     const { id } = useParams<{ id?: string }>();
     const { notification, getNotification, status: detailStatus, error: detailError } = useNotificationDetail();
@@ -141,7 +143,7 @@ export default function NotificationEdit() {
                 },
             });
         }
-        navigate(`${import.meta.env.BASE_URL}contact/messages?tab=2`, {
+        navigate(`/contact/messages?tab=${tab}`, {
             replace: true,
         });
     };
@@ -161,7 +163,7 @@ export default function NotificationEdit() {
                 isLoading={isLoading}
                 error={combinedError || undefined}
                 onClose={() => {
-                    navigate(`${import.meta.env.BASE_URL}contact/messages?tab=2`, {
+                    navigate(`/contact/messages?tab=${tab}`, {
                         replace: true,
                     });
 
