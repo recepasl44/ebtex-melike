@@ -211,7 +211,13 @@ export default function CurrentNewsletterCrud() {
         <>
             <ReusableModalForm<FormData>
                 show
-                title={mode === 'add' ? 'Bildirim Ekle' : 'Bülten Detay / Düzenle'}
+                title={
+                    mode === 'add'
+                        ? tab === '1'
+                            ? 'Bülten Ekle'
+                            : 'Bildirim Ekle'
+                        : 'Bülten Detay / Düzenle'
+                }
                 fields={getFields}
                 initialValues={initialValues}
                 onSubmit={handleSubmit}
