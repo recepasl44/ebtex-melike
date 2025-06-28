@@ -105,7 +105,7 @@ export default function SmsTable() {
                 render: (row) => (
                     <div className="d-flex gap-2">
                         <button
-                            onClick={() => navigate(`${ROOT}/edit/${row.id}`)}
+                            onClick={() => navigate(`${ROOT}/edit/${row.id}?tab=3`)}
                             className="btn btn-icon btn-sm btn-info-light rounded-pill"
                         >
                             <i className="ti ti-pencil" />
@@ -186,7 +186,7 @@ export default function SmsTable() {
                 onPageSizeChange={(s) => { setPageSize(s); setPage(1); }}
                 exportFileName="sms"
                 showExportButtons
-                onAdd={() => navigate(`${ROOT}/add`)}
+                onAdd={() => navigate(`${ROOT}/add?tab=3`)}
             />
         </>
     );

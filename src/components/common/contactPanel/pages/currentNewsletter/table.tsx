@@ -84,7 +84,7 @@ export default function CurrentNewsletterTable() {
                     <div className="d-flex gap-2">
                         <button
                             onClick={() => {
-                                navigate(`${ROOT}/crud/${row.id}`);
+                                navigate(`${ROOT}/crud/${row.id}?tab=1`);
                             }}
                             className="btn btn-icon btn-sm btn-info-light rounded-pill"
                         >
@@ -165,7 +165,7 @@ export default function CurrentNewsletterTable() {
                 exportFileName="current_newsletter"
                 showExportButtons
                 onAdd={() => {
-                    navigate(`${ROOT}/crud`);
+                    navigate(`${ROOT}/crud?tab=1`);
                 }}
             />
         </>
