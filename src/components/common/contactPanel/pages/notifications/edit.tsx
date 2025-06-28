@@ -25,7 +25,7 @@ interface FormData extends FormikValues {
 export default function NotificationEdit() {
     const navigate = useNavigate();
     const location = useLocation();
-    const tab = new URLSearchParams(location.search).get('tab') || '0';
+    const tab = new URLSearchParams(location.search).get('tab') || '2';
 
     const { id } = useParams<{ id?: string }>();
     const { notification, getNotification, status: detailStatus, error: detailError } = useNotificationDetail();

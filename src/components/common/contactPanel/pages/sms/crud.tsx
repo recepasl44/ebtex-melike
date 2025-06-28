@@ -26,7 +26,7 @@ interface FormData extends FormikValues {
 export default function SmsCrud() {
     const navigate = useNavigate();
     const location = useLocation();
-    const tab = new URLSearchParams(location.search).get('tab') || '0';
+    const tab = new URLSearchParams(location.search).get('tab') || '3';
 
     const { id } = useParams<{ id?: string }>();
     const mode: 'add' | 'edit' = id ? 'edit' : 'add';

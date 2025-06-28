@@ -104,7 +104,7 @@ export default function NotificationsTable() {
                 render: (row) => (
                     <div className="d-flex gap-2">
                         <button
-                            onClick={() => navigate(`${ROOT}/edit/${row.id}`)}
+                            onClick={() => navigate(`${ROOT}/edit/${row.id}?tab=2`)}
                             className="btn btn-icon btn-sm btn-info-light rounded-pill"
                         >
                             <i className="ti ti-pencil" />
@@ -185,7 +185,7 @@ export default function NotificationsTable() {
                 onPageSizeChange={(s) => { setPageSize(s); setPage(1); }}
                 exportFileName="notifications"
                 showExportButtons
-                onAdd={() => navigate(`${ROOT}/add`)}
+                onAdd={() => navigate(`${ROOT}/add?tab=2`)}
             />
         </>
     );
