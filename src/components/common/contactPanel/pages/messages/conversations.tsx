@@ -7,6 +7,19 @@ import { useUsersTable } from "../../../../hooks/user/useList";
 import { MessageConversation } from "../../../../../types/messages/list";
 import { ConversationData } from "../../../../../types/conversations/list";
 import { UserData } from "../../../../../types/user/list";
+import SpkBadge from "../../../../../@spk-reusable-components/reusable-uielements/spk-badge";
+
+interface UIConversation {
+  id: number;
+  heading: string;
+  src: string;
+  time: string;
+  description: string;
+  badge: React.ReactNode | null;
+  Icon: boolean;
+  status: string;
+  activeclass: string;
+}
 
 interface Props {
   currentUserId: string;
@@ -33,6 +46,31 @@ const Conversations: React.FC<Props> = ({ currentUserId, onSelect }) => {
     loading: boolean;
     error: boolean;
   };
+
+  const formattedConversations: UIConversation[] = useMemo(() => {
+    return conversations.map((conversation: any) => {
+      const lastMessage =
+        conversation.messages?.[conversation.messages.length - 1] || null;
+      return {
+        id: conversation.id,
+        heading:
+          conversation.name ||
+          `${conversation.user_two?.first_name || ''} ${conversation.user_two?.last_name || ''}`.trim(),
+        src: conversation.user_two?.profile_img || '/images/default-avatar.png',
+        time: lastMessage?.created_at
+          ? dayjs(lastMessage.created_at).format('HH:mm')
+          : '',
+        description: lastMessage?.text || 'Henüz mesaj yok',
+        badge:
+          conversation.unread_count > 0 ? (
+            <SpkBadge variant="danger">{conversation.unread_count}</SpkBadge>
+          ) : null,
+        Icon: conversation.unread_count === 0,
+        status: conversation.user_two?.status || 'online',
+        activeclass: '',
+      } as UIConversation;
+    });
+  }, [conversations]);
 
   const {
     usersData: users = [],
@@ -126,43 +164,34 @@ const Conversations: React.FC<Props> = ({ currentUserId, onSelect }) => {
       >
         <ul className="list-unstyled mb-0">
           {activeTab !== 'users' &&
-            conversations.map((c: ConversationData) => (
+            formattedConversations.map((conv: UIConversation, idx) => (
               <li
-                key={c.id}
+                key={conv.id}
                 onClick={() => {
-                  setSelectedId(String(c.id));
-                  onSelect(c as unknown as MessageConversation);
+                  setSelectedId(String(conv.id));
+                  onSelect(conversations[idx] as unknown as MessageConversation);
                 }}
-                className={`${selectedId === String(c.id) ? 'active' : ''
-                  } ${(c as any).unreadCount ? 'chat-msg-unread' : ''
-                  } ${(c as any).isTyping ? 'chat-msg-typing' : ''
-                  }`}
+                className={`${selectedId === String(conv.id) ? 'active' : ''}`}
               >
                 <div className="d-flex align-items-center">
                   <span className="avatar avatar-sm avatar-rounded me-2">
-                    <img src={(c as any).avatarUrl || ''} alt="" />
+                    <img src={conv.src} alt="" />
                   </span>
                   <div className="flex-fill">
                     <div className="d-flex justify-content-between">
-                      <span className="fw-semibold">{c.name}</span>
-                      <span className="fs-12 text-muted">
-                        {dayjs((c as any).lastTimestamp || c.created_at).format('HH:mm')}
-                      </span>
+                      <span className="fw-semibold">{conv.heading}</span>
+                      <span className="fs-12 text-muted">{conv.time}</span>
                     </div>
                     <div className="d-flex justify-content-between align-items-center">
-                      <span className="chat-msg">
-                        {(c as any).isTyping
-                          ? `${(c as any).isTyping} Yazıyor…`
-                          : `${(c as any).lastSender || ''}${(c as any).lastSender ? ': ' : ''}${(c as any).lastMessage || ''}`}
-                      </span>
-                      {(c as any).unreadCount ? (
-                        <span className="badge bg-danger rounded-pill">
-                          {(c as any).unreadCount}
-                        </span>
+                      <span className="chat-msg">{conv.description}</span>
+                      {conv.badge ? (
+                        conv.badge
                       ) : (
-                        <span className="chat-read-icon">
-                          <i className="ri-check-line" />
-                        </span>
+                        conv.Icon && (
+                          <span className="chat-read-icon">
+                            <i className="ri-check-line" />
+                          </span>
+                        )
                       )}
                     </div>
                   </div>
