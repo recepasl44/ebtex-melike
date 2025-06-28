@@ -16,15 +16,29 @@ interface TabConfig {
 }
 interface TabsContainerProps {
     tabs: TabConfig[];
+    selectedIndex?: number;
     onTabChange?: (parentTabIndex: number, childTabIndex: number | null) => void;
 }
 
-const TabsContainer: FC<TabsContainerProps> = ({ tabs, onTabChange }) => {
-    // always start from the first tab
-    const [value, setValue] = useState<number>(0);
+const TabsContainer: FC<TabsContainerProps> = ({
+    tabs,
+    selectedIndex = 0,
+    onTabChange,
+}) => {
+    const [value, setValue] = useState<number>(selectedIndex);
     const [childValue, setChildValue] = useState<number | null>(
-        tabs?.[0]?.children?.length ? 0 : null
+        tabs?.[selectedIndex]?.children?.length ? 0 : null
     );
+
+    useEffect(() => {
+        setValue(selectedIndex);
+        if (tabs?.[selectedIndex]?.children?.length) {
+            setChildValue(0);
+        } else {
+            setChildValue(null);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedIndex]);
 
     useEffect(() => {
         // reset child index if tab structure changes
