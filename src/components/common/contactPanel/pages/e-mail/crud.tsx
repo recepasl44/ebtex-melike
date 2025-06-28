@@ -25,7 +25,7 @@ interface FormData extends FormikValues {
 export default function EmailCrud() {
     const navigate = useNavigate()
     const location = useLocation()
-    const tab = new URLSearchParams(location.search).get('tab') || '0'
+    const tab = new URLSearchParams(location.search).get('tab') || '4'
 
     const { id } = useParams<{ id?: string }>()
     const mode: 'add' | 'update' = id ? 'update' : 'add'

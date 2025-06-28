@@ -27,7 +27,7 @@ interface FormData extends FormikValues {
 export default function CurrentNewsletterCrud() {
     const navigate = useNavigate();
     const location = useLocation();
-    const tab = new URLSearchParams(location.search).get('tab') || '0';
+    const tab = new URLSearchParams(location.search).get('tab') || '1';
 
 
     const { id } = useParams<{ id?: string }>();
