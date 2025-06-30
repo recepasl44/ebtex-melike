@@ -5,7 +5,7 @@ import { AppDispatch } from '../../../store'
 import { fetchEmployeeEarnings } from '../../../slices/employeeEarnings/list/thunk'
 import {
   data,
-  meta,
+  PaginationMeta,
   EarningListArg
 } from '../../../types/employeeEarnings/list'
 import { EmployeeEarningsListStatus } from '../../../enums/employeeEarnings/list'
@@ -65,7 +65,7 @@ export function useEmployeeEarningsTable(params: EarningListArg) {
 
   const loading = status === EmployeeEarningsListStatus.LOADING
   const employeeEarningsData: data[] = data || []
-  const paginationMeta: meta | null = meta
+  const paginationMeta: PaginationMeta | null = meta
   const totalPages = paginationMeta ? paginationMeta.last_page : 1
   const totalItems = paginationMeta ? paginationMeta.total : 0
 

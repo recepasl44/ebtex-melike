@@ -11,30 +11,41 @@ export interface data {
   platform_id: number | null
 }
 
-export interface meta {
+export interface ILink {
+  url: string | null
+  label: string
+  active: boolean
+}
+
+export interface PaginationMeta {
   current_page: number
+  first_page_url: string
   from: number
   last_page: number
-  links: {
-    url: string | null
-    label: string
-    active: boolean
-  }[]
+  last_page_url: string
+  next_page_url: string | null
   path: string
   per_page: number
+  prev_page_url: string | null
   to: number
   total: number
+  links: ILink[]
 }
 
 export interface ListEmployeeEarningsResponse {
   data: data[]
-  links: {
-    first: string
-    last: string
-    prev: string | null
-    next: string | null
-  }
-  meta: meta
+  current_page: number
+  first_page_url: string
+  from: number
+  last_page: number
+  last_page_url: string
+  links: ILink[]
+  next_page_url: string | null
+  path: string
+  per_page: number
+  prev_page_url: string | null
+  to: number
+  total: number
 }
 
 export interface EarningListArg {
