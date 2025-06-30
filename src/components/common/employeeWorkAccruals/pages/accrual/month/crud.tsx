@@ -2,53 +2,47 @@ import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ReusableTable, { ColumnDefinition } from '../../../../ReusableTable'
 import FilterGroup from '../../../component/organisms/SearchFilters'
-import ReusableModalForm from '../../../../ReusableModalForm'
 import { useEmployeeEarningsTable } from '../../../../../hooks/employeeEarnings/useList'
 
 interface Row { [key: string]: any }
 
 function MonthlyDataModal({ show, row, onClose }: { show: boolean; row: Row | null; onClose: () => void }) {
-    const fields = [
-        {
-            name: 'info',
-            label: '',
-            renderForm: () => (
-                <div className='overflow-x-auto'>
-                    <table className='min-w-full text-sm'>
-                        <thead>
-                            <tr>
-                                <th className='text-left p-2'>Gelir Türü</th>
-                                <th className='text-left p-2'>Sayı</th>
-                                <th className='text-left p-2'>Birim Ücret ₺</th>
-                                <th className='text-left p-2'>Tutar ₺</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {['base', 'lesson', 'question', 'daily', 'coaching', 'private', 'bonus', 'other'].map(k => (
-                                <tr key={k} className='border-t'>
-                                    <td className='p-2'>{k}</td>
-                                    <td className='p-2'>{(row as any)[`${k}_qty`]}</td>
-                                    <td className='p-2'>{(row as any)[`${k}_unit`]}</td>
-                                    <td className='p-2'>{(row as any)[k]}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            )
-        }
-    ]
+    interface Item {
+        label: string
+        qty: number
+        unit: number
+        total: number
+    }
+
+    const data: Item[] = useMemo(() => {
+        if (!row) return []
+        return ['base', 'lesson', 'question', 'daily', 'coaching', 'private', 'bonus', 'other'].map(k => ({
+            label: k,
+            qty: Number((row as any)[`${k}_qty`] ?? 0),
+            unit: Number((row as any)[`${k}_unit`] ?? 0),
+            total: Number((row as any)[k] ?? 0)
+        }))
+    }, [row])
+
+    const columns: ColumnDefinition<Item>[] = useMemo(
+        () => [
+            { key: 'label', label: 'Gelir Türü', render: r => r.label },
+            { key: 'qty', label: 'Sayı', render: r => r.qty },
+            { key: 'unit', label: 'Birim Ücret ₺', render: r => r.unit },
+            { key: 'total', label: 'Tutar ₺', render: r => r.total }
+        ],
+        []
+    )
+
     return (
-        <ReusableModalForm
-            show={show}
-            title={row?.full_name || ''}
-            fields={fields as any}
-            initialValues={{}}
-            onSubmit={() => onClose()}
-            confirmButtonLabel='Tamam'
-            cancelButtonLabel='Kapat'
-            onClose={onClose}
-            mode='single'
+        <ReusableTable<Item>
+            showModal={show}
+            onCloseModal={onClose}
+            modalTitle={row?.full_name || ''}
+            columns={columns}
+            data={data}
+            tableMode='single'
+            showExportButtons={false}
         />
     )
 }
