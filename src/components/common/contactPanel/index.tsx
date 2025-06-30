@@ -81,6 +81,7 @@ const ContactPanelIndex: React.FC = () => {
             />
             <TabsContainer
                 tabs={tabs}
+                selectedIndex={activeIdx}
                 onTabChange={(parentIdx) => {
                     setActiveIdx(parentIdx);
                     const params = new URLSearchParams(location.search);
