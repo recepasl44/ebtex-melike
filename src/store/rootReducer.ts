@@ -633,6 +633,11 @@ import employeeEarningShowSlice from '../slices/employeeEarnings/detail/reducer'
 import employeeEarningAddSlice from '../slices/employeeEarnings/add/reducer'
 import employeeEarningUpdateSlice from '../slices/employeeEarnings/update/reducer'
 import employeeEarningDeleteSlice from '../slices/employeeEarnings/delete/reducer'
+import employeeEarningsMonthListSlice from '../slices/employeeEarningsMonth/list/reducer'
+import employeeEarningsMonthShowSlice from '../slices/employeeEarningsMonth/detail/reducer'
+import employeeEarningsMonthAddSlice from '../slices/employeeEarningsMonth/add/reducer'
+import employeeEarningsMonthUpdateSlice from '../slices/employeeEarningsMonth/update/reducer'
+import employeeEarningsMonthDeleteSlice from '../slices/employeeEarningsMonth/delete/reducer'
 
 import financeNotesSlice from '../slices/financeNotes/list/reducer';
 
@@ -762,6 +767,11 @@ const combinedReducer = combineReducers({
   employeeEarningAdd: employeeEarningAddSlice,
   employeeEarningUpdate: employeeEarningUpdateSlice,
   employeeEarningDelete: employeeEarningDeleteSlice,
+  employeeEarningsMonthList: employeeEarningsMonthListSlice,
+  employeeEarningsMonthShow: employeeEarningsMonthShowSlice,
+  employeeEarningsMonthAdd: employeeEarningsMonthAddSlice,
+  employeeEarningsMonthUpdate: employeeEarningsMonthUpdateSlice,
+  employeeEarningsMonthDelete: employeeEarningsMonthDeleteSlice,
 
 
   deleteCourse: coursesDeleteSlice,
