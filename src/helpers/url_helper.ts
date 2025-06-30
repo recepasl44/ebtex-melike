@@ -173,4 +173,5 @@ export const CONVERSATIONUSERS = '/conversationusers';
 export const NOTIFICATIONS = '/notifications';
 export const NOTIFICATIONUSERS = '/notificationusers';
 export const CONTRACT_EMPLOYEES = '/contract-employees';
+export const EMPLOYEE_EARNINGS = '/personel-hakedis';
 
