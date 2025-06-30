@@ -8,13 +8,15 @@ export const fetchContractEmployees = createAsyncThunk<ListContractEmployeesResp
   async (queryParams, { rejectWithValue }) => {
     try {
       const query = new URLSearchParams()
+
       Object.entries(queryParams).forEach(([key, value]) => {
+        if (key === 'enabled') return
         if (value !== undefined && value !== null) {
           query.append(key, String(value))
         }
       })
-      const queryString = new URLSearchParams(queryParams).toString()
-      const url = `${CONTRACT_EMPLOYEES}?${queryString}`
+
+      const url = `${CONTRACT_EMPLOYEES}?${query.toString()}`
       const resp = await axiosInstance.get(url)
       return resp.data as ListContractEmployeesResponse
     } catch (err: any) {
