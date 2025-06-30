@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../../store/rootReducer'
 import { AppDispatch } from '../../../store'
@@ -13,25 +13,38 @@ export function useContractEmployeesTable(params: ContractEmployeeListArg) {
       loading: false,
       error: null,
       page: 1,
-      setPage: () => {},
+      setPage: () => { },
       pageSize: 10,
-      setPageSize: () => {},
+      setPageSize: () => { },
       filter: null,
-      setFilter: () => {},
+      setFilter: () => { },
       totalPages: 1,
       totalItems: 0
     }
   }
 
+  const {
+    enabled = true,
+    page: initialPage = 1,
+    pageSize: initialPageSize = 10,
+    ...restParams
+  } = params
+
   const dispatch = useDispatch<AppDispatch>()
-  const [page, setPage] = useState<number>(params.page || 1)
-  const [pageSize, setPageSize] = useState<number>(params.pageSize || 10)
+  const [page, setPage] = useState<number>(initialPage)
+  const [pageSize, setPageSize] = useState<number>(initialPageSize)
   const [filter, setFilter] = useState<any>(null)
 
-  const { data, meta, status, error } = useSelector((state: RootState) => state.contractEmployeeList)
+  const { data, meta, status, error } = useSelector(
+    (state: RootState) => state.contractEmployeeList
+  )
+
+  const serializedRestParams = useMemo(
+    () => JSON.stringify(restParams),
+    [restParams]
+  )
 
   useEffect(() => {
-    const { enabled = true, ...restParams } = params
     if (!enabled) return
 
     const query: ContractEmployeeListArg = {
@@ -44,7 +57,7 @@ export function useContractEmployeesTable(params: ContractEmployeeListArg) {
     }
 
     dispatch(fetchContractEmployees(query))
-  }, [dispatch, filter, page, pageSize, params])
+  }, [dispatch, enabled, serializedRestParams, filter, page, pageSize])
 
   const loading = status === ContractEmployeesListStatus.LOADING
   const contractEmployeesData: data[] = data || []

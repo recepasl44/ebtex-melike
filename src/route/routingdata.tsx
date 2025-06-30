@@ -429,8 +429,12 @@ const SeasonsListPage = lazy(
   () => import("../components/common/seasons/table")
 );
 const SeasonModal = lazy(() => import("../components/common/seasons/crud"));
-
-//assignmentStudents
+const EmployeeWorkAccrualsTable = lazy(
+  () =>
+    import(
+      "../components/common/employeeWorkAccruals/pages/contract/table"
+    )
+);
 
 //ödev takip
 //index
@@ -2362,6 +2366,14 @@ export const Routedata = [
     id: 6710,
     path: `${import.meta.env.BASE_URL}extraOperations/index`,
     element: <ExtraOperationsIndex />,
+  },
+
+
+  //çalışma-hakediş
+  {
+    id: 6711,
+    path: `${import.meta.env.BASE_URL}employee-work-accruals/contract`,
+    element: <EmployeeWorkAccrualsTable />,
   },
 
 

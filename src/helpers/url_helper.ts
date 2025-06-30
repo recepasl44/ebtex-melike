@@ -172,4 +172,5 @@ export const MESSAGES = '/messages';
 export const CONVERSATIONUSERS = '/conversationusers';
 export const NOTIFICATIONS = '/notifications';
 export const NOTIFICATIONUSERS = '/notificationusers';
+export const CONTRACT_EMPLOYEES = '/contract-employees';
 
