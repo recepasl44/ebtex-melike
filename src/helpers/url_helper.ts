@@ -175,4 +175,5 @@ export const NOTIFICATIONUSERS = '/notificationusers';
 export const CONTRACT_EMPLOYEES = '/contract-employees';
 export const EMPLOYEE_EARNINGS = '/personel-hakedis';
 export const EMPLOYEE_EARNINGS_MONTH = '/personel-hakedis/ay';
+export const EMPLOYEE_EARNINGS_PERIOD = '/personel-hakedis/donem';
 
