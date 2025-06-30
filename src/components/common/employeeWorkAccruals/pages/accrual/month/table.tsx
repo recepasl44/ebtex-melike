@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import ReusableTable, { ColumnDefinition } from '../../../../ReusableTable'
 import FilterGroup from '../../../component/organisms/SearchFilters'
 import ReusableModalForm, { FieldDefinition } from '../../../../ReusableModalForm'
-import { useEmployeeEarningsTable } from '../../../../../hooks/employeeEarnings/useList'
+import { useEmployeeEarningsMonthList } from '../../../../../hooks/employeeEarningsMonth/useList'
 import { useContractEmployeesTable } from '../../../../../hooks/contractEmployees/useList'
 
 interface Row {
@@ -88,12 +88,18 @@ export default function EmployeeEarningsMonthTable() {
     const [employeeId, setEmployeeId] = useState('')
     const [period, setPeriod] = useState('')
     const [modalRow, setModalRow] = useState<Row | null>(null)
-    const [pageSize, setPageSize] = useState(10)
-    const [page, setPage] = useState(1)
-    const { employeeEarningsData, loading, error, totalPages, totalItems } = useEmployeeEarningsTable({
-        enabled: true,
+    const {
+        employeeEarningsMonthData,
+        loading,
+        error,
         page,
-        pageSize,
+        setPage,
+        paginate,
+        setPaginate,
+        totalPages,
+        totalItems
+    } = useEmployeeEarningsMonthList({
+        enabled: true,
         employee_id: employeeId ? Number(employeeId) : undefined,
         period: period || undefined
     })
@@ -107,7 +113,7 @@ export default function EmployeeEarningsMonthTable() {
             profMap.set(d.profession_id, (d as any).profession || d.profession_id)
         })
         const groups = new Map<string, Row>()
-        employeeEarningsData.forEach(e => {
+        employeeEarningsMonthData.forEach(e => {
             const key = `${e.employee_id}-${e.period}`
             if (!groups.has(key)) {
                 const ce = ceMap.get(e.employee_id)
@@ -149,7 +155,7 @@ export default function EmployeeEarningsMonthTable() {
             row.total += Number(e.total)
         })
         return Array.from(groups.values())
-    }, [employeeEarningsData, contractEmployeesData])
+    }, [employeeEarningsMonthData, contractEmployeesData])
     const employeeOptions = useMemo(() => {
         const map = new Map<number, string>()
         rows.forEach(d => map.set(d.employee_id, d.full_name || `Personel #${d.employee_id}`))
@@ -218,9 +224,9 @@ export default function EmployeeEarningsMonthTable() {
                 currentPage={page}
                 totalPages={totalPages}
                 totalItems={totalItems}
-                pageSize={pageSize}
+                pageSize={paginate}
                 onPageChange={setPage}
-                onPageSizeChange={s => { setPageSize(s); setPage(1) }}
+                onPageSizeChange={s => { setPaginate(s); setPage(1) }}
                 exportFileName='employee_earnings_month'
                 showExportButtons
                 customFooter={footer}
