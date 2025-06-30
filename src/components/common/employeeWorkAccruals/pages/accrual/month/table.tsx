@@ -30,52 +30,48 @@ function MonthlyDataModal({
         { key: 'other', label: 'Farklı Ücret', qty: Number(row?.other_qty || 0), unit: Number(row?.other_unit || 0) }
     ])
     const total = useMemo(() => items.reduce((s, i) => s + i.qty * i.unit, 0), [items])
+
+    const columns: ColumnDefinition<typeof items[number]>[] = useMemo(
+        () => [
+            { key: 'label', label: 'Gelir Türü', render: r => r.label },
+            {
+                key: 'qty',
+                label: 'Sayı',
+                render: (r, _o, idx) => (
+                    <input
+                        type='number'
+                        className='form-control w-24'
+                        value={r.qty}
+                        disabled={readOnly}
+                        onChange={e => {
+                            const v = Number(e.target.value)
+                            setItems(arr => arr.map((it, i) => (i === idx ? { ...it, qty: v } : it)))
+                        }}
+                    />
+                )
+            },
+            { key: 'unit', label: 'Birim Ücret ₺', render: r => r.unit.toLocaleString() },
+            { key: 'total', label: 'Tutar ₺', render: r => (r.qty * r.unit).toLocaleString() }
+        ],
+        [readOnly]
+    )
+
+    const tableFooter = (
+        <div className='text-end font-bold p-2'>Genel Toplam ₺ {total.toLocaleString()}</div>
+    )
+
     const fields: FieldDefinition[] = [
         {
             name: 'table',
             label: '',
             renderForm: () => (
-                <div className='overflow-x-auto'>
-                    <table className='min-w-full text-sm'>
-                        <thead>
-                            <tr>
-                                <th className='text-left p-2'>Gelir Türü</th>
-                                <th className='text-left p-2'>Sayı</th>
-                                <th className='text-left p-2'>Birim Ücret ₺</th>
-                                <th className='text-left p-2'>Tutar ₺</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {items.map((it, idx) => (
-                                <tr key={it.key} className='border-t'>
-                                    <td className='p-2'>{it.label}</td>
-                                    <td className='p-2'>
-                                        <input
-                                            type='number'
-                                            className='form-control w-24'
-                                            value={it.qty}
-                                            disabled={readOnly}
-                                            onChange={e => {
-                                                const v = Number(e.target.value)
-                                                setItems(arr => arr.map((r, i) => (i === idx ? { ...r, qty: v } : r)))
-                                            }}
-                                        />
-                                    </td>
-                                    <td className='p-2'>{it.unit.toLocaleString()}</td>
-                                    <td className='p-2'>{(it.qty * it.unit).toLocaleString()}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                        <tfoot>
-                            <tr className='font-bold border-t'>
-                                <td className='p-2 text-right' colSpan={3}>
-                                    Genel Toplam ₺
-                                </td>
-                                <td className='p-2'>{total.toLocaleString()}</td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
+                <ReusableTable<typeof items[number]>
+                    tableMode='single'
+                    columns={columns}
+                    data={items}
+                    showExportButtons={false}
+                    customFooter={tableFooter}
+                />
             )
         }
     ]
