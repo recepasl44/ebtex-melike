@@ -544,6 +544,13 @@ const FinanceNotesTable = lazy(
   () => import("../components/common/financeNotes/table")
 );
 
+const EmployeeWorkAccrualsTable = lazy(
+  () =>
+    import(
+      "../components/common/employeeWorkAccruals/pages/contract/table"
+    )
+);
+
 
 
 export const Routedata = [
@@ -2354,6 +2361,12 @@ export const Routedata = [
     id: 787,
     path: `${import.meta.env.BASE_URL}contact-panel/e-mail/edit/:id`,
     element: <EmailCrud />,
+  },
+
+  {
+    id: 6711,
+    path: `${import.meta.env.BASE_URL}employee-work-accruals/contract`,
+    element: <EmployeeWorkAccrualsTable />,
   },
 
 
