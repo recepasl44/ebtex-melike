@@ -14,19 +14,19 @@ export interface EmployeeEarningsMonthItem {
 }
 
 export interface EmployeeEarningsMonthData {
-  period: any
-  total(total: any): unknown
-  income_type: any
-  quantity(quantity: any): unknown
-  unit_price(unit_price: any): unknown
-  employee_id: number
+  employee_id: number | null
+  period: string
+  income_type: string
+  quantity: string
+  unit_price: string
+  total: string
   first_name: string | null
   last_name: string | null
   branch_id: number | null
   profession_id: number | null
-  branch: string | null
-  profession: string | null
-  items: EmployeeEarningsMonthItem[]
+  branch?: string | null
+  profession?: string | null
+  items?: EmployeeEarningsMonthItem[]
 }
 
 export interface ILink {
@@ -36,34 +36,14 @@ export interface ILink {
 }
 
 export interface PaginationMeta {
-  current_page: number
-  first_page_url: string
-  from: number
-  last_page: number
-  last_page_url: string
-  next_page_url: string | null
-  path: string
-  per_page: number
-  prev_page_url: string | null
-  to: number
   total: number
-  links: ILink[]
+  last_page: number
+  current_page: number
 }
 
 export interface EmployeeEarningsMonthListResponse {
-  data: EmployeeEarningsMonthData[]
-  current_page: number
-  first_page_url: string
-  from: number
-  last_page: number
-  last_page_url: string
-  links: ILink[]
-  next_page_url: string | null
-  path: string
-  per_page: number
-  prev_page_url: string | null
-  to: number
-  total: number
+  rows: EmployeeEarningsMonthData[]
+  meta: PaginationMeta
 }
 
 export interface EmployeeEarningsMonthListState {
