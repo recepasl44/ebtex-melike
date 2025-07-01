@@ -2408,6 +2408,11 @@ export const Routedata = [
   {
     id: 6714,
     path: `${import.meta.env.BASE_URL}employee-work-accruals`,
+    element: <EmployeeAccrualIndex />,
+  },
+  {
+    id: 6715,
+    path: `${import.meta.env.BASE_URL}employee-work-accruals`,
     element: <EmployeeWorkAccrualsIndex />,
   },
 
