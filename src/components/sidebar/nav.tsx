@@ -272,7 +272,7 @@ export const MENUITEMS: any = [
           { title: "Ders & Ek Ücretler", path: "/lesson-oct-fee", type: "link" },
           {
             title: "Çalışma ve Hakediş",
-            path: "/employee-work-accruals",
+            path: "employee-work-accruals",
             type: "link",
           },
           {
