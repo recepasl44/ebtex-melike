@@ -154,7 +154,11 @@ export default function EmployeeEarningsMonthTable() {
 
     /* filtre state */
     const [employeeId, setEmployeeId] = useState('')
-    const [period, setPeriod] = useState('')
+    const [period, setPeriod] = useState(() => {
+        const d = new Date()
+        const m = String(d.getMonth() + 1).padStart(2, '0')
+        return `${d.getFullYear()}-${m}`
+    })
 
     /* modal satırı */
     const [modalRow, setModalRow] = useState<Row | null>(null)
@@ -171,7 +175,8 @@ export default function EmployeeEarningsMonthTable() {
         totalPages,
         totalItems
     } = useEmployeeEarningsMonthList({
-        enabled: Boolean(period), // period seçilmezse çağrı yapma
+        // period boş ise çağrı yapılmaz; varsayılan olarak güncel ay seçilir
+        enabled: Boolean(period),
         employee_id: employeeId ? Number(employeeId) : undefined,
         period: period || undefined
     })
@@ -312,7 +317,7 @@ export default function EmployeeEarningsMonthTable() {
     }, [rows])
 
     const footer = (
-        <div className='flex justify-end gap-4 font-bold mr-3'>
+        <div className='flex justify-end gap-4 font-bold mr-3 text-white'>
             <span>Maaş: {totals.salary.toLocaleString()} ₺</span>
             <span>Ders: {totals.lesson_rate.toLocaleString()} ₺</span>
             <span>Soru Çözüm: {totals.question_rate.toLocaleString()} ₺</span>
