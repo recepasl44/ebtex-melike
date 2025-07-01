@@ -19,17 +19,7 @@ const client = axios.create({
     },
 })
 
-export async function saveMonth({ employee_id, period, items }: { employee_id: number; period: string; items: any[] }) {
-    const body = {
-        items: items.map((i) => ({
-            employee_id,
-            period,
-            income_type: i.income_type,
-            quantity: +i.quantity,
-            unit_price: +i.unit_price,
-            total: +i.quantity * +i.unit_price,
-        })),
-    }
+export async function saveMonth(body: { employee_id: number; period: string; items: any[] }) {
     const res = await client.post('/personel-hakedis/kaydet', body)
     return res.data
 }
