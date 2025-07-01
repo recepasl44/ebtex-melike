@@ -272,12 +272,8 @@ export const MENUITEMS: any = [
           { title: "Ders & Ek Ücretler", path: "/lesson-oct-fee", type: "link" },
           {
             title: "Çalışma ve Hakediş",
-            type: "sub",
-            children: [
-              { title: "Sözleşme", path: "/personelWeeklyLessonCrud", type: "link" },
-              { title: "Hakkedişler", path: "/personelCompensationCrud", type: "link" },
-              { title: "Ödeme Kayıtları", path: "/personelSalaryPaymentCrud", type: "link" },
-            ],
+            path: "/employee-work-accruals",
+            type: "link",
           },
           {
             title: "Ekstra İşlemler",
