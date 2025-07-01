@@ -44,7 +44,7 @@ const EmployeeAccrualIndex: React.FC = () => {
 
     return (
         <div>
-            <Pageheader title="Çalışma Hakediş" currentpage={tabs[activeIdx].label} />
+            <Pageheader title="Hakediş" currentpage={tabs[activeIdx].label} />
             <TabsContainer
                 tabs={tabs}
                 selectedIndex={activeIdx}
