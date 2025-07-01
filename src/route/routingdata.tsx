@@ -449,6 +449,9 @@ const EmployeeEarningsPeriodTable = lazy(
       "../components/common/employeeWorkAccruals/pages/accrual/period/table"
     )
 )
+const EmployeeAccrualIndex = lazy(
+  () => import("../components/common/employeeWorkAccruals/pages/accrual")
+);
 
 //ödev takip
 //index
@@ -2398,6 +2401,11 @@ export const Routedata = [
     id: 6713,
     path: `${import.meta.env.BASE_URL}employee-work-accruals/period`,
     element: <EmployeeEarningsPeriodTable />,
+  },
+  {
+    id: 6714,
+    path: `${import.meta.env.BASE_URL}employee-work-accruals`,
+    element: <EmployeeAccrualIndex />,
   },
 
 
