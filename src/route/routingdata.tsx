@@ -416,18 +416,7 @@ const DistrictModal = lazy(
 const Questionlabeling = lazy(
   () => import("../components/common/questionlabeling/table")
 );
-const EmployeeEarningsMonthTable = lazy(
-  () =>
-    import(
-      "../components/common/employeeWorkAccruals/pages/accrual/month/table"
-    )
-)
-const EmployeeEarningsPeriodTable = lazy(
-  () =>
-    import(
-      "../components/common/employeeWorkAccruals/pages/accrual/month/crud"
-    )
-)
+
 
 
 import OverduePaymentsPage from "../components/common/overduePayments/Table";
@@ -2387,16 +2376,6 @@ export const Routedata = [
     id: 6711,
     path: `${import.meta.env.BASE_URL}employee-work-accruals/contract`,
     element: <EmployeeWorkAccrualsTable />,
-  },
-  {
-    id: 6712,
-    path: `${import.meta.env.BASE_URL}employee-work-accruals/month`,
-    element: <EmployeeEarningsMonthTable />,
-  },
-  {
-    id: 6713,
-    path: `${import.meta.env.BASE_URL}employee-work-accruals/month/crud`,
-    element: <EmployeeEarningsPeriodTable />,
   },
 
 
