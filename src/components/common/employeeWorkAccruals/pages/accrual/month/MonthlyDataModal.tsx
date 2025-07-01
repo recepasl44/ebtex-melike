@@ -77,21 +77,29 @@ export default function MonthlyDataModal({ row, onClose }: Props) {
 
     return (
         <Modal show centered onHide={onClose}>
-            <Modal.Header closeButton>
-                <Modal.Title>
-                    Personel Adı: {row.full_name}&nbsp;&nbsp; Dönem:
-                    <select
-                        className='ms-2 border rounded'
-                        value={period}
-                        onChange={(e) => setPeriod(e.target.value)}
-                    >
-                        {Array.from({ length: 12 }).map((_, i) => {
-                            const m = String(i + 1).padStart(2, '0')
-                            return (
-                                <option key={m} value={`${year}-${m}`}>{`${year}-${m}`}</option>
-                            )
-                        })}
-                    </select>
+            <Modal.Header closeButton className='border-b border-gray-300'>
+                <Modal.Title className='w-full font-bold'>
+                    <div className='flex items-center gap-8'>
+                        <div className='flex items-center gap-2'>
+                            <span>Personel Adı:</span>
+                            <span>{row.full_name}</span>
+                        </div>
+                        <div className='flex items-center gap-2'>
+                            <span>Dönem:</span>
+                            <select
+                                className='ml-2 border rounded px-2 py-1'
+                                value={period}
+                                onChange={(e) => setPeriod(e.target.value)}
+                            >
+                                {Array.from({ length: 12 }).map((_, i) => {
+                                    const m = String(i + 1).padStart(2, '0')
+                                    return (
+                                        <option key={m} value={`${year}-${m}`}>{`${year}-${m}`}</option>
+                                    )
+                                })}
+                            </select>
+                        </div>
+                    </div>
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
