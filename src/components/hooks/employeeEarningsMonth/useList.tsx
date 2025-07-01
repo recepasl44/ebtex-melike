@@ -6,6 +6,7 @@ import { fetchEmployeeEarningsMonthList } from "../../../slices/employeeEarnings
 import {
   EmployeeEarningsMonthData,
   EmployeeEarningsMonthListArgs,
+  EmployeeEarningsMonthMeta,
 } from "../../../types/employeeEarningsMonth/list";
 import EmployeeEarningsMonthListStatus from "../../../enums/employeeEarningsMonth/list";
 
@@ -70,9 +71,14 @@ export function useEmployeeEarningsMonthList(
   const [paginate, setPaginate] = useState<number>(initialPaginate);
   const [filter, setFilter] = useState<any>(null);
 
-  const { data, status, error } = useSelector(
+  const { rows, meta, status, error } = useSelector(
     (state: RootState) => state.employeeEarningsMonthList
-  );
+  ) as {
+    rows: EmployeeEarningsMonthData[] | null
+    meta: EmployeeEarningsMonthMeta | null
+    status: EmployeeEarningsMonthListStatus
+    error: string | null
+  };
 
   /* -------------------------------------------------------------- */
   /* deterministik dependecy string                                  */
@@ -103,11 +109,10 @@ export function useEmployeeEarningsMonthList(
   /* geriye dönen değerler                                           */
   /* -------------------------------------------------------------- */
   const loading = status === EmployeeEarningsMonthListStatus.LOADING;
-  const employeeEarningsMonthData: EmployeeEarningsMonthData[] = data || [];
-
-  /* API’niz meta döndürüyorsa burada okuyun; örnek olarak sayıyoruz */
-  const totalItems = employeeEarningsMonthData.length;
-  const totalPages = Math.ceil(totalItems / paginate) || 1;
+  const employeeEarningsMonthData: EmployeeEarningsMonthData[] = rows || [];
+  const paginationMeta = meta;
+  const totalItems = paginationMeta ? paginationMeta.total : employeeEarningsMonthData.length;
+  const totalPages = paginationMeta ? paginationMeta.last_page : Math.ceil(totalItems / paginate) || 1;
 
   /* set* fonksiyonları useCallback ile sarmalanabilir (opsiyonel) */
   const memoSetPage = useCallback(setPage, []);

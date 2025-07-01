@@ -1,12 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { EmployeeEarningsMonthListState, EmployeeEarningsMonthListResponse } from '../../../types/employeeEarningsMonth/list'
+import {
+  EmployeeEarningsMonthListState,
+  EmployeeEarningsMonthListResponse,
+} from '../../../types/employeeEarningsMonth/list'
 import EmployeeEarningsMonthListStatus from '../../../enums/employeeEarningsMonth/list'
 import { fetchEmployeeEarningsMonthList } from './thunk'
 
 const initialState: EmployeeEarningsMonthListState = {
-  data: null,
+  rows: null,
+  meta: null,
   status: EmployeeEarningsMonthListStatus.IDLE,
-  error: null
+  error: null,
 }
 
 const employeeEarningsMonthListSlice = createSlice({
@@ -22,7 +26,8 @@ const employeeEarningsMonthListSlice = createSlice({
       fetchEmployeeEarningsMonthList.fulfilled,
       (state, action: PayloadAction<EmployeeEarningsMonthListResponse>) => {
         state.status = EmployeeEarningsMonthListStatus.SUCCEEDED
-        state.data = action.payload.data
+        state.rows = action.payload.rows
+        state.meta = action.payload.meta
       }
     )
     builder.addCase(fetchEmployeeEarningsMonthList.rejected, (state, action: PayloadAction<any>) => {

@@ -35,24 +35,20 @@ export interface ILink {
   active: boolean
 }
 
-export interface EmployeeEarningsMonthListResponse {
-  data: EmployeeEarningsMonthData[]
-  current_page: number
-  first_page_url: string
-  from: number
-  last_page: number
-  last_page_url: string
-  links: ILink[]
-  next_page_url: string | null
-  path: string
-  per_page: number
-  prev_page_url: string | null
-  to: number
+export interface EmployeeEarningsMonthMeta {
   total: number
+  last_page: number
+  current_page: number
+}
+
+export interface EmployeeEarningsMonthListResponse {
+  rows: EmployeeEarningsMonthData[]
+  meta: EmployeeEarningsMonthMeta
 }
 
 export interface EmployeeEarningsMonthListState {
-  data: EmployeeEarningsMonthData[] | null
+  rows: EmployeeEarningsMonthData[] | null
+  meta: EmployeeEarningsMonthMeta | null
   status: EmployeeEarningsMonthListStatus
   error: string | null
 }
