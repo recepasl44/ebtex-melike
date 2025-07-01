@@ -17,6 +17,15 @@ interface Row {
     id: string
     employee_id: number
     period: string
+    salary: number
+    lesson_rate: number
+    question_rate: number
+    daily_rate: number
+    private_lesson_rate: number
+    coaching_rate: number
+    bonus: number
+    other: number
+    total: number
     [key: string]: any
 }
 
@@ -203,6 +212,16 @@ export default function EmployeeEarningsMonthTable() {
 
         const groups = new Map<string, Row>()
 
+        const typeMap: Record<string, keyof Row> = {
+            sabit_maas: 'salary',
+            ders_ucreti: 'lesson_rate',
+            soru_cozum_ucreti: 'question_rate',
+            gun_bazli_ucret: 'daily_rate',
+            ozel_ders_ucreti: 'private_lesson_rate',
+            kocluk_ucreti: 'coaching_rate',
+            prim: 'bonus'
+        }
+
         employeeEarningsMonthData.forEach(e => {
             const empId = e.employee_id ?? e.items?.[0]?.employee_id
             if (!empId) return
@@ -214,6 +233,12 @@ export default function EmployeeEarningsMonthTable() {
                     id: key,
                     employee_id: empId,
                     period: e.period,
+                    salary: 0,
+                    lesson_rate: 0,
+                    question_rate: 0,
+                    daily_rate: 0,
+                    private_lesson_rate: 0,
+                    coaching_rate: 0,
                     bonus: 0,
                     other: 0,
                     total: 0
@@ -226,13 +251,7 @@ export default function EmployeeEarningsMonthTable() {
                         profession: profMap.get(ce.profession_id) || ce.profession_id || '—',
                         full_name: ce.full_name,
                         contract_type_text: (ce as any).contract_type_text,
-                        weekly_workdays: ce.weekly_workdays,
-                        lesson_rate: ce.lesson_rate,
-                        question_rate: ce.question_rate,
-                        daily_rate: ce.daily_rate,
-                        private_lesson_rate: ce.private_lesson_rate,
-                        coaching_rate: ce.coaching_rate,
-                        salary: ce.salary
+                        weekly_workdays: ce.weekly_workdays
                     })
                 } else {
                     Object.assign(base, { branch: '—', profession: '—' })
@@ -242,25 +261,17 @@ export default function EmployeeEarningsMonthTable() {
             }
 
             const row = groups.get(key)!
-            row.items[e.income_type] = {
-                qty: Number(e.quantity),
-                unit: Number(e.unit_price),
-                total: Number(e.total)
-            }
-            if (e.income_type === 'prim') row.bonus += Number(e.total)
+            const incomeItems = Array.isArray(e.items) && e.items.length ? e.items : [e]
+            incomeItems.forEach(item => {
+                const field = typeMap[item.income_type] || 'other'
+                const qty = Number(item.quantity ?? 0)
+                const unit = Number(item.unit_price ?? 0)
+                const itemTotal = Number(item.total ?? qty * unit) || 0
 
-            const defs = [
-                'sabit_maas',
-                'ders_ucreti',
-                'soru_cozum_ucreti',
-                'gun_bazli_ucret',
-                'ozel_ders_ucreti',
-                'kocluk_ucreti',
-                'prim'
-            ]
-            if (!defs.includes(e.income_type)) row.other += Number(e.total)
-
-            row.total += Number(e.total)
+                row.items[item.income_type] = { qty, unit, total: itemTotal }
+                row[field] = Number(row[field] ?? 0) + itemTotal
+                row.total += itemTotal
+            })
         })
 
         return Array.from(groups.values())
