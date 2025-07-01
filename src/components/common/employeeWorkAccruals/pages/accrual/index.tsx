@@ -32,14 +32,14 @@ const EmployeeAccrualIndex: React.FC = () => {
     ];
 
     /* -------------------------------------------------------------
-       URL (?tab=0/1) -> aktif sekme senkronizasyonu
+       URL (?accrualTab=0/1) -> aktif sekme senkronizasyonu
        ------------------------------------------------------------- */
     const location = useLocation();
     const navigate = useNavigate();
 
     const getTabFromSearch = () => {
         const params = new URLSearchParams(location.search);
-        const tab = params.get('tab');
+        const tab = params.get('accrualTab');
         return tab ? parseInt(tab, 10) : 0;
     };
 
@@ -62,7 +62,7 @@ const EmployeeAccrualIndex: React.FC = () => {
 
                     /* sekme değiştiğinde URL query’sini güncelle */
                     const params = new URLSearchParams(location.search);
-                    params.set('tab', parentIdx.toString());
+                    params.set('accrualTab', parentIdx.toString());
                     navigate(`${location.pathname}?${params.toString()}`, {
                         replace: true,
                     });
