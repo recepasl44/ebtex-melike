@@ -204,12 +204,15 @@ export default function EmployeeEarningsMonthTable() {
         const groups = new Map<string, Row>()
 
         employeeEarningsMonthData.forEach(e => {
-            const key = `${e.employee_id}-${e.period}`
+            const empId = e.employee_id ?? e.items?.[0]?.employee_id
+            if (!empId) return
+
+            const key = `${empId}-${e.period}`
             if (!groups.has(key)) {
-                const ce = ceMap.get(e.employee_id)
+                const ce = ceMap.get(empId)
                 const base: Row = {
                     id: key,
-                    employee_id: e.employee_id,
+                    employee_id: empId,
                     period: e.period,
                     bonus: 0,
                     other: 0,
@@ -217,10 +220,10 @@ export default function EmployeeEarningsMonthTable() {
                 }
                 if (ce) {
                     Object.assign(base, {
-                        branch: ce.branch,
+                        branch: ce.branch || '—',
                         branch_id: ce.branch_id,
                         profession_id: ce.profession_id,
-                        profession: profMap.get(ce.profession_id) || ce.profession_id,
+                        profession: profMap.get(ce.profession_id) || ce.profession_id || '—',
                         full_name: ce.full_name,
                         contract_type_text: (ce as any).contract_type_text,
                         weekly_workdays: ce.weekly_workdays,
@@ -231,6 +234,8 @@ export default function EmployeeEarningsMonthTable() {
                         coaching_rate: ce.coaching_rate,
                         salary: ce.salary
                     })
+                } else {
+                    Object.assign(base, { branch: '—', profession: '—' })
                 }
                 base.items = {}
                 groups.set(key, base)
@@ -287,7 +292,7 @@ export default function EmployeeEarningsMonthTable() {
                 key: 'period',
                 label: 'Dönem (Ay)',
                 col: 1,
-                type: 'month',
+                type: 'date',
                 value: period,
                 onChange: (v: string) => {
                     setPeriod(v)

@@ -6,6 +6,7 @@ import { fetchEmployeeEarningsMonthList } from "../../../slices/employeeEarnings
 import {
   EmployeeEarningsMonthData,
   EmployeeEarningsMonthListArgs,
+
 } from "../../../types/employeeEarningsMonth/list";
 import EmployeeEarningsMonthListStatus from "../../../enums/employeeEarningsMonth/list";
 
