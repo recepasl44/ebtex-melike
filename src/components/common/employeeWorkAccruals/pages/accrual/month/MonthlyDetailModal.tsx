@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { Modal, Button, Form } from 'react-bootstrap'
 import ReusableTable, { ColumnDefinition } from '../../../../ReusableTable'
-import { EmployeeEarningsMonthItem } from '../../../../../types/employeeEarningsMonth/list'
+import { EmployeeEarningsMonthItem } from '../../../../../../types/employeeEarningsMonth/list'
 
 interface Props {
   row: any
