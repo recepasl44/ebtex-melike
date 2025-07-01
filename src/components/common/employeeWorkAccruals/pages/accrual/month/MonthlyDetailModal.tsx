@@ -1,8 +1,7 @@
-import { useState, useMemo } from 'react'
+import { useMemo } from 'react'
 import { Modal, Button, Form } from 'react-bootstrap'
 import ReusableTable, { ColumnDefinition } from '../../../../ReusableTable'
 import { EmployeeEarningsMonthItem } from '../../../../../types/employeeEarningsMonth/list'
-import { saveMonth } from './crud'
 
 interface Props {
   row: any
@@ -20,27 +19,25 @@ const INCOME_TYPES = [
   { key: 'other', label: 'Farklı Ücret' },
 ]
 
-export default function MonthlyDataModal({ row, onClose }: Props) {
+export default function MonthlyDetailModal({ row, onClose }: Props) {
   const year = row.period?.split('-')[0] || new Date().getFullYear()
-  const [period, setPeriod] = useState(row.period || '')
+  const period = row.period
 
-  const [items, setItems] = useState<EmployeeEarningsMonthItem[]>(
-    INCOME_TYPES.map((t) => {
-      const existing = row.items?.find((i: EmployeeEarningsMonthItem) => i.income_type === t.key)
-      return {
-        id: existing?.id || 0,
-        employee_id: row.employee_id,
-        period: period,
-        income_type: t.key,
-        quantity: existing?.quantity || '0',
-        unit_price: (row as any)[`${t.key}_rate`] || existing?.unit_price || '0',
-        total: existing?.total || '0',
-        created_at: '',
-        updated_at: '',
-        platform_id: null,
-      }
-    })
-  )
+  const items: EmployeeEarningsMonthItem[] = INCOME_TYPES.map((t) => {
+    const existing = row.items?.find((i: EmployeeEarningsMonthItem) => i.income_type === t.key)
+    return {
+      id: existing?.id || 0,
+      employee_id: row.employee_id,
+      period: period,
+      income_type: t.key,
+      quantity: existing?.quantity || '0',
+      unit_price: (row as any)[`${t.key}_rate`] || existing?.unit_price || '0',
+      total: existing?.total || '0',
+      created_at: '',
+      updated_at: '',
+      platform_id: null,
+    }
+  })
 
   const columns: ColumnDefinition<EmployeeEarningsMonthItem>[] = [
     { key: 'income_type', label: 'Gelir Türü', render: (r) => INCOME_TYPES.find((t) => t.key === r.income_type)?.label },
@@ -48,18 +45,7 @@ export default function MonthlyDataModal({ row, onClose }: Props) {
     {
       key: 'quantity',
       label: 'Sayı',
-      render: (r, _open, idx) => (
-        <Form.Control
-          type='number'
-          size='sm'
-          disabled={r.income_type === 'salary'}
-          value={r.quantity}
-          onChange={(e) => {
-            const val = e.target.value
-            setItems((prev) => prev.map((it, i) => (i === idx ? { ...it, quantity: val } : it)))
-          }}
-        />
-      ),
+      render: (r) => <Form.Control type='number' size='sm' disabled value={r.quantity} />,
     },
     {
       key: 'total',
@@ -70,28 +56,11 @@ export default function MonthlyDataModal({ row, onClose }: Props) {
 
   const total = useMemo(() => items.reduce((sum, i) => sum + Number(i.quantity) * Number(i.unit_price), 0), [items])
 
-  async function handleSave() {
-    await saveMonth({ employee_id: row.employee_id, period, items })
-    onClose()
-  }
-
   return (
     <Modal show centered onHide={onClose}>
       <Modal.Header closeButton>
         <Modal.Title>
-          Personel Adı: {row.full_name}&nbsp;&nbsp; Dönem:
-          <select
-            className='ms-2 border rounded'
-            value={period}
-            onChange={(e) => setPeriod(e.target.value)}
-          >
-            {Array.from({ length: 12 }).map((_, i) => {
-              const m = String(i + 1).padStart(2, '0')
-              return (
-                <option key={m} value={`${year}-${m}`}>{`${year}-${m}`}</option>
-              )
-            })}
-          </select>
+          Personel Adı: {row.full_name}&nbsp;&nbsp; Dönem: {period}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -109,8 +78,7 @@ export default function MonthlyDataModal({ row, onClose }: Props) {
         <div className='text-right mt-4 font-bold'>Genel Toplam ₺ {total.toFixed(2)}</div>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant='outline-secondary' onClick={onClose}>İptal</Button>
-        <Button variant='primary' onClick={handleSave}>Kaydet</Button>
+        <Button variant='outline-secondary' onClick={onClose}>Kapat</Button>
       </Modal.Footer>
     </Modal>
   )
