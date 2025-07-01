@@ -6,6 +6,7 @@ import SpkFlatpickr from "../../../../../@spk-reusable-components/reusable-plugi
 export interface FilterDefinition {
     key: string;
     label: string;
+    col?: number;
     type:
     | "text"
     | "number"

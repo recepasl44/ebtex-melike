@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ReusableTable, { ColumnDefinition } from '../../../../ReusableTable'
-import FilterGroup from '../../../component/organisms/SearchFilters'
+import FilterGroup, { FilterDefinition } from '../../../component/organisms/SearchFilters'
 import { useEmployeeEarningsTable } from '../../../../../hooks/employeeEarnings/useList'
 
 interface Row { [key: string]: any }
@@ -94,10 +94,28 @@ export default function EmployeeEarningsPeriodTable() {
         </div>
     )
 
-    const filters: any[] = useMemo(() => [
-        { key: 'employee_id', label: 'Personel', type: 'select', value: employeeId, onChange: setEmployeeId, options: employeeOptions },
-        { key: 'period', label: 'Dönem (Ay)', type: 'month' as any, value: period, onChange: setPeriod }
-    ], [employeeId, period, employeeOptions])
+    const filters: FilterDefinition[] = useMemo(
+        () => [
+            {
+                key: 'employee_id',
+                label: 'Personel',
+                type: 'select' as const,
+                col: 1,
+                value: employeeId,
+                onChange: setEmployeeId,
+                options: employeeOptions
+            },
+            {
+                key: 'period',
+                label: 'Dönem (Ay)',
+                type: 'date' as const,
+                col: 1,
+                value: period,
+                onChange: setPeriod
+            }
+        ],
+        [employeeId, period, employeeOptions]
+    )
 
     const columns: ColumnDefinition<Row>[] = useMemo(() => [
         { key: 'branch', label: 'Şube', render: r => (r as any).branch },
@@ -119,7 +137,7 @@ export default function EmployeeEarningsPeriodTable() {
             label: 'İşlemler',
             render: row => (
                 <button onClick={() => setModalRow(row)} className='text-primary hover:text-blue-600'>
-                    <i className='bi bi-eye' />
+                    <i className='ti ti-eye' />
                 </button>
             )
         }
