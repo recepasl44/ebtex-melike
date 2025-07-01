@@ -288,13 +288,13 @@ export default function EmployeeEarningsMonthTable() {
         return Array.from(m.entries()).map(([value, label]) => ({ value, label }))
     }, [rows])
 
-    const filters = useMemo(
+    const filters: FilterDefinition[] = useMemo(
         () => [
             {
                 key: 'employee_id',
                 label: 'Personel',
                 col: 1,
-                type: 'select',
+                type: 'select' as const,
                 value: employeeId,
                 onChange: setEmployeeId,
                 options: employeeOptions
@@ -303,7 +303,7 @@ export default function EmployeeEarningsMonthTable() {
                 key: 'period',
                 label: 'Dönem (Ay)',
                 col: 1,
-                type: 'date',
+                type: 'date' as const,
                 value: period,
                 onChange: (v: string) => {
                     setPeriod(v)
@@ -380,7 +380,7 @@ export default function EmployeeEarningsMonthTable() {
                         onClick={() => setModalRow(row)}
                         className='text-primary hover:text-blue-600'
                     >
-                        <i className='bi bi-eye' />
+                        <i className='ti ti-eye' />
                     </button>
                 )
             }
