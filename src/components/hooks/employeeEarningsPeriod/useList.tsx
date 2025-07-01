@@ -6,9 +6,7 @@ import { fetchEmployeeEarningsPeriodList } from '../../../slices/employeeEarning
 import {
   EmployeeEarningsPeriodData,
   EmployeeEarningsPeriodListArgs,
-  EmployeeEarningsPeriodListResponse,
-  ILink,
-  EmployeeEarningsPeriodItem
+  PaginationMeta
 } from '../../../types/employeeEarningsPeriod/list'
 import EmployeeEarningsPeriodListStatus from '../../../enums/employeeEarningsPeriod/list'
 
@@ -43,7 +41,7 @@ export function useEmployeeEarningsPeriodTable(params: EmployeeEarningsPeriodLis
 
   const { data, status, error, meta } = useSelector(
     (state: RootState) => state.employeeEarningsPeriodList
-  ) as any
+  )
 
   const serializedRestParams = useMemo(
     () => JSON.stringify(restParams),
@@ -67,7 +65,7 @@ export function useEmployeeEarningsPeriodTable(params: EmployeeEarningsPeriodLis
 
   const loading = status === EmployeeEarningsPeriodListStatus.LOADING
   const employeeEarningsPeriodData: EmployeeEarningsPeriodData[] = data || []
-  const paginationMeta = meta as any
+  const paginationMeta: PaginationMeta | null = meta
   const totalPages = paginationMeta ? paginationMeta.last_page : 1
   const totalItems = paginationMeta ? paginationMeta.total : 0
 
