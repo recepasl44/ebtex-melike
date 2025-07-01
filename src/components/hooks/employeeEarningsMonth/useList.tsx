@@ -6,7 +6,7 @@ import { fetchEmployeeEarningsMonthList } from "../../../slices/employeeEarnings
 import {
   EmployeeEarningsMonthData,
   EmployeeEarningsMonthListArgs,
-
+  PaginationMeta,
 } from "../../../types/employeeEarningsMonth/list";
 import EmployeeEarningsMonthListStatus from "../../../enums/employeeEarningsMonth/list";
 
@@ -71,7 +71,7 @@ export function useEmployeeEarningsMonthList(
   const [paginate, setPaginate] = useState<number>(initialPaginate);
   const [filter, setFilter] = useState<any>(null);
 
-  const { data, status, error } = useSelector(
+  const { data, status, error, meta } = useSelector(
     (state: RootState) => state.employeeEarningsMonthList
   );
 
@@ -105,10 +105,9 @@ export function useEmployeeEarningsMonthList(
   /* -------------------------------------------------------------- */
   const loading = status === EmployeeEarningsMonthListStatus.LOADING;
   const employeeEarningsMonthData: EmployeeEarningsMonthData[] = data || [];
-
-  /* API’niz meta döndürüyorsa burada okuyun; örnek olarak sayıyoruz */
-  const totalItems = employeeEarningsMonthData.length;
-  const totalPages = Math.ceil(totalItems / paginate) || 1;
+  const paginationMeta: PaginationMeta | null = meta;
+  const totalPages = paginationMeta ? paginationMeta.last_page : 1;
+  const totalItems = paginationMeta ? paginationMeta.total : 0;
 
   /* set* fonksiyonları useCallback ile sarmalanabilir (opsiyonel) */
   const memoSetPage = useCallback(setPage, []);

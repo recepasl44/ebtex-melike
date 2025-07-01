@@ -35,6 +35,21 @@ export interface ILink {
   active: boolean
 }
 
+export interface PaginationMeta {
+  current_page: number
+  first_page_url: string
+  from: number
+  last_page: number
+  last_page_url: string
+  next_page_url: string | null
+  path: string
+  per_page: number
+  prev_page_url: string | null
+  to: number
+  total: number
+  links: ILink[]
+}
+
 export interface EmployeeEarningsMonthListResponse {
   data: EmployeeEarningsMonthData[]
   current_page: number
@@ -53,6 +68,7 @@ export interface EmployeeEarningsMonthListResponse {
 
 export interface EmployeeEarningsMonthListState {
   data: EmployeeEarningsMonthData[] | null
+  meta: PaginationMeta | null
   status: EmployeeEarningsMonthListStatus
   error: string | null
 }
