@@ -1,4 +1,8 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
+import { toast } from 'react-toastify'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from '../../../../../../store'
+import { fetchEmployeeEarningsMonthList } from '../../../../../../slices/employeeEarningsMonth/list/thunk'
 import { Modal, Button, Form } from 'react-bootstrap'
 import ReusableTable, { ColumnDefinition } from '../../../../ReusableTable'
 import { EmployeeEarningsMonthItem } from '../../../../../../types/employeeEarningsMonth/list'
@@ -22,6 +26,7 @@ const INCOME_TYPES = [
 
 export default function MonthlyDataModal({ row, onClose }: Props) {
     const year = row.period?.split('-')[0] || new Date().getFullYear()
+    const dispatch = useDispatch<AppDispatch>()
     const [period, setPeriod] = useState(row.period || '')
 
     const [items, setItems] = useState<EmployeeEarningsMonthItem[]>(
@@ -41,6 +46,10 @@ export default function MonthlyDataModal({ row, onClose }: Props) {
             }
         })
     )
+
+    useEffect(() => {
+        setItems(prev => prev.map(it => ({ ...it, period })))
+    }, [period])
 
     const columns: ColumnDefinition<EmployeeEarningsMonthItem>[] = [
         { key: 'income_type', label: 'Gelir Türü', render: (r) => INCOME_TYPES.find((t) => t.key === r.income_type)?.label },
@@ -71,7 +80,24 @@ export default function MonthlyDataModal({ row, onClose }: Props) {
     const total = useMemo(() => items.reduce((sum, i) => sum + Number(i.quantity) * Number(i.unit_price), 0), [items])
 
     async function handleSave() {
-        await saveMonth({ employee_id: row.employee_id, period, items })
+        const payloadItems = items
+            .filter(i => +i.quantity > 0)
+            .map(i => ({
+                ...i,
+                period,
+                quantity: +i.quantity,
+                unit_price: +i.unit_price,
+                total: +i.quantity * +i.unit_price,
+            }))
+
+        if (payloadItems.length === 0) {
+            toast.error('En az bir satır doldurmalısınız')
+            return
+        }
+
+        await saveMonth({ employee_id: row.employee_id, period, items: payloadItems })
+        dispatch(fetchEmployeeEarningsMonthList({ period }))
+        toast.success('Kaydedildi')
         onClose()
     }
 
