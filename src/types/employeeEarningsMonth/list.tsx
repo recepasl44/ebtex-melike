@@ -14,6 +14,11 @@ export interface EmployeeEarningsMonthItem {
 }
 
 export interface EmployeeEarningsMonthData {
+  period: any
+  total(total: any): unknown
+  income_type: any
+  quantity(quantity: any): unknown
+  unit_price(unit_price: any): unknown
   employee_id: number
   first_name: string | null
   last_name: string | null
