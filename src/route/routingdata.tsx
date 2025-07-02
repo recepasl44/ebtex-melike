@@ -575,6 +575,11 @@ import QuizRepeatModal from "../components/common/onlineExam/tabActive/crudAgain
 const OnlineExamPage = lazy(
   () => import("../components/common/onlineExam/index")
 );
+//finans-muhasebe-odeme
+const PersonnelPaymentsMonthTable = lazy(
+  () => import("../components/common/employeeWorkAccruals/pages/payments/month/table")
+);
+
 
 
 export const Routedata = [
@@ -2464,7 +2469,11 @@ export const Routedata = [
     path: `${import.meta.env.BASE_URL}employee-work-accruals`,
     element: <EmployeeWorkAccrualsIndex />,
   },
-
+  {
+    id: 6716,
+    path: `${import.meta.env.BASE_URL}employee-payments/month`,
+    element: <PersonnelPaymentsMonthTable />,
+  },
 
 ];
 
