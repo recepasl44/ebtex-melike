@@ -583,6 +583,9 @@ const PersonnelPaymentsPeriodTable = lazy(
   () => import("../components/common/employeeWorkAccruals/pages/payments/period/table")
 );
 
+const EmployeePaymentsIndex = lazy(
+  () => import("../components/common/employeeWorkAccruals/pages/payments")
+);
 
 
 export const Routedata = [
@@ -2481,6 +2484,11 @@ export const Routedata = [
     id: 6717,
     path: `${import.meta.env.BASE_URL}employee-payments/period`,
     element: <PersonnelPaymentsPeriodTable />,
+  },
+  {
+    id: 6718,
+    path: `${import.meta.env.BASE_URL}employee-payments`,
+    element: <EmployeePaymentsIndex />,
   },
 
 ];

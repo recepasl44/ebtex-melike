@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
-import axiosInstance from '../../../../../services/axiosClient'
+import axiosInstance from '../../../../../../services/axiosClient'
 import ReusableTable, { ColumnDefinition } from '../../../../ReusableTable'
 import { useEmployeePaymentList } from '../../../../../hooks/employeePayments/useList'
 import type { EmployeePaymentData } from '../../../../../../types/employeePayments/list'

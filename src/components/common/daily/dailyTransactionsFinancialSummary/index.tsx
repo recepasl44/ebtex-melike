@@ -86,7 +86,7 @@ const DailyTransactionsFinancialSummary: React.FC = () => {
 
 
   return (
-    <div className="container mt-3">
+    <div>
       <ReusableTable<RowData>
         // pageTitle="Finansal Özet"
         columns={columns}
