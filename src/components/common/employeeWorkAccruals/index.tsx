@@ -5,6 +5,7 @@ import TabsContainer from './component/organisms/TabsContainer';
 
 import EmployeeWorkAccrualsTable from './pages/contract/table';
 import EmployeeAccrualIndex from './pages/accrual';
+import EmployeePaymentsIndex from './pages/payments';
 
 const EmployeeWorkAccrualsIndex: React.FC = () => {
   const tabs = [
@@ -19,6 +20,14 @@ const EmployeeWorkAccrualsIndex: React.FC = () => {
     {
       label: 'Çalışma ve Hakediş',
       content: <EmployeeAccrualIndex />,
+      activeBgColor: '#5C67F7',
+      activeTextColor: '#FFFFFF',
+      passiveBgColor: '#5C67F726',
+      passiveTextColor: '#5C67F7',
+    },
+    {
+      label: 'Ödemeler',
+      content: <EmployeePaymentsIndex />,
       activeBgColor: '#5C67F7',
       activeTextColor: '#FFFFFF',
       passiveBgColor: '#5C67F726',
