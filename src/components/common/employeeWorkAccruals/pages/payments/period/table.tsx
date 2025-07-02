@@ -1,7 +1,9 @@
 import { useState, useMemo } from 'react'
-import { Table, Button, DatePicker, Select } from 'antd'
-import type { ColumnsType } from 'antd/es/table'
+import { Button } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs'
+import ReusableTable, { ColumnDefinition } from '../../../../ReusableTable'
+import FilterGroup, { FilterDefinition } from '../../../component/organisms/SearchFilters'
 import { useEmployeePaymentList } from '../../../../../hooks/employeePayments/useList'
 import { useContractEmployeesTable } from '../../../../../hooks/contractEmployees/useList'
 import type { EmployeePaymentData } from '../../../../../../types/employeePayments/list'
@@ -15,9 +17,11 @@ function getAmount(row: EmployeePaymentData, type: string) {
 }
 
 export default function PersonnelPaymentsPeriodTable() {
+  const navigate = useNavigate()
+
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
-  const [employeeId, setEmployeeId] = useState<string | undefined>()
+  const [employeeId, setEmployeeId] = useState('')
   const [period, setPeriod] = useState(dayjs().format('YYYY-MM'))
   const [detailRow, setDetailRow] = useState<EmployeePaymentData | null>(null)
 
@@ -40,65 +44,94 @@ export default function PersonnelPaymentsPeriodTable() {
     [contractEmployeesData]
   )
 
-  const columns: ColumnsType<EmployeePaymentData> = useMemo(
+  const monthOptions = useMemo(() => {
+    const year = new Date().getFullYear()
+    return Array.from({ length: 12 }).map((_, i) => {
+      const m = String(i + 1).padStart(2, '0')
+      return { value: `${year}-${m}`, label: `${year}-${m}` }
+    })
+  }, [])
+
+  const filters: FilterDefinition[] = useMemo(
     () => [
       {
-        title: 'Okul Seviyesi',
+        key: 'employee_id',
+        label: 'Personel',
+        type: 'select',
+        value: employeeId,
+        options: employeeOptions,
+        onChange: setEmployeeId
+      },
+      {
+        key: 'period',
+        label: 'Dönem',
+        type: 'select',
+        value: period,
+        options: monthOptions,
+        onChange: setPeriod
+      }
+    ],
+    [employeeId, period, employeeOptions, monthOptions]
+  )
+
+  const columns: ColumnDefinition<EmployeePaymentData>[] = useMemo(
+    () => [
+      {
         key: 'branch',
-        render: (r: EmployeePaymentData) => r.employee?.branch?.name || '-'
+        label: 'Okul Seviyesi',
+        render: r => r.employee?.branch?.name || '-'
       },
       {
-        title: 'Meslek / Branş',
         key: 'profession',
-        render: (r: EmployeePaymentData) => r.employee?.contract_employee?.profession_id ?? '-'
+        label: 'Meslek / Branş',
+        render: r => r.employee?.contract_employee?.profession_id ?? '-'
       },
       {
-        title: 'Adı Soyadı',
         key: 'full_name',
-        render: (r: EmployeePaymentData) => r.employee?.full_name || '-'
+        label: 'Adı Soyadı',
+        render: r => r.employee?.full_name || '-'
       },
       {
-        title: 'Sözleşme Türü',
         key: 'contract_type',
-        render: (r: EmployeePaymentData) => r.employee?.contract_employee?.contract_type?.name || '-'
+        label: 'Sözleşme Türü',
+        render: r => r.employee?.contract_employee?.contract_type?.name || '-'
       },
       {
-        title: 'Toplam Ücret (₺)',
-        dataIndex: 'total_amount',
         key: 'total',
-        align: 'right' as const,
-        render: (v: any) => currency.format(Number(v || 0))
+        label: 'Toplam Ücret (₺)',
+        render: r => currency.format(r.total_amount || 0)
       },
       {
-        title: 'Nakit Avans',
         key: 'cash_advance',
-        align: 'right' as const,
-        render: (r: EmployeePaymentData) => currency.format(getAmount(r, 'Nakit Avans'))
+        label: 'Nakit Avans',
+        render: r => currency.format(getAmount(r, 'Nakit Avans'))
       },
       {
-        title: 'Banka Avans',
         key: 'bank_advance',
-        align: 'right' as const,
-        render: (r: EmployeePaymentData) => currency.format(getAmount(r, 'Banka Avans'))
+        label: 'Banka Avans',
+        render: r => currency.format(getAmount(r, 'Banka Avans'))
       },
       {
-        title: 'Banka Maaş',
         key: 'bank_salary',
-        align: 'right' as const,
-        render: (r: EmployeePaymentData) => currency.format(getAmount(r, 'Banka Maaş'))
+        label: 'Banka Maaş',
+        render: r => currency.format(getAmount(r, 'Banka Maaş'))
       },
       {
-        title: 'Nakit',
         key: 'cash',
-        align: 'right' as const,
-        render: (r: EmployeePaymentData) => currency.format(getAmount(r, 'Nakit'))
+        label: 'Nakit',
+        render: r => currency.format(getAmount(r, 'Nakit'))
       },
       {
-        title: 'İşlemler',
         key: 'actions',
-        render: (_: any, r: EmployeePaymentData) => (
-          <Button type='link' onClick={() => setDetailRow(r)}>
-            Detay
+        label: 'İşlemler',
+        render: r => (
+          <Button
+            variant='primary-light'
+            size='sm'
+            className='btn-icon rounded-pill'
+            onClick={() => setDetailRow(r)}
+          >
+            <i className='ti ti-eye'></i>
           </Button>
         )
       }
@@ -113,55 +146,22 @@ export default function PersonnelPaymentsPeriodTable() {
 
   return (
     <div className='p-4'>
-      <div className='flex gap-4 mb-4'>
-        <Select
-          placeholder='Personel'
-          options={employeeOptions}
-          allowClear
-          value={employeeId}
-          onChange={v => {
-            setEmployeeId(v)
-            setPage(1)
-          }}
-          style={{ width: 200 }}
-        />
-        <DatePicker
-          picker='month'
-          format='YYYY MMM'
-          value={dayjs(period)}
-          onChange={d => {
-            setPeriod(d ? d.format('YYYY-MM') : dayjs().format('YYYY-MM'))
-            setPage(1)
-          }}
-          allowClear={false}
-        />
-      </div>
-      <Table<EmployeePaymentData>
-        rowKey={r => String(r.employee_id)}
+      <FilterGroup filters={filters} navigate={navigate} columnsPerRow={2} />
+      <ReusableTable<EmployeePaymentData>
+        tableMode='single'
         columns={columns}
-        dataSource={employeePaymentData}
+        data={employeePaymentData}
         loading={loading}
-        pagination={{
-          current: page,
-          pageSize,
-          total: totalItems,
-          showSizeChanger: true,
-          onChange: (p, s) => {
-            setPage(p)
-            setPageSize(s)
-          }
+        currentPage={page}
+        totalPages={Math.ceil(totalItems / pageSize) || 1}
+        totalItems={totalItems}
+        pageSize={pageSize}
+        onPageChange={setPage}
+        onPageSizeChange={s => {
+          setPageSize(s)
+          setPage(1)
         }}
-        summary={() => (
-          <Table.Summary.Row>
-            <Table.Summary.Cell index={0} colSpan={4}>
-              <div style={{ textAlign: 'right', fontWeight: 'bold' }}>Toplam</div>
-            </Table.Summary.Cell>
-            <Table.Summary.Cell index={4} align='right' style={{ fontWeight: 'bold' }}>
-              {currency.format(total)}
-            </Table.Summary.Cell>
-            <Table.Summary.Cell index={5} colSpan={5} />
-          </Table.Summary.Row>
-        )}
+        customFooter={<div className='text-end fw-bold'>Toplam {currency.format(total)}</div>}
       />
       {detailRow && <PaymentDetailModal row={detailRow} onClose={() => setDetailRow(null)} />}
     </div>
