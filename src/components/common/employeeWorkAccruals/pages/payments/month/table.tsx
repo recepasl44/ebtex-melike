@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react'
-import { Button } from 'react-bootstrap'
+import { useEffect, useMemo, useState } from 'react'
+import { Button, Form } from 'react-bootstrap'
+import axiosInstance from '../../../../../services/axiosClient'
 import ReusableTable, { ColumnDefinition } from '../../../../ReusableTable'
 import { useEmployeePaymentList } from '../../../../../hooks/employeePayments/useList'
 import type { EmployeePaymentData } from '../../../../../../types/employeePayments/list'
@@ -8,35 +9,57 @@ import PaymentDetailModal from './crud'
 
 const currency = new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' })
 
-function getAmount(row: EmployeePaymentData, type: string) {
-    const item = row.items.find(i => i.payment_type === type)
-    return item ? Number(item.amount) : 0
+function getAmounts(row: EmployeePaymentData, types: string[]) {
+    return row.items
+        .filter(i => types.includes(i.payment_type))
+        .reduce((s, i) => s + Number(i.amount), 0)
 }
 
 export default function PersonnelPaymentsMonthTable() {
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(10)
+    const [employeeOptions, setEmployeeOptions] = useState<{ label: string; value: number }[]>([])
+    const [selectedEmployee, setSelectedEmployee] = useState<string>('')
+    const [period, setPeriod] = useState('')
 
     const {
         employeePaymentData = [],
         loading,
         totalItems,
+        setFilter,
+        filter,
     } = useEmployeePaymentList({ page, pageSize })
 
     const [entryRow, setEntryRow] = useState<EmployeePaymentData | null>(null)
     const [detailRow, setDetailRow] = useState<EmployeePaymentData | null>(null)
 
+    useEffect(() => {
+        async function fetchEmployees() {
+            try {
+                const resp = await axiosInstance.get('/employees', { params: { per_page: 1000 } })
+                const opts = (resp.data?.data || []).map((e: any) => ({
+                    label: e.full_name,
+                    value: e.id,
+                }))
+                setEmployeeOptions(opts)
+            } catch {
+                setEmployeeOptions([])
+            }
+        }
+        fetchEmployees()
+    }, [])
+
     const columns: ColumnDefinition<EmployeePaymentData>[] = useMemo(
         () => [
             {
                 key: 'branch',
-                label: 'Okul Seviyesi',
-                render: (r) => r.employee?.branch?.name || '-',
+                label: 'Şube',
+                render: r => r.employee?.branch?.name ?? '-',
             },
             {
                 key: 'profession',
                 label: 'Meslek / Branş',
-                render: (r) => r.employee?.contract_employee?.profession_id ?? '-',
+                render: r => r.employee?.contract_employee?.profession?.name ?? '-',
             },
             {
                 key: 'full_name',
@@ -70,22 +93,32 @@ export default function PersonnelPaymentsMonthTable() {
             {
                 key: 'cash_advance',
                 label: 'Nakit Avans',
-                render: (r) => currency.format(getAmount(r, 'Nakit Avans')),
+                render: r =>
+                    currency.format(
+                        getAmounts(r, ['Nakit Avans-1', 'Nakit Avans-2'])
+                    ),
             },
             {
                 key: 'bank_advance',
                 label: 'Banka Avans',
-                render: (r) => currency.format(getAmount(r, 'Banka Avans')),
+                render: r =>
+                    currency.format(
+                        getAmounts(r, [
+                            'Banka Avans-1',
+                            'Banka Avans-2',
+                            'Banka Avans-3',
+                        ])
+                    ),
             },
             {
                 key: 'bank_salary',
                 label: 'Banka Maaş',
-                render: (r) => currency.format(getAmount(r, 'Banka Maaş')),
+                render: r => currency.format(getAmounts(r, ['Banka Maaş'])),
             },
             {
                 key: 'cash',
                 label: 'Nakit',
-                render: (r) => currency.format(getAmount(r, 'Nakit')),
+                render: r => currency.format(getAmounts(r, ['Nakit'])),
             },
             {
                 key: 'actions',
@@ -112,6 +145,41 @@ export default function PersonnelPaymentsMonthTable() {
 
     return (
         <div className='p-4'>
+            <div className='d-flex gap-2 mb-3'>
+                <Form.Select
+                    size='sm'
+                    value={selectedEmployee}
+                    onChange={e => setSelectedEmployee(e.target.value)}
+                    style={{ maxWidth: 250 }}
+                >
+                    <option value=''>Personel Seçiniz</option>
+                    {employeeOptions.map(o => (
+                        <option key={o.value} value={o.value}>
+                            {o.label}
+                        </option>
+                    ))}
+                </Form.Select>
+                <Form.Control
+                    type='month'
+                    size='sm'
+                    value={period}
+                    onChange={e => setPeriod(e.target.value)}
+                    style={{ width: 150 }}
+                />
+                <Button
+                    variant='primary'
+                    size='sm'
+                    onClick={() => {
+                        setFilter({
+                            employee_id: selectedEmployee || undefined,
+                            period: period || undefined,
+                        })
+                        setPage(1)
+                    }}
+                >
+                    Filtrele
+                </Button>
+            </div>
             <ReusableTable<EmployeePaymentData>
                 tableMode='single'
                 columns={columns}
@@ -133,7 +201,11 @@ export default function PersonnelPaymentsMonthTable() {
                 }
             />
             {entryRow && (
-                <MonthlyDataEntry row={entryRow} onClose={() => setEntryRow(null)} />
+                <MonthlyDataEntry
+                    row={entryRow}
+                    filter={filter}
+                    onClose={() => setEntryRow(null)}
+                />
             )}
             {detailRow && (
                 <PaymentDetailModal row={detailRow} onClose={() => setDetailRow(null)} />

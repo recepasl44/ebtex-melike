@@ -11,6 +11,7 @@ import type { EmployeePaymentData, EmployeePaymentItem } from '../../../../../..
 
 interface Props {
     row: EmployeePaymentData
+    filter: any
     onClose: () => void
 }
 
@@ -35,7 +36,7 @@ const TYPES = [
 
 const currency = new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' })
 
-export default function MonthlyDataEntry({ row, onClose }: Props) {
+export default function MonthlyDataEntry({ row, filter, onClose }: Props) {
     const dispatch = useAppDispatch()
     const { addNewEmployeePayment } = useEmployeePaymentAdd()
     const { updateExistingEmployeePayment } = useEmployeePaymentUpdate()
@@ -55,16 +56,42 @@ export default function MonthlyDataEntry({ row, onClose }: Props) {
         })
     )
     const [errors, setErrors] = useState<Record<number, Record<string, boolean>>>({})
+    const [editing, setEditing] = useState<number[]>([])
+    const [editCache, setEditCache] = useState<Record<number, Item>>({})
 
     function handleAddRow() {
         setItems(p => [...p, { payment_type: '', payment_date: '', payment_method: '', bank_name: '', amount: '' }])
+        setEditing(p => [...p, items.length])
     }
 
     function handleDeleteRow(idx: number) {
         setItems(p => p.filter((_, i) => i !== idx))
+        setEditing(p => p.filter(i => i !== idx).map(i => (i > idx ? i - 1 : i)))
+        setEditCache(c => {
+            const n = { ...c }
+            delete n[idx]
+            const updated: Record<number, Item> = {}
+            Object.entries(n).forEach(([k, v]) => {
+                const key = Number(k)
+                updated[key > idx ? key - 1 : key] = v
+            })
+            return updated
+        })
     }
 
+    const sumByTypes = (types: string[]) =>
+        items.reduce(
+            (s, i) => (types.includes(i.payment_type) ? s + (Number(i.amount) || 0) : s),
+            0
+        )
     const total = useMemo(() => items.reduce((s, i) => s + (Number(i.amount) || 0), 0), [items])
+    const totalCashAdvance = useMemo(() => sumByTypes(['Nakit Avans-1', 'Nakit Avans-2']), [items])
+    const totalBankAdvance = useMemo(
+        () => sumByTypes(['Banka Avans-1', 'Banka Avans-2', 'Banka Avans-3']),
+        [items]
+    )
+    const totalBankSalary = useMemo(() => sumByTypes(['Banka Maaş']), [items])
+    const totalCash = useMemo(() => sumByTypes(['Nakit']), [items])
 
     function validate() {
         const errs: Record<number, Record<string, boolean>> = {}
@@ -89,7 +116,6 @@ export default function MonthlyDataEntry({ row, onClose }: Props) {
         if (!validate()) return
         for (const it of items) {
             const payload = {
-                id: 0, // or undefined/null if allowed, or generate a temporary id if needed
                 employee_id: row.employee_id,
                 period,
                 payment_type: it.payment_type,
@@ -106,7 +132,7 @@ export default function MonthlyDataEntry({ row, onClose }: Props) {
                 await addNewEmployeePayment(payload)
             }
         }
-        dispatch(fetchEmployeePayments({ page: 1, pageSize: 10 }))
+        dispatch(fetchEmployeePayments({ page: 1, pageSize: 10, filter }))
         onClose()
     }
 
@@ -115,14 +141,22 @@ export default function MonthlyDataEntry({ row, onClose }: Props) {
             key: 'payment_type',
             label: 'Ödeme Türü',
             render: (r, _open, idx) => (
-                <Form.Control
+                <Form.Select
                     size='sm'
                     value={r.payment_type}
+                    disabled={idx !== undefined && idx < TYPES.length}
                     onChange={e =>
                         setItems(p => p.map((it, i) => (i === idx ? { ...it, payment_type: e.target.value } : it)))
                     }
                     style={typeof idx === 'number' && errors[idx]?.payment_type ? { borderColor: 'red' } : {}}
-                />
+                >
+                    <option value=''>Seçiniz</option>
+                    {TYPES.map(t => (
+                        <option key={t} value={t}>
+                            {t}
+                        </option>
+                    ))}
+                </Form.Select>
             ),
         },
         {
@@ -133,6 +167,7 @@ export default function MonthlyDataEntry({ row, onClose }: Props) {
                     type='date'
                     size='sm'
                     value={r.payment_date}
+                    disabled={idx !== undefined && !editing.includes(idx)}
                     onChange={e =>
                         setItems(p => p.map((it, i) => (i === idx ? { ...it, payment_date: e.target.value } : it)))
                     }
@@ -147,6 +182,7 @@ export default function MonthlyDataEntry({ row, onClose }: Props) {
                 <Form.Select
                     size='sm'
                     value={r.payment_method}
+                    disabled={idx !== undefined && !editing.includes(idx)}
                     onChange={e =>
                         setItems(p => p.map((it, i) => (i === idx ? { ...it, payment_method: e.target.value } : it)))
                     }
@@ -165,6 +201,7 @@ export default function MonthlyDataEntry({ row, onClose }: Props) {
                 <Form.Control
                     size='sm'
                     value={r.bank_name}
+                    disabled={idx !== undefined && !editing.includes(idx)}
                     onChange={e =>
                         setItems(p => p.map((it, i) => (i === idx ? { ...it, bank_name: e.target.value } : it)))
                     }
@@ -180,6 +217,7 @@ export default function MonthlyDataEntry({ row, onClose }: Props) {
                     type='number'
                     size='sm'
                     value={r.amount}
+                    disabled={idx !== undefined && !editing.includes(idx)}
                     onChange={e =>
                         setItems(p => p.map((it, i) => (i === idx ? { ...it, amount: e.target.value } : it)))
                     }
@@ -190,18 +228,71 @@ export default function MonthlyDataEntry({ row, onClose }: Props) {
         {
             key: 'actions',
             label: 'İşlemler',
-            render: (_r, _open, idx) => (
-                <Button
-                    variant='danger-light'
-                    size='sm'
-                    className='btn-icon rounded-pill'
-                    onClick={() => {
-                        if (typeof idx === 'number') handleDeleteRow(idx)
-                    }}
-                >
-                    <i className='ti ti-trash'></i>
-                </Button>
-            ),
+            render: (_r, _open, idx) => {
+                if (idx === undefined) return null
+                const isEdit = editing.includes(idx)
+                return (
+                    <div className='d-flex gap-1'>
+                        {isEdit ? (
+                            <>
+                                <Button
+                                    variant='success-light'
+                                    size='sm'
+                                    className='rounded-pill'
+                                    onClick={() => {
+                                        setEditing(p => p.filter(i => i !== idx))
+                                        setEditCache(c => {
+                                            const n = { ...c }
+                                            delete n[idx]
+                                            return n
+                                        })
+                                    }}
+                                >
+                                    Kaydet
+                                </Button>
+                                <Button
+                                    variant='secondary-light'
+                                    size='sm'
+                                    className='rounded-pill'
+                                    onClick={() => {
+                                        setItems(p => p.map((it, i) => (i === idx ? editCache[idx] : it)))
+                                        setEditing(p => p.filter(i => i !== idx))
+                                        setEditCache(c => {
+                                            const n = { ...c }
+                                            delete n[idx]
+                                            return n
+                                        })
+                                    }}
+                                >
+                                    Vazgeç
+                                </Button>
+                            </>
+                        ) : (
+                            <>
+                                <Button
+                                    variant='primary-light'
+                                    size='sm'
+                                    className='rounded-pill'
+                                    onClick={() => {
+                                        setEditCache(c => ({ ...c, [idx]: items[idx] }))
+                                        setEditing(p => [...p, idx])
+                                    }}
+                                >
+                                    Düzenle
+                                </Button>
+                                <Button
+                                    variant='danger-light'
+                                    size='sm'
+                                    className='btn-icon rounded-pill'
+                                    onClick={() => handleDeleteRow(idx)}
+                                >
+                                    <i className='ti ti-trash'></i>
+                                </Button>
+                            </>
+                        )
+                    </div>
+                )
+            },
         },
     ]
 
@@ -240,7 +331,13 @@ export default function MonthlyDataEntry({ row, onClose }: Props) {
                     totalPages={1}
                     totalItems={items.length}
                 />
-                <div className='text-right mt-4 font-bold'>Toplam Ödenen {currency.format(total)}</div>
+                <div className='mt-4 font-bold text-right'>
+                    <div>Nakit Avans {currency.format(totalCashAdvance)}</div>
+                    <div>Banka Avans {currency.format(totalBankAdvance)}</div>
+                    <div>Banka Maaş {currency.format(totalBankSalary)}</div>
+                    <div>Nakit {currency.format(totalCash)}</div>
+                    <div className='mt-2'>Toplam Ödenen {currency.format(total)}</div>
+                </div>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant='outline-secondary' onClick={onClose}>
