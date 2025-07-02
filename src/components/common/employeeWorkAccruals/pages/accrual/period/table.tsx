@@ -148,7 +148,7 @@ export default function EmployeeEarningsPeriodTable() {
     ]
 
     return (
-        <div className='p-4'>
+        <div>
             <FilterGroup filters={filters} navigate={navigate} columnsPerRow={2} />
             <ReusableTable<any> columns={columns} data={data} loading={loading} error={null} tableMode='single' />
             {detailRow && <PeriodDetailModal row={detailRow} onClose={() => setDetailRow(null)} />}

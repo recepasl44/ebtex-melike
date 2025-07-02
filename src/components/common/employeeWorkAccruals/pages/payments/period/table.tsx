@@ -145,7 +145,7 @@ export default function PersonnelPaymentsPeriodTable() {
   )
 
   return (
-    <div className='p-4'>
+    <div>
       <FilterGroup filters={filters} navigate={navigate} columnsPerRow={2} />
       <ReusableTable<EmployeePaymentData>
         tableMode='single'

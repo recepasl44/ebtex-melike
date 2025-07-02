@@ -164,7 +164,7 @@ export default function EmployeeEarningsMonthTable() {
   ]
 
   return (
-    <div className='p-4'>
+    <div >
       <FilterGroup filters={filters} navigate={navigate} columnsPerRow={2} />
       <ReusableTable<any> columns={columns} data={data} loading={loading} error={null} tableMode='single' />
       {entryRow && <MonthlyDataModal row={entryRow} onClose={() => setEntryRow(null)} />}
