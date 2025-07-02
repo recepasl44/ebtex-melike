@@ -12,6 +12,7 @@ import PaymentDetailModal from './crud'
 const currency = new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' })
 
 function getAmounts(row: EmployeePaymentData, types: string[]) {
+    if (!Array.isArray(row.items)) return 0
     return row.items
         .filter(i => types.includes(i.payment_type))
         .reduce((s, i) => s + Number(i.amount), 0)
