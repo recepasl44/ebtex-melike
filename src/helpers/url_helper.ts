@@ -172,9 +172,19 @@ export const MESSAGES = '/messages';
 export const CONVERSATIONUSERS = '/conversationusers';
 export const NOTIFICATIONS = '/notifications';
 export const NOTIFICATIONUSERS = '/notificationusers';
+
+//fınans-muhasebe
 export const CONTRACT_EMPLOYEES = '/contract-employees';
 export const EMPLOYEE_EARNINGS = '/personel-hakedis';
 export const EMPLOYEE_EARNINGS_MONTH = '/personel-hakedis/ay';
 export const EMPLOYEE_EARNINGS_PERIOD = '/personel-hakedis/donem';
 export const EMPLOYEE_PAYMENTS = '/employee-payments';
 
+// quizzes
+export const LESSON_PROGRAMS = '/lesson-programs';
+export const QUIZZES = '/quizzes';
+
+// quiz questions
+export const QUIZQUESTIONS = '/quizquestions';
+// question curriculums
+export const QUESTION_CURRICULUMS = '/questioncurriculums';

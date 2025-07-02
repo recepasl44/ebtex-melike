@@ -322,6 +322,7 @@ export const MENUITEMS: any = [
       },
     ],
   },
+  //iletişim paneli
 
   {
     title: "İletişim Paneli",
@@ -330,6 +331,13 @@ export const MENUITEMS: any = [
     type: "link",
   },
 
+  // ----- ÇEVRİMİÇİ SINAV ------
+  {
+    title: "Çevrimiçi Sınav",
+    icon: Dashboardicon,
+    type: "link",
+    path: "/online-exam",
+  },
   //  ----- WEB APPS -----
   {
     menutitle: "WEB APPS",

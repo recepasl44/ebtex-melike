@@ -652,6 +652,31 @@ import employeePaymentUpdateReducer from '../slices/employeePayments/update/redu
 import employeePaymentDeleteReducer from '../slices/employeePayments/delete/reducer'
 import employeePaymentShowReducer from '../slices/employeePayments/detail/reducer'
 
+// quizzes
+import quizzesListReducer from '../slices/quizzes/list/reducer';
+import quizzesDetailReducer from '../slices/quizzes/detail/reducer';
+import quizzesAddReducer from '../slices/quizzes/add/reducer';
+import quizzesUpdateReducer from '../slices/quizzes/update/reducer';
+import quizzesDeleteReducer from '../slices/quizzes/delete/reducer';
+// quizstudents
+import quizStudentsListReducer from '../slices/quizstudents/list/reducer';
+import quizStudentsDetailReducer from '../slices/quizstudents/detail/reducer';
+import quizStudentsDeleteReducer from '../slices/quizstudents/delete/reducer';
+import quizStudentsUpdateReducer from '../slices/quizstudents/update/reducer';
+import quizStudentsAddReducer from '../slices/quizstudents/add/reducer';
+// quiz questions
+import quizQuestionListSlice from '../slices/quizquestions/list/reducer';
+import quizQuestionDetailSlice from '../slices/quizquestions/detail/reducer';
+import quizQuestionAddSlice from '../slices/quizquestions/add/reducer';
+import quizQuestionUpdateSlice from '../slices/quizquestions/update/reducer';
+import quizQuestionDeleteSlice from '../slices/quizquestions/delete/reducer';
+
+// question curriculums
+import questioncurriculumsListReducer from '../slices/questioncurriculums/list/reducer';
+import questioncurriculumsDetailReducer from '../slices/questioncurriculums/detail/reducer';
+import questioncurriculumsAddReducer from '../slices/questioncurriculums/add/reducer';
+import questioncurriculumsUpdateReducer from '../slices/questioncurriculums/update/reducer';
+import questioncurriculumsDeleteReducer from '../slices/questioncurriculums/delete/reducer';
 
 const combinedReducer = combineReducers({
   login: loginReducer,
@@ -1298,6 +1323,31 @@ const combinedReducer = combineReducers({
 
 
   financeNotes: financeNotesSlice,
+
+  // quizzess
+  quizzesList: quizzesListReducer,
+  quizzesDetail: quizzesDetailReducer,
+  quizzesAdd: quizzesAddReducer,
+  quizzesUpdate: quizzesUpdateReducer,
+  quizzesDelete: quizzesDeleteReducer,
+  // quizstudents
+  quizstudentsList: quizStudentsListReducer,
+  quizstudentsDetail: quizStudentsDetailReducer,
+  quizstudentsDelete: quizStudentsDeleteReducer,
+  quizstudentsUpdate: quizStudentsUpdateReducer,
+  quizstudentsAdd: quizStudentsAddReducer,
+  // quis questions
+  quizQuestionList: quizQuestionListSlice,
+  quizQuestionDetail: quizQuestionDetailSlice,
+  quizQuestionAdd: quizQuestionAddSlice,
+  quizQuestionUpdate: quizQuestionUpdateSlice,
+  quizQuestionDelete: quizQuestionDeleteSlice,
+  // question curiculum
+  questioncurriculumsList: questioncurriculumsListReducer,
+  questioncurriculumsDetail: questioncurriculumsDetailReducer,
+  questioncurriculumsAdd: questioncurriculumsAddReducer,
+  questioncurriculumsUpdate: questioncurriculumsUpdateReducer,
+  questioncurriculumsDelete: questioncurriculumsDeleteReducer,
 });
 
 export default combinedReducer;

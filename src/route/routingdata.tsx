@@ -568,6 +568,13 @@ const FinanceNotesTable = lazy(
   () => import("../components/common/financeNotes/table")
 );
 
+//çevrimiçi sınav
+import QuestionChange from "../components/common/onlineExam/questionChange";
+import ExamPractice from "../components/common/onlineExam/ examPractice";
+import QuizRepeatModal from "../components/common/onlineExam/tabActive/crudAgain";
+const OnlineExamPage = lazy(
+  () => import("../components/common/onlineExam/index")
+);
 
 
 export const Routedata = [
@@ -2317,6 +2324,48 @@ export const Routedata = [
     id: 67,
     path: `${import.meta.env.BASE_URL}checkManagement`,
     element: <CheckManagementIndex />,
+  },
+  // çevrimiçi-sınav
+  ,
+  {
+    id: 1000,
+    path: `${import.meta.env.BASE_URL}online-exam`,
+    element: <OnlineExamPage />,
+  },
+  {
+    id: 1001,
+    path: `${import.meta.env.BASE_URL}online-exam/practice`,
+    element: <ExamPractice />,
+  }, {
+    id: 1002,
+    path: `${import.meta.env.BASE_URL}online-exam/tabActive/crudAgain/:id?`,
+    element: (
+      <QuizRepeatModal
+        show={true}
+        onClose={() => window.history.back()}
+        onRefresh={() => {/* listeyi yenile */ }}
+      />
+    ),
+  }, {
+    id: 1003,
+    path: `${import.meta.env.BASE_URL}online-exam/tabActive/crudAgain`,
+    element: (
+      <QuizRepeatModal
+        show={true}
+        onClose={() => window.history.back()}
+        onRefresh={() => {/* listeyi yenile */ }}
+      />
+    ),
+  }, {
+    id: 1004,
+    path: `${import.meta.env.BASE_URL}online-exam/exam-practice/:id?`,
+    element: (
+      <ExamPractice />
+    ),
+  }, {
+    id: 1005,
+    path: `${import.meta.env.BASE_URL}online-exam/question-change/:school_level?/:program_id?/:lesson_id?/:unit_id?/:chapter_id?`,
+    element: <QuestionChange />,
   },
   //iletişim paneli
   {
