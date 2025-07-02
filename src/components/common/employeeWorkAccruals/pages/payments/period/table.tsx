@@ -12,7 +12,7 @@ import PaymentDetailModal from './crud'
 const currency = new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' })
 
 function getAmount(row: EmployeePaymentData, type: string) {
-  const item = row.items.find(i => i.payment_type === type)
+  const item = row.items?.find(i => i.payment_type === type)
   return item ? Number(item.amount) : 0
 }
 
