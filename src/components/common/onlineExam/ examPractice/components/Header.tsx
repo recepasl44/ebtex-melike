@@ -3,12 +3,14 @@ import { Box, Typography } from '@mui/material';
 interface HeaderProps {
   examTitle: string;
   logoUrl: string;
+  quizName: string;
+  platformName: string;
 }
-const Header: React.FC<HeaderProps> = ({ examTitle, logoUrl }) => (
-  <Box 
+const Header: React.FC<HeaderProps> = ({ examTitle, logoUrl, quizName, platformName }) => (
+  <Box
     sx={{
       bgcolor: '#5C67F7',
-      color: 'white', 
+      color: 'white',
       p: 2,
       display: 'flex',
       alignItems: 'center',
@@ -20,9 +22,8 @@ const Header: React.FC<HeaderProps> = ({ examTitle, logoUrl }) => (
     }}
   >
     <Box component="img" src={logoUrl} alt="Logo" sx={{ height: 24, mr: 15.5, ml: 1, width: 'auto' }} />
-
-    <Typography 
-      sx={{ 
+    <Typography
+      sx={{
         color: '#FFF',
         textAlign: 'center',
         fontFamily: 'Inter',
@@ -30,10 +31,14 @@ const Header: React.FC<HeaderProps> = ({ examTitle, logoUrl }) => (
         fontStyle: 'normal',
         fontWeight: 600,
         lineHeight: 'normal',
-      }} 
+        mr: 2,
+      }}
       variant="h6"
     >
-        {examTitle}
+      {examTitle}
+    </Typography>
+    <Typography sx={{ color: '#FFF', fontSize: '14px', lineHeight: 'normal' }}>
+      {platformName} / {quizName}
     </Typography>
   </Box>
 );
