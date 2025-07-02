@@ -646,6 +646,12 @@ import employeeEarningsPeriodDeleteSlice from '../slices/employeeEarningsPeriod/
 
 import financeNotesSlice from '../slices/financeNotes/list/reducer';
 
+import employeePaymentListReducer from '../slices/employeePayments/list/reducer'
+import employeePaymentAddReducer from '../slices/employeePayments/add/reducer'
+import employeePaymentUpdateReducer from '../slices/employeePayments/update/reducer'
+import employeePaymentDeleteReducer from '../slices/employeePayments/delete/reducer'
+import employeePaymentShowReducer from '../slices/employeePayments/detail/reducer'
+
 
 const combinedReducer = combineReducers({
   login: loginReducer,
@@ -782,6 +788,12 @@ const combinedReducer = combineReducers({
   employeeEarningsPeriodAdd: employeeEarningsPeriodAddSlice,
   employeeEarningsPeriodUpdate: employeeEarningsPeriodUpdateSlice,
   employeeEarningsPeriodDelete: employeeEarningsPeriodDeleteSlice,
+
+  employeePaymentList: employeePaymentListReducer,
+  employeePaymentAdd: employeePaymentAddReducer,
+  employeePaymentUpdate: employeePaymentUpdateReducer,
+  employeePaymentDelete: employeePaymentDeleteReducer,
+  employeePaymentShow: employeePaymentShowReducer,
 
 
   deleteCourse: coursesDeleteSlice,
