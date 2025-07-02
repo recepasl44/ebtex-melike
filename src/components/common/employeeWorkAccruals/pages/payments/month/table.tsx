@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Button, Form } from 'react-bootstrap'
+import { Button } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
 import axiosInstance from '../../../../../../services/axiosClient'
 import ReusableTable, { ColumnDefinition } from '../../../../ReusableTable'
+import FilterGroup, { FilterDefinition } from '../../../component/organisms/SearchFilters'
 import { useEmployeePaymentList } from '../../../../../hooks/employeePayments/useList'
 import type { EmployeePaymentData } from '../../../../../../types/employeePayments/list'
 import MonthlyDataEntry from './monthlyDataEntry'
@@ -16,19 +18,33 @@ function getAmounts(row: EmployeePaymentData, types: string[]) {
 }
 
 export default function PersonnelPaymentsMonthTable() {
+    const navigate = useNavigate()
+    const currentMonth = new Date().toISOString().slice(0, 7)
+
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(10)
     const [employeeOptions, setEmployeeOptions] = useState<{ label: string; value: number }[]>([])
     const [selectedEmployee, setSelectedEmployee] = useState<string>('')
-    const [period, setPeriod] = useState('')
+    const [period, setPeriod] = useState(currentMonth)
+
+    const filter = useMemo(
+        () => ({
+            employee_id: selectedEmployee || undefined,
+            period: period || undefined,
+        }),
+        [selectedEmployee, period]
+    )
 
     const {
         employeePaymentData = [],
         loading,
-        totalItems,
-        setFilter,
-        filter,
-    } = useEmployeePaymentList({ page, pageSize })
+        totalItems
+    } = useEmployeePaymentList({
+        page,
+        pageSize,
+        employee_id: filter.employee_id ? Number(filter.employee_id) : undefined,
+        period: filter.period,
+    })
 
     const [entryRow, setEntryRow] = useState<EmployeePaymentData | null>(null)
     const [detailRow, setDetailRow] = useState<EmployeePaymentData | null>(null)
@@ -48,6 +64,36 @@ export default function PersonnelPaymentsMonthTable() {
         }
         fetchEmployees()
     }, [])
+
+    const monthOptions = useMemo(() => {
+        const year = new Date().getFullYear()
+        return Array.from({ length: 12 }).map((_, i) => {
+            const m = String(i + 1).padStart(2, '0')
+            return { value: `${year}-${m}`, label: `${year}-${m}` }
+        })
+    }, [])
+
+    const filters: FilterDefinition[] = useMemo(
+        () => [
+            {
+                key: 'employee_id',
+                label: 'Personel',
+                type: 'select',
+                value: selectedEmployee,
+                options: employeeOptions.map(o => ({ value: String(o.value), label: o.label })),
+                onChange: setSelectedEmployee,
+            },
+            {
+                key: 'period',
+                label: 'Dönem',
+                type: 'select',
+                value: period,
+                options: monthOptions,
+                onChange: setPeriod,
+            },
+        ],
+        [selectedEmployee, period, employeeOptions, monthOptions]
+    )
 
     const columns: ColumnDefinition<EmployeePaymentData>[] = useMemo(
         () => [
@@ -145,41 +191,7 @@ export default function PersonnelPaymentsMonthTable() {
 
     return (
         <div className='p-4'>
-            <div className='d-flex gap-2 mb-3'>
-                <Form.Select
-                    size='sm'
-                    value={selectedEmployee}
-                    onChange={e => setSelectedEmployee(e.target.value)}
-                    style={{ maxWidth: 250 }}
-                >
-                    <option value=''>Personel Seçiniz</option>
-                    {employeeOptions.map(o => (
-                        <option key={o.value} value={o.value}>
-                            {o.label}
-                        </option>
-                    ))}
-                </Form.Select>
-                <Form.Control
-                    type='month'
-                    size='sm'
-                    value={period}
-                    onChange={e => setPeriod(e.target.value)}
-                    style={{ width: 150 }}
-                />
-                <Button
-                    variant='primary'
-                    size='sm'
-                    onClick={() => {
-                        setFilter({
-                            employee_id: selectedEmployee || undefined,
-                            period: period || undefined,
-                        })
-                        setPage(1)
-                    }}
-                >
-                    Filtrele
-                </Button>
-            </div>
+            <FilterGroup filters={filters} navigate={navigate} columnsPerRow={2} />
             <ReusableTable<EmployeePaymentData>
                 tableMode='single'
                 columns={columns}
