@@ -48,12 +48,12 @@ export default function MonthlyDataEntry({ row, filter, onClose }: Props) {
     const { updateExistingEmployeePayment } = useEmployeePaymentUpdate()
 
     const [period, setPeriod] = useState(
-        row.items[0]?.period ?? dayjs().format('YYYY-MM'),
+        row.items?.[0]?.period ?? dayjs().format('YYYY-MM'),
     )
     const [items, setItems] = useState<Item[]>(
         TYPES.map((t) => {
             const ex =
-                row.items.find(
+                row.items?.find(
                     (i: EmployeePaymentItem) => i.payment_type === t,
                 ) ?? null
             return {

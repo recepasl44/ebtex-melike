@@ -11,7 +11,7 @@ interface Props {
 const currency = new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' })
 
 export default function PaymentDetailModal({ row, onClose }: Props) {
-  const items: EmployeePaymentItem[] = row.items
+  const items: EmployeePaymentItem[] = row.items || []
 
   const columns: ColumnDefinition<EmployeePaymentItem>[] = [
     { key: 'payment_type', label: 'Ödeme Türü' },
@@ -37,9 +37,9 @@ export default function PaymentDetailModal({ row, onClose }: Props) {
         <Modal.Title>Personel Ödeme Detay</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <div className='mb-2 fw-bold'>
-          Personel Ad: {row.employee?.full_name}&nbsp;&nbsp; Dönem: {dayjs(row.items[0]?.period).format('YYYY MMM')}
-        </div>
+          <div className='mb-2 fw-bold'>
+            Personel Ad: {row.employee?.full_name}&nbsp;&nbsp; Dönem: {dayjs(row.items?.[0]?.period).format('YYYY MMM')}
+          </div>
         <ReusableTable<EmployeePaymentItem>
           tableMode='single'
           columns={columns}
